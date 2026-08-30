@@ -19,3 +19,10 @@
    S3: best net +1.79% -> DROPPED
 == TASK 5: sensitivities ==
   corner payload_plus20
+    S0: payload   24942 kg  fleet 0.5913 MJ/payload-tkm  (55 s)
+    S1: payload   23277 kg  fleet 0.5817 MJ/payload-tkm  (212 s)
+    S2: payload   22927 kg  fleet 0.5742 MJ/payload-tkm  (230 s)
+    S3: payload   23471 kg  fleet 0.6131 MJ/payload-tkm  (228 s)
+    S4: payload   23212 kg  fleet 0.5866 MJ/payload-tkm  (205 s)
+   [checkpoint written: 0.4 MB]
+  corner payload_minus20

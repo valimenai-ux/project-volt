@@ -840,7 +840,24 @@ def recommendation():
       "efficiency.** Every electrified candidate wins on fuel per "
       "kilometre and gives it back on payload. Any future work that does "
       "not attack the powertrain mass ledger is not attacking the problem.")
-    w("4. **The escalations in section 10 change the answer if ruled the "
+    w("4. **What decides these architectures is the fleet's duty, not "
+      "the architecture.** The corner sweep in section 6.1 spans about "
+      "fourteen points for S1 - from roughly +10% on the grade-heavy "
+      "corridor to about -4% at -10 C - and the sign flips inside that "
+      "span. An operator running loaded over mountains and an operator "
+      "running light in winter are not looking at the same vehicle. If "
+      "Vehicle One is to be specified for a duty rather than for an "
+      "average, that duty needs naming before any of these numbers mean "
+      "much.")
+    w("5. **The cold corner is the one to attack first.** It is binding "
+      "for all four candidates, and its cause is specific and fixable "
+      "rather than fundamental: WS3's cells accept about an eighth of "
+      "their warm charge power at -10 C, so descent regen goes to the "
+      "resistor instead of the pack, while the conventional truck heats "
+      "its cab from engine coolant for free. Pack preconditioning and a "
+      "heat-recovery path for cab heat are the obvious counters, and "
+      "neither is modelled here.")
+    w("6. **The escalations in section 11 change the answer if ruled the "
       "other way**, ESC-WS8-1 and ESC-WS8-3 especially. They are not "
       "footnotes.")
     w("")

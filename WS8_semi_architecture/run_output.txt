@@ -40,3 +40,25 @@
     S4: payload   19344 kg  fleet 0.6902 MJ/payload-tkm  (379 s)
    [checkpoint written: 0.7 MB]
   corner cold_minus10C
+    S0: payload   20785 kg  fleet 0.7039 MJ/payload-tkm  (52 s)
+    S1: payload   19398 kg  fleet 0.7280 MJ/payload-tkm  (189 s)
+    S2: payload   19106 kg  fleet 0.7053 MJ/payload-tkm  (206 s)
+    S3: payload   19559 kg  fleet 0.7693 MJ/payload-tkm  (209 s)
+    S4: payload   19344 kg  fleet 0.7469 MJ/payload-tkm  (200 s)
+   [checkpoint written: 0.9 MB]
+   [checkpoint written: 0.9 MB]
+== ADVANCE/KILL ==
+   S1: KILL  (nominal min -0.66%, worst corner -4.37% @ cold_minus10C)
+   S2: KILL  (nominal min +0.36%, worst corner -1.90% @ cold_minus10C)
+   S3: KILL  (nominal min -6.22%, worst corner -11.17% @ cold_minus10C)
+   S4: KILL  (nominal min -3.67%, worst corner -8.26% @ cold_minus10C)
+== heat ledger (rule 7, for WS6) ==
+Traceback (most recent call last):
+  File "/home/user/project-volt/WS8_semi_architecture/run_ws8.py", line 2053, in <module>
+    "driveline_kW", "total_rejected_kW"], rows)
+^^^^^^
+  File "/home/user/project-volt/WS8_semi_architecture/run_ws8.py", line 505, in main
+    # every re-run differ. They are still printed to run_output.txt,
+             ^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'runtime_s'
+EXIT=1

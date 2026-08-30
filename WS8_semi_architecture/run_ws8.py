@@ -497,7 +497,7 @@ def main():
     if pool is not None:
         pool.close()
         pool.join()
-    R["_meta"]["runtime_s"] = round(time.time() - t_start, 1)
+    elapsed = round(time.time() - t_start, 1)
     path = os.path.join(HERE, "results_ws8.json")
     # BYTE-STABLE REGENERATION (CLAUDE.md rule 1). Wall-clock timings are
     # the one thing in this structure that cannot be reproduced, so they
@@ -510,8 +510,8 @@ def main():
                   allow_nan=False)
         f.write("\n")
     print(f"== wrote {path} "
-          f"({os.path.getsize(path)/1e6:.2f} MB, "
-          f"{R['_meta']['runtime_s']:.0f} s) ==", flush=True)
+          f"({os.path.getsize(path)/1e6:.2f} MB, {elapsed:.0f} s) ==",
+          flush=True)
 
 
 CHECKPOINT = os.path.join(DATA, "_checkpoint.json")
@@ -657,8 +657,8 @@ def load_prior_art():
             "scan is reported with its evidence limit stated instead."),
         note=("The S3 verdict in this report rests on the physics in "
               "Task 5, not on the scan. The scan corroborates it "
-              "independently, which is worth something, but nothing in "
-              "section 8 depends on it."))
+              "independently (section 8), which is worth something, but "
+              "no verdict in section 9 depends on it."))
 
 
 # =====================================================================

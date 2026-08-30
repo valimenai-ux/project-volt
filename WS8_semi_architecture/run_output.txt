@@ -1,0 +1,64 @@
+== TASK 0: prior-art claim map ==
+   status: DELIVERED-BOUNDED
+== TASK 1: duty cycles, 10 Hz, 8-seed ensembles ==
+   LH-520: 520.0 km, grade max +0.0605 / min -0.0605, climb 3704 m
+   REG-165: 165.0 km, grade max +0.0537 / min -0.0512, climb 874 m
+== TASK 2/3: S0 calibration + candidate trial (nominal) ==
+    S0: payload   20785 kg  fleet 0.6643 MJ/payload-tkm  (52 s)
+    S1: payload   19398 kg  fleet 0.6606 MJ/payload-tkm  (209 s)
+    S2: payload   19106 kg  fleet 0.6531 MJ/payload-tkm  (228 s)
+    S3: payload   19559 kg  fleet 0.6932 MJ/payload-tkm  (229 s)
+    S4: payload   19344 kg  fleet 0.6709 MJ/payload-tkm  (208 s)
+   [checkpoint written: 0.2 MB]
+   S0 flat-corridor cross-check 33.08 L/100 km vs ICCT typical 32.6 / at-regulatory-payload 33.1
+   S0 fleet fuel 38.78 L/100 km  (corridor 30.0-38.0): False
+== TASK 4: WHR gate ==
+   [checkpoint written: 0.2 MB]
+   S1: best net +1.72% -> DROPPED
+   S2: best net +1.75% -> DROPPED
+   S3: best net +1.79% -> DROPPED
+== TASK 5: sensitivities ==
+  corner payload_plus20
+    S0: payload   24942 kg  fleet 0.5913 MJ/payload-tkm  (55 s)
+    S1: payload   23277 kg  fleet 0.5817 MJ/payload-tkm  (212 s)
+    S2: payload   22927 kg  fleet 0.5742 MJ/payload-tkm  (230 s)
+    S3: payload   23471 kg  fleet 0.6131 MJ/payload-tkm  (228 s)
+    S4: payload   23212 kg  fleet 0.5866 MJ/payload-tkm  (205 s)
+   [checkpoint written: 0.4 MB]
+  corner payload_minus20
+    S0: payload   16628 kg  fleet 0.7727 MJ/payload-tkm  (52 s)
+    S1: payload   15518 kg  fleet 0.7798 MJ/payload-tkm  (207 s)
+    S2: payload   15285 kg  fleet 0.7735 MJ/payload-tkm  (228 s)
+    S3: payload   15647 kg  fleet 0.8152 MJ/payload-tkm  (227 s)
+    S4: payload   15475 kg  fleet 0.7983 MJ/payload-tkm  (208 s)
+   [checkpoint written: 0.6 MB]
+  corner grade_heavy
+    S0: payload   20785 kg  fleet 0.7645 MJ/payload-tkm  (62 s)
+    S1: payload   19398 kg  fleet 0.6884 MJ/payload-tkm  (381 s)
+    S2: payload   19106 kg  fleet 0.7068 MJ/payload-tkm  (419 s)
+    S3: payload   19559 kg  fleet 0.7491 MJ/payload-tkm  (417 s)
+    S4: payload   19344 kg  fleet 0.6902 MJ/payload-tkm  (379 s)
+   [checkpoint written: 0.7 MB]
+  corner cold_minus10C
+    S0: payload   20785 kg  fleet 0.7039 MJ/payload-tkm  (52 s)
+    S1: payload   19398 kg  fleet 0.7280 MJ/payload-tkm  (189 s)
+    S2: payload   19106 kg  fleet 0.7053 MJ/payload-tkm  (206 s)
+    S3: payload   19559 kg  fleet 0.7693 MJ/payload-tkm  (209 s)
+    S4: payload   19344 kg  fleet 0.7469 MJ/payload-tkm  (200 s)
+   [checkpoint written: 0.9 MB]
+   [checkpoint written: 0.9 MB]
+== ADVANCE/KILL ==
+   S1: KILL  (nominal min -0.66%, worst corner -4.37% @ cold_minus10C)
+   S2: KILL  (nominal min +0.36%, worst corner -1.90% @ cold_minus10C)
+   S3: KILL  (nominal min -6.22%, worst corner -11.17% @ cold_minus10C)
+   S4: KILL  (nominal min -3.67%, worst corner -8.26% @ cold_minus10C)
+== heat ledger (rule 7, for WS6) ==
+Traceback (most recent call last):
+  File "/home/user/project-volt/WS8_semi_architecture/run_ws8.py", line 2053, in <module>
+    "driveline_kW", "total_rejected_kW"], rows)
+^^^^^^
+  File "/home/user/project-volt/WS8_semi_architecture/run_ws8.py", line 505, in main
+    # every re-run differ. They are still printed to run_output.txt,
+             ^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'runtime_s'
+EXIT=1

@@ -1,0 +1,12 @@
+ratio_A,coupling_floor_kmh,engine_rpm_at_105kmh,cruise_ok,hold_2pct,hold_3pct,hold_4pct,hold_6pct,F_required_6pct_kN,F_axleA_6pct_kN,climb_energy_req_kWh,pack_available_kWh,climb_feasible
+2.4,78.5398,1336.9,1,no_solution,no_solution,no_solution,no_solution,24.8459,7.84163,132.75,21.6022,0
+2.6,72.4983,1448.31,1,no_solution,no_solution,no_solution,no_solution,24.6117,8.48349,132.75,21.6022,0
+2.8,67.3198,1559.72,1,no_solution,no_solution,no_solution,no_solution,24.433,9.15689,132.75,21.6022,0
+3,62.8319,1671.13,1,no_solution,no_solution,no_solution,no_solution,24.2901,9.82315,132.75,21.6022,0
+3.2,58.9049,1782.54,1,holds,no_solution,no_solution,no_solution,24.1675,10.4762,132.75,21.6022,0
+3.4,55.4399,1893.94,1,holds,no_solution,no_solution,no_solution,24.0629,11.1191,132.75,21.6022,0
+3.6,52.3599,2005.35,1,holds,no_solution,no_solution,no_solution,23.9744,11.7303,132.75,21.6022,0
+3.77,49.9988,2100.05,0,holds,no_solution,no_solution,no_solution,23.9183,12.3338,132.75,21.6022,0
+4,47.1239,2228.17,0,holds,holds,no_solution,no_solution,23.8473,13.0859,132.75,21.6022,0
+4.5,41.8879,2506.69,0,holds,holds,no_solution,no_solution,23.7254,14.6629,132.75,21.6022,0
+5,37.6991,2785.21,0,holds,holds,holds,no_solution,23.6455,16.3719,132.75,21.6022,0

@@ -4,3 +4,12 @@
    LH-520: 520.0 km, grade max +0.0605 / min -0.0605, climb 3704 m
    REG-165: 165.0 km, grade max +0.0537 / min -0.0512, climb 874 m
 == TASK 2/3: S0 calibration + candidate trial (nominal) ==
+    S0: payload   20785 kg  fleet 0.6643 MJ/payload-tkm  (52 s)
+    S1: payload   19398 kg  fleet 0.6606 MJ/payload-tkm  (209 s)
+    S2: payload   19106 kg  fleet 0.6531 MJ/payload-tkm  (228 s)
+    S3: payload   19559 kg  fleet 0.6932 MJ/payload-tkm  (229 s)
+    S4: payload   19344 kg  fleet 0.6709 MJ/payload-tkm  (208 s)
+   [checkpoint written: 0.2 MB]
+   S0 flat-corridor cross-check 33.08 L/100 km vs ICCT typical 32.6 / at-regulatory-payload 33.1
+   S0 fleet fuel 38.78 L/100 km  (corridor 30.0-38.0): False
+== TASK 4: WHR gate ==

@@ -13,3 +13,9 @@
    S0 flat-corridor cross-check 33.08 L/100 km vs ICCT typical 32.6 / at-regulatory-payload 33.1
    S0 fleet fuel 38.78 L/100 km  (corridor 30.0-38.0): False
 == TASK 4: WHR gate ==
+   [checkpoint written: 0.2 MB]
+   S1: best net +1.72% -> DROPPED
+   S2: best net +1.75% -> DROPPED
+   S3: best net +1.79% -> DROPPED
+== TASK 5: sensitivities ==
+  corner payload_plus20

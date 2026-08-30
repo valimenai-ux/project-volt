@@ -1,0 +1,3280 @@
+{
+ "params_ws3": {
+  "ns_spine": 288,
+  "series_step": 12,
+  "soc_target": 0.55,
+  "soc_window": [
+   0.15,
+   0.9
+  ],
+  "R8_peaks_bus_kW": {
+   "discharge": 120.0,
+   "charge": 110.0,
+   "charge_continuous": 50.0
+  },
+  "buffer_floors_bus_kWh": {
+   "V2": 3.5,
+   "V1": 1.5
+  },
+  "v1_startstop": {
+   "p_on_bus_kW": 35.0,
+   "band_kWh": 3.0
+  },
+  "seeds": {
+   "VOLT_SUB": [
+    11,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "VOLT_REG": [
+    23,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  "annualisation": {
+   "V1_hours_per_year": 2000.0,
+   "V2_traces_per_year": 500.0,
+   "calendar_avg_cell_temp_C": 30.0
+  },
+  "packaging": {
+   "mass_overhead_factor": 1.55,
+   "mass_overhead_fixed_kg": 35.0,
+   "vol_overhead_factor": 2.3
+  },
+  "thermal": {
+   "ua_cells_coolant_W_K": 500.0,
+   "ua_radiator_W_K": 350.0,
+   "t_cell_max_cont_C": 55.0,
+   "t_cell_cutoff_C": 60.0,
+   "coupled_structure_kg": 45.0
+  },
+  "cells": {
+   "LTO-23": {
+    "chem": "LTO",
+    "ah": 23.0,
+    "v_nom": 2.3,
+    "v_max_protect": 2.7,
+    "v_chg_ceiling": 2.6,
+    "v_min": 1.5,
+    "mass_kg": 0.55,
+    "vol_L": 0.28,
+    "r_dc_mohm": 1.1,
+    "c_cont_dis": 8.0,
+    "c_cont_chg": 8.0,
+    "c_pulse10_dis": 15.0,
+    "c_pulse10_chg": 12.0,
+    "cp_J_kgK": 1000.0,
+    "efc100": 20000.0,
+    "cal_life_yr": {
+     "25": 25.0,
+     "35": 20.0,
+     "45": 14.0,
+     "55": 8.0
+    }
+   },
+   "LTO-10": {
+    "chem": "LTO",
+    "ah": 10.0,
+    "v_nom": 2.3,
+    "v_max_protect": 2.7,
+    "v_chg_ceiling": 2.6,
+    "v_min": 1.5,
+    "mass_kg": 0.51,
+    "vol_L": 0.28,
+    "r_dc_mohm": 0.65,
+    "c_cont_dis": 15.0,
+    "c_cont_chg": 15.0,
+    "c_pulse10_dis": 30.0,
+    "c_pulse10_chg": 25.0,
+    "cp_J_kgK": 1000.0,
+    "efc100": 25000.0,
+    "cal_life_yr": {
+     "25": 25.0,
+     "35": 20.0,
+     "45": 14.0,
+     "55": 8.0
+    }
+   },
+   "LTO-45": {
+    "chem": "LTO",
+    "ah": 45.0,
+    "v_nom": 2.3,
+    "v_max_protect": 2.7,
+    "v_chg_ceiling": 2.6,
+    "v_min": 1.5,
+    "mass_kg": 1.15,
+    "vol_L": 0.6,
+    "r_dc_mohm": 0.6,
+    "c_cont_dis": 6.0,
+    "c_cont_chg": 6.0,
+    "c_pulse10_dis": 10.0,
+    "c_pulse10_chg": 8.0,
+    "cp_J_kgK": 1050.0,
+    "efc100": 16000.0,
+    "cal_life_yr": {
+     "25": 25.0,
+     "35": 20.0,
+     "45": 14.0,
+     "55": 8.0
+    }
+   },
+   "LFP-P-20": {
+    "chem": "LFP",
+    "ah": 19.5,
+    "v_nom": 3.3,
+    "v_max_protect": 3.65,
+    "v_chg_ceiling": 3.6,
+    "v_min": 2.0,
+    "mass_kg": 0.5,
+    "vol_L": 0.265,
+    "r_dc_mohm": 1.8,
+    "c_cont_dis": 10.0,
+    "c_cont_chg": 4.0,
+    "c_pulse10_dis": 20.0,
+    "c_pulse10_chg": 8.0,
+    "cp_J_kgK": 1050.0,
+    "efc100": 3500.0,
+    "cal_life_yr": {
+     "25": 15.0,
+     "35": 11.0,
+     "45": 8.0,
+     "55": 4.5
+    }
+   },
+   "NMC-P-40": {
+    "chem": "NMC",
+    "ah": 40.0,
+    "v_nom": 3.65,
+    "v_max_protect": 4.15,
+    "v_chg_ceiling": 4.1,
+    "v_min": 2.8,
+    "mass_kg": 1.1,
+    "vol_L": 0.55,
+    "r_dc_mohm": 1.0,
+    "c_cont_dis": 8.0,
+    "c_cont_chg": 4.0,
+    "c_pulse10_dis": 15.0,
+    "c_pulse10_chg": 8.0,
+    "cp_J_kgK": 1050.0,
+    "efc100": 3000.0,
+    "cal_life_yr": {
+     "25": 12.0,
+     "35": 8.0,
+     "45": 5.0,
+     "55": 2.5
+    }
+   },
+   "SC-3000": {
+    "chem": "EDLC",
+    "v_max": 2.85,
+    "cap_F": 3000.0,
+    "mass_kg": 0.51,
+    "vol_L": 0.475,
+    "r_dc_mohm": 0.29,
+    "usable_wh": 2.53828125,
+    "cal_life_yr": null
+   }
+  }
+ },
+ "verification_vs_ws1": {
+  "N3_V1_5min_kWh": {
+   "ws3": 0.709356004132938,
+   "ws1": 0.709356004132938,
+   "rel_err": 0.0
+  },
+  "N3_V2_5min_kWh": {
+   "ws3": 1.2905648481042136,
+   "ws1": 1.2905648481042136,
+   "rel_err": 0.0
+  },
+  "batt_peak_dis_kW": {
+   "ws3": 120.29211316940902,
+   "ws1": 120.29211316940902,
+   "rel_err": 0.0
+  },
+  "batt_peak_chg_kW": {
+   "ws3": 70.8452041737671,
+   "ws1": 70.8452041737671,
+   "rel_err": 0.0
+  },
+  "N3_V1_ensemble_max_kWh": {
+   "ws3": 0.8709806056115929,
+   "ws1": 0.8709806056115929,
+   "note": "exact reproduction expected (same code path)"
+  },
+  "N3_V2_ensemble_max_kWh_info": {
+   "ws3_two_pass": 1.3671601809923797,
+   "ws1_single_pass": 1.3809442975330612,
+   "note": "WS1's ensemble loop used the single-pass i-MMD split (run_ws1.py line 428); WS3 applies the ratified two-pass generator reserve to every seed. Method difference, delta ~1%, not a defect."
+  }
+ },
+ "pack_designs": {
+  "V2_and_V1_recommended": {
+   "cell": "LTO-23",
+   "series": 288,
+   "parallel": 1,
+   "nameplate_kWh": 15.235199999999999,
+   "usable_kWh_cells": 11.4264,
+   "usable_kWh_bus": 11.083607999999998,
+   "v_nominal": 662.4,
+   "v_ocv_at_window": [
+    610.56,
+    696.96
+   ],
+   "v_charge_ceiling": 748.8000000000001,
+   "v_protect_max": 777.6,
+   "cell_mass_kg": 158.4,
+   "pack_mass_kg": 280.52,
+   "pack_volume_L": 185.472,
+   "c_th_J_K": 198900.0
+  },
+  "V1_light_option": {
+   "cell": "LTO-10",
+   "series": 288,
+   "parallel": 1,
+   "nameplate_kWh": 6.623999999999999,
+   "usable_kWh_cells": 4.967999999999999,
+   "usable_kWh_bus": 4.818959999999999,
+   "v_nominal": 662.4,
+   "v_ocv_at_window": [
+    610.56,
+    696.96
+   ],
+   "v_charge_ceiling": 748.8000000000001,
+   "v_protect_max": 777.6,
+   "cell_mass_kg": 146.88,
+   "pack_mass_kg": 262.664,
+   "pack_volume_L": 185.472,
+   "c_th_J_K": 187380.0
+  },
+  "sensitivity_cell_up": {
+   "cell": "LTO-45",
+   "series": 288,
+   "parallel": 1,
+   "nameplate_kWh": 29.807999999999996,
+   "usable_kWh_cells": 22.355999999999998,
+   "usable_kWh_bus": 21.685319999999997,
+   "v_nominal": 662.4,
+   "v_ocv_at_window": [
+    610.56,
+    696.96
+   ],
+   "v_charge_ceiling": 748.8000000000001,
+   "v_protect_max": 777.6,
+   "cell_mass_kg": 331.2,
+   "pack_mass_kg": 548.36,
+   "pack_volume_L": 397.43999999999994,
+   "c_th_J_K": 388260.0
+  },
+  "sensitivity_bus_400V": {
+   "cell": "LTO-23",
+   "series": 174,
+   "parallel": 1,
+   "nameplate_kWh": 9.2046,
+   "usable_kWh_cells": 6.903449999999999,
+   "usable_kWh_bus": 6.696346499999999,
+   "v_nominal": 400.2,
+   "v_ocv_at_window": [
+    368.87999999999994,
+    421.08
+   ],
+   "v_charge_ceiling": 452.40000000000003,
+   "v_protect_max": 469.8,
+   "cell_mass_kg": 95.7,
+   "pack_mass_kg": 183.335,
+   "pack_volume_L": 112.05600000000001,
+   "c_th_J_K": 136200.0
+  }
+ },
+ "soc_allocation": {
+  "V2": {
+   "usable_bus_kWh": 11.083607999999998,
+   "genset_hysteresis_kWh": 3.5,
+   "regen_headroom_kWh": 1.5,
+   "grade_reserve_kWh": 2.0,
+   "unallocated_margin_kWh": 4.083607999999998,
+   "end_stops_pct_nameplate": [
+    15.0,
+    9.999999999999998
+   ],
+   "floor_kWh": 3.5,
+   "floor_margin_ratio": 3.1667451428571423
+  },
+  "V1": {
+   "usable_bus_kWh": 11.083607999999998,
+   "genset_hysteresis_kWh": 3.0,
+   "regen_headroom_kWh": 1.5,
+   "grade_reserve_kWh": 1.0,
+   "unallocated_margin_kWh": 5.583607999999998,
+   "end_stops_pct_nameplate": [
+    15.0,
+    9.999999999999998
+   ],
+   "floor_kWh": 1.5,
+   "floor_margin_ratio": 7.389071999999999
+  },
+  "V1_light": {
+   "usable_bus_kWh": 4.818959999999999,
+   "genset_hysteresis_kWh": 3.0,
+   "regen_headroom_kWh": 1.0,
+   "grade_reserve_kWh": 0.8,
+   "unallocated_margin_kWh": 0.018959999999998978,
+   "end_stops_pct_nameplate": [
+    15.0,
+    9.999999999999998
+   ],
+   "floor_kWh": 1.5,
+   "floor_margin_ratio": 3.212639999999999
+  }
+ },
+ "capability_maps": {
+  "V2_LTO23": {
+   "T_C": [
+    -10.0,
+    0.0,
+    10.0,
+    25.0,
+    45.0
+   ],
+   "SOC": [
+    0.25,
+    0.4,
+    0.55,
+    0.7,
+    0.85,
+    0.9
+   ],
+   "dis_pulse10_kW": [
+    [
+     97.1546853146853,
+     106.97237189040472,
+     115.55244755244756,
+     122.34965034965036,
+     127.05309383399997,
+     126.33184996821359
+    ],
+    [
+     132.94851674641146,
+     146.38324574476434,
+     153.406872,
+     157.878072,
+     161.7478956,
+     161.6433192
+    ],
+    [
+     160.62165,
+     166.90939920000002,
+     172.26043200000004,
+     176.73163200000002,
+     181.54413359999998,
+     182.3822352
+    ],
+    [
+     176.33294999999998,
+     182.243628,
+     187.34328000000002,
+     191.81448,
+     197.38112399999994,
+     198.973368
+    ],
+    [
+     182.2246875,
+     187.99396380000002,
+     192.999348,
+     197.470548,
+     203.31999539999998,
+     205.19504279999998
+    ]
+   ],
+   "chg_pulse10_kW": [
+    [
+     138.3366713286714,
+     128.36684626848563,
+     118.27132867132867,
+     106.03636363636367,
+     81.56643356643366,
+     69.20788302606489
+    ],
+    [
+     189.30281339712926,
+     175.65989489371717,
+     161.84497607655507,
+     145.10239234449767,
+     111.61722488038293,
+     94.70552414093092
+    ],
+    [
+     207.68227199999998,
+     210.812032512,
+     213.82589952,
+     196.92467532467543,
+     151.48051948051966,
+     128.52892561983484
+    ],
+    [
+     197.62704000000002,
+     200.99812608000002,
+     204.1728768,
+     207.7498368,
+     212.07272727272752,
+     179.94049586776873
+    ],
+    [
+     193.85632800000002,
+     197.317911168,
+     200.55299327999998,
+     204.12995328,
+     211.117186944,
+     211.6947010209044
+    ]
+   ],
+   "chg_cont_kW": [
+    [
+     64.758432,
+     65.90894131200001,
+     66.98506752000002,
+     68.17738752000001,
+     53.610389610389674,
+     42.842975206611605
+    ],
+    [
+     98.185068,
+     99.885693888,
+     101.48312448,
+     103.27160448,
+     73.36158578263851,
+     58.6272292301001
+    ],
+    [
+     130.63411200000002,
+     132.90831667199998,
+     135.04269312000002,
+     137.42733312,
+     99.56215213358085,
+     79.56552538370728
+    ],
+    [
+     126.16512,
+     128.54658048000002,
+     130.7524608,
+     133.13710079999998,
+     137.64777984,
+     111.39173553719019
+    ],
+    [
+     124.489248,
+     126.91092940800003,
+     129.14362368,
+     131.52826368,
+     135.958500864,
+     131.04910063198844
+    ]
+   ]
+  },
+  "V1_light_LTO10": {
+   "T_C": [
+    -10.0,
+    0.0,
+    10.0,
+    25.0,
+    45.0
+   ],
+   "SOC": [
+    0.25,
+    0.4,
+    0.55,
+    0.7,
+    0.85,
+    0.9
+   ],
+   "dis_pulse10_kW": [
+    [
+     126.39712499999999,
+     130.8603492,
+     134.69263199999997,
+     137.997432,
+     141.92298359999998,
+     142.91093519999998
+    ],
+    [
+     154.143,
+     159.26328000000004,
+     163.68480000000002,
+     167.5728,
+     172.45224,
+     173.87568
+    ],
+    [
+     162.918,
+     167.82768000000002,
+     172.1088,
+     175.99679999999998,
+     181.29744,
+     183.14208
+    ],
+    [
+     169.938,
+     174.67920000000004,
+     178.84800000000004,
+     182.73600000000002,
+     188.37359999999998,
+     190.55519999999999
+    ],
+    [
+     172.5705,
+     177.24852,
+     181.3752,
+     185.2632,
+     191.02716,
+     193.33512
+    ]
+   ],
+   "chg_pulse10_kW": [
+    [
+     53.24159999999999,
+     54.315724800000005,
+     55.300608000000004,
+     56.337408,
+     58.2211584,
+     59.1833088
+    ],
+    [
+     80.3304,
+     81.93035520000001,
+     83.400192,
+     84.955392,
+     87.80348159999998,
+     89.2691712
+    ],
+    [
+     106.98240000000001,
+     109.1186688,
+     111.080448,
+     113.15404799999999,
+     116.9455104,
+     118.8937728
+    ],
+    [
+     104.9856,
+     107.169792,
+     109.16352,
+     111.23712,
+     114.93273599999999,
+     116.78515199999998
+    ],
+    [
+     104.2368,
+     106.4389632,
+     108.44467200000001,
+     110.518272,
+     114.17794559999999,
+     115.99441920000001
+    ]
+   ],
+   "chg_cont_kW": [
+    [
+     25.8096,
+     26.366131199999998,
+     26.871552000000005,
+     27.389952,
+     28.2928896,
+     28.7350272
+    ],
+    [
+     38.8314,
+     39.6633888,
+     40.419648,
+     41.197248,
+     42.5572704,
+     43.226092799999996
+    ],
+    [
+     51.74399999999999,
+     52.8540672,
+     53.862912,
+     54.899712,
+     56.71157759999999,
+     57.601843200000005
+    ],
+    [
+     51.2448,
+     52.366848000000005,
+     53.383680000000005,
+     54.420480000000005,
+     56.208383999999995,
+     57.074687999999995
+    ],
+    [
+     51.0576,
+     52.1841408,
+     53.203968,
+     54.240768,
+     56.01968639999999,
+     56.8770048
+    ]
+   ]
+  }
+ },
+ "r8_compliance": {
+  "note": "minimum cell temperature at which the R8 peak is available over the stated SOC range, computed against the 1.50 V/cell (432.0 V pack) floor = the exported operating_min_V (WS3-r1-F1); dispatch gate follows from these. Higher electronics floors inherit the derated gates in bus_voltage_window.dis_gate_vs_electronics_floor_V",
+  "dis_120kW_over_SOC_40_90": -5.5,
+  "chg_110kW_over_SOC_15_85": 0.0,
+  "chg_cont_50kW_over_SOC_15_85": -10.0,
+  "dis_120kW_at_soc55_minus10C_kW": 115.55244755244756,
+  "chg_110kW_at_soc85_minus10C_kW": 81.56643356643366
+ },
+ "bus_window_consistency": {
+  "basis": "all capability figures and every r8_compliance gate are computed against the cell floor 1.50 V/cell = 432.0 V pack; the exported operating_min_V equals this same floor, so the window and the gates are jointly satisfiable as exported (resolves WS3-r1-F1)",
+  "r8_operating_points": {
+   "dis_120kW_warm_soc40": {
+    "T_C": 25.0,
+    "SOC": 0.4,
+    "P_bus_kW": 120.0,
+    "I_A": 209.8772687608259,
+    "V_bus_V": 571.7627292775132
+   },
+   "dis_120kW_at_cold_gate_soc40": {
+    "T_C": -5.5,
+    "SOC": 0.4,
+    "P_bus_kW": 120.0,
+    "I_A": 274.28727341017577,
+    "V_bus_V": 437.4975131294156
+   },
+   "dis_120kW_warm_soc15_info": {
+    "T_C": 25.0,
+    "SOC": 0.15,
+    "P_bus_kW": 120.0,
+    "I_A": 227.39532465298154,
+    "V_bus_V": 527.7153353224256
+   },
+   "chg_110kW_warm_soc85": {
+    "T_C": 25.0,
+    "SOC": 0.85,
+    "P_bus_kW": 110.0,
+    "I_A": 149.3433814638908,
+    "V_bus_V": 736.5575824101486
+   },
+   "chg_110kW_at_gate_soc85": {
+    "T_C": 0.0,
+    "SOC": 0.85,
+    "P_bus_kW": 110.0,
+    "I_A": 141.67566249559349,
+    "V_bus_V": 776.4212855078149
+   }
+  },
+  "soc15_note": "120 kW warm at SOC 15 sits at 527.7 V; the R8 discharge gate is declared over SOC 40-90 and full power below SOC 40 is NOT guaranteed - WS5 dispatch limit",
+  "chg_transient_note": "the 110 kW charge pulse at its +0.0 C gate rides the bus to 776.4 V - above the 748.8 V continuous charge ceiling, inside the 777.6 V transient/protect ceiling: WS2 rates the electronics for the transient ceiling",
+  "dis_gate_vs_electronics_floor": [
+   {
+    "v_floor_cell_V": 1.5,
+    "v_floor_pack_V": 432.0,
+    "dis_120kW_gate_C_over_SOC_40_90": -5.5,
+    "I_at_gate_A": 274.28727341017577,
+    "V_bus_at_gate_V": 437.4975131294156
+   },
+   {
+    "v_floor_cell_V": 1.6,
+    "v_floor_pack_V": 460.8,
+    "dis_120kW_gate_C_over_SOC_40_90": -3.0,
+    "I_at_gate_A": 258.97653129693236,
+    "V_bus_at_gate_V": 463.36244986775534
+   },
+   {
+    "v_floor_cell_V": 1.7,
+    "v_floor_pack_V": 489.59999999999997,
+    "dis_120kW_gate_C_over_SOC_40_90": 0.5,
+    "I_at_gate_A": 243.85482116800202,
+    "V_bus_at_gate_V": 492.09607349664367
+   },
+   {
+    "v_floor_cell_V": 1.8,
+    "v_floor_pack_V": 518.4,
+    "dis_120kW_gate_C_over_SOC_40_90": 6.0,
+    "I_at_gate_A": 230.51748565980992,
+    "V_bus_at_gate_V": 520.5678851499015
+   },
+   {
+    "v_floor_cell_V": 1.85,
+    "v_floor_pack_V": 532.8000000000001,
+    "dis_120kW_gate_C_over_SOC_40_90": 9.0,
+    "I_at_gate_A": 224.50326566802755,
+    "V_bus_at_gate_V": 534.5133828807805
+   },
+   {
+    "v_floor_cell_V": 1.9,
+    "v_floor_pack_V": 547.1999999999999,
+    "dis_120kW_gate_C_over_SOC_40_90": 14.0,
+    "I_at_gate_A": 218.90948748643973,
+    "V_bus_at_gate_V": 548.1717644030086
+   }
+  ],
+  "series_252_bound": {
+   "series": 252,
+   "nameplate_kWh": 13.3308,
+   "v_nominal_V": 579.5999999999999,
+   "operating_min_V": 378.0,
+   "operating_max_V": 655.2,
+   "transient_max_V": 680.4000000000001,
+   "dis_120kW_gate_C_over_SOC_40_90": -1.5,
+   "chg_110kW_gate_C_over_SOC_15_85": 4.5,
+   "I_120kW_warm_A": 244.65225810605435,
+   "V_bus_120kW_warm_V": 490.4921006205518,
+   "I_120kW_at_gate_A": 314.2319353510674,
+   "V_bus_120kW_at_gate_V": 381.88352773862124,
+   "note": "every voltage member scales x252/288 = 0.875; per-cell power rises x288/252 so the availability gates MOVE WARMER (-1.5 C discharge / +4.5 C charge, vs -5.5 / +0.0 at 288s) and warm full-power current rises to 245 A. Do not linearly interpolate the 288s figures."
+  }
+ },
+ "chemistry_trade": {
+  "LTO-23": {
+   "series": 288,
+   "parallel": 1,
+   "nameplate_kWh": 15.235199999999999,
+   "cell_mass_kg": 158.4,
+   "pack_mass_kg": 280.52,
+   "pack_volume_L": 185.472,
+   "chg_cont_at_minus10C_kW_bus": 66.98506752000002,
+   "chg_cont_at_45C_kW_bus": 129.14362368,
+   "covers_full_regen_cold": true,
+   "covers_descent_cold": true,
+   "nameplate_needed_to_cover_regen_at_minus10C_kWh": 15.235199999999999,
+   "efc100": 20000.0,
+   "cal_life_45C_yr": 14.0,
+   "thermal_runaway": "class 1 (no plating, oxide anode, onset >260 C)"
+  },
+  "LFP-P-20": {
+   "series": 204,
+   "parallel": 1,
+   "nameplate_kWh": 13.1274,
+   "cell_mass_kg": 102.0,
+   "pack_mass_kg": 193.1,
+   "pack_volume_L": 124.338,
+   "chg_cont_at_minus10C_kW_bus": 3.9859727075999993,
+   "chg_cont_at_45C_kW_bus": 54.40853808,
+   "covers_full_regen_cold": false,
+   "covers_descent_cold": false,
+   "nameplate_needed_to_cover_regen_at_minus10C_kWh": 213.8144031731604,
+   "efc100": 3500.0,
+   "cal_life_45C_yr": 8.0,
+   "thermal_runaway": "class 2 (no O2-releasing cathode; graphite plates when cold-charged)"
+  },
+  "NMC-P-40": {
+   "series": 180,
+   "parallel": 1,
+   "nameplate_kWh": 26.28,
+   "cell_mass_kg": 198.00000000000003,
+   "pack_mass_kg": 341.90000000000003,
+   "pack_volume_L": 227.70000000000002,
+   "chg_cont_at_minus10C_kW_bus": 13.356,
+   "chg_cont_at_45C_kW_bus": 109.0368,
+   "covers_full_regen_cold": false,
+   "covers_descent_cold": false,
+   "nameplate_needed_to_cover_regen_at_minus10C_kWh": 127.74429380053908,
+   "efc100": 3000.0,
+   "cal_life_45C_yr": 5.0,
+   "thermal_runaway": "class 3 (O2-releasing cathode, onset ~180-210 C)"
+  },
+  "hybrid_SC_note": {
+   "sc_usable_wh_per_cell": 2.53828125,
+   "target_buffer_kWh": 0.8709806056115929,
+   "n_cells": 344,
+   "sc_bank_mass_kg": 175.44,
+   "sc_bank_volume_L": 163.4,
+   "dcdc_mass_kg": 42.0,
+   "verdict": "bank covering only the 5-min swing already outweighs the entire LTO-23 cell stack; battery still needed for the floors and the 50 kW continuous descent charge - rejected"
+  }
+ },
+ "descent_thermal": {
+  "rows_45C": {
+   "25kmh": {
+    "retardation_kW_wheel": 22.04576763453552,
+    "regen_at_bus_kW": 19.08343374594771,
+    "duration_s": 1440.0,
+    "E_battery_kWh": 5.3933767814616935,
+    "E_resistor_kWh": 2.239996716917452,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 19.08343374594771,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 45.68018959262105,
+    "t_cell_end_C": 45.43904398877221,
+    "t_soc_ceiling_s": 1017.0
+   },
+   "35kmh": {
+    "retardation_kW_wheel": 29.72981542909046,
+    "regen_at_bus_kW": 25.734960670252715,
+    "duration_s": 1028.5714285714287,
+    "E_battery_kWh": 5.414276457672749,
+    "E_resistor_kWh": 1.9416331339078068,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 25.734960670252715,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.02465978745058,
+    "t_cell_end_C": 45.77333671219354,
+    "t_soc_ceiling_s": 757.0
+   },
+   "40kmh": {
+    "retardation_kW_wheel": 33.16674673377534,
+    "regen_at_bus_kW": 28.710064641664477,
+    "duration_s": 900.0,
+    "E_battery_kWh": 5.423585421059169,
+    "E_resistor_kWh": 1.753930739356936,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 28.710064641664477,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.18228093991598,
+    "t_cell_end_C": 45.94140250883966,
+    "t_soc_ceiling_s": 680.0
+   },
+   "50kmh": {
+    "retardation_kW_wheel": 39.027877861663626,
+    "regen_at_bus_kW": 33.78362385763616,
+    "duration_s": 720.0,
+    "E_battery_kWh": 5.439309846640487,
+    "E_resistor_kWh": 1.3174149248867217,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 33.78362385763616,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.451882416999354,
+    "t_cell_end_C": 46.255709973652024,
+    "t_soc_ceiling_s": 579.0
+   },
+   "60kmh": {
+    "retardation_kW_wheel": 43.26863861918153,
+    "regen_at_bus_kW": 37.454545110644865,
+    "duration_s": 600.0,
+    "E_battery_kWh": 5.4506652076258595,
+    "E_resistor_kWh": 0.7917589774816436,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 37.454545110644865,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.649207055077724,
+    "t_cell_end_C": 46.524378270518156,
+    "t_soc_ceiling_s": 523.0
+   },
+   "70kmh": {
+    "retardation_kW_wheel": 45.564954932255,
+    "regen_at_bus_kW": 39.44230080809803,
+    "duration_s": 514.2857142857143,
+    "E_battery_kWh": 5.456794793479089,
+    "E_resistor_kWh": 0.18564546101272894,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 39.44230080809803,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.75647264550282,
+    "t_cell_end_C": 46.72583336315607,
+    "t_soc_ceiling_s": 498.0
+   },
+   "85kmh": {
+    "retardation_kW_wheel": 44.654684031494824,
+    "regen_at_bus_kW": 38.6543448288148,
+    "duration_s": 423.5294117647059,
+    "E_battery_kWh": 4.5526228353937235,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.8421229017893819,
+    "t_cell_peak_C": 46.4917500689045,
+    "t_cell_end_C": 46.4917500689045,
+    "t_soc_ceiling_s": null
+   },
+   "100kmh": {
+    "retardation_kW_wheel": 37.54649646406799,
+    "regen_at_bus_kW": 32.50129864119825,
+    "duration_s": 360.0,
+    "E_battery_kWh": 3.2501298641198044,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.7592339421127469,
+    "t_cell_peak_C": 45.941650593334,
+    "t_cell_end_C": 45.941650593334,
+    "t_soc_ceiling_s": null
+   }
+  },
+  "rows_minus10C": {
+   "25kmh": {
+    "retardation_kW_wheel": 22.04576763453552,
+    "regen_at_bus_kW": 19.08343374594771,
+    "duration_s": 1440.0,
+    "E_battery_kWh": 5.509692444024588,
+    "E_resistor_kWh": 2.1236810543545523,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 19.08343374594771,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -8.050200254779469,
+    "t_cell_end_C": -8.71255435276567,
+    "t_soc_ceiling_s": 1039.0
+   },
+   "35kmh": {
+    "retardation_kW_wheel": 29.72981542909046,
+    "regen_at_bus_kW": 25.734960670252715,
+    "duration_s": 1028.5714285714287,
+    "E_battery_kWh": 5.5658066801315655,
+    "E_resistor_kWh": 1.7901029114489837,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 25.734960670252715,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -7.121930752927443,
+    "t_cell_end_C": -7.77935619904049,
+    "t_soc_ceiling_s": 778.0
+   },
+   "40kmh": {
+    "retardation_kW_wheel": 33.16674673377534,
+    "regen_at_bus_kW": 28.710064641664477,
+    "duration_s": 900.0,
+    "E_battery_kWh": 5.590104302373327,
+    "E_resistor_kWh": 1.5874118580427823,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 28.710064641664477,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -6.7081346221689095,
+    "t_cell_end_C": -7.32121094468415,
+    "t_soc_ceiling_s": 700.0
+   },
+   "50kmh": {
+    "retardation_kW_wheel": 39.027877861663626,
+    "regen_at_bus_kW": 33.78362385763616,
+    "duration_s": 720.0,
+    "E_battery_kWh": 5.6303300363378455,
+    "E_resistor_kWh": 1.1263947351893637,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 33.78362385763616,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -6.012409772211851,
+    "t_cell_end_C": -6.4784023186855295,
+    "t_soc_ceiling_s": 599.0
+   },
+   "60kmh": {
+    "retardation_kW_wheel": 43.26863861918153,
+    "regen_at_bus_kW": 37.454545110644865,
+    "duration_s": 600.0,
+    "E_battery_kWh": 5.658546198464209,
+    "E_resistor_kWh": 0.5838779866433047,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 37.454545110644865,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -5.518905618945138,
+    "t_cell_end_C": -5.7713812765871975,
+    "t_soc_ceiling_s": 543.0
+   },
+   "70kmh": {
+    "retardation_kW_wheel": 45.564954932255,
+    "regen_at_bus_kW": 39.44230080809803,
+    "duration_s": 514.2857142857143,
+    "E_battery_kWh": 5.642440254491818,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.8980677150044724,
+    "t_cell_peak_C": -5.27040771255849,
+    "t_cell_end_C": -5.27040771255849,
+    "t_soc_ceiling_s": null
+   },
+   "85kmh": {
+    "retardation_kW_wheel": 44.654684031494824,
+    "regen_at_bus_kW": 38.6543448288148,
+    "duration_s": 423.5294117647059,
+    "E_battery_kWh": 4.5526228353937235,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.8309131227220582,
+    "t_cell_peak_C": -6.025445570607763,
+    "t_cell_end_C": -6.025445570607763,
+    "t_soc_ceiling_s": null
+   },
+   "100kmh": {
+    "retardation_kW_wheel": 37.54649646406799,
+    "regen_at_bus_kW": 32.50129864119825,
+    "duration_s": 360.0,
+    "E_battery_kWh": 3.2501298641198044,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.7520498210023698,
+    "t_cell_peak_C": -7.411350930662562,
+    "t_cell_end_C": -7.411350930662562,
+    "t_soc_ceiling_s": null
+   }
+  },
+  "rows_45C_payload120": {
+   "25kmh": {
+    "retardation_kW_wheel": 24.057287651315317,
+    "regen_at_bus_kW": 20.824661795032775,
+    "duration_s": 1440.0,
+    "E_battery_kWh": 5.398868609926002,
+    "E_resistor_kWh": 2.930996108087139,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 20.824661795032775,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 45.769096052912445,
+    "t_cell_end_C": 45.455006755004824,
+    "t_soc_ceiling_s": 933.0
+   },
+   "35kmh": {
+    "retardation_kW_wheel": 32.54594345258218,
+    "regen_at_bus_kW": 28.172679938971804,
+    "duration_s": 1028.5714285714287,
+    "E_battery_kWh": 5.421898318487736,
+    "E_resistor_kWh": 2.6307926974017497,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 28.172679938971804,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.15327800683619,
+    "t_cell_end_C": 45.81434858679784,
+    "t_soc_ceiling_s": 692.0
+   },
+   "40kmh": {
+    "retardation_kW_wheel": 36.38517876062302,
+    "regen_at_bus_kW": 31.496029520200583,
+    "duration_s": 900.0,
+    "E_battery_kWh": 5.432244376127952,
+    "E_resistor_kWh": 2.4417630039222353,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 31.496029520200583,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.33027275783001,
+    "t_cell_end_C": 45.996446999822005,
+    "t_soc_ceiling_s": 620.0
+   },
+   "50kmh": {
+    "retardation_kW_wheel": 43.05091789522322,
+    "regen_at_bus_kW": 37.26607995580628,
+    "duration_s": 720.0,
+    "E_battery_kWh": 5.450054408850484,
+    "E_resistor_kWh": 2.0031615823107822,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 37.26607995580628,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.63858247268112,
+    "t_cell_end_C": 46.341126661692776,
+    "t_soc_ceiling_s": 526.0
+   },
+   "60kmh": {
+    "retardation_kW_wheel": 48.09628665945305,
+    "regen_at_bus_kW": 41.63349242844902,
+    "duration_s": 600.0,
+    "E_battery_kWh": 5.463462819900525,
+    "E_resistor_kWh": 1.4754525848410058,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 41.63349242844902,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 46.873068209478184,
+    "t_cell_end_C": 46.641304708004746,
+    "t_soc_ceiling_s": 472.0
+   },
+   "70kmh": {
+    "retardation_kW_wheel": 51.197210979238434,
+    "regen_at_bus_kW": 44.317739345536204,
+    "duration_s": 514.2857142857143,
+    "E_battery_kWh": 5.4716619364623735,
+    "E_resistor_kWh": 0.8682368865795783,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 44.317739345536204,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": 47.01693570176444,
+    "t_cell_end_C": 46.875128344796934,
+    "t_soc_ceiling_s": 444.0
+   },
+   "85kmh": {
+    "retardation_kW_wheel": 51.49385208854614,
+    "regen_at_bus_kW": 44.57452019570402,
+    "duration_s": 423.5294117647059,
+    "E_battery_kWh": 5.2498879341606886,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.885759899077642,
+    "t_cell_peak_C": 46.96670094573692,
+    "t_cell_end_C": 46.96670094573692,
+    "t_soc_ceiling_s": null
+   },
+   "100kmh": {
+    "retardation_kW_wheel": 45.59257653118718,
+    "regen_at_bus_kW": 39.46621083753849,
+    "duration_s": 360.0,
+    "E_battery_kWh": 3.946621083753876,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.8030974018405497,
+    "t_cell_peak_C": 46.36680497657041,
+    "t_cell_end_C": 46.36680497657041,
+    "t_soc_ceiling_s": null
+   }
+  },
+  "rows_minus10C_payload120": {
+   "25kmh": {
+    "retardation_kW_wheel": 24.057287651315317,
+    "regen_at_bus_kW": 20.824661795032775,
+    "duration_s": 1440.0,
+    "E_battery_kWh": 5.524682465471024,
+    "E_resistor_kWh": 2.8051822525421066,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 20.824661795032775,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -7.806940634342428,
+    "t_cell_end_C": -8.672870308707662,
+    "t_soc_ceiling_s": 955.0
+   },
+   "35kmh": {
+    "retardation_kW_wheel": 32.54594345258218,
+    "regen_at_bus_kW": 28.172679938971804,
+    "duration_s": 1028.5714285714287,
+    "E_battery_kWh": 5.5857259202714395,
+    "E_resistor_kWh": 2.4669650956180447,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 28.172679938971804,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -6.783757962161684,
+    "t_cell_end_C": -7.679023555082712,
+    "t_soc_ceiling_s": 713.0
+   },
+   "40kmh": {
+    "retardation_kW_wheel": 36.38517876062302,
+    "regen_at_bus_kW": 31.496029520200583,
+    "duration_s": 900.0,
+    "E_battery_kWh": 5.612303102433698,
+    "E_resistor_kWh": 2.2617042776164986,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 31.496029520200583,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -6.325415782118513,
+    "t_cell_end_C": -7.188548197820578,
+    "t_soc_ceiling_s": 641.0
+   },
+   "50kmh": {
+    "retardation_kW_wheel": 43.05091789522322,
+    "regen_at_bus_kW": 37.26607995580628,
+    "duration_s": 720.0,
+    "E_battery_kWh": 5.657059753006343,
+    "E_resistor_kWh": 1.7961562381549159,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 37.26607995580628,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -5.544647858024815,
+    "t_cell_end_C": -6.277292188065606,
+    "t_soc_ceiling_s": 546.0
+   },
+   "60kmh": {
+    "retardation_kW_wheel": 48.09628665945305,
+    "regen_at_bus_kW": 41.63349242844902,
+    "duration_s": 600.0,
+    "E_battery_kWh": 5.689919155445406,
+    "E_resistor_kWh": 1.248996249296122,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 41.63349242844902,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -4.964738633967233,
+    "t_cell_end_C": -5.497538823894934,
+    "t_soc_ceiling_s": 491.0
+   },
+   "70kmh": {
+    "retardation_kW_wheel": 51.197210979238434,
+    "regen_at_bus_kW": 44.317739345536204,
+    "duration_s": 514.2857142857143,
+    "E_battery_kWh": 5.709512937685518,
+    "E_resistor_kWh": 0.6303858853564306,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 44.317739345536204,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.9,
+    "t_cell_peak_C": -4.6181581388583535,
+    "t_cell_end_C": -4.895018219119804,
+    "t_soc_ceiling_s": 463.0
+   },
+   "85kmh": {
+    "retardation_kW_wheel": 51.49385208854614,
+    "regen_at_bus_kW": 44.57452019570402,
+    "duration_s": 423.5294117647059,
+    "E_battery_kWh": 5.2498879341606886,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.8715899203316783,
+    "t_cell_peak_C": -4.899698774251189,
+    "t_cell_end_C": -4.899698774251189,
+    "t_soc_ceiling_s": null
+   },
+   "100kmh": {
+    "retardation_kW_wheel": 45.59257653118718,
+    "regen_at_bus_kW": 39.46621083753849,
+    "duration_s": 360.0,
+    "E_battery_kWh": 3.946621083753876,
+    "E_resistor_kWh": 0.0,
+    "E_friction_kWh": 0.0,
+    "resistor_peak_kW": 0.0,
+    "resistor_rating_kW": 50.0,
+    "soc_end": 0.793085837539137,
+    "t_cell_peak_C": -6.341794033236334,
+    "t_cell_end_C": -6.341794033236334,
+    "t_soc_ceiling_s": null
+   }
+  },
+  "resistor_bound": {
+   "rating_bus_kW": 50.0,
+   "max_resistor_kW_gvw": 39.44230080809803,
+   "max_resistor_kW_payload120": 44.317739345536204,
+   "margin_at_payload120_kW": 5.682260654463796,
+   "friction_kWh_max_any_row": 0.0,
+   "payload120_mass_kg": 7180.0,
+   "worst_payload120_row": "70kmh",
+   "note": "R2 blend order with the resistor RATING enforced as a hard cap; overflow lands in the friction column and is reported, not assumed zero. Friction stays 0.00 kWh on every row - GVW and +20% payload, +45 C and -10 C (WS3-r1-F6)."
+  },
+  "literal_50kW_24min_45C": {
+   "p_term_kW": 50.0,
+   "duration_s": 1440.0,
+   "c_rate": 3.281873555975636,
+   "heat_avg_kW": 1.4192973279755245,
+   "heat_end_kW": 1.409642715950739,
+   "t_cell_end_C": 50.33064573618011,
+   "t_cell_peak_C": 50.33064573618011,
+   "t_steady_C": 51.84683604890359,
+   "margin_to_55C": 4.669354263819891,
+   "soc_ceiling_hit_s": 384.0
+  }
+ },
+ "preconditioning": {
+  "heater_kW": 8.0,
+  "ambient_C": -10.0,
+  "start_C": -10.0,
+  "time_to_0C_s": 250.0,
+  "time_to_10C_s": 500.0,
+  "time_to_15C_s": 625.0,
+  "energy_to_10C_kWh": 1.1111111111111112,
+  "energy_to_15C_kWh": 1.3888888888888888,
+  "genset_fuel_note": "heater fed from genset at the bus; 1.11 kWh electrical per -10 C cold start to +10 C (1.39 kWh to +15 C)",
+  "self_heat_credit_kW_at_minus10": 0.885986567883309
+ },
+ "duty_ensemble": {
+  "V1_const_genset": {
+   "peak_dis_kW": {
+    "min": 66.91172699109657,
+    "max": 74.4452652205363,
+    "mean": 70.28685221184534
+   },
+   "peak_chg_kW": {
+    "min": 72.87893670043945,
+    "max": 73.05727379760742,
+    "mean": 72.98193352661133
+   },
+   "peak_c_dis": {
+    "min": 4.694935881884489,
+    "max": 5.288874878244144,
+    "mean": 4.962595235152295
+   },
+   "peak_c_chg": {
+    "min": 4.6365010919324945,
+    "max": 4.657118058145835,
+    "mean": 4.647348785270385
+   },
+   "heat_avg_kW": {
+    "min": 0.32290316665495894,
+    "max": 0.34287587431810723,
+    "mean": 0.3312543549582453
+   },
+   "heat_peak_kW": {
+    "min": 3.6940279408935193,
+    "max": 4.687782253138494,
+    "mean": 4.133195599194534
+   },
+   "eta_roundtrip": {
+    "min": 0.9539354139107462,
+    "max": 0.9559065173854251,
+    "mean": 0.9549710298037903
+   },
+   "rainflow_cycles_per_trace": {
+    "min": 63.5,
+    "max": 85.5,
+    "mean": 74.375
+   },
+   "damage_per_trace": {
+    "min": 2.2638010888706538e-05,
+    "max": 2.3139009042726176e-05,
+    "mean": 2.289660587450985e-05
+   },
+   "throughput_kWh_per_trace": {
+    "min": 13.805756595130907,
+    "max": 14.110920473507278,
+    "mean": 13.963089095983403
+   },
+   "N3_kWh": {
+    "min": 0.709356004132938,
+    "max": 0.8709806056115929,
+    "mean": 0.8040697356632411
+   }
+  },
+  "V1_startstop": {
+   "peak_dis_kW": {
+    "min": 74.82301992180288,
+    "max": 84.50605242146403,
+    "mean": 79.99911899597735
+   },
+   "peak_chg_kW": {
+    "min": 97.9221,
+    "max": 97.9221,
+    "mean": 97.9221
+   },
+   "peak_c_dis": {
+    "min": 5.327354708078455,
+    "max": 6.01503179835786,
+    "mean": 5.671801131071932
+   },
+   "peak_c_chg": {
+    "min": 6.160846910946765,
+    "max": 6.1712777828774055,
+    "mean": 6.16823944661709
+   },
+   "heat_avg_kW": {
+    "min": 0.488653158949735,
+    "max": 0.57002075444902,
+    "mean": 0.5384171737035024
+   },
+   "heat_peak_kW": {
+    "min": 6.3856047290556095,
+    "max": 6.424021160940309,
+    "mean": 6.412826083004621
+   },
+   "eta_roundtrip": {
+    "min": 0.9456602929753539,
+    "max": 0.9473034695520076,
+    "mean": 0.9468220640209493
+   },
+   "rainflow_cycles_per_trace": {
+    "min": 30.0,
+    "max": 31.5,
+    "mean": 30.375
+   },
+   "damage_per_trace": {
+    "min": 2.8747024946332866e-05,
+    "max": 3.324599784070743e-05,
+    "mean": 3.1364460666459636e-05
+   },
+   "throughput_kWh_per_trace": {
+    "min": 17.495383041028266,
+    "max": 20.295550697803215,
+    "mean": 19.121801919774185
+   },
+   "starts_per_h": {
+    "min": 2.056555269922879,
+    "max": 3.098906774554532,
+    "mean": 2.8342420450802805
+   }
+  },
+  "V2_iMMD": {
+   "peak_dis_kW": {
+    "min": 90.73292917791906,
+    "max": 124.55075213522692,
+    "mean": 108.14522293656057
+   },
+   "peak_chg_kW": {
+    "min": 71.94147484741211,
+    "max": 72.73970025024414,
+    "mean": 72.43273632965088
+   },
+   "peak_c_dis": {
+    "min": 6.55791094524519,
+    "max": 9.273962511157436,
+    "mean": 7.941418177496354
+   },
+   "peak_c_chg": {
+    "min": 4.584318459662859,
+    "max": 4.631034960451889,
+    "mean": 4.613065255166873
+   },
+   "heat_avg_kW": {
+    "min": 0.2776312786642718,
+    "max": 0.30107152335147,
+    "mean": 0.28911336661069165
+   },
+   "heat_peak_kW": {
+    "min": 7.207287964554132,
+    "max": 14.413568516667626,
+    "mean": 10.717506946995938
+   },
+   "eta_roundtrip": {
+    "min": 0.9519778720625753,
+    "max": 0.9549095931573953,
+    "mean": 0.9536545523973942
+   },
+   "rainflow_cycles_per_trace": {
+    "min": 464.5,
+    "max": 559.5,
+    "mean": 508.125
+   },
+   "damage_per_trace": {
+    "min": 3.4858673989008813e-05,
+    "max": 3.759799486195452e-05,
+    "mean": 3.662031238540174e-05
+   },
+   "throughput_kWh_per_trace": {
+    "min": 21.266329990141656,
+    "max": 22.936108691015164,
+    "mean": 22.33974763184549
+   },
+   "N3_kWh": {
+    "min": 1.136029335020077,
+    "max": 1.3671601809923797,
+    "mean": 1.280145037059182
+   }
+  },
+  "_seeds": {
+   "VOLT_SUB": [
+    11,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "VOLT_REG": [
+    23,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  "_per_seed": {
+   "V1_const_genset": [
+    {
+     "seed": 11,
+     "dur_h": 0.9680833333333334,
+     "N3_kWh": 0.709356004132938,
+     "fatigue": {
+      "n_cycles": 63.5,
+      "damage": 2.288963256430449e-05,
+      "depth_bins": {
+       "<0.5%": 40.5,
+       "0.5-1%": 2.0,
+       "1-2%": 13.5,
+       "2-5%": 6.5,
+       "5-10%": 1.0,
+       "10-20%": 0.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.8764083695901626,
+     "stats": {
+      "peak_dis_kW": 69.70329201305672,
+      "peak_chg_kW": 73.03629296264648,
+      "peak_c_dis": 4.922997710757412,
+      "peak_c_chg": 4.649548034755586,
+      "rms_c": 1.4028568918752224,
+      "heat_avg_kW": 0.329812859646635,
+      "heat_peak_kW": 4.061627703113879,
+      "E_loss_kWh": 0.319295494011237,
+      "throughput_kWh": 13.959004965374122,
+      "eta_oneway_dis": 0.976414905451713,
+      "eta_oneway_chg": 0.9783313953802176,
+      "eta_roundtrip": 0.9552573569206178,
+      "v_cell_min": 2.137486262653083,
+      "v_cell_max": 2.385821684543994
+     }
+    },
+    {
+     "seed": 3,
+     "dur_h": 0.9725,
+     "N3_kWh": 0.8576743095472755,
+     "fatigue": {
+      "n_cycles": 74.5,
+      "damage": 2.2878247060277378e-05,
+      "depth_bins": {
+       "<0.5%": 51.5,
+       "0.5-1%": 1.0,
+       "1-2%": 18.0,
+       "2-5%": 3.0,
+       "5-10%": 0.0,
+       "10-20%": 1.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.8565364991480131,
+     "stats": {
+      "peak_dis_kW": 68.38658475818795,
+      "peak_chg_kW": 72.9781188293457,
+      "peak_c_dis": 4.845632681532273,
+      "peak_c_chg": 4.657118058145835,
+      "rms_c": 1.388911223798328,
+      "heat_avg_kW": 0.3232965506275142,
+      "heat_peak_kW": 3.9349736137364397,
+      "E_loss_kWh": 0.31441487594499706,
+      "throughput_kWh": 13.952269257644154,
+      "eta_oneway_dis": 0.9768738969846276,
+      "eta_oneway_chg": 0.9785362474481879,
+      "eta_roundtrip": 0.9559065173854251,
+      "v_cell_min": 2.1305910677073863,
+      "v_cell_max": 2.3972687454335824
+     }
+    },
+    {
+     "seed": 4,
+     "dur_h": 0.9697777777777778,
+     "N3_kWh": 0.7386705759719782,
+     "fatigue": {
+      "n_cycles": 70.5,
+      "damage": 2.3054450984117763e-05,
+      "depth_bins": {
+       "<0.5%": 47.5,
+       "0.5-1%": 1.0,
+       "1-2%": 17.5,
+       "2-5%": 4.0,
+       "5-10%": 0.5,
+       "10-20%": 0.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.9125421095685913,
+     "stats": {
+      "peak_dis_kW": 72.30654130204898,
+      "peak_chg_kW": 72.97525780639648,
+      "peak_c_dis": 5.115146022566018,
+      "peak_c_chg": 4.646536337861991,
+      "rms_c": 1.4208628435198796,
+      "heat_avg_kW": 0.3383336231923715,
+      "heat_peak_kW": 4.384871967871135,
+      "E_loss_kWh": 0.32811782740320194,
+      "throughput_kWh": 14.059353153757389,
+      "eta_oneway_dis": 0.9749332913428853,
+      "eta_oneway_chg": 0.978894731874313,
+      "eta_roundtrip": 0.9543570628244352,
+      "v_cell_min": 2.134023650490776,
+      "v_cell_max": 2.3880338818267184
+     }
+    },
+    {
+     "seed": 5,
+     "dur_h": 0.9687222222222223,
+     "N3_kWh": 0.8441016507573101,
+     "fatigue": {
+      "n_cycles": 68.5,
+      "damage": 2.295924883160436e-05,
+      "depth_bins": {
+       "<0.5%": 44.5,
+       "0.5-1%": 4.0,
+       "1-2%": 13.0,
+       "2-5%": 5.5,
+       "5-10%": 1.5,
+       "10-20%": 0.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.8829823583330695,
+     "stats": {
+      "peak_dis_kW": 71.60879041163528,
+      "peak_chg_kW": 73.05727379760742,
+      "peak_c_dis": 5.045086123880692,
+      "peak_c_chg": 4.647906365896963,
+      "rms_c": 1.4038317820274475,
+      "heat_avg_kW": 0.33027141394680354,
+      "heat_peak_kW": 4.265579236916633,
+      "E_loss_kWh": 0.3199504322609659,
+      "throughput_kWh": 14.000957594049925,
+      "eta_oneway_dis": 0.9760556248163292,
+      "eta_oneway_chg": 0.9787283508718693,
+      "eta_roundtrip": 0.9552933120356979,
+      "v_cell_min": 2.141322259697342,
+      "v_cell_max": 2.389146290307737
+     }
+    },
+    {
+     "seed": 6,
+     "dur_h": 0.9707777777777779,
+     "N3_kWh": 0.7168021504335815,
+     "fatigue": {
+      "n_cycles": 82.5,
+      "damage": 2.2806306686374513e-05,
+      "depth_bins": {
+       "<0.5%": 59.5,
+       "0.5-1%": 1.0,
+       "1-2%": 16.5,
+       "2-5%": 4.5,
+       "5-10%": 1.0,
+       "10-20%": 0.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.8869231599110147,
+     "stats": {
+      "peak_dis_kW": 67.40356558251513,
+      "peak_chg_kW": 72.94378655395508,
+      "peak_c_dis": 4.732789128411576,
+      "peak_c_chg": 4.6446155073612125,
+      "rms_c": 1.4069548479501133,
+      "heat_avg_kW": 0.3317425399620614,
+      "heat_peak_kW": 3.753834784790656,
+      "E_loss_kWh": 0.3220575008092801,
+      "throughput_kWh": 13.907903220323485,
+      "eta_oneway_dis": 0.975619280479002,
+      "eta_oneway_chg": 0.9785686577154046,
+      "eta_roundtrip": 0.9547104497396058,
+      "v_cell_min": 2.1460378320189326,
+      "v_cell_max": 2.388721972508503
+     }
+    },
+    {
+     "seed": 7,
+     "dur_h": 0.9683611111111112,
+     "N3_kWh": 0.8709806056115929,
+     "fatigue": {
+      "n_cycles": 85.5,
+      "damage": 2.2638010888706538e-05,
+      "depth_bins": {
+       "<0.5%": 62.5,
+       "0.5-1%": 1.0,
+       "1-2%": 16.0,
+       "2-5%": 4.5,
+       "5-10%": 1.5,
+       "10-20%": 0.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.8862246198067898,
+     "stats": {
+      "peak_dis_kW": 71.52905141568583,
+      "peak_chg_kW": 73.00291436157227,
+      "peak_c_dis": 5.0552994539417595,
+      "peak_c_chg": 4.6471955728809675,
+      "rms_c": 1.4049521966705112,
+      "heat_avg_kW": 0.3307988113175107,
+      "heat_peak_kW": 4.2828672930955145,
+      "E_loss_kWh": 0.3203418933375295,
+      "throughput_kWh": 13.805756595130907,
+      "eta_oneway_dis": 0.9754986776539332,
+      "eta_oneway_chg": 0.9785967050589454,
+      "eta_roundtrip": 0.9546197917414972,
+      "v_cell_min": 2.134264823866457,
+      "v_cell_max": 2.389753542951357
+     }
+    },
+    {
+     "seed": 8,
+     "dur_h": 0.9695555555555556,
+     "N3_kWh": 0.8348751097702719,
+     "fatigue": {
+      "n_cycles": 74.5,
+      "damage": 2.3139009042726176e-05,
+      "depth_bins": {
+       "<0.5%": 49.5,
+       "0.5-1%": 3.0,
+       "1-2%": 16.0,
+       "2-5%": 4.5,
+       "5-10%": 1.5,
+       "10-20%": 0.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.9243686080452482,
+     "stats": {
+      "peak_dis_kW": 74.4452652205363,
+      "peak_chg_kW": 72.98288720092773,
+      "peak_c_dis": 5.288874878244144,
+      "peak_c_chg": 4.64936931332803,
+      "rms_c": 1.4303688430271921,
+      "heat_avg_kW": 0.34287587431810723,
+      "heat_peak_kW": 4.687782253138494,
+      "E_loss_kWh": 0.3324467331409315,
+      "throughput_kWh": 14.110920473507278,
+      "eta_oneway_dis": 0.9747359623445262,
+      "eta_oneway_chg": 0.9786603252189972,
+      "eta_roundtrip": 0.9539354139107462,
+      "v_cell_min": 2.1249732380311483,
+      "v_cell_max": 2.390994824078795
+     }
+    },
+    {
+     "seed": 9,
+     "dur_h": 0.9753888888888889,
+     "N3_kWh": 0.8600974790809812,
+     "fatigue": {
+      "n_cycles": 75.5,
+      "damage": 2.2807940937967597e-05,
+      "depth_bins": {
+       "<0.5%": 51.5,
+       "0.5-1%": 4.0,
+       "1-2%": 14.0,
+       "2-5%": 4.0,
+       "5-10%": 2.0,
+       "10-20%": 0.0,
+       ">20%": 0.0
+      }
+     },
+     "heat_avg_cold_kW": 0.8619068186635835,
+     "stats": {
+      "peak_dis_kW": 66.91172699109657,
+      "peak_chg_kW": 72.87893670043945,
+      "peak_c_dis": 4.694935881884489,
+      "peak_c_chg": 4.6365010919324945,
+      "rms_c": 1.3880839402085579,
+      "heat_avg_kW": 0.32290316665495894,
+      "heat_peak_kW": 3.6940279408935193,
+      "E_loss_kWh": 0.3149651304746912,
+      "throughput_kWh": 13.908547508079963,
+      "eta_oneway_dis": 0.9762980738320645,
+      "eta_oneway_chg": 0.9788899102516178,
+      "eta_roundtrip": 0.9556883338722969,
+      "v_cell_min": 2.142075221769887,
+      "v_cell_max": 2.385691080580231
+     }
+    }
+   ],
+   "V1_startstop": [
+    {
+     "seed": 11,
+     "dur_h": 0.9680833333333334,
+     "starts_per_h": 3.098906774554532,
+     "fatigue": {
+      "n_cycles": 30.0,
+      "damage": 3.103347071449893e-05,
+      "depth_bins": {
+       "<0.5%": 10.0,
+       "0.5-1%": 17.0,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 1.0,
+       "10-20%": 1.0,
+       ">20%": 1.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 79.63918325053594,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 5.58235449917214,
+      "peak_c_chg": 6.1703873623885155,
+      "rms_c": 1.7770015492568316,
+      "heat_avg_kW": 0.5298044742294471,
+      "heat_peak_kW": 6.420737793422189,
+      "E_loss_kWh": 0.5129095982179083,
+      "throughput_kWh": 18.90273066051755,
+      "eta_oneway_dis": 0.9753604517661729,
+      "eta_oneway_chg": 0.970989689268654,
+      "eta_roundtrip": 0.9470649419853703,
+      "v_cell_min": 2.108589655892299,
+      "v_cell_max": 2.4478347657399007
+     }
+    },
+    {
+     "seed": 3,
+     "dur_h": 0.9725,
+     "starts_per_h": 2.056555269922879,
+     "fatigue": {
+      "n_cycles": 31.5,
+      "damage": 2.8747024946332866e-05,
+      "depth_bins": {
+       "<0.5%": 11.5,
+       "0.5-1%": 17.5,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 0.5,
+       "10-20%": 2.0,
+       ">20%": 0.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 78.44260358753365,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 5.554701489679958,
+      "peak_c_chg": 6.160846910946765,
+      "rms_c": 1.7068443738382888,
+      "heat_avg_kW": 0.488653158949735,
+      "heat_peak_kW": 6.3856047290556095,
+      "E_loss_kWh": 0.47522877077747677,
+      "throughput_kWh": 17.495383041028266,
+      "eta_oneway_dis": 0.9742469115998436,
+      "eta_oneway_chg": 0.9720647336248263,
+      "eta_roundtrip": 0.9470310646091116,
+      "v_cell_min": 2.107872325258054,
+      "v_cell_max": 2.4389634484509943
+     }
+    },
+    {
+     "seed": 4,
+     "dur_h": 0.9697777777777778,
+     "starts_per_h": 3.0934922089825845,
+     "fatigue": {
+      "n_cycles": 30.0,
+      "damage": 3.177649160002955e-05,
+      "depth_bins": {
+       "<0.5%": 10.0,
+       "0.5-1%": 17.0,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 0.5,
+       "10-20%": 2.0,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 82.35969910844547,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 5.840001413789989,
+      "peak_c_chg": 6.1712777828774055,
+      "rms_c": 1.8130513755371893,
+      "heat_avg_kW": 0.5513126719075173,
+      "heat_peak_kW": 6.424021160940309,
+      "E_loss_kWh": 0.5346660920640878,
+      "throughput_kWh": 19.37297661324024,
+      "eta_oneway_dis": 0.9749483991959413,
+      "eta_oneway_chg": 0.9706050702535226,
+      "eta_roundtrip": 0.946289859495136,
+      "v_cell_min": 2.108356838201371,
+      "v_cell_max": 2.4403960652484837
+     }
+    },
+    {
+     "seed": 5,
+     "dur_h": 0.9687222222222223,
+     "starts_per_h": 3.0968629924872397,
+     "fatigue": {
+      "n_cycles": 30.0,
+      "damage": 3.2597109187862026e-05,
+      "depth_bins": {
+       "<0.5%": 12.0,
+       "0.5-1%": 15.0,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 0.5,
+       "10-20%": 2.5,
+       ">20%": 0.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 81.7439642092427,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 5.824615931965974,
+      "peak_c_chg": 6.169180164036627,
+      "rms_c": 1.830772552746681,
+      "heat_avg_kW": 0.5621521569860354,
+      "heat_peak_kW": 6.416287517376408,
+      "E_loss_kWh": 0.5445849020802217,
+      "throughput_kWh": 19.89572994038062,
+      "eta_oneway_dis": 0.975344744139375,
+      "eta_oneway_chg": 0.9707935114994573,
+      "eta_roundtrip": 0.9468583490856035,
+      "v_cell_min": 2.113962616359258,
+      "v_cell_max": 2.4477801097890053
+     }
+    },
+    {
+     "seed": 6,
+     "dur_h": 0.9707777777777779,
+     "starts_per_h": 2.0602037312578685,
+     "fatigue": {
+      "n_cycles": 30.5,
+      "damage": 2.8958974834550237e-05,
+      "depth_bins": {
+       "<0.5%": 11.5,
+       "0.5-1%": 16.5,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 0.5,
+       "10-20%": 1.0,
+       ">20%": 1.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 74.82301992180288,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 5.327354708078455,
+      "peak_c_chg": 6.170787563565455,
+      "rms_c": 1.7090122541525086,
+      "heat_avg_kW": 0.48996333809307807,
+      "heat_peak_kW": 6.422213417042739,
+      "E_loss_kWh": 0.47565913063930504,
+      "throughput_kWh": 17.62976535022874,
+      "eta_oneway_dis": 0.9753807598621277,
+      "eta_oneway_chg": 0.9712140207542244,
+      "eta_roundtrip": 0.9473034695520076,
+      "v_cell_min": 2.105170502313225,
+      "v_cell_max": 2.4430323827275386
+     }
+    },
+    {
+     "seed": 7,
+     "dur_h": 0.9683611111111112,
+     "starts_per_h": 3.098017842287943,
+     "fatigue": {
+      "n_cycles": 30.0,
+      "damage": 3.324599784070743e-05,
+      "depth_bins": {
+       "<0.5%": 11.0,
+       "0.5-1%": 16.0,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 0.0,
+       "10-20%": 2.0,
+       ">20%": 1.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 81.6098657772581,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 5.772538547146849,
+      "peak_c_chg": 6.170696653802506,
+      "rms_c": 1.8432761477845923,
+      "heat_avg_kW": 0.57002075444902,
+      "heat_peak_kW": 6.421878200941756,
+      "E_loss_kWh": 0.5520017650444928,
+      "throughput_kWh": 20.295550697803215,
+      "eta_oneway_dis": 0.9747210583536088,
+      "eta_oneway_chg": 0.9717079521543298,
+      "eta_roundtrip": 0.9471442035344863,
+      "v_cell_min": 2.0909042651142675,
+      "v_cell_max": 2.4497132436137985
+     }
+    },
+    {
+     "seed": 8,
+     "dur_h": 0.9695555555555556,
+     "starts_per_h": 3.094201237680495,
+     "fatigue": {
+      "n_cycles": 30.0,
+      "damage": 3.234145929823641e-05,
+      "depth_bins": {
+       "<0.5%": 13.0,
+       "0.5-1%": 14.0,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 0.5,
+       "10-20%": 2.5,
+       ">20%": 0.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 84.50605242146403,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 6.01503179835786,
+      "peak_c_chg": 6.167984641913008,
+      "rms_c": 1.8413768726468864,
+      "heat_avg_kW": 0.5687972237522627,
+      "heat_peak_kW": 6.411881634081565,
+      "E_loss_kWh": 0.5514963081964648,
+      "throughput_kWh": 19.730585064474493,
+      "eta_oneway_dis": 0.973796204974111,
+      "eta_oneway_chg": 0.9711069812605143,
+      "eta_roundtrip": 0.9456602929753539,
+      "v_cell_min": 2.1005547637843587,
+      "v_cell_max": 2.4385771275423096
+     }
+    },
+    {
+     "seed": 9,
+     "dur_h": 0.9753888888888889,
+     "starts_per_h": 3.075696303468702,
+     "fatigue": {
+      "n_cycles": 31.0,
+      "damage": 3.221515690945964e-05,
+      "depth_bins": {
+       "<0.5%": 13.0,
+       "0.5-1%": 15.0,
+       "1-2%": 0.0,
+       "2-5%": 0.0,
+       "5-10%": 0.5,
+       "10-20%": 2.0,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 76.86856369153602,
+      "peak_chg_kW": 97.9221,
+      "peak_c_dis": 5.457810660384229,
+      "peak_c_chg": 6.1647544934064396,
+      "rms_c": 1.8051756683939535,
+      "heat_avg_kW": 0.5466336112609236,
+      "heat_peak_kW": 6.399984211176388,
+      "E_loss_kWh": 0.5331955349840927,
+      "throughput_kWh": 19.651693990520364,
+      "eta_oneway_dis": 0.9749962251140517,
+      "eta_oneway_chg": 0.9715158956843372,
+      "eta_roundtrip": 0.9472243309305256,
+      "v_cell_min": 2.1058349229444446,
+      "v_cell_max": 2.4479403661635235
+     }
+    }
+   ],
+   "V2_iMMD": [
+    {
+     "seed": 23,
+     "dur_h": 1.837277777777778,
+     "N3_kWh": 1.2905648481042136,
+     "fatigue": {
+      "n_cycles": 494.5,
+      "damage": 3.7566647127783406e-05,
+      "depth_bins": {
+       "<0.5%": 466.5,
+       "0.5-1%": 5.0,
+       "1-2%": 15.0,
+       "2-5%": 6.5,
+       "5-10%": 0.5,
+       "10-20%": 0.5,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 116.68334977432674,
+      "peak_chg_kW": 72.66912835083008,
+      "peak_c_dis": 8.612262237320522,
+      "peak_c_chg": 4.631034960451889,
+      "rms_c": 1.3384767999590972,
+      "heat_avg_kW": 0.30029781366011454,
+      "heat_peak_kW": 12.43012040793879,
+      "E_loss_kWh": 0.5517388413589156,
+      "throughput_kWh": 22.91630087348495,
+      "eta_oneway_dis": 0.968893308609687,
+      "eta_oneway_chg": 0.9834787470386191,
+      "eta_roundtrip": 0.9528859771655571,
+      "v_cell_min": 2.0453673514293005,
+      "v_cell_max": 2.4150777894889894
+     }
+    },
+    {
+     "seed": 3,
+     "dur_h": 1.826027777777778,
+     "N3_kWh": 1.3145730748336706,
+     "fatigue": {
+      "n_cycles": 464.5,
+      "damage": 3.6933878290923775e-05,
+      "depth_bins": {
+       "<0.5%": 435.5,
+       "0.5-1%": 7.0,
+       "1-2%": 14.0,
+       "2-5%": 6.5,
+       "5-10%": 0.5,
+       "10-20%": 0.5,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 112.01925331642028,
+      "peak_chg_kW": 72.57280724487305,
+      "peak_c_dis": 8.24678370988998,
+      "peak_c_chg": 4.618178851553603,
+      "rms_c": 1.3105320444188826,
+      "heat_avg_kW": 0.2878626354182765,
+      "heat_peak_kW": 11.397511884219714,
+      "E_loss_kWh": 0.5256531646424069,
+      "throughput_kWh": 22.529882609354043,
+      "eta_oneway_dis": 0.9697524804183338,
+      "eta_oneway_chg": 0.9840637248325592,
+      "eta_roundtrip": 0.954298238046079,
+      "v_cell_min": 2.05060441317079,
+      "v_cell_max": 2.4129452020887925
+     }
+    },
+    {
+     "seed": 4,
+     "dur_h": 1.8260555555555555,
+     "N3_kWh": 1.3403008410993298,
+     "fatigue": {
+      "n_cycles": 495.5,
+      "damage": 3.759799486195452e-05,
+      "depth_bins": {
+       "<0.5%": 465.5,
+       "0.5-1%": 9.0,
+       "1-2%": 13.5,
+       "2-5%": 6.0,
+       "5-10%": 0.0,
+       "10-20%": 1.0,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 92.32878944190286,
+      "peak_chg_kW": 72.73970025024414,
+      "peak_c_dis": 6.662679191636764,
+      "peak_c_chg": 4.629697256618249,
+      "rms_c": 1.3132432483040024,
+      "heat_avg_kW": 0.2890584017398081,
+      "heat_peak_kW": 7.439412667624876,
+      "E_loss_kWh": 0.5278447297770347,
+      "throughput_kWh": 22.936108691015164,
+      "eta_oneway_dis": 0.9707023514314475,
+      "eta_oneway_chg": 0.983730586156752,
+      "eta_roundtrip": 0.9549095931573953,
+      "v_cell_min": 2.0915578749399737,
+      "v_cell_max": 2.4152583351846317
+     }
+    },
+    {
+     "seed": 5,
+     "dur_h": 1.8249722222222224,
+     "N3_kWh": 1.2852182190415784,
+     "fatigue": {
+      "n_cycles": 513.5,
+      "damage": 3.719943097151784e-05,
+      "depth_bins": {
+       "<0.5%": 484.5,
+       "0.5-1%": 7.0,
+       "1-2%": 14.5,
+       "2-5%": 6.0,
+       "5-10%": 0.5,
+       "10-20%": 0.5,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 119.32913851020767,
+      "peak_chg_kW": 72.56231682739258,
+      "peak_c_dis": 8.856688014250505,
+      "peak_c_chg": 4.619965597468208,
+      "rms_c": 1.340234887445607,
+      "heat_avg_kW": 0.30107152335147,
+      "heat_peak_kW": 13.145694580895364,
+      "E_loss_kWh": 0.5494555301164329,
+      "throughput_kWh": 22.69319551944172,
+      "eta_oneway_dis": 0.9683181487670546,
+      "eta_oneway_chg": 0.9837907529370133,
+      "eta_roundtrip": 0.9526224406581155,
+      "v_cell_min": 2.034018201971032,
+      "v_cell_max": 2.4141342643203494
+     }
+    },
+    {
+     "seed": 6,
+     "dur_h": 1.83075,
+     "N3_kWh": 1.3245048711599103,
+     "fatigue": {
+      "n_cycles": 504.5,
+      "damage": 3.6477861526090136e-05,
+      "depth_bins": {
+       "<0.5%": 473.5,
+       "0.5-1%": 8.0,
+       "1-2%": 16.0,
+       "2-5%": 5.5,
+       "5-10%": 0.5,
+       "10-20%": 0.5,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 108.87598395204792,
+      "peak_chg_kW": 72.42975609741211,
+      "peak_c_dis": 7.993595938412683,
+      "peak_c_chg": 4.611639849882488,
+      "rms_c": 1.3094871044992114,
+      "heat_avg_kW": 0.28740419903678394,
+      "heat_peak_kW": 10.708415853086317,
+      "E_loss_kWh": 0.5261732208365656,
+      "throughput_kWh": 22.25291907747495,
+      "eta_oneway_dis": 0.9691207091898151,
+      "eta_oneway_chg": 0.9840865615723239,
+      "eta_roundtrip": 0.9536986664551371,
+      "v_cell_min": 2.0562199924586566,
+      "v_cell_max": 2.4143132498114284
+     }
+    },
+    {
+     "seed": 7,
+     "dur_h": 1.8308333333333333,
+     "N3_kWh": 1.1828089262222967,
+     "fatigue": {
+      "n_cycles": 559.5,
+      "damage": 3.4858673989008813e-05,
+      "depth_bins": {
+       "<0.5%": 530.5,
+       "0.5-1%": 10.0,
+       "1-2%": 12.5,
+       "2-5%": 5.0,
+       "5-10%": 0.5,
+       "10-20%": 1.0,
+       ">20%": 0.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 124.55075213522692,
+      "peak_chg_kW": 71.97580712280273,
+      "peak_c_dis": 9.273962511157436,
+      "peak_c_chg": 4.584318459662859,
+      "rms_c": 1.3044030574583239,
+      "heat_avg_kW": 0.2851631614403916,
+      "heat_peak_kW": 14.413568516667626,
+      "E_loss_kWh": 0.5220941426027131,
+      "throughput_kWh": 21.266329990141656,
+      "eta_oneway_dis": 0.9674759535001548,
+      "eta_oneway_chg": 0.9839809130330215,
+      "eta_roundtrip": 0.9519778720625753,
+      "v_cell_min": 2.027499214991893,
+      "v_cell_max": 2.404537486575793
+     }
+    },
+    {
+     "seed": 8,
+     "dur_h": 1.8278611111111112,
+     "N3_kWh": 1.136029335020077,
+     "fatigue": {
+      "n_cycles": 540.5,
+      "damage": 3.5504601020599816e-05,
+      "depth_bins": {
+       "<0.5%": 510.5,
+       "0.5-1%": 7.0,
+       "1-2%": 17.5,
+       "2-5%": 4.5,
+       "5-10%": 0.0,
+       "10-20%": 1.0,
+       ">20%": 0.0
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 90.73292917791906,
+      "peak_chg_kW": 71.94147484741211,
+      "peak_c_dis": 6.55791094524519,
+      "peak_c_chg": 4.591188808366345,
+      "rms_c": 1.2870099661603935,
+      "heat_avg_kW": 0.2776312786642718,
+      "heat_peak_kW": 7.207287964554132,
+      "E_loss_kWh": 0.5074791294784371,
+      "throughput_kWh": 21.660148393205827,
+      "eta_oneway_dis": 0.970010803016636,
+      "eta_oneway_chg": 0.9836148885541344,
+      "eta_roundtrip": 0.9541170679055148,
+      "v_cell_min": 2.0887145551269937,
+      "v_cell_max": 2.4046047060995672
+     }
+    },
+    {
+     "seed": 9,
+     "dur_h": 1.8250555555555557,
+     "N3_kWh": 1.3671601809923797,
+     "fatigue": {
+      "n_cycles": 492.5,
+      "damage": 3.6823411295335595e-05,
+      "depth_bins": {
+       "<0.5%": 463.5,
+       "0.5-1%": 7.0,
+       "1-2%": 14.5,
+       "2-5%": 6.0,
+       "5-10%": 0.5,
+       "10-20%": 0.5,
+       ">20%": 0.5
+      }
+     },
+     "stats": {
+      "peak_dis_kW": 100.64158718443313,
+      "peak_chg_kW": 72.57089989624023,
+      "peak_c_dis": 7.327462872057752,
+      "peak_c_chg": 4.618498257331346,
+      "rms_c": 1.3026723760813013,
+      "heat_avg_kW": 0.28441791957441703,
+      "heat_peak_kW": 8.998043700980688,
+      "E_loss_kWh": 0.5190864047166088,
+      "throughput_kWh": 22.463095900645612,
+      "eta_oneway_dis": 0.9703364957865783,
+      "eta_oneway_chg": 0.9839128672109303,
+      "eta_roundtrip": 0.9547265637287791,
+      "v_cell_min": 2.073454189879311,
+      "v_cell_max": 2.413582200205362
+     }
+    }
+   ]
+  }
+ },
+ "life": {
+  "V1_startstop": {
+   "micro_cycles_per_year": 64921.96054015759,
+   "cycle_damage_per_year": 0.06852048761690706,
+   "cycle_life_years": 14.594175184375883,
+   "calendar_life_years_at_30C": 22.360679774997894,
+   "calendar_life_years_at_45C_bound": 13.999999999999996,
+   "combined_years_at_30C": 8.830657791427033,
+   "combined_years_at_45C_bound": 7.145457117186014
+  },
+  "V1_const_genset": {
+   "micro_cycles_per_year": 176216.7500375706,
+   "cycle_damage_per_year": 0.04768983593683233,
+   "cycle_life_years": 20.968828689713927,
+   "calendar_life_years_at_30C": 22.360679774997894,
+   "calendar_life_years_at_45C_bound": 13.999999999999996,
+   "combined_years_at_30C": 10.821199690491348,
+   "combined_years_at_45C_bound": 8.395008144563521
+  },
+  "V2_iMMD": {
+   "micro_cycles_per_year": 279750.0,
+   "cycle_damage_per_year": 0.018798997430977262,
+   "cycle_life_years": 53.19432611614625,
+   "calendar_life_years_at_30C": 22.360679774997894,
+   "calendar_life_years_at_45C_bound": 13.999999999999996,
+   "combined_years_at_30C": 15.7429845726393,
+   "combined_years_at_45C_bound": 11.083087050218916
+  }
+ },
+ "efficiency_map": {
+  "P_kW": [
+   5,
+   10,
+   20,
+   40,
+   60,
+   80,
+   100,
+   120
+  ],
+  "T_C": [
+   -10.0,
+   0.0,
+   25.0,
+   45.0
+  ],
+  "dis": [
+   [
+    0.9902259891564994,
+    0.9802531008634267,
+    0.959658657895044,
+    0.9154180587742259,
+    0.8658664310012866,
+    0.808454740782975,
+    0.7375508553749394,
+    0.6331033082505406
+   ],
+   [
+    0.9928765209869387,
+    0.9856485662290959,
+    0.9708599152197535,
+    0.9397932690725346,
+    0.9063584369522308,
+    0.869913826509653,
+    0.8294621356146514,
+    0.7832920022953708
+   ],
+   [
+    0.9962635467805961,
+    0.992498746928877,
+    0.9848814612387526,
+    0.9692761051940065,
+    0.9531336385207838,
+    0.9363944612527896,
+    0.9189870609758021,
+    0.9008243863815781
+   ],
+   [
+    0.9968258061773447,
+    0.9936312017767281,
+    0.9871791526072046,
+    0.9740116596352327,
+    0.9604677841122239,
+    0.9465132774512933,
+    0.9321083587196265,
+    0.9172063762821024
+   ]
+  ],
+  "chg": [
+   [
+    0.9905044527011104,
+    0.9813580180554348,
+    0.9640216915657459,
+    0.9326504183026916,
+    0.9048983637988339,
+    0.8800626824552377,
+    0.8576254281772406,
+    0.8371939495617591
+   ],
+   [
+    0.9930255773907931,
+    0.9862411041413162,
+    0.9732048664960207,
+    0.9490381994460815,
+    0.9270573061956074,
+    0.9069219637347328,
+    0.888365022902979,
+    0.8711728735799054
+   ],
+   [
+    0.9963049665053152,
+    0.9926638500856743,
+    0.985537606231451,
+    0.9718718124805126,
+    0.9589244123674826,
+    0.9466281119095792,
+    0.9349245851570682,
+    0.9237629458894584
+   ],
+   [
+    0.9968557479731377,
+    0.9937506114384096,
+    0.9876541085133638,
+    0.9758927916151813,
+    0.9646663714523062,
+    0.9539312092593378,
+    0.943648762264628,
+    0.9337848184457206
+   ]
+  ],
+  "ws1_scalar": 0.97,
+  "note": "one-way efficiency at SOC 55%; WS1's 0.97 scalar is valid below ~40-50 kW warm and optimistic at the R8 peaks and cold"
+ },
+ "cold_case_recompute": {
+  "lto_chg_accept_cont_at_minus10C_bus_kW": 66.98506752000002,
+  "lto_chg_accept_cont_at_minus10C_wheel_kW": 77.38320331597409,
+  "lto_chg_accept_cont_at_0C_bus_kW": 101.48312448,
+  "regen_cap_effective_wheel_kW": 75.0,
+  "V1_N2_cold_LTO_aux4_kW": 12.11404800415039,
+  "V1_N2_cold_LTO_aux6_kW": 14.113903045654297,
+  "V1_N2_nominal_kW": 10.114192962646484,
+  "V1_N2_cold_ws1_regen_disabled_kW": 15.004634857177734,
+  "V1_friction_cold_LTO_kWh": 0.29384223503337314,
+  "V1_friction_cold_ws1_kWh": 3.611572155846999,
+  "penalty_ws1_pct": 48.35227004855971,
+  "penalty_lto_aux4_pct": 19.772759417283492,
+  "battery_loss_cold_model_avg_kW": 0.8764097619151066,
+  "battery_loss_cold_scalar_avg_kW": 0.43904881325749834,
+  "V1_N2_cold_LTO_aux4_corrected_kW": 12.551408952807998,
+  "penalty_lto_aux4_corrected_pct": 24.09698924237047,
+  "correction_note": "V1_N2_cold_LTO_aux4_kW keeps WS1's 0.97/0.97 warm scalars (like-for-like with WS1's environment table); the _corrected_ figure replaces that bookkeeping loss with the WS3 -10 C resistance-model loss on the same trace (WS3-r1-F3). Headline: +20-25%.",
+  "note": "cold-soaked (unpreconditioned) LTO at -10 C accepts the full 75 kW wheel regen cap on its CONTINUOUS rating; the R7 cold case collapses to an accessory-load penalty"
+ },
+ "c_rate_check": {
+  "E8_claim": "93-113C on cycle-derived (3); 40C/37C even on 3 kWh",
+  "V2_LTO23": {
+   "c_at_120kW_dis": 9.12509864177504,
+   "c_at_110kW_chg": 6.493190498430035,
+   "c_at_50kW_cont_chg": 3.17388631704395,
+   "i_at_120kW_A": 209.8772687608259,
+   "p_over_nameplate_120kW": 7.876496534341525
+  },
+  "V1_light_LTO10": {
+   "c_at_120kW_dis": 19.953987041646155,
+   "c_at_110kW_chg": 15.340969579384273,
+   "c_at_50kW_cont_chg": 7.385182897233631,
+   "i_at_120kW_A": 199.53987041646155,
+   "p_over_nameplate_120kW": 18.11594202898551
+  },
+  "conclusion": "power-sizing at the 650 V window lands the spine at ~8C peak / ~3C continuous - inside power-cell ratings; E8's fear was correct for the floors, moot for the built pack"
+ },
+ "frontier": {
+  "LTO-10": {
+   "dis_pulse_120kW": {
+    "per_cell_W": 606.5250000000001,
+    "n_cells_min": 198,
+    "kWh_min": 4.554
+   },
+   "chg_pulse_110kW": {
+    "per_cell_W": 399.07199999999995,
+    "n_cells_min": 276,
+    "kWh_min": 6.348
+   },
+   "chg_cont_50kW_45C": {
+    "per_cell_W": 194.51279999999997,
+    "n_cells_min": 258,
+    "kWh_min": 5.934
+   },
+   "voltage_window_288s": {
+    "n_cells_min": 288,
+    "kWh_min": 6.624
+   },
+   "governing_kWh": 6.624
+  },
+  "LTO-23": {
+   "dis_pulse_120kW": {
+    "per_cell_W": 632.790375,
+    "n_cells_min": 190,
+    "kWh_min": 10.050999999999998
+   },
+   "chg_pulse_110kW": {
+    "per_cell_W": 736.3636363636373,
+    "n_cells_min": 150,
+    "kWh_min": 7.935
+   },
+   "chg_cont_50kW_45C": {
+    "per_cell_W": 472.078128,
+    "n_cells_min": 106,
+    "kWh_min": 5.607399999999999
+   },
+   "voltage_window_288s": {
+    "n_cells_min": 288,
+    "kWh_min": 15.235199999999999
+   },
+   "governing_kWh": 15.235199999999999
+  },
+  "LTO-45": {
+   "dis_pulse_120kW": {
+    "per_cell_W": 875.4750000000001,
+    "n_cells_min": 138,
+    "kWh_min": 14.282999999999998
+   },
+   "chg_pulse_110kW": {
+    "per_cell_W": 940.2479999999999,
+    "n_cells_min": 117,
+    "kWh_min": 12.109499999999997
+   },
+   "chg_cont_50kW_45C": {
+    "per_cell_W": 682.98795,
+    "n_cells_min": 74,
+    "kWh_min": 7.658999999999999
+   },
+   "voltage_window_288s": {
+    "n_cells_min": 288,
+    "kWh_min": 29.807999999999993
+   },
+   "governing_kWh": 29.807999999999993
+  },
+  "_note": "minimum pack energy forced by each requirement at 25 C; the governing term for every LTO cell size is the 288s voltage window, i.e. the pack exceeds the R8 buffer floors by construction, not by an energy need"
+ },
+ "sensitivity": {
+  "floors_x1.5": {
+   "V2": {
+    "floor_kWh": 5.25,
+    "usable_bus_kWh": 11.083607999999998,
+    "margin_ratio": 2.111163428571428,
+    "meets": true
+   },
+   "V1": {
+    "floor_kWh": 2.25,
+    "usable_bus_kWh": 11.083607999999998,
+    "margin_ratio": 4.926047999999999,
+    "meets": true
+   },
+   "V1_light": {
+    "floor_kWh": 2.25,
+    "usable_bus_kWh": 4.818959999999999,
+    "margin_ratio": 2.1417599999999997,
+    "meets": true
+   }
+  },
+  "envelope_corners": {
+   "minus10C_0m": {
+    "dis_pulse_soc55_kW": 115.55244755244756,
+    "chg_cont_soc55_kW": 66.98506752000002,
+    "descent_50kW_ok": true,
+    "precondition_to_10C_min": 8.333333333333334
+   },
+   "plus45C_0m": {
+    "t_cell_end_50kW_24min_C": 50.33064573618011,
+    "margin_to_55C_K": 4.669354263819891
+   },
+   "plus45C_2000m": {
+    "ua_radiator_W_K": 308.0,
+    "t_steady_50kW_C": 52.3960474966766,
+    "creepage_note": "750 V class at 2,000 m: clearance/creepage per IEC 60664 pollution degree 2 handed to WS6"
+   },
+   "minus10C_2000m": {
+    "note": "cold + altitude concurrent: battery limits are the -10 C column; altitude affects only the radiator, unused cold"
+   }
+  },
+  "cell_size": {
+   "down_LTO10": {
+    "cell": "LTO-10",
+    "series": 288,
+    "parallel": 1,
+    "nameplate_kWh": 6.623999999999999,
+    "usable_kWh_cells": 4.967999999999999,
+    "usable_kWh_bus": 4.818959999999999,
+    "v_nominal": 662.4,
+    "v_ocv_at_window": [
+     610.56,
+     696.96
+    ],
+    "v_charge_ceiling": 748.8000000000001,
+    "v_protect_max": 777.6,
+    "cell_mass_kg": 146.88,
+    "pack_mass_kg": 262.664,
+    "pack_volume_L": 185.472,
+    "c_th_J_K": 187380.0,
+    "c_at_120kW_dis": 19.953987041646155,
+    "c_at_110kW_chg": 15.340969579384273,
+    "c_at_50kW_cont_chg": 7.385182897233631,
+    "i_at_120kW_A": 199.53987041646155,
+    "p_over_nameplate_120kW": 18.11594202898551,
+    "dis_pulse_25C_soc40_kW": 174.67920000000004,
+    "dis_pulse_minus10C_soc55_kW": 134.69263199999997,
+    "chg_cont_45C_soc85_kW": 56.01968639999999,
+    "chg_cont_minus10C_soc55_kW": 26.871552000000005,
+    "meets_R8_warm": true
+   },
+   "baseline_LTO23": {
+    "cell": "LTO-23",
+    "series": 288,
+    "parallel": 1,
+    "nameplate_kWh": 15.235199999999999,
+    "usable_kWh_cells": 11.4264,
+    "usable_kWh_bus": 11.083607999999998,
+    "v_nominal": 662.4,
+    "v_ocv_at_window": [
+     610.56,
+     696.96
+    ],
+    "v_charge_ceiling": 748.8000000000001,
+    "v_protect_max": 777.6,
+    "cell_mass_kg": 158.4,
+    "pack_mass_kg": 280.52,
+    "pack_volume_L": 185.472,
+    "c_th_J_K": 198900.0,
+    "c_at_120kW_dis": 9.12509864177504,
+    "c_at_110kW_chg": 6.493190498430035,
+    "c_at_50kW_cont_chg": 3.17388631704395,
+    "i_at_120kW_A": 209.8772687608259,
+    "p_over_nameplate_120kW": 7.876496534341525,
+    "dis_pulse_25C_soc40_kW": 182.243628,
+    "dis_pulse_minus10C_soc55_kW": 115.55244755244756,
+    "chg_cont_45C_soc85_kW": 135.958500864,
+    "chg_cont_minus10C_soc55_kW": 66.98506752000002,
+    "meets_R8_warm": true
+   },
+   "up_LTO45": {
+    "cell": "LTO-45",
+    "series": 288,
+    "parallel": 1,
+    "nameplate_kWh": 29.807999999999996,
+    "usable_kWh_cells": 22.355999999999998,
+    "usable_kWh_bus": 21.685319999999997,
+    "v_nominal": 662.4,
+    "v_ocv_at_window": [
+     610.56,
+     696.96
+    ],
+    "v_charge_ceiling": 748.8000000000001,
+    "v_protect_max": 777.6,
+    "cell_mass_kg": 331.2,
+    "pack_mass_kg": 548.36,
+    "pack_volume_L": 397.43999999999994,
+    "c_th_J_K": 388260.0,
+    "c_at_120kW_dis": 4.411471094041223,
+    "c_at_110kW_chg": 3.4197523683415554,
+    "c_at_50kW_cont_chg": 1.6433111974184886,
+    "i_at_120kW_A": 198.51619923185504,
+    "p_over_nameplate_120kW": 4.025764895330113,
+    "dis_pulse_25C_soc40_kW": 252.13680000000002,
+    "dis_pulse_minus10C_soc55_kW": 183.779928,
+    "chg_cont_45C_soc85_kW": 196.7005296,
+    "chg_cont_minus10C_soc55_kW": 131.974272,
+    "meets_R8_warm": true
+   }
+  },
+  "bus_400V_class": {
+   "cell": "LTO-23",
+   "series": 174,
+   "parallel": 1,
+   "nameplate_kWh": 9.2046,
+   "usable_kWh_cells": 6.903449999999999,
+   "usable_kWh_bus": 6.696346499999999,
+   "v_nominal": 400.2,
+   "v_ocv_at_window": [
+    368.87999999999994,
+    421.08
+   ],
+   "v_charge_ceiling": 452.40000000000003,
+   "v_protect_max": 469.8,
+   "cell_mass_kg": 95.7,
+   "pack_mass_kg": 183.335,
+   "pack_volume_L": 112.05600000000001,
+   "c_th_J_K": 136200.0,
+   "c_at_120kW_dis": 16.762181493660734,
+   "c_at_110kW_chg": 10.334936987233688,
+   "c_at_50kW_cont_chg": 5.160619916894268,
+   "i_at_120kW_A": 385.5301743541969,
+   "p_over_nameplate_120kW": 13.036959780979076,
+   "dis_pulse_25C_soc40_kW": 110.10552525,
+   "dis_pulse_minus10C_soc55_kW": 69.81293706293707,
+   "chg_cont_45C_soc85_kW": 82.141594272,
+   "chg_cont_minus10C_soc55_kW": 40.470144960000006,
+   "meets_R8_warm": false,
+   "note": "174s1p LTO-23: FAILS the 120 kW warm pulse (C-limit), accepts only ~40 kW cold vs the 64.9 kW cap; fixing either means 2P and double the energy/mass - the 650 V window is the right one"
+  }
+ },
+ "heat_ledger_WS6": [
+  {
+   "component": "battery pack (V2/V1 spine)",
+   "case": "R2 descent, 50 kW continuous charge, +45 C ambient (24-min transient AVERAGE; WS6 sizes the loop to the steady sizing line at the bottom of this ledger)",
+   "heat_kW": 1.4192973279755245,
+   "duration_s": 1440.0,
+   "sink": "pack coolant loop -> pack radiator"
+  },
+  {
+   "component": "battery pack",
+   "case": "R8 peak 120 kW discharge (10 s)",
+   "heat_kW": 14.413568516667626,
+   "duration_s": 10.0,
+   "sink": "cell thermal mass -> coolant"
+  },
+  {
+   "component": "battery pack",
+   "case": "VOLT-REG cycle average, V2 i-MMD, 25 C (8-seed max)",
+   "heat_kW": 0.30107152335147,
+   "duration_s": "continuous",
+   "sink": "pack coolant loop"
+  },
+  {
+   "component": "battery pack",
+   "case": "VOLT-SUB cycle average, V1 start-stop, 25 C (8-seed max)",
+   "heat_kW": 0.57002075444902,
+   "duration_s": "continuous",
+   "sink": "pack coolant loop"
+  },
+  {
+   "component": "battery pack",
+   "case": "VOLT-SUB cycle average at -10 C cell (pre-warm-up)",
+   "heat_kW": 0.9243686080452482,
+   "duration_s": "until warm",
+   "sink": "self-heating credit, stays in the pack"
+  },
+  {
+   "component": "preconditioning heater",
+   "case": "cold start below 0 C (R7), 8 kW into pack plates",
+   "heat_kW": -8.0,
+   "duration_s": 500.0,
+   "sink": "INTO the pack; source = genset via bus (or R2 resistor loop if WS2/WS6 co-locate it on the pack coolant circuit)"
+  },
+  {
+   "component": "pack coolant loop (spec to WS6)",
+   "case": "SIZING LINE (steady state): hold cells <= 55 C at +45 C with 50 kW cont charge - WS6 sizes the coolant loop to THIS line",
+   "heat_kW": 1.409642715950739,
+   "duration_s": "continuous rating",
+   "sink": "pack radiator, UA >= 350 W/K air-side at 0 m (308 W/K at 2,000 m still closes)"
+  }
+ ],
+ "power_convention": {
+  "note": "WS1 battery_trace peaks are STORED-energy-side (discharge p_stored = p_bus / 0.97, volt_physics.py battery_trace); WS3 duty-ensemble peaks are terminal/bus-side (ws3_pack.terminal_power_from_ws1). The 0.97 scalar converts. WS3's capability checks apply R8's 120 kW as a BUS-side requirement - conservative by the same factor (WS3-r1-F2).",
+  "r8_reference_stored_kW": 120.29211316940902,
+  "r8_reference_bus_kW": 116.68334977432674,
+  "ensemble_peak_bus_kW": 124.55075213522692,
+  "ensemble_peak_stored_kW": 128.40283725281125,
+  "exceedance_like_for_like_bus_pct": 6.742523570086267,
+  "recommended_restatement_bus_kW": 125.0,
+  "recommended_restatement_chg_bus_kW": 110.0
+ },
+ "sanity_checks": {
+  "nameplate_arithmetic_kWh": {
+   "computed": 15.235199999999999,
+   "model": 15.235199999999999
+  },
+  "descent25_energy_balance_kWh": {
+   "battery_plus_resistor": 7.633373498379146,
+   "wheel_energy_at_bus": 7.633373498379084,
+   "note": "battery+resistor absorb the full descent energy delivered to the bus; friction stays at zero (R2 order)"
+  },
+  "heat_at_50kW_hand_calc": {
+   "i_cell_A": 73.03936153211158,
+   "q_pack_kW": 1.4083735599168845,
+   "model_end_kW": 1.409642715950739,
+   "note": "I^2R at SOC 70 / 50 C vs the transient model end point"
+  },
+  "precondition_energy": {
+   "c_th_MJ_per_20K": 3.978,
+   "heater_time_s_hand": 497.25,
+   "model_time_to_10C_s": 500.0
+  },
+  "v2_damage_per_year": {
+   "rainflow_model": 0.018798997430977262,
+   "throughput_shortcut": 0.018329056750030763,
+   "note": "linear-throughput shortcut should approximate rainflow damage under the N(D)=EFC100/D model"
+  },
+  "r8_exceedance_info": {
+   "convention": "kW at the bus terminals unless suffixed _stored (see power_convention, WS3-r1-F2)",
+   "ensemble_peak_dis_kW": 124.55075213522692,
+   "ensemble_peak_dis_stored_kW": 128.40283725281125,
+   "r8_design_kW": 120.0,
+   "r8_reference_bus_kW": 116.68334977432674,
+   "r8_reference_stored_kW": 120.29211316940902,
+   "pack_capability_warm_kW": 182.243628,
+   "note": "R8's 120 kW descends from WS1's stored-side 120.292 kW = 116.7 kW at the bus; WS3 applies 120 kW bus-side in every capability check (conservative). Like-for-like at the bus the 8-seed ensemble exceeds the reference draw by +6.7%; the pack covers it with margin - see escalation ES-4"
+  }
+ },
+ "interface_WS3": {
+  "_convention": "mirrors WS1 results.json: SI, kW/kWh at the DC bus unless suffixed _cells or _stored; extrema are 8-seed ensemble envelopes",
+  "bus_voltage_window": {
+   "preferred_nominal_V": 662.4,
+   "operating_min_V": 432.0,
+   "operating_max_V": 748.8000000000001,
+   "transient_max_V": 777.6,
+   "protection_max_V": 777.6,
+   "ocv_window_V": [
+    610.56,
+    696.96
+   ],
+   "governs": "operating_min_V = 432.0 V (288 x 1.50 V/cell) is the SAME floor every r8_compliance gate is computed against: the window and the gates are jointly satisfiable as exported (WS3-r1-F1). Electronics that cannot work down to 432.0 V inherit the derated gates in dis_gate_vs_electronics_floor_V. operating_max_V is the continuous charge ceiling; 10-s charge pulses ride to transient_max_V (see chg_transient_note).",
+   "chg_transient_note": "the 110 kW charge pulse at its +0.0 C gate rides the bus to 776.4 V - above the 748.8 V continuous charge ceiling, inside the 777.6 V transient/protect ceiling: WS2 rates the electronics for the transient ceiling",
+   "soc15_note": "120 kW warm at SOC 15 sits at 527.7 V; the R8 discharge gate is declared over SOC 40-90 and full power below SOC 40 is NOT guaranteed - WS5 dispatch limit",
+   "acceptable_series_range": [
+    252,
+    288
+   ],
+   "series_step_cells": 12,
+   "module_nominal_V": 27.599999999999998,
+   "r8_operating_points": {
+    "dis_120kW_warm_soc40": {
+     "T_C": 25.0,
+     "SOC": 0.4,
+     "P_bus_kW": 120.0,
+     "I_A": 209.8772687608259,
+     "V_bus_V": 571.7627292775132
+    },
+    "dis_120kW_at_cold_gate_soc40": {
+     "T_C": -5.5,
+     "SOC": 0.4,
+     "P_bus_kW": 120.0,
+     "I_A": 274.28727341017577,
+     "V_bus_V": 437.4975131294156
+    },
+    "dis_120kW_warm_soc15_info": {
+     "T_C": 25.0,
+     "SOC": 0.15,
+     "P_bus_kW": 120.0,
+     "I_A": 227.39532465298154,
+     "V_bus_V": 527.7153353224256
+    },
+    "chg_110kW_warm_soc85": {
+     "T_C": 25.0,
+     "SOC": 0.85,
+     "P_bus_kW": 110.0,
+     "I_A": 149.3433814638908,
+     "V_bus_V": 736.5575824101486
+    },
+    "chg_110kW_at_gate_soc85": {
+     "T_C": 0.0,
+     "SOC": 0.85,
+     "P_bus_kW": 110.0,
+     "I_A": 141.67566249559349,
+     "V_bus_V": 776.4212855078149
+    }
+   },
+   "dis_gate_vs_electronics_floor_V": [
+    {
+     "v_floor_cell_V": 1.5,
+     "v_floor_pack_V": 432.0,
+     "dis_120kW_gate_C_over_SOC_40_90": -5.5,
+     "I_at_gate_A": 274.28727341017577,
+     "V_bus_at_gate_V": 437.4975131294156
+    },
+    {
+     "v_floor_cell_V": 1.6,
+     "v_floor_pack_V": 460.8,
+     "dis_120kW_gate_C_over_SOC_40_90": -3.0,
+     "I_at_gate_A": 258.97653129693236,
+     "V_bus_at_gate_V": 463.36244986775534
+    },
+    {
+     "v_floor_cell_V": 1.7,
+     "v_floor_pack_V": 489.59999999999997,
+     "dis_120kW_gate_C_over_SOC_40_90": 0.5,
+     "I_at_gate_A": 243.85482116800202,
+     "V_bus_at_gate_V": 492.09607349664367
+    },
+    {
+     "v_floor_cell_V": 1.8,
+     "v_floor_pack_V": 518.4,
+     "dis_120kW_gate_C_over_SOC_40_90": 6.0,
+     "I_at_gate_A": 230.51748565980992,
+     "V_bus_at_gate_V": 520.5678851499015
+    },
+    {
+     "v_floor_cell_V": 1.85,
+     "v_floor_pack_V": 532.8000000000001,
+     "dis_120kW_gate_C_over_SOC_40_90": 9.0,
+     "I_at_gate_A": 224.50326566802755,
+     "V_bus_at_gate_V": 534.5133828807805
+    },
+    {
+     "v_floor_cell_V": 1.9,
+     "v_floor_pack_V": 547.1999999999999,
+     "dis_120kW_gate_C_over_SOC_40_90": 14.0,
+     "I_at_gate_A": 218.90948748643973,
+     "V_bus_at_gate_V": 548.1717644030086
+    }
+   ],
+   "series_252_bound": {
+    "series": 252,
+    "nameplate_kWh": 13.3308,
+    "v_nominal_V": 579.5999999999999,
+    "operating_min_V": 378.0,
+    "operating_max_V": 655.2,
+    "transient_max_V": 680.4000000000001,
+    "dis_120kW_gate_C_over_SOC_40_90": -1.5,
+    "chg_110kW_gate_C_over_SOC_15_85": 4.5,
+    "I_120kW_warm_A": 244.65225810605435,
+    "V_bus_120kW_warm_V": 490.4921006205518,
+    "I_120kW_at_gate_A": 314.2319353510674,
+    "V_bus_120kW_at_gate_V": 381.88352773862124,
+    "note": "every voltage member scales x252/288 = 0.875; per-cell power rises x288/252 so the availability gates MOVE WARMER (-1.5 C discharge / +4.5 C charge, vs -5.5 / +0.0 at 288s) and warm full-power current rises to 245 A. Do not linearly interpolate the 288s figures."
+   },
+   "rationale": "1P string at 650 V class keeps the R8 peaks at ~210 A / 571.8 V warm and 274 A / 437.5 V at the -5.5 C cold gate - size conductors and devices to the cold-gate current, not the warm figure. A 400 V class 174s1p string FAILS the 120 kW pulse warm (110 kW) and accepts only 40 kW cold - going 2P to fix it doubles pack energy (see sensitivity/bus_400V_class)"
+  },
+  "descent_resistor_bound": {
+   "rating_bus_kW": 50.0,
+   "max_resistor_kW_gvw": 39.44230080809803,
+   "max_resistor_kW_payload120": 44.317739345536204,
+   "margin_at_payload120_kW": 5.682260654463796,
+   "friction_kWh_max_any_row": 0.0,
+   "payload120_mass_kg": 7180.0,
+   "worst_payload120_row": "70kmh",
+   "note": "R2 blend order with the resistor RATING enforced as a hard cap; overflow lands in the friction column and is reported, not assumed zero. Friction stays 0.00 kWh on every row - GVW and +20% payload, +45 C and -10 C (WS3-r1-F6)."
+  },
+  "cell": {
+   "family": "LTO 23 Ah prismatic (SCiB 23 Ah class)",
+   "v_nom": 2.3,
+   "granularity": "12s1p module, 27.6 V nominal"
+  },
+  "packs": {
+   "V2": {
+    "config": "288s1p LTO-23",
+    "nameplate_kWh": 15.235199999999999,
+    "usable_bus_kWh": 11.083607999999998,
+    "floor_kWh": 3.5,
+    "mass_kg": 280.52,
+    "volume_L": 185.472
+   },
+   "V1": {
+    "config": "288s1p LTO-23 (identical pack, spine commonality)",
+    "nameplate_kWh": 15.235199999999999,
+    "usable_bus_kWh": 11.083607999999998,
+    "floor_kWh": 1.5,
+    "mass_kg": 280.52,
+    "volume_L": 185.472
+   },
+   "V1_light_option": {
+    "config": "288s1p LTO-10 (same can/module)",
+    "nameplate_kWh": 6.623999999999999,
+    "usable_bus_kWh": 4.818959999999999,
+    "floor_kWh": 1.5,
+    "mass_kg": 262.664,
+    "volume_L": 185.472
+   }
+  },
+  "soc_strategy": {
+   "target": 0.55,
+   "dispatch_window": [
+    0.15,
+    0.9
+   ],
+   "allocation": {
+    "V2": {
+     "usable_bus_kWh": 11.083607999999998,
+     "genset_hysteresis_kWh": 3.5,
+     "regen_headroom_kWh": 1.5,
+     "grade_reserve_kWh": 2.0,
+     "unallocated_margin_kWh": 4.083607999999998,
+     "end_stops_pct_nameplate": [
+      15.0,
+      9.999999999999998
+     ],
+     "floor_kWh": 3.5,
+     "floor_margin_ratio": 3.1667451428571423
+    },
+    "V1": {
+     "usable_bus_kWh": 11.083607999999998,
+     "genset_hysteresis_kWh": 3.0,
+     "regen_headroom_kWh": 1.5,
+     "grade_reserve_kWh": 1.0,
+     "unallocated_margin_kWh": 5.583607999999998,
+     "end_stops_pct_nameplate": [
+      15.0,
+      9.999999999999998
+     ],
+     "floor_kWh": 1.5,
+     "floor_margin_ratio": 7.389071999999999
+    },
+    "V1_light": {
+     "usable_bus_kWh": 4.818959999999999,
+     "genset_hysteresis_kWh": 3.0,
+     "regen_headroom_kWh": 1.0,
+     "grade_reserve_kWh": 0.8,
+     "unallocated_margin_kWh": 0.018959999999998978,
+     "end_stops_pct_nameplate": [
+      15.0,
+      9.999999999999998
+     ],
+     "floor_kWh": 1.5,
+     "floor_margin_ratio": 3.212639999999999
+    }
+   }
+  },
+  "coolant": {
+   "type": "50/50 EG-water, shared low-temperature circuit acceptable",
+   "flow_L_min": 8.0,
+   "heat_rejection_cont_kW": 1.409642715950739,
+   "ua_radiator_W_K": 350.0,
+   "heater_kW": 8.0,
+   "request_to_WS2_WS6": "mount the R2 brake resistor on the pack coolant circuit so it doubles as the preconditioning heat source"
+  },
+  "regen_acceptance_curve_file": "regen_acceptance.csv",
+  "heat_to_ledger": [
+   {
+    "component": "battery pack (V2/V1 spine)",
+    "case": "R2 descent, 50 kW continuous charge, +45 C ambient (24-min transient AVERAGE; WS6 sizes the loop to the steady sizing line at the bottom of this ledger)",
+    "heat_kW": 1.4192973279755245,
+    "duration_s": 1440.0,
+    "sink": "pack coolant loop -> pack radiator"
+   },
+   {
+    "component": "battery pack",
+    "case": "R8 peak 120 kW discharge (10 s)",
+    "heat_kW": 14.413568516667626,
+    "duration_s": 10.0,
+    "sink": "cell thermal mass -> coolant"
+   },
+   {
+    "component": "battery pack",
+    "case": "VOLT-REG cycle average, V2 i-MMD, 25 C (8-seed max)",
+    "heat_kW": 0.30107152335147,
+    "duration_s": "continuous",
+    "sink": "pack coolant loop"
+   },
+   {
+    "component": "battery pack",
+    "case": "VOLT-SUB cycle average, V1 start-stop, 25 C (8-seed max)",
+    "heat_kW": 0.57002075444902,
+    "duration_s": "continuous",
+    "sink": "pack coolant loop"
+   },
+   {
+    "component": "battery pack",
+    "case": "VOLT-SUB cycle average at -10 C cell (pre-warm-up)",
+    "heat_kW": 0.9243686080452482,
+    "duration_s": "until warm",
+    "sink": "self-heating credit, stays in the pack"
+   },
+   {
+    "component": "preconditioning heater",
+    "case": "cold start below 0 C (R7), 8 kW into pack plates",
+    "heat_kW": -8.0,
+    "duration_s": 500.0,
+    "sink": "INTO the pack; source = genset via bus (or R2 resistor loop if WS2/WS6 co-locate it on the pack coolant circuit)"
+   },
+   {
+    "component": "pack coolant loop (spec to WS6)",
+    "case": "SIZING LINE (steady state): hold cells <= 55 C at +45 C with 50 kW cont charge - WS6 sizes the coolant loop to THIS line",
+    "heat_kW": 1.409642715950739,
+    "duration_s": "continuous rating",
+    "sink": "pack radiator, UA >= 350 W/K air-side at 0 m (308 W/K at 2,000 m still closes)"
+   }
+  ],
+  "r8_compliance": {
+   "note": "minimum cell temperature at which the R8 peak is available over the stated SOC range, computed against the 1.50 V/cell (432.0 V pack) floor = the exported operating_min_V (WS3-r1-F1); dispatch gate follows from these. Higher electronics floors inherit the derated gates in bus_voltage_window.dis_gate_vs_electronics_floor_V",
+   "dis_120kW_over_SOC_40_90": -5.5,
+   "chg_110kW_over_SOC_15_85": 0.0,
+   "chg_cont_50kW_over_SOC_15_85": -10.0,
+   "dis_120kW_at_soc55_minus10C_kW": 115.55244755244756,
+   "chg_110kW_at_soc85_minus10C_kW": 81.56643356643366
+  },
+  "life_projection_years": {
+   "V1": 8.830657791427033,
+   "V2": 15.7429845726393
+  }
+ },
+ "regen_acceptance_table": {
+  "header": [
+   "T_cell_C",
+   "chg_accept_cont_C",
+   "chg_accept_pulse10s_C",
+   "V2pack_chg_cont_kW_bus",
+   "V2pack_chg_pulse10s_kW_bus",
+   "V2pack_chg_cont_kW_wheel_equiv",
+   "V1light_chg_cont_kW_bus"
+  ],
+  "rows": [
+   [
+    -30.0,
+    1.0,
+    2.0,
+    15.841296000000002,
+    33.358464,
+    18.300350728026363,
+    6.616800000000001
+   ],
+   [
+    -25.0,
+    1.5,
+    3.0,
+    24.12644616,
+    51.49570464,
+    27.871610160484643,
+    9.965916000000002
+   ],
+   [
+    -20.0,
+    2.0,
+    4.0,
+    32.41997568,
+    69.66646272,
+    37.452549686470405,
+    13.315968000000003
+   ],
+   [
+    -15.0,
+    3.0,
+    6.0,
+    49.68576288,
+    99.19530791788858,
+    57.39851631416729,
+    20.091887999999997
+   ],
+   [
+    -10.0,
+    4.0,
+    8.0,
+    66.98506752000002,
+    118.27132867132867,
+    77.38320331597409,
+    26.871552000000005
+   ],
+   [
+    -5.0,
+    5.0,
+    10.0,
+    84.44358,
+    136.66909090909093,
+    97.55181209480286,
+    33.669
+   ],
+   [
+    0.0,
+    6.0,
+    12.0,
+    101.48312448,
+    161.84497607655507,
+    117.23641619725795,
+    40.419648
+   ],
+   [
+    5.0,
+    7.0,
+    12.0,
+    118.57294512,
+    186.36694214876033,
+    136.9791008608779,
+    47.175912000000004
+   ],
+   [
+    10.0,
+    8.0,
+    12.0,
+    135.04269312000002,
+    213.82589952,
+    156.0054586034648,
+    53.862912
+   ],
+   [
+    15.0,
+    8.0,
+    12.0,
+    133.61261568,
+    210.60822528,
+    154.35338930810929,
+    53.703168
+   ],
+   [
+    20.0,
+    8.0,
+    12.0,
+    132.18253823999999,
+    207.39055104,
+    152.70132001275374,
+    53.54342400000001
+   ],
+   [
+    25.0,
+    8.0,
+    12.0,
+    130.7524608,
+    204.1728768,
+    151.04925071739825,
+    53.383680000000005
+   ],
+   [
+    30.0,
+    8.0,
+    12.0,
+    130.35025152,
+    203.26790592000003,
+    150.5846062280795,
+    53.33875200000001
+   ],
+   [
+    35.0,
+    8.0,
+    12.0,
+    129.94804224,
+    202.36293504000002,
+    150.1199617387608,
+    53.293824
+   ],
+   [
+    40.0,
+    8.0,
+    12.0,
+    129.54583296,
+    201.45796416000005,
+    149.65531724944205,
+    53.248896
+   ],
+   [
+    45.0,
+    8.0,
+    12.0,
+    129.14362368,
+    200.55299327999998,
+    149.1906727601233,
+    53.203968
+   ],
+   [
+    50.0,
+    6.0,
+    12.0,
+    95.04777600000001,
+    200.15078400000002,
+    109.80210436815817,
+    39.7008
+   ],
+   [
+    55.0,
+    4.0,
+    8.0,
+    62.20324608000001,
+    128.78610432000002,
+    71.85909660962909,
+    26.337408000000003
+   ],
+   [
+    60.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  ]
+ }
+}

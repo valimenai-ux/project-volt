@@ -1,0 +1,198 @@
+== 1. Machine spec checks (VM250-HV rewind, ratio 10:1) ==
+  rewind_factor: 1.47
+  T_peak_at_Ipeak_Nm: 529.53
+  T_req_launch_Nm: 514.95
+  P_peak_kW_vs_V: {'432': 121.2425924673732, '662': 188.0016814338546, '749': 212.92632510170287}
+  P_peak_at_floor_ok_120kW: True
+  P_peak_at_vnom_ok_150kW_target: True
+  T_max_at_20kmh_vmin_Nm: 529.53
+  R13_corner_515Nm_25kmh_vmin_ok: True
+  R13_corner_I_Apk: 440.9
+  R13_corner_v_req_V: 236.9
+  R13_corner_v_lim_V: 236.9
+  T_max_at_bandtop_vmin_170C_Nm: 528.8
+  I_cont_cases: {'crawl_510Nm_V1_10p6kmh': {'I_Apk': 438.0, 'I_Arms': 309.7, 'same_current_at_floor': True}, 'crawl_510Nm_V2_23p6kmh': {'I_Apk': 438.0, 'I_Arms': 309.7, 'same_current_at_floor': True}, 'R13_band_top_515Nm_25kmh': {'I_Apk': 440.9, 'I_Arms': 311.7, 'same_current_at_floor': True}}
+  I_cont_governing_case: R13_band_top_515Nm_25kmh
+  I_cont_Apk: 440.9
+  I_cont_Arms: 311.7
+  I_cont_vs_455Arms_r3_ratio: 0.69
+  rpm_at_100kmh: 7169.14
+  emf_ll_peak_at_7200_V: 598.95
+  char_current_A: 303.21
+  ucg_onset_rpm_at_432V: 5193.05
+  ucg_onset_kmh_at_432V: 72.44
+  ucg_onset_rpm_at_662V: 7962.68
+  ucg_onset_kmh_at_662V: 111.07
+  ucg_onset_rpm_at_749V: 9001.29
+  ucg_onset_kmh_at_749V: 125.56
+  v_bus_no_ucg_below_7200rpm_V: 598.95
+  gen_370Nm_at_8kmh_ok: True
+  gen_73kW_at_7200rpm_vmin_ok: True
+  F1_70kmh_flat_wheel_kW: 29.86
+  F1_70kmh_shaft_kW: 30.78
+  F1_ok: True
+  F1_70kmh_shaft_kW_CdA5p4: 36.24
+  F1_ok_CdA5p4: True
+  P_dc_peak_draw_at_vmin_kW: 130.7
+  I_dc_peak_draw_at_vmin_A: 302.0
+  rotor_tip_speed_at_7400_ms: 69.74
+  airgap_shear_at_peak_kPa: 63.06
+== 1b. Topology trade quantities ==
+  mass_single_motor_kg: 96.0
+  mass_twin_motors_kg: 114.0
+  twin_penalty_motors_kg: 18.0
+  twin_penalty_second_inverter_kg: 16.0
+  twin_penalty_total_kg: 34.0
+  IM_crawl_rotor_loss_W: 2403.0
+  IM_rotor_dT_over_stator_K: 120.0
+  PM_spin_shaft_drag_85kmh_W: 1109.0
+  PM_spin_bus_draw_85kmh_W: 371.0
+  PM_spin_total_85kmh_W: 1480.0
+  PM_spin_total_100kmh_W: 1813.0
+== 2. Efficiency maps ==
+  /Users/valimenai/Documents/Project Volt/WS2_traction_motor/data/effmap_motor_inverter_432V.csv: 3337 feasible pts, best eta 0.9565 at (5100.0, 120.0)  [0.2s]
+  /Users/valimenai/Documents/Project Volt/WS2_traction_motor/data/effmap_motor_inverter_662V.csv: 4203 feasible pts, best eta 0.9572 at (7200.0, 150.0)  [0.5s]
+  /Users/valimenai/Documents/Project Volt/WS2_traction_motor/data/effmap_motor_inverter_749V.csv: 4435 feasible pts, best eta 0.9566 at (7400.0, 180.0)  [0.7s]
+  maps done in 5.5s
+== 3. Thermal cases (+45 C ambient, coolant 65 C, 662.4 V) ==
+  S1_180Nm_oilspray: {'rpm': 2387, 'Tw': 82.6, 'Ts': 68.5, 'Tr': 79.6, 'ok': True}
+  S1_180Nm_jacket: {'rpm': 2387, 'Tw': 98.1, 'Ts': 68.6, 'Tr': 79.7, 'ok': True}
+  S1gen_50kW_70kmh: {'rpm': 5018, 'T_Nm': -95.1, 'Tw': 74.3, 'ok': True}
+  S2_95kW_10min_662V: {'rpm': 4373, 'T_Nm': 207.4, 'Tw_end': 91.7, 'Tw_max': 91.7, 't_limit_s': None, 'ok': True}
+  S2_95kW_10min_432V: {'rpm': 4373, 'T_Nm': 207.4, 'Tw_end': 104.5, 'Tw_max': 104.5, 't_limit_s': None, 'ok': True}
+  S2_95kW_steady_Tw: 91.9
+  S2_is_S1_at_vnom: True
+  gradehold_ledger: {'rpm': 4373, 'T_Nm': 197.7, 'P_cu_kW': 1.99, 'P_fe_kW': 2.52, 'P_fw_kW': 0.2, 'P_inv_kW': 0.45, 'P_motor_total_kW': 4.71, 'P_chain_kW': 5.16, 'ws1_assumed_inv_motor_kW': 7.87}
+  S2_point_ledger: {'rpm': 4373, 'T_Nm': 207.4, 'P_cu_kW': 2.14, 'P_fe_kW': 2.64, 'P_fw_kW': 0.2, 'P_inv_kW': 0.47, 'P_chain_kW': 5.45}
+  peak_515Nm_20kmh_hold_s: >1200
+  peak_515Nm_20kmh_ok_60s: True
+  peak_150kW_hold_s: >1200
+  crawl_510Nm_V1_oilspray: {'rpm': 760, 'v_kmh': 10.6, 'Tw_steady': 146.1, 'within_cont_165C': True, 'within_hard_180C': True}
+  crawl_510Nm_V1_jacket: {'rpm': 760, 'v_kmh': 10.6, 'Tw_steady': 263.0, 'within_cont_165C': False, 'within_hard_180C': False, 'hold_from_S1warm_s': 117.5, 'distance_m': 346.0}
+  crawl_510Nm_V2_oilspray: {'rpm': 1692, 'v_kmh': 23.6, 'Tw_steady': 150.7, 'within_cont_165C': True, 'within_hard_180C': True}
+  crawl_510Nm_V2_jacket: {'rpm': 1692, 'v_kmh': 23.6, 'Tw_steady': 273.4, 'within_cont_165C': False, 'within_hard_180C': False, 'hold_from_S1warm_s': 111.0, 'distance_m': 728.0}
+  crawl_bandtop_515Nm_oilspray: {'rpm': 1792, 'v_kmh': 25.0, 'Tw_steady': 152.8, 'within_cont_165C': True, 'within_hard_180C': True}
+  crawl_bandtop_515Nm_jacket: {'rpm': 1792, 'v_kmh': 25.0, 'Tw_steady': 279.5, 'within_cont_165C': False, 'within_hard_180C': False, 'hold_from_S1warm_s': 107.0, 'distance_m': 743.0}
+  crawl_bandtop_Tw_same_at_432V: True
+  T_cont_at_crawlspeed_oilspray_Nm: 530.0
+  grade_cont_GVW_oilspray_pct: 21.0
+  T_cont_at_crawlspeed_jacket_Nm: 361.0
+  grade_cont_GVW_jacket_pct: 13.8
+  crawl_Gws_sensitivity: {'G_ws_60': {'Tw_steady': 207.2, 'within_cont_165C': False, 'within_hard_180C': False}, 'G_ws_75': {'Tw_steady': 172.9, 'within_cont_165C': False, 'within_hard_180C': True}, 'G_ws_90': {'Tw_steady': 152.8, 'within_cont_165C': True, 'within_hard_180C': True}, 'G_ws_120': {'Tw_steady': 130.3, 'within_cont_165C': True, 'within_hard_180C': True}}
+  G_ws_cont_limit_floor_WK: 80.1
+  hold_148Nm_standstill_oilspray: {'Tw_steady': 82.8, 'sustainable': True}
+  hold_148Nm_standstill_jacket: {'Tw_steady': 100.3, 'sustainable': True}
+  stall_515Nm_hold_s: 98.5
+  inverter_loss_peak_W: 1138.0
+  inverter_Tj_peak_C: 131.0
+  inverter_Tj_cont_cases_C: {'432V': 120.0, '662V': 130.0, '749V': 133.0}
+  inverter_loss_cont_at_vmax_W: 1169.0
+  inverter_Tj_cont_at_vmax_C: 133.0
+== 4. Reduction-ratio sweep 8:1..12:1 (1 Hz decimated cycles) ==
+  {'ratio': 8.0, 'scale': 1.25, 'mass_kg': 115.5, 'T_req_Nm': 644.0, 'T_avail_Nm': 662.0, 'rpm_at_100kmh': 5735.0, 'within_R3_7200rpm': True, 'sub_loss_kWh': 1.197, 'sub_eta_mot': 0.9162, 'reg_loss_kWh': 2.878, 'reg_eta_mot': 0.9245, 'spin85_shaft_W': 1090.0, 'crawl_Tw_steady': 151.2}
+  {'ratio': 9.0, 'scale': 1.111, 'mass_kg': 104.7, 'T_req_Nm': 572.0, 'T_avail_Nm': 588.0, 'rpm_at_100kmh': 6452.0, 'within_R3_7200rpm': True, 'sub_loss_kWh': 1.15, 'sub_eta_mot': 0.9186, 'reg_loss_kWh': 2.91, 'reg_eta_mot': 0.9268, 'spin85_shaft_W': 1100.0, 'crawl_Tw_steady': 148.5}
+  {'ratio': 10.0, 'scale': 1.0, 'mass_kg': 96.0, 'T_req_Nm': 515.0, 'T_avail_Nm': 530.0, 'rpm_at_100kmh': 7169.0, 'within_R3_7200rpm': True, 'sub_loss_kWh': 1.116, 'sub_eta_mot': 0.9201, 'reg_loss_kWh': 2.952, 'reg_eta_mot': 0.9284, 'spin85_shaft_W': 1109.0, 'crawl_Tw_steady': 146.1}
+  {'ratio': 11.0, 'scale': 0.909, 'mass_kg': 88.9, 'T_req_Nm': 468.0, 'T_avail_Nm': 481.0, 'rpm_at_100kmh': 7886.0, 'within_R3_7200rpm': False, 'sub_loss_kWh': 1.091, 'sub_eta_mot': 0.9212, 'reg_loss_kWh': 2.972, 'reg_eta_mot': 0.9295, 'spin85_shaft_W': 1117.0, 'crawl_Tw_steady': 143.8}
+  {'ratio': 12.0, 'scale': 0.833, 'mass_kg': 83.0, 'T_req_Nm': 429.0, 'T_avail_Nm': 441.0, 'rpm_at_100kmh': 8603.0, 'within_R3_7200rpm': False, 'sub_loss_kWh': 1.073, 'sub_eta_mot': 0.9219, 'reg_loss_kWh': 2.917, 'reg_eta_mot': 0.9302, 'spin85_shaft_W': 1134.0, 'crawl_Tw_steady': 141.6}
+  loss spread across sweep: 2.1% of the 10:1 value; 9:1 edges 10:1 by 0.2% at +8.7 kg
+  beyond the rpm line: 11:1 0.12% / 12:1 1.92% below 10:1; mass/point {'10_to_11': 7.1, '11_to_12': 5.9}
+== 5. DC bus (R10 ruled window) + brake resistor ==
+  string: {'n_series': 288, 'v_string_min': 432.0, 'v_string_nom': 662.4, 'v_string_max': 748.8, 'v_string_transient': 777.6, 'granularity_V': 27.6, 'matches_R10_window': True}
+  cable genset_to_bus: 289.4 A (R6 125 kW sustained at the 432.0 V floor (charge-depleted running)) -> 120 mm2 (320 A), 7.26 kg
+  cable pack_to_bus: 144.7 A (R8 125 kW discharge 1-min at the floor, x0.5 thermal derate for repetition) -> 50 mm2 (180 A), 2.42 kg
+  cable inverter_to_motor: 311.7 A (R13 continuous crawl corner, 515 Nm at 25 km/h (band top; MTPA, voltage-independent)) -> 120 mm2 (320 A), 6.53 kg
+  cable chopper_to_resistor: 208.3 A (full chopper duty during a 777.6 V 10-s transient) -> 70 mm2 (225 A), 1.69 kg
+  cable mass total: 17.9 kg
+  resistor.R_ohm: 3.73
+  resistor.P_fullduty_at_vmin_kW: 50.0
+  resistor.P_fullduty_at_vnom_kW: 117.56
+  resistor.P_fullduty_at_vmax_kW: 150.22
+  resistor.P_fullduty_at_vtransient_kW: 162.0
+  resistor.meets_50kW_everywhere: True
+  resistor.I_on_at_vmax_A: 200.62
+  resistor.I_on_at_vnom_A: 177.47
+  resistor.I_on_at_vtransient_A: 208.33
+  resistor.I_rms_50kW_A: 115.74
+  resistor.ribbon_length_m: 103.68
+  resistor.ribbon_area_m2: 10.37
+  resistor.ribbon_mass_kg: 16.38
+  resistor.assembly_mass_kg: 53.87
+  resistor.assembly_volume_L: 89.78
+  resistor.P_design_cont_kW: 150.22
+  resistor.air_flow_m3_h: 3261.27
+  resistor.blower_W: 1449.45
+  resistor.ribbon_T_at_design_C: 361.48
+  resistor.ribbon_T_at_50kW_C: 200.38
+  resistor.ribbon_T_margin_K: 288.52
+  resistor.P_ribbon_limit_sea_kW: 329.7
+  resistor.ribbon_tau_s: 13.17
+  resistor.transient_10s_dT_K: 14.38
+  resistor.alt_2000m_density_ratio: 0.79
+  resistor.ribbon_T_at_design_2000m_C: 430.99
+  resistor.ribbon_T_at_50kW_2000m_C: 236.7
+  resistor.ribbon_T_margin_2000m_K: 219.01
+  resistor.P_ribbon_limit_2000m_kW: 263.2
+  resistor.blower_W_2000m: 1146.99
+  resistor.chopper_loss_50kW_W: 57.0
+  resistor.chopper_duty_50kW_at_vnom: 0.43
+  resistor.chopper_loss_ceiling_W: 100.62
+  resistor.descent_24min_energy_kWh: 8.82
+  resistor.descent_24min_mean_kW: 22.0
+  resistor.descent_worst_steady_kW: 45.6
+  resistor.margin_over_worst_steady: 1.1
+  resistor.cable_limited_ceiling_kW: 189.0
+  resistor.cable_limited_ceiling_note: 70 mm2 run at 225 A ampacity; sits ABOVE every element operating point, so the bank is element-limited (voltage-limited), never cable-limited — F12 closed by construction
+== 6. Traction-control envelope (E23) ==
+  gvw mu=0.8: F_drive 43644 N (launch ok True), F_brake 27404 N -> T_motor 984 Nm
+  gvw mu=0.5: F_drive 24550 N (launch ok True), F_brake 18412 N -> T_motor 661 Nm
+  gvw mu=0.3: F_drive 13809 N (launch ok True), F_brake 11629 N -> T_motor 417 Nm
+  curb mu=0.8: F_drive 17218 N (launch ok True), F_brake 11708 N -> T_motor 420 Nm
+  curb mu=0.5: F_drive 9888 N (launch ok False), F_brake 7785 N -> T_motor 279 Nm
+  curb mu=0.3: F_drive 5629 N (launch ok False), F_brake 4878 N -> T_motor 175 Nm
+  mu_required: {'mu_launch_flat_gvw': 0.294, 'mu_launch_20pct_gvw': 0.277, 'mu_launch_flat_curb': 0.654, 'mu_launch_20pct_curb': 0.614}
+== 7. Cycle losses through the maps (10 Hz, reference traces) ==
+  VOLT-SUB V1: eta_mot_avg 0.920, eta_gen_avg 0.910, mean heat 1.15 kW, lockup spin 0.00 kWh, roll spin 0.00 kWh, infeasible steps 0
+  VOLT-REG V2: eta_mot_avg 0.928, eta_gen_avg 0.908, mean heat 1.61 kW, lockup spin 1.49 kWh, roll spin 0.00 kWh, infeasible steps 0
+== 8. Heat ledger (R9, to WS6) ==
+  traction motor | V2 6% grade hold, 90.5 kW shaft, 10 min, +45C (restated at the R10 voltage per R12) | 4.71 kW | LT coolant loop
+  traction inverter | V2 6% grade hold | 0.45 kW | LT coolant loop
+  reduction (motor path) | V2 6% grade hold | 2.71 kW | gear oil / case convection
+  motor+inverter | S2 rating point 95 kW / 207.4 Nm | 5.45 kW | LT coolant loop
+  brake resistor | 6% descent, R2 continuous | 50.0 kW | ambient air (forced), NOT coolant (R15)
+  brake resistor | 24-min 25 km/h descent (WS1 4.6) | 22.0 kW | ambient air; 8.82 kWh total
+  brake resistor | WS2-E5 second-stage ceiling: full duty at the 748.8 V operating ceiling (continuous-capable) | 150.2 kW | ambient air (forced), NOT coolant (R15)
+  chopper | R2 50 kW continuous | 0.06 kW | LT coolant loop
+  motor+inverter | 20% crawl 510 Nm (V1 speed 10.6 km/h), R13 continuous | 8.79 kW | LT coolant loop
+  motor+inverter | 20% crawl 510 Nm (V2 speed 23.6 km/h), R13 continuous | 10.27 kW | LT coolant loop
+  motor+inverter | R13 crawl band top 515 Nm at 25 km/h — LOOP-SIZING CASE | 10.57 kW | LT coolant loop
+  motor+inverter | VOLT-SUB V1 cycle average | 1.15 kW | LT coolant loop
+  motor+inverter (incl lockup spin) | VOLT-REG V2 cycle average | 1.61 kW | LT coolant loop
+  blower (resistor) | whenever chopper active | 1.45 kW | electrical load on bus
+  pack heater (WS3-OWNED, coexisting member per R15) | R15 blend order: regen -> pack heater (if cold) -> resistor -> friction; heater feeds from the DC bus | 8.0 kW | pack coolant loop; electrical load on bus (WS3 owns the heater, WS2 owns the resistor)
+== 9. Interface block (R14 discipline) ==
+  headline.bus_window = 432.0-748.8 V
+  headline.bus_nominal = 662.4 V
+  headline.bus_transient = 777.6 V
+  headline.device_class = 1200 V
+  headline.peak_power_vnom_kW = 188 kW
+  headline.peak_power_vmin_kW = 121 kW
+  headline.peak_power_vmax_kW = 213 kW
+  headline.peak_torque = 530 Nm
+  headline.i_cont_arms = 312 Arms
+  headline.i_cont_ratio_vs_r3 = 0.685
+  headline.s2_Tw_end = 92 C
+  headline.s2_steady_Tw = 92 C
+  headline.crawl_oilspray_Tw = 146 C
+  headline.crawl_bandtop_Tw = 153 C
+  headline.crawl_jacket_hold = 118 s
+  headline.stall_515_hold = 98 s
+  headline.resistor_R = 3.73 ohm
+  headline.resistor_mass = 54 kg
+  headline.resistor_fullduty_vmax = 150 kW
+  headline.spin_energy_lockup_reg = 1.49 kWh
+  headline.spin_drag_85_W = 1,109 W
+  headline.total_mass = 231 kg
+  headline.eta_sub = 0.920
+  headline.eta_reg = 0.928
+
+Done in 9.3 s. results.json written.

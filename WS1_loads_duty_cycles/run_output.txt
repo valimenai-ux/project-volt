@@ -1,0 +1,1671 @@
+==== CYCLE METRICS ====
+VOLT-SUB: 19.82 km in 3485 s | avg 20.5 km/h | max 50 | 1.51 stops/km | idle 44%
+   Ppeak 67.4 kW | Pavg_trac 9.2 | P95 43.4 | P99 54.8 | Prms 22.5
+   E/km 0.450 kWh (net 0.268) | Ebrake 3.61 kWh (40% of tractive) | regen@75kW 92% mech / 80% elec | regen peak 121 kW
+VOLT-REG: 131.96 km in 6614 s | avg 71.8 km/h | max 100 | 0.13 stops/km | idle 8%
+   Ppeak 163.7 kW | Pavg_trac 42.9 | P95 99.2 | P99 144.2 | Prms 56.0
+   E/km 0.598 kWh (net 0.562) | Ebrake 4.65 kWh (6% of tractive) | regen@75kW 91% mech / 79% elec | regen peak 145 kW
+
+==== THE FOUR NUMBERS ====
+V1_postal_VOLT-SUB
+   N1 motor RMS    21.7 kW shaft | rolling: ['30s=45', '60s=35', '120s=33', '300s=27', '600s=25', '1200s=24']
+   N2 genset       10.1 kW bus / 10.8 kW shaft
+   N3 buffer      0.709 kWh (5 min window) | full cycle 1.13 kWh
+   N4 peak regen  121.4 kW wheel / 64.9 kW bus (capped)
+   motor peak motoring 69.4 kW shaft | batt peak dis/chg 72/71 kW
+V2_trucker_VOLT-REG_iMMD
+   N1 motor RMS    19.9 kW shaft | rolling: ['30s=79', '60s=60', '120s=49', '300s=35', '600s=31', '1200s=29']
+   N2 genset        9.7 kW bus / 10.4 kW shaft | engine direct avg 36.6 kW | TOTAL engine 47.0 kW
+   N3 buffer      1.291 kWh (5 min window) | full cycle 3.40 kWh
+   N4 peak regen  144.8 kW wheel / 64.9 kW bus (capped)
+   motor peak motoring 111.0 kW shaft | batt peak dis/chg 120/70 kW
+V2_trucker_VOLT-REG_series_only
+   N1 motor RMS    57.2 kW shaft | rolling: ['30s=158', '60s=156', '120s=148', '300s=125', '600s=102', '1200s=87']
+   N2 genset       50.6 kW bus / 53.8 kW shaft
+   N3 buffer      7.319 kWh (5 min window) | full cycle 20.80 kWh
+   N4 peak regen  144.8 kW wheel / 64.9 kW bus (capped)
+   motor peak motoring 168.7 kW shaft | batt peak dis/chg 145/110 kW
+V2_trucker_VOLT-SUB_series
+   N1 motor RMS    21.7 kW shaft | rolling: ['30s=45', '60s=35', '120s=33', '300s=27', '600s=25', '1200s=24']
+   N2 genset       10.1 kW bus / 10.8 kW shaft
+   N3 buffer      0.709 kWh (5 min window) | full cycle 1.13 kWh
+   N4 peak regen  121.4 kW wheel / 64.9 kW bus (capped)
+   motor peak motoring 69.4 kW shaft | batt peak dis/chg 72/71 kW
+
+==== SUSTAINED SERIES DUTY (motor continuous driver) ====
+{
+ "V1_genset_50kW": {
+  "grade_0pct": {
+   "wheel_force_at_that_speed_N": 1784.0613451385432,
+   "sustained_speed_kmh": 78.60253033457778,
+   "motor_wheel_kW": 38.95325999999999,
+   "motor_shaft_kW": 40.157999999999994,
+   "motor_torque_Nm_at_shaft": 68.05182450528463,
+   "duration_10km_s": 458.0005229699757
+  },
+  "grade_2pct": {
+   "wheel_force_at_that_speed_N": 2492.663397030996,
+   "sustained_speed_kmh": 56.25779083009347,
+   "motor_wheel_kW": 38.95325999999999,
+   "motor_shaft_kW": 40.157999999999994,
+   "motor_torque_Nm_at_shaft": 95.08097493829571,
+   "duration_10km_s": 639.9113699420783
+  },
+  "grade_4pct": {
+   "wheel_force_at_that_speed_N": 3484.876089500398,
+   "sustained_speed_kmh": 40.24009244475146,
+   "motor_wheel_kW": 38.95325999999999,
+   "motor_shaft_kW": 40.157999999999994,
+   "motor_torque_Nm_at_shaft": 132.92826320774714,
+   "duration_10km_s": 894.630151494483
+  },
+  "grade_6pct": {
+   "wheel_force_at_that_speed_N": 4637.267349895571,
+   "sustained_speed_kmh": 30.2401663348476,
+   "motor_wheel_kW": 38.95325999999999,
+   "motor_shaft_kW": 40.157999999999994,
+   "motor_torque_Nm_at_shaft": 176.88545561457332,
+   "duration_10km_s": 1190.4696423086466
+  },
+  "grade_8pct": {
+   "wheel_force_at_that_speed_N": 5855.561928822837,
+   "sustained_speed_kmh": 23.94846774819974,
+   "motor_wheel_kW": 38.95325999999999,
+   "motor_shaft_kW": 40.157999999999994,
+   "motor_torque_Nm_at_shaft": 223.3564859447886,
+   "duration_10km_s": 1503.227696173013
+  },
+  "grade_12pct": {
+   "wheel_force_at_that_speed_N": 8347.61329614075,
+   "sustained_speed_kmh": 16.799021591576555,
+   "motor_wheel_kW": 38.95325999999999,
+   "motor_shaft_kW": 40.157999999999994,
+   "motor_torque_Nm_at_shaft": 318.41411541980176,
+   "duration_10km_s": 2142.9819471183546
+  },
+  "grade_20pct": {
+   "wheel_force_at_that_speed_N": 13290.779850861225,
+   "sustained_speed_kmh": 10.551054006880804,
+   "motor_wheel_kW": 38.95325999999999,
+   "motor_shaft_kW": 40.157999999999994,
+   "motor_torque_Nm_at_shaft": 506.9678912184178,
+   "duration_10km_s": 3411.9813979269584
+  }
+ },
+ "V2_genset_110kW": {
+  "grade_0pct": {
+   "wheel_force_at_that_speed_N": 2896.6410857353376,
+   "sustained_speed_kmh": 109.088021528143,
+   "motor_wheel_kW": 87.7746792,
+   "motor_shaft_kW": 90.48936,
+   "motor_torque_Nm_at_shaft": 110.49043316722421,
+   "duration_10km_s": 330.00873510857986
+  },
+  "grade_2pct": {
+   "wheel_force_at_that_speed_N": 3480.2249513950983,
+   "sustained_speed_kmh": 90.79552314379313,
+   "motor_wheel_kW": 87.7746792,
+   "motor_shaft_kW": 90.48936,
+   "motor_torque_Nm_at_shaft": 132.75084866146253,
+   "duration_10km_s": 396.49531996183
+  },
+  "grade_4pct": {
+   "wheel_force_at_that_speed_N": 4246.615824263707,
+   "sustained_speed_kmh": 74.4095670991824,
+   "motor_wheel_kW": 87.7746792,
+   "motor_shaft_kW": 90.48936,
+   "motor_torque_Nm_at_shaft": 161.98431494614138,
+   "duration_10km_s": 483.80875475346727
+  },
+  "grade_6pct": {
+   "wheel_force_at_that_speed_N": 5182.362827376208,
+   "sustained_speed_kmh": 60.97389465877726,
+   "motor_wheel_kW": 87.7746792,
+   "motor_shaft_kW": 90.48936,
+   "motor_torque_Nm_at_shaft": 197.6777573329069,
+   "duration_10km_s": 590.4166069998246
+  },
+  "grade_8pct": {
+   "wheel_force_at_that_speed_N": 6242.2958646434,
+   "sustained_speed_kmh": 50.620613308281776,
+   "motor_wheel_kW": 87.7746792,
+   "motor_shaft_kW": 90.48936,
+   "motor_torque_Nm_at_shaft": 238.10819277505757,
+   "duration_10km_s": 711.1727347268277
+  },
+  "grade_12pct": {
+   "wheel_force_at_that_speed_N": 8557.840275328546,
+   "sustained_speed_kmh": 36.92390076862807,
+   "motor_wheel_kW": 87.7746792,
+   "motor_shaft_kW": 90.48936,
+   "motor_torque_Nm_at_shaft": 326.43308266717133,
+   "duration_10km_s": 974.978245813805
+  },
+  "grade_20pct": {
+   "wheel_force_at_that_speed_N": 13377.62126034878,
+   "sustained_speed_kmh": 23.620704979635637,
+   "motor_wheel_kW": 87.7746792,
+   "motor_shaft_kW": 90.48936,
+   "motor_torque_Nm_at_shaft": 510.2803985906235,
+   "duration_10km_s": 1524.0866024547977
+  }
+ }
+}
+
+==== BASELINE CROSS-CHECK ====
+{
+ "cruise85_force_N": 1987.5751111111113,
+ "cruise85_wheel_kW": 46.928856790123454,
+ "cruise85_components_N": {
+  "aero": 1404.861111111111,
+  "roll": 582.714,
+  "grade": 0.0
+ },
+ "baseline_says": "\u22482.0 kN, \u224847 kW",
+ "grade6_at_60kmh_wheel_kW": 85.99090322987307,
+ "grade6_at_60kmh_bus_kW": 99.33932732059623,
+ "grade6_at_60kmh_engine_shaft_kW": 105.68013544744282,
+ "grade6_at_60kmh_engine_shaft_plus_aux_kW": 107.8077950219109,
+ "baseline_v2_genset_floor_kW": 110.0,
+ "launch_20pc_grade_force_N": 13271.653373511424,
+ "engine_direct_max_force_N_at_700Nm": 5032.432432432432,
+ "engine_idle_road_speed_kmh": 34.87167845484671,
+ "eta_series_product": 0.8136903199999999,
+ "combined_at_85kmh": {
+  "motor_75kW": {
+   "combined_force_kN": 8.208903020667725,
+   "grade_holdable_pct": 9.657716956982403,
+   "wheel_power_kW": 193.8213213213213,
+   "battery_draw_kW": 86.64229900141862,
+   "minutes_on_2kWh_buffer": 1.3850048
+  },
+  "motor_100kW": {
+   "combined_force_kN": 9.26772655007949,
+   "grade_holdable_pct": 11.32175723583052,
+   "wheel_power_kW": 218.82132132132128,
+   "battery_draw_kW": 115.52306533522483,
+   "minutes_on_2kWh_buffer": 1.0387536000000002
+  },
+  "motor_150kW": {
+   "combined_force_kN": 11.385373608903018,
+   "grade_holdable_pct": 14.680084827813175,
+   "wheel_power_kW": 268.8213213213213,
+   "battery_draw_kW": 173.28459800283724,
+   "minutes_on_2kWh_buffer": 0.6925024
+  }
+ }
+}
+
+==== 10 km @ 6% CLIMB ====
+{
+ "elevation_gain_m": 600.0,
+ "potential_energy_kWh": 10.791,
+ "V1_genset_50kW_wheel_kW_available": 38.95325999999999,
+ "V1_sustained_speed_kmh": 30.2401663348476,
+ "V2_genset_110kW_series_wheel_kW_available": 87.7746792,
+ "V2_series_sustained_speed_kmh": 60.97389465877726,
+ "V2_direct_path_alone": {
+  "any_speed_sustainable": false,
+  "best_speed_kmh": 69.71668667466987,
+  "min_deficit_at_wheel_kW": 9.314904644960988,
+  "note": "With a single 2.8:1 ratio the crank speed is tied to road speed, so the engine cannot reach its power peak at grade-hold speeds. The direct path alone holds no speed on 6%."
+ },
+ "hold_85kmh_V2": {
+  "wheel_need_kW": 138.46300025466584,
+  "engine_direct_available_kW_before_aux": 118.82132132132129,
+  "engine_direct_available_kW_after_aux": 116.80004472557661,
+  "deficit_at_wheel_kW": 21.662955529089245,
+  "duration_s": 423.5294117647059,
+  "battery_energy_at_bus_kWh": 2.9442012081659383,
+  "battery_energy_at_cells_kWh": 3.035258977490658
+ },
+ "forward_sim": {
+  "V2_buffer2kWh": {
+   "settled_speed_kmh": 60.97389465877838,
+   "time_to_climb_10km_s": 554.6,
+   "avg_speed_over_10km_kmh": 64.91164803461955,
+   "battery_exhausted_after_s": 104.9,
+   "speed_still_held_at_that_time_kmh": 85.0,
+   "battery_energy_used_kWh": 1.1
+  },
+  "V2_buffer5kWh": {
+   "settled_speed_kmh": 60.97389465877838,
+   "time_to_climb_10km_s": 462.70000000000005,
+   "avg_speed_over_10km_kmh": 77.80419278149988,
+   "battery_exhausted_after_s": 329.70000000000005,
+   "speed_still_held_at_that_time_kmh": 85.0,
+   "battery_energy_used_kWh": 2.75
+  },
+  "V2_battery_unlimited": {
+   "settled_speed_kmh": 84.99999999999999,
+   "time_to_climb_10km_s": 438.3,
+   "avg_speed_over_10km_kmh": 82.13552361396304,
+   "battery_exhausted_after_s": null,
+   "speed_still_held_at_that_time_kmh": null,
+   "battery_energy_used_kWh": null
+  },
+  "V1_50kW_buffer2kWh": {
+   "settled_speed_kmh": 30.240166334847963,
+   "time_to_climb_10km_s": 1132.4,
+   "avg_speed_over_10km_kmh": 31.790886612504412,
+   "battery_exhausted_after_s": 39.900000000000006,
+   "speed_still_held_at_that_time_kmh": 78.80599073539959,
+   "battery_energy_used_kWh": 1.1
+  }
+ }
+}
+
+==== DESCENT ====
+{
+ "per_speed": {
+  "25kmh": {
+   "net_wheel_kW": -22.04576763453552,
+   "retardation_required_kW": 22.04576763453552,
+   "time_10km_s": 1440.0,
+   "E_to_dissipate_kWh": 8.818307053814207,
+   "engine_rpm_if_locked": 501.8399106501204
+  },
+  "35kmh": {
+   "net_wheel_kW": -29.72981542909046,
+   "retardation_required_kW": 29.72981542909046,
+   "time_10km_s": 1028.5714285714287,
+   "E_to_dissipate_kWh": 8.494232979740133,
+   "engine_rpm_if_locked": 702.5758749101685
+  },
+  "40kmh": {
+   "net_wheel_kW": -33.16674673377534,
+   "retardation_required_kW": 33.16674673377534,
+   "time_10km_s": 900.0,
+   "E_to_dissipate_kWh": 8.291686683443835,
+   "engine_rpm_if_locked": 802.9438570401927
+  },
+  "50kmh": {
+   "net_wheel_kW": -39.027877861663626,
+   "retardation_required_kW": 39.027877861663626,
+   "time_10km_s": 720.0,
+   "E_to_dissipate_kWh": 7.805575572332725,
+   "engine_rpm_if_locked": 1003.6798213002407
+  },
+  "60kmh": {
+   "net_wheel_kW": -43.26863861918153,
+   "retardation_required_kW": 43.26863861918153,
+   "time_10km_s": 600.0,
+   "E_to_dissipate_kWh": 7.211439769863588,
+   "engine_rpm_if_locked": 1204.4157855602891
+  },
+  "70kmh": {
+   "net_wheel_kW": -45.564954932255,
+   "retardation_required_kW": 45.564954932255,
+   "time_10km_s": 514.2857142857143,
+   "E_to_dissipate_kWh": 6.5092792760364295,
+   "engine_rpm_if_locked": 1405.151749820337
+  },
+  "85kmh": {
+   "net_wheel_kW": -44.654684031494824,
+   "retardation_required_kW": 44.654684031494824,
+   "time_10km_s": 423.5294117647059,
+   "E_to_dissipate_kWh": 5.253492238999392,
+   "engine_rpm_if_locked": 1706.2556962104093
+  },
+  "100kmh": {
+   "net_wheel_kW": -37.54649646406799,
+   "retardation_required_kW": 37.54649646406799,
+   "time_10km_s": 360.0,
+   "E_to_dissipate_kWh": 3.7546496464067993,
+   "engine_rpm_if_locked": 2007.3596426004815
+  }
+ },
+ "potential_energy_released_kWh": 10.791,
+ "note": "A slower descent dissipates MORE energy in the driveline, because aero drag - which scales with v^2 - takes a smaller share of the gravitational input.",
+ "engine_brake_speed_floor_kmh": 34.87167845484671,
+ "floor_note": "Below that road speed the crank would be under idle, so the clutch must open and NEITHER engine drag NOR an exhaust brake is available - in exactly the speed range where the energy to dissipate is largest.",
+ "thermal": {
+  "buffer1.0kWh_30kmh_no_engine_brake": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 81.41127672932274,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 7.363687587894897,
+   "adiabatic_dT_K": 960.4809897254213
+  },
+  "buffer1.0kWh_30kmh_engine_drag_10kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 81.41127672932274,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 7.363687587894897,
+   "adiabatic_dT_K": 960.4809897254213
+  },
+  "buffer1.0kWh_30kmh_exhaust_brake_30kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 81.41127672932274,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 7.363687587894897,
+   "adiabatic_dT_K": 960.4809897254213
+  },
+  "buffer1.0kWh_60kmh_no_engine_brake": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 43.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 47.10547230465166,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 6.290431139012311,
+   "adiabatic_dT_K": 820.4910181320406
+  },
+  "buffer1.0kWh_60kmh_engine_drag_10kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 33.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 62.32131393162845,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 4.623764472345646,
+   "adiabatic_dT_K": 603.0997137842146
+  },
+  "buffer1.0kWh_60kmh_exhaust_brake_30kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 13.268638619181532,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 176.06525538194447,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 1.290431139012312,
+   "adiabatic_dT_K": 168.31710508856244
+  },
+  "buffer1.0kWh_85kmh_no_engine_brake": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 44.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 45.56357781276177,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 4.4457415153395115,
+   "adiabatic_dT_K": 579.8793280877624
+  },
+  "buffer1.0kWh_85kmh_engine_drag_10kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 34.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 59.650661679470176,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.269270927104218,
+   "adiabatic_dT_K": 426.42664266576753
+  },
+  "buffer1.0kWh_85kmh_exhaust_brake_30kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 14.654684031494828,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 0.44999999999999996,
+   "time_to_fill_headroom_s": 156.29613383168032,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 0.9163297506336292,
+   "adiabatic_dT_K": 119.52127182177773
+  },
+  "buffer2.0kWh_30kmh_no_engine_brake": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 162.82255345864547,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 6.827755841494369,
+   "adiabatic_dT_K": 890.5768488905699
+  },
+  "buffer2.0kWh_30kmh_engine_drag_10kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 162.82255345864547,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 6.827755841494369,
+   "adiabatic_dT_K": 890.5768488905699
+  },
+  "buffer2.0kWh_30kmh_exhaust_brake_30kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 162.82255345864547,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 6.827755841494369,
+   "adiabatic_dT_K": 890.5768488905699
+  },
+  "buffer2.0kWh_60kmh_no_engine_brake": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 43.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 94.21094460930333,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 5.754499392611784,
+   "adiabatic_dT_K": 750.5868772971892
+  },
+  "buffer2.0kWh_60kmh_engine_drag_10kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 33.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 124.6426278632569,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 4.087832725945118,
+   "adiabatic_dT_K": 533.1955729493632
+  },
+  "buffer2.0kWh_60kmh_exhaust_brake_30kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 13.268638619181532,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 352.13051076388894,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 0.7544993926117843,
+   "adiabatic_dT_K": 98.412964253711
+  },
+  "buffer2.0kWh_85kmh_no_engine_brake": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 44.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 91.12715562552354,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.909809768938984,
+   "adiabatic_dT_K": 509.975187252911
+  },
+  "buffer2.0kWh_85kmh_engine_drag_10kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 34.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 119.30132335894035,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 2.73333918070369,
+   "adiabatic_dT_K": 356.52250183091616
+  },
+  "buffer2.0kWh_85kmh_exhaust_brake_30kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 14.654684031494828,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 0.8999999999999999,
+   "time_to_fill_headroom_s": 312.59226766336064,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 0.38039800423310166,
+   "adiabatic_dT_K": 49.6171309869263
+  },
+  "buffer3.0kWh_30kmh_no_engine_brake": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 244.2338301879682,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 6.29182409509384,
+   "adiabatic_dT_K": 820.6727080557183
+  },
+  "buffer3.0kWh_30kmh_engine_drag_10kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 244.2338301879682,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 6.29182409509384,
+   "adiabatic_dT_K": 820.6727080557183
+  },
+  "buffer3.0kWh_30kmh_exhaust_brake_30kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 244.2338301879682,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 6.29182409509384,
+   "adiabatic_dT_K": 820.6727080557183
+  },
+  "buffer3.0kWh_60kmh_no_engine_brake": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 43.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 141.31641691395498,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 5.218567646211256,
+   "adiabatic_dT_K": 680.6827364623377
+  },
+  "buffer3.0kWh_60kmh_engine_drag_10kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 33.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 186.96394179488536,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.55190097954459,
+   "adiabatic_dT_K": 463.2914321145118
+  },
+  "buffer3.0kWh_60kmh_exhaust_brake_30kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 13.268638619181532,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 528.1957661458333,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 0.21856764621125693,
+   "adiabatic_dT_K": 28.5088234188596
+  },
+  "buffer3.0kWh_85kmh_no_engine_brake": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 44.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 136.6907334382853,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.373878022538457,
+   "adiabatic_dT_K": 440.07104641805955
+  },
+  "buffer3.0kWh_85kmh_engine_drag_10kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 34.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 178.95198503841053,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 2.197407434303163,
+   "adiabatic_dT_K": 286.6183609960647
+  },
+  "buffer3.0kWh_85kmh_exhaust_brake_30kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 14.654684031494828,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 1.3499999999999996,
+   "time_to_fill_headroom_s": 468.8884014950409,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  },
+  "buffer4.0kWh_30kmh_no_engine_brake": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 325.64510691729095,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 5.755892348693314,
+   "adiabatic_dT_K": 750.768567220867
+  },
+  "buffer4.0kWh_30kmh_engine_drag_10kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 325.64510691729095,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 5.755892348693314,
+   "adiabatic_dT_K": 750.768567220867
+  },
+  "buffer4.0kWh_30kmh_exhaust_brake_30kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 325.64510691729095,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 5.755892348693314,
+   "adiabatic_dT_K": 750.768567220867
+  },
+  "buffer4.0kWh_60kmh_no_engine_brake": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 43.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 188.42188921860665,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 4.682635899810729,
+   "adiabatic_dT_K": 610.7785956274864
+  },
+  "buffer4.0kWh_60kmh_engine_drag_10kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 33.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 249.2852557265138,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.015969233144063,
+   "adiabatic_dT_K": 393.38729127966036
+  },
+  "buffer4.0kWh_60kmh_exhaust_brake_30kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 13.268638619181532,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 704.2610215277779,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  },
+  "buffer4.0kWh_85kmh_no_engine_brake": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 44.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 182.25431125104708,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 2.8379462761379286,
+   "adiabatic_dT_K": 370.16690558320806
+  },
+  "buffer4.0kWh_85kmh_engine_drag_10kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 34.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 238.6026467178807,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 1.6614756879026351,
+   "adiabatic_dT_K": 216.7142201612133
+  },
+  "buffer4.0kWh_85kmh_exhaust_brake_30kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 14.654684031494828,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 1.7999999999999998,
+   "time_to_fill_headroom_s": 625.1845353267213,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  },
+  "buffer6.0kWh_30kmh_no_engine_brake": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 488.4676603759364,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 4.684028855892258,
+   "adiabatic_dT_K": 610.9602855511641
+  },
+  "buffer6.0kWh_30kmh_engine_drag_10kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 488.4676603759364,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 4.684028855892258,
+   "adiabatic_dT_K": 610.9602855511641
+  },
+  "buffer6.0kWh_30kmh_exhaust_brake_30kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 488.4676603759364,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 4.684028855892258,
+   "adiabatic_dT_K": 610.9602855511641
+  },
+  "buffer6.0kWh_60kmh_no_engine_brake": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 43.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 282.63283382790996,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.610772407009674,
+   "adiabatic_dT_K": 470.97031395778356
+  },
+  "buffer6.0kWh_60kmh_engine_drag_10kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 33.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 373.9278835897707,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 1.9441057403430075,
+   "adiabatic_dT_K": 253.57900960995752
+  },
+  "buffer6.0kWh_60kmh_exhaust_brake_30kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 13.268638619181532,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 1056.3915322916666,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  },
+  "buffer6.0kWh_85kmh_no_engine_brake": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 44.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 273.3814668765706,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 1.7660827833368737,
+   "adiabatic_dT_K": 230.35862391350528
+  },
+  "buffer6.0kWh_85kmh_engine_drag_10kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 34.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 357.90397007682105,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 0.58961219510158,
+   "adiabatic_dT_K": 76.90593849151044
+  },
+  "buffer6.0kWh_85kmh_exhaust_brake_30kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 14.654684031494828,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 2.6999999999999993,
+   "time_to_fill_headroom_s": 937.7768029900818,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  },
+  "buffer8.0kWh_30kmh_no_engine_brake": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 651.2902138345819,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.6121653630912034,
+   "adiabatic_dT_K": 471.1520038814613
+  },
+  "buffer8.0kWh_30kmh_engine_drag_10kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 651.2902138345819,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.6121653630912034,
+   "adiabatic_dT_K": 471.1520038814613
+  },
+  "buffer8.0kWh_30kmh_exhaust_brake_30kW": {
+   "speed_kmh": 30,
+   "retardation_demanded_kW": 26.009319309590765,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": false,
+   "regen_captured_at_wheel_kW": 26.009319309590765,
+   "descent_duration_s": 1200.0,
+   "energy_to_dissipate_kWh": 8.669773103196922,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 651.2902138345819,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 3.6121653630912034,
+   "adiabatic_dT_K": 471.1520038814613
+  },
+  "buffer8.0kWh_60kmh_no_engine_brake": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 43.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 376.8437784372133,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 2.538908914208619,
+   "adiabatic_dT_K": 331.16203228808075
+  },
+  "buffer8.0kWh_60kmh_engine_drag_10kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 33.26863861918153,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 498.5705114530276,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 0.8722422475419527,
+   "adiabatic_dT_K": 113.7707279402547
+  },
+  "buffer8.0kWh_60kmh_exhaust_brake_30kW": {
+   "speed_kmh": 60,
+   "retardation_demanded_kW": 43.26863861918153,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 13.268638619181532,
+   "descent_duration_s": 600.0,
+   "energy_to_dissipate_kWh": 7.211439769863588,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 1408.5220430555557,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  },
+  "buffer8.0kWh_85kmh_no_engine_brake": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 0.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 44.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 364.50862250209417,
+   "buffer_fills": true,
+   "friction_brake_energy_kWh": 0.6942192905358181,
+   "adiabatic_dT_K": 90.55034224380236
+  },
+  "buffer8.0kWh_85kmh_engine_drag_10kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 10.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 34.654684031494824,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 477.2052934357614,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  },
+  "buffer8.0kWh_85kmh_exhaust_brake_30kW": {
+   "speed_kmh": 85,
+   "retardation_demanded_kW": 44.654684031494824,
+   "engine_brake_credit_kW": 30.0,
+   "engine_braking_available": true,
+   "regen_captured_at_wheel_kW": 14.654684031494828,
+   "descent_duration_s": 423.5294117647059,
+   "energy_to_dissipate_kWh": 5.253492238999392,
+   "regen_headroom_kWh": 3.5999999999999996,
+   "time_to_fill_headroom_s": 1250.3690706534426,
+   "buffer_fills": false,
+   "friction_brake_energy_kWh": 0.0,
+   "adiabatic_dT_K": 0.0
+  }
+ }
+}
+
+==== ACHIEVABLE ====
+{
+ "demand_distance_km": 131.95866801678565,
+ "scenarios": {
+  "battery_unlimited_motor150kW": {
+   "distance_km": 131.9586648501961,
+   "shortfall_pct": 2.399682863529762e-06,
+   "max_speed_deficit_kmh": 0.2279944466705336,
+   "time_deficit_gt_5kmh_pct": 0.0,
+   "min_speed_where_grade_gt_4pct_kmh": 92.06744788342179,
+   "friction_brake_energy_kWh": 0.41743529241015115,
+   "batt_min_kWh": null,
+   "batt_flat_time_pct": null,
+   "regen_refused_to_friction_kWh": 0.41743529241015115
+  },
+  "buffer_2kWh_motor150kW": {
+   "distance_km": 131.9586648501961,
+   "shortfall_pct": 2.399682863529762e-06,
+   "max_speed_deficit_kmh": 0.2279944466705336,
+   "time_deficit_gt_5kmh_pct": 0.0,
+   "min_speed_where_grade_gt_4pct_kmh": 92.06744788342179,
+   "friction_brake_energy_kWh": 0.41743529241015115,
+   "batt_min_kWh": 0.42602564807852056,
+   "batt_flat_time_pct": 0.0,
+   "regen_refused_to_friction_kWh": 0.41743529241015115
+  },
+  "buffer_2kWh_motor75kW": {
+   "distance_km": 131.89410439740547,
+   "shortfall_pct": 0.048927152986999456,
+   "max_speed_deficit_kmh": 9.46419602963109,
+   "time_deficit_gt_5kmh_pct": 0.2751613927399725,
+   "min_speed_where_grade_gt_4pct_kmh": 92.06744788342179,
+   "friction_brake_energy_kWh": 0.41743529241015115,
+   "batt_min_kWh": 0.42598647930466255,
+   "batt_flat_time_pct": 0.0,
+   "regen_refused_to_friction_kWh": 0.41743529241015115
+  }
+ }
+}
+{
+ "distance_demand_km": 19.81951646422239,
+ "distance_achieved_km": 19.819513153019937,
+ "max_speed_deficit_kmh": 0.23840657679397728,
+ "time_deficit_gt_2kmh_pct": 0.0,
+ "batt_min_kWh": 0.796583541917584,
+ "friction_brake_energy_kWh": 0.2958727875886239
+}
+
+==== SEED ENSEMBLE ====
+{
+ "VOLT-SUB": {
+  "E_per_km_kWh": {
+   "mean": 0.4488947306321479,
+   "min": 0.44628527191003187,
+   "max": 0.4509566693596656,
+   "std": 0.0016677209038199123,
+   "n": 8
+  },
+  "stops_per_km": {
+   "mean": 1.5133700071025071,
+   "min": 1.5131443405652518,
+   "max": 1.5136734195754744,
+   "std": 0.000203735864659568,
+   "n": 8
+  },
+  "avg_speed_kmh": {
+   "mean": 20.4281761894029,
+   "min": 20.325622689329467,
+   "max": 20.472944613124618,
+   "std": 0.04692993205831461,
+   "n": 8
+  },
+  "P_peak_kW": {
+   "mean": 67.81908488240877,
+   "min": 64.80832505117694,
+   "max": 71.41954914548707,
+   "std": 2.1518790968557533,
+   "n": 8
+  },
+  "P95_kW": {
+   "mean": 43.32320148899508,
+   "min": 42.329666516374566,
+   "max": 44.07653240929219,
+   "std": 0.6330636967312021,
+   "n": 8
+  },
+  "P99_kW": {
+   "mean": 56.74020560150959,
+   "min": 53.592931743104,
+   "max": 59.58309068895524,
+   "std": 1.8922643826340713,
+   "n": 8
+  },
+  "E_braking_kWh": {
+   "mean": 3.593256331757025,
+   "min": 3.544889784248813,
+   "max": 3.63214091197384,
+   "std": 0.028398255127241936,
+   "n": 8
+  },
+  "N1_motor_rms_shaft_kW": {
+   "mean": 21.62882632902801,
+   "min": 21.36384483624021,
+   "max": 21.894864913856782,
+   "std": 0.15021759972520943,
+   "n": 8
+  },
+  "N2_genset_const_bus_kW": {
+   "mean": 10.059833526611328,
+   "min": 9.956836700439453,
+   "max": 10.135173797607422,
+   "std": 0.051471915315680065,
+   "n": 8
+  },
+  "N3_buffer_5min_kWh": {
+   "mean": 0.8040697356632411,
+   "min": 0.709356004132938,
+   "max": 0.8709806056115929,
+   "std": 0.06510042305116447,
+   "n": 8
+  },
+  "N4_peak_regen_wheel_kW": {
+   "mean": 128.37754993152151,
+   "min": 121.38141566229696,
+   "max": 132.97660261504203,
+   "std": 4.0171954432934776,
+   "n": 8
+  }
+ },
+ "VOLT-REG": {
+  "E_per_km_kWh": {
+   "mean": 0.6011071267784323,
+   "min": 0.5975723327369503,
+   "max": 0.6025855762517686,
+   "std": 0.0015870011731552898,
+   "n": 8
+  },
+  "stops_per_km": {
+   "mean": 0.12882978740147571,
+   "min": 0.12882195329266793,
+   "max": 0.1288342361538214,
+   "std": 3.3932965606979217e-06,
+   "n": 8
+  },
+  "avg_speed_kmh": {
+   "mean": 72.16305949457778,
+   "min": 71.82292716585955,
+   "max": 72.3062707588431,
+   "std": 0.15505324751402735,
+   "n": 8
+  },
+  "P_peak_kW": {
+   "mean": 176.70332448774053,
+   "min": 163.67627051990755,
+   "max": 188.06595294689757,
+   "std": 7.59609162763164,
+   "n": 8
+  },
+  "P95_kW": {
+   "mean": 99.33297035184214,
+   "min": 98.49461655617147,
+   "max": 99.9106965074793,
+   "std": 0.465855827710416,
+   "n": 8
+  },
+  "P99_kW": {
+   "mean": 143.9421867774924,
+   "min": 140.86707344976384,
+   "max": 147.1578422285679,
+   "std": 1.746133708286098,
+   "n": 8
+  },
+  "E_braking_kWh": {
+   "mean": 4.630501265196574,
+   "min": 4.547036149596612,
+   "max": 4.667433809203222,
+   "std": 0.034510496950697404,
+   "n": 8
+  },
+  "N1_motor_rms_shaft_kW": {
+   "mean": 19.30255968217108,
+   "min": 18.95528123891436,
+   "max": 19.69592334285969,
+   "std": 0.2547350443148036,
+   "n": 8
+  },
+  "N2_genset_const_bus_kW": {
+   "mean": 9.291291236877441,
+   "min": 8.823871612548828,
+   "max": 9.577274322509766,
+   "std": 0.27153330152724253,
+   "n": 8
+  },
+  "N3_buffer_5min_kWh": {
+   "mean": 1.2841829746722526,
+   "min": 1.1211037329088462,
+   "max": 1.3809442975330612,
+   "std": 0.08614512701127504,
+   "n": 8
+  },
+  "N4_peak_regen_wheel_kW": {
+   "mean": 171.74029871045568,
+   "min": 144.76766705675522,
+   "max": 197.58907071071656,
+   "std": 15.329017276493296,
+   "n": 8
+  }
+ }
+}
+
+==== PAYLOAD ====
+{
+ "VOLT-SUB": {
+  "empty_curb": {
+   "mass_kg": 3700.0,
+   "E_per_km_kWh": 0.2966491885018389,
+   "E_net_per_km_kWh": 0.1965918580496804,
+   "P_peak_kW": 38.624888287465325,
+   "P95_kW": 25.584084957689424,
+   "E_braking_kWh": 1.9830879082626949,
+   "regen_frac_mech_at75kW": 0.9822262750998231,
+   "N1_motor_rms_shaft_kW": 13.334797098804154,
+   "N2_genset_const_bus_kW": 7.557392120361328,
+   "N3_buffer_5min_kWh": 0.5291706447665323,
+   "N4_peak_regen_wheel_kW": 66.02678320540294
+  },
+  "payload_-20pct": {
+   "mass_kg": 6020.0,
+   "E_per_km_kWh": 0.41927802265662734,
+   "E_net_per_km_kWh": 0.253489783896935,
+   "P_peak_kW": 61.61243155141042,
+   "P95_kW": 39.83885211185104,
+   "E_braking_kWh": 3.285842727672156,
+   "regen_frac_mech_at75kW": 0.945145453127052,
+   "N1_motor_rms_shaft_kW": 20.20605501252472,
+   "N2_genset_const_bus_kW": 9.548664093017578,
+   "N3_buffer_5min_kWh": 0.6765946558635815,
+   "N4_peak_regen_wheel_kW": 110.31048917091815
+  },
+  "payload_nominal_GVW": {
+   "mass_kg": 6600.0,
+   "E_per_km_kWh": 0.4499372859034982,
+   "E_net_per_km_kWh": 0.26771426535874865,
+   "P_peak_kW": 67.36099388454801,
+   "P95_kW": 43.355917557306796,
+   "E_braking_kWh": 3.611572155846999,
+   "regen_frac_mech_at75kW": 0.9186386918623087,
+   "N1_motor_rms_shaft_kW": 21.674781344449503,
+   "N2_genset_const_bus_kW": 10.114192962646484,
+   "N3_buffer_5min_kWh": 0.709356004132938,
+   "N4_peak_regen_wheel_kW": 121.38141566229696
+  },
+  "payload_+20pct": {
+   "mass_kg": 7180.0,
+   "E_per_km_kWh": 0.48059853808974934,
+   "E_net_per_km_kWh": 0.2819387468205622,
+   "P_peak_kW": 73.10955621768561,
+   "P95_kW": 46.94635001222197,
+   "E_braking_kWh": 3.9373410038386356,
+   "regen_frac_mech_at75kW": 0.888952157247795,
+   "N1_motor_rms_shaft_kW": 23.06616363437912,
+   "N2_genset_const_bus_kW": 10.70547103881836,
+   "N3_buffer_5min_kWh": 0.7405604422900074,
+   "N4_peak_regen_wheel_kW": 132.45234215367574
+  }
+ },
+ "VOLT-REG": {
+  "empty_curb": {
+   "mass_kg": 3700.0,
+   "E_per_km_kWh": 0.5057073495530148,
+   "E_net_per_km_kWh": 0.4912157374349509,
+   "P_peak_kW": 111.62742709210535,
+   "P95_kW": 77.1948757444775,
+   "E_braking_kWh": 1.9122938325156007,
+   "regen_frac_mech_at75kW": 0.9901331881298809,
+   "N1_motor_rms_shaft_kW": 11.96255560894002,
+   "N2_genset_const_bus_kW": 7.108211517333984,
+   "N3_buffer_5min_kWh": 1.0040170706061475,
+   "N4_peak_regen_wheel_kW": 69.05790969779946
+  },
+  "payload_-20pct": {
+   "mass_kg": 6020.0,
+   "E_per_km_kWh": 0.5784444815650549,
+   "E_net_per_km_kWh": 0.5481056577190825,
+   "P_peak_kW": 153.0958488861513,
+   "P95_kW": 94.6758395738647,
+   "E_braking_kWh": 4.00347078391042,
+   "regen_frac_mech_at75kW": 0.9344645202294565,
+   "N1_motor_rms_shaft_kW": 18.178817574013028,
+   "N2_genset_const_bus_kW": 8.95833969116211,
+   "N3_buffer_5min_kWh": 1.233610504811895,
+   "N4_peak_regen_wheel_kW": 129.6257155849641
+  },
+  "payload_nominal_GVW": {
+   "mass_kg": 6600.0,
+   "E_per_km_kWh": 0.5975723327369503,
+   "E_net_per_km_kWh": 0.5623281377901154,
+   "P_peak_kW": 163.67627051990755,
+   "P95_kW": 99.19288305166768,
+   "E_braking_kWh": 4.650777020508275,
+   "regen_frac_mech_at75kW": 0.9104436554872087,
+   "N1_motor_rms_shaft_kW": 19.69592334285969,
+   "N2_genset_const_bus_kW": 9.508609771728516,
+   "N3_buffer_5min_kWh": 1.285705348675721,
+   "N4_peak_regen_wheel_kW": 144.76766705675522
+  },
+  "payload_+20pct": {
+   "mass_kg": 7180.0,
+   "E_per_km_kWh": 0.6168881878029088,
+   "E_net_per_km_kWh": 0.5765506178611481,
+   "P_peak_kW": 174.25669215366383,
+   "P95_kW": 103.70597998880123,
+   "E_braking_kWh": 5.32289200054865,
+   "regen_frac_mech_at75kW": 0.8875571590019825,
+   "N1_motor_rms_shaft_kW": 21.265720959597466,
+   "N2_genset_const_bus_kW": 10.129451751708984,
+   "N3_buffer_5min_kWh": 1.5266126770812338,
+   "N4_peak_regen_wheel_kW": 159.9096185285464
+  }
+ }
+}
+
+==== N4 ENVELOPE ====
+{
+ "VOLT-SUB": {
+  "reference_realisation_kW": 121.38141566229696,
+  "seed_ensemble_min_max_kW": [
+   121.38141566229696,
+   132.97660261504203
+  ],
+  "braking_style_0.9_to_1.6_ms2_kW": [
+   89.92489235212416,
+   161.34477251827306
+  ],
+  "design_envelope_kW": 161.34477251827306
+ },
+ "VOLT-REG": {
+  "reference_realisation_kW": 144.76766705675522,
+  "seed_ensemble_min_max_kW": [
+   144.76766705675522,
+   197.58907071071656
+  ],
+  "design_envelope_kW": 197.58907071071656
+ }
+}
+
+==== GENSET DUTY CYCLING (V1) / CLUTCH DUTY (V2) ====
+{
+ "genset": {
+  "P_on_25kW_buffer_0.7kWh": {
+   "on_s": 169.28877243111302,
+   "off_s": 249.15482721229552,
+   "duty": 0.4045677185058593,
+   "starts_per_hour": 8.603309987457967,
+   "starts_per_8h_shift": 68.82647989966374,
+   "starts_per_year_250d": 17206.619974915935,
+   "ramp_energy_per_start_kWh": 0.013888888888888888,
+   "ramp_buffer_adder_kWh": 0.013888888888888888,
+   "ramp_energy_per_hour_kWh": 0.11949041649247176
+  },
+  "P_on_25kW_buffer_1.5kWh": {
+   "on_s": 362.7616552095279,
+   "off_s": 533.9032011692046,
+   "duty": 0.4045677185058593,
+   "starts_per_hour": 4.014877994147052,
+   "starts_per_8h_shift": 32.119023953176416,
+   "starts_per_year_250d": 8029.755988294104,
+   "ramp_energy_per_start_kWh": 0.013888888888888888,
+   "ramp_buffer_adder_kWh": 0.013888888888888888,
+   "ramp_energy_per_hour_kWh": 0.055762194363153494
+  },
+  "P_on_25kW_buffer_3.0kWh": {
+   "on_s": 725.5233104190557,
+   "off_s": 1067.8064023384093,
+   "duty": 0.4045677185058593,
+   "starts_per_hour": 2.007438997073526,
+   "starts_per_8h_shift": 16.059511976588208,
+   "starts_per_year_250d": 4014.877994147052,
+   "ramp_energy_per_start_kWh": 0.013888888888888888,
+   "ramp_buffer_adder_kWh": 0.013888888888888888,
+   "ramp_energy_per_hour_kWh": 0.027881097181576747
+  },
+  "P_on_35kW_buffer_0.7kWh": {
+   "on_s": 101.26253877230054,
+   "off_s": 249.15482721229552,
+   "duty": 0.2889769417898995,
+   "starts_per_hour": 10.273463445182827,
+   "starts_per_8h_shift": 82.18770756146262,
+   "starts_per_year_250d": 20546.926890365656,
+   "ramp_energy_per_start_kWh": 0.019444444444444445,
+   "ramp_buffer_adder_kWh": 0.019444444444444445,
+   "ramp_energy_per_hour_kWh": 0.1997617892118883
+  },
+  "P_on_35kW_buffer_1.5kWh": {
+   "on_s": 216.9911545120726,
+   "off_s": 533.9032011692046,
+   "duty": 0.2889769417898996,
+   "starts_per_hour": 4.79428294108532,
+   "starts_per_8h_shift": 38.35426352868256,
+   "starts_per_year_250d": 9588.56588217064,
+   "ramp_energy_per_start_kWh": 0.019444444444444445,
+   "ramp_buffer_adder_kWh": 0.019444444444444445,
+   "ramp_energy_per_hour_kWh": 0.09322216829888122
+  },
+  "P_on_35kW_buffer_3.0kWh": {
+   "on_s": 433.9823090241452,
+   "off_s": 1067.8064023384093,
+   "duty": 0.2889769417898996,
+   "starts_per_hour": 2.39714147054266,
+   "starts_per_8h_shift": 19.17713176434128,
+   "starts_per_year_250d": 4794.28294108532,
+   "ramp_energy_per_start_kWh": 0.019444444444444445,
+   "ramp_buffer_adder_kWh": 0.019444444444444445,
+   "ramp_energy_per_hour_kWh": 0.04661108414944061
+  },
+  "P_on_47kW_buffer_0.7kWh": {
+   "on_s": 68.31896066278411,
+   "off_s": 249.15482721229552,
+   "duty": 0.2151955949499252,
+   "starts_per_hour": 11.33951884373061,
+   "starts_per_8h_shift": 90.71615074984489,
+   "starts_per_year_250d": 22679.037687461223,
+   "ramp_energy_per_start_kWh": 0.026111111111111113,
+   "ramp_buffer_adder_kWh": 0.026111111111111113,
+   "ramp_energy_per_hour_kWh": 0.2960874364751882
+  },
+  "P_on_47kW_buffer_1.5kWh": {
+   "on_s": 146.39777284882308,
+   "off_s": 533.9032011692046,
+   "duty": 0.21519559494992518,
+   "starts_per_hour": 5.291775460407618,
+   "starts_per_8h_shift": 42.334203683260945,
+   "starts_per_year_250d": 10583.550920815236,
+   "ramp_energy_per_start_kWh": 0.026111111111111113,
+   "ramp_buffer_adder_kWh": 0.026111111111111113,
+   "ramp_energy_per_hour_kWh": 0.1381741370217545
+  },
+  "P_on_47kW_buffer_3.0kWh": {
+   "on_s": 292.79554569764616,
+   "off_s": 1067.8064023384093,
+   "duty": 0.21519559494992518,
+   "starts_per_hour": 2.645887730203809,
+   "starts_per_8h_shift": 21.167101841630473,
+   "starts_per_year_250d": 5291.775460407618,
+   "ramp_energy_per_start_kWh": 0.026111111111111113,
+   "ramp_buffer_adder_kWh": 0.026111111111111113,
+   "ramp_energy_per_hour_kWh": 0.06908706851087724
+  },
+  "note": "V1's cycle-average bus load is only 10.1 kW against a ~50 kW installed genset. Either the genset runs at ~20% load (bad BSFC) or it start-stops, and the start count is set by the buffer size."
+ },
+ "clutch": {
+  "engagements_per_cycle": 51,
+  "engagements_per_100km": 38.64846528574584,
+  "locked_time_frac": 0.6918192401312309,
+  "locked_distance_frac": 0.8465657588775026,
+  "sync_rpm_at_handover": 1304.783767690313,
+  "spin_up_kinetic_energy_kJ": 3.9888357559004186,
+  "spin_up_power_kW_over_0.5s": 7.977671511800837,
+  "motoring_drag_power_kW_at_sync": 8.198198198198197
+ }
+}
+
+==== REQUIREMENTS SUMMARY ====
+{
+ "_basis": "Extremum-derived numbers are the MAXIMUM over an 8-member seed ensemble that includes the published reference cycle, not the reference draw. Sustained-duty numbers are closed-form. See REPORT_WS1.md sections 3.1, 4.8 and 5.",
+ "motor_continuous_kW_shaft": {
+  "cycle_RMS_V1_VOLT-SUB": 21.674781344449503,
+  "cycle_RMS_V2_VOLT-REG_iMMD": 19.874016396606166,
+  "cycle_RMS_V2_VOLT-REG_series_only": 57.21093080648548,
+  "worst_300s_rolling_RMS_any_case": 124.84590280351502,
+  "RMS_torque_Nm": {
+   "V1_VOLT-SUB": 114.53650217120088,
+   "V2_VOLT-REG_iMMD": 71.34182058572964,
+   "V2_VOLT-REG_series": 105.58732235482006
+  },
+  "grade_hold_6pct_V2_series_10min_kW": 90.48936,
+  "grade_hold_6pct_V2_series_10min_Nm": 197.6777573329069,
+  "grade_hold_6pct_V1_series_kW": 40.157999999999994,
+  "grade_crawl_20pct_torque_Nm": 510.2803985906235,
+  "RECOMMENDED_S1_kW": 45.0,
+  "RECOMMENDED_S1_Nm": 180.0,
+  "RECOMMENDED_S2_10min_kW": 95.0,
+  "RECOMMENDED_S2_10min_Nm": 200.0,
+  "note_fault_mode": "If the spine must also survive a clutch-open fault on VOLT-REG, S2-10min rises to 125 kW. Undecided - see REPORT_WS1.md E24."
+ },
+ "motor_peak_kW_shaft": {
+  "VOLT-SUB_V1": 69.44432359231755,
+  "VOLT-REG_V2_iMMD": 111.04166943888994,
+  "VOLT-REG_V2_series_only": 168.73842321639955,
+  "max_shaft_speed_rpm": 7169.141580715996,
+  "stall_torque_spec_Nm": 514.9484536082474,
+  "generating_envelope_kW": 72.75,
+  "generating_envelope_Nm": 369.5640327042806,
+  "baseline_provisional": 75.0,
+  "RECOMMENDED_kW": 120.0,
+  "RECOMMENDED_TARGET_kW": 150.0
+ },
+ "genset_kW": {
+  "V1_cycle_average_bus": 10.114192962646484,
+  "V1_cycle_average_engine_shaft": 10.75977974749626,
+  "V1_charge_sustaining_top_speed_kmh": 78.60253033457778,
+  "V1_shaft_needed_for_85kmh": 59.801759458221746,
+  "V2_cycle_average_engine_shaft_total": 47.015812784480154,
+  "V2_series_only_cycle_average_bus": 50.611019134521484,
+  "V1_baseline_class": 50.0,
+  "V2_baseline_floor": 110.0,
+  "V2_floor_recomputed_engine_shaft_at_GVW_2kW_aux": 107.8077950219109,
+  "V2_floor_at_+20pct_payload_2kW_aux": 115.83483388258072,
+  "V2_floor_at_GVW_4kW_aux": 109.93545459637899,
+  "V2_floor_at_GVW_2kW_aux_CdA5.4": 111.90435762245079,
+  "rating_basis": "engine shaft (see genset_rating_basis)"
+ },
+ "battery_buffer_kWh": {
+  "_note": "'usable' is at the DC bus; the cell-side figure divides by the 0.97 discharge factor. The 85 km/h grade-hold case is EXCLUDED because REPORT_WS1.md section 4.4 shows it is not achievable - the truck derates to 61 km/h instead.",
+  "cycle_5min_VOLT-SUB_V1_reference": 0.709356004132938,
+  "cycle_5min_VOLT-SUB_V1_ensemble_max": 0.8709806056115929,
+  "cycle_5min_VOLT-REG_V2_reference": 1.2905648481042136,
+  "cycle_5min_VOLT-REG_V2_ensemble_max": 1.3809442975330612,
+  "cycle_5min_VOLT-REG_V2_series_only": 7.318648082402563,
+  "whole_cycle_single_setpoint_VOLT-REG_V2": 3.4024183641255608,
+  "descent_10km_6pct_60kmh_with_30kW_exhaust_brake": 3.407827391602046,
+  "descent_10km_6pct_60kmh_no_engine_braking": 12.737373613824268,
+  "genset_start_stop_20_per_shift": 3.0,
+  "EXCLUDED_hold_85kmh_on_6pct_not_achievable_bus": 2.9442012081659383,
+  "GOVERNING_at_bus": 3.407827391602046,
+  "GOVERNING_at_cells": 3.5132241150536556,
+  "RECOMMENDED_usable_V2_at_bus": 3.5,
+  "RECOMMENDED_usable_V1_at_bus": 1.5
+ },
+ "peak_regen_kW": {
+  "VOLT-SUB_reference_draw": 121.38141566229696,
+  "VOLT-REG_reference_draw": 144.76766705675522,
+  "VOLT-SUB_DESIGN_ENVELOPE": 161.34477251827306,
+  "VOLT-REG_DESIGN_ENVELOPE": 197.58907071071656,
+  "absorbed_at_wheel_with_75kW_cap": 75.0,
+  "absorbed_at_bus_with_75kW_cap": 64.9221,
+  "friction_blend_authority_needed_VOLT-SUB": 86.34477251827306,
+  "friction_blend_authority_needed_VOLT-REG": 122.58907071071656,
+  "battery_peak_charge_kW": 70.8452041737671,
+  "battery_peak_discharge_kW": 120.29211316940902
+ },
+ "peak_wheel_power_kW": {
+  "VOLT-SUB_reference": 67.36099388454801,
+  "VOLT-SUB_ensemble_max": 71.41954914548707,
+  "VOLT-REG_reference": 163.67627051990755,
+  "VOLT-REG_ensemble_max": 188.06595294689757
+ },
+ "validity_envelope": {
+  "ambient": "NOT DECLARED - see sensitivity/environment and E21",
+  "altitude": "sea level implied by rho_air = 1.20 kg/m^3",
+  "efficiencies": "peak-point scalars; see sensitivity/part_load_efficiency and E22",
+  "thermal_management": "excluded from the 2 kW accessory budget; see thermal_at_grade_hold"
+ }
+}
+
+==== MOTOR ENVELOPE ====
+{
+ "VOLT-SUB_V1": {
+  "max_shaft_speed_rpm": 3584.5707836847255,
+  "max_motoring_torque_Nm": 353.22881638289675,
+  "max_braking_torque_Nm": 369.5640327042806,
+  "T_rms_Nm": 114.53650217120088,
+  "max_motoring_kW": 69.44432359231755,
+  "max_braking_kW_capped": 72.75,
+  "max_braking_kW_uncapped_demand": 117.73997319242805,
+  "torque_at_stall_spec_Nm": 514.9484536082474
+ },
+ "VOLT-REG_V2_iMMD": {
+  "max_shaft_speed_rpm": 7169.141580715996,
+  "max_motoring_torque_Nm": 343.7217597548674,
+  "max_braking_torque_Nm": 324.41442360090065,
+  "T_rms_Nm": 71.34182058572964,
+  "max_motoring_kW": 111.04166943888994,
+  "max_braking_kW_capped": 72.75,
+  "max_braking_kW_uncapped_demand": 140.42463704505258,
+  "torque_at_stall_spec_Nm": 514.9484536082474
+ },
+ "VOLT-REG_V2_series_only": {
+  "max_shaft_speed_rpm": 7169.141580715996,
+  "max_motoring_torque_Nm": 343.7217597548674,
+  "max_braking_torque_Nm": 324.41442360090065,
+  "T_rms_Nm": 105.58732235482006,
+  "max_motoring_kW": 168.73842321639955,
+  "max_braking_kW_capped": 72.75,
+  "max_braking_kW_uncapped_demand": 140.42463704505258,
+  "torque_at_stall_spec_Nm": 514.9484536082474
+ }
+}
+
+wrote: 10 figures, 9 data files

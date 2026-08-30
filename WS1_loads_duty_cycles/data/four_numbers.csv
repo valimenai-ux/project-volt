@@ -1,0 +1,5 @@
+variant_cycle,N1_motor_cont_RMS_shaft_kW,N2_genset_const_bus_kW,N2_genset_engine_shaft_kW,N3_buffer_5min_kWh,N4_peak_regen_wheel_kW
+V1_postal_VOLT-SUB,21.7,10.1,10.8,0.709,121.4
+V2_trucker_VOLT-REG_iMMD,19.9,9.7,10.4,1.291,144.8
+V2_trucker_VOLT-REG_series_only,57.2,50.6,53.8,7.319,144.8
+V2_trucker_VOLT-SUB_series,21.7,10.1,10.8,0.709,121.4

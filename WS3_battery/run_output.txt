@@ -1,0 +1,22 @@
+== 1. cycles + verification vs WS1 results.json
+   N3_V1_5min_kWh: ws3=0.709356004 ws1=0.709356004 [OK]
+   N3_V2_5min_kWh: ws3=1.290564848 ws1=1.290564848 [OK]
+   batt_peak_dis_kW: ws3=120.292113169 ws1=120.292113169 [OK]
+   batt_peak_chg_kW: ws3=70.845204174 ws1=70.845204174 [OK]
+== 3. capability maps
+== 3b. bus-window consistency (F1)
+== 4. chemistry trade
+== 5. descent thermal + preconditioning
+== 6. duty ensemble (8 seeds x 3 modes)
+== 7. efficiency map + cold-case recompute
+== 8. c-rates + frontier
+== 9. sensitivities
+== 13. figures
+== 14. tables + results.json
+
+Done. Wrote results.json, tables_ws3.md, regen_acceptance.csv, figs/*.png
+V2 pack: 15.24 kWh, 281 kg; usable at bus 11.08 kWh vs floor 3.5 kWh
+Descent 50 kW/24 min at +45 C: peak cell 50.3 C (ceiling 55 C)
+Cold -10 C acceptance: 67.0 kW bus (77.4 kW wheel-equivalent)
+wrote /Users/valimenai/Documents/Project Volt/WS3_battery/REPORT_WS3.md (49844 bytes)
+verbatim splice check: all 13 sections OK

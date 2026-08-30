@@ -1,0 +1,1061 @@
+{
+ "_meta": {
+  "workstream": "WS2",
+  "generated_by": "run_ws2.py",
+  "seed": 42,
+  "date": "2026-08-30",
+  "inputs": [
+   "../BASELINE_v2.md (rulings R10-R15 govern this round)",
+   "R4_DIRECTIVE.md",
+   "../WS1_loads_duty_cycles/results.json requirements_summary",
+   "../WS1_loads_duty_cycles/data/trace_VOLT-SUB_V1_10Hz.csv",
+   "../WS1_loads_duty_cycles/data/trace_VOLT-REG_V2_10Hz.csv"
+  ],
+  "conventions": "R9: no stochastic inputs introduced; consumed WS1 extrema are 8-seed ensemble envelopes. Efficiencies are maps, never scalars. Torques/speeds at motor shaft; amplitude-invariant dq. R12: all cross-workstream electrical quantities are BUS-SIDE; the traction chain of record is these maps x 0.97 reduction, with NO scalar PE member. R14: every worst-case export is an explicit max/min over an enumerated case set, governing case labeled inline.",
+  "rework": {
+   "round": 4,
+   "findings_files": [
+    "FINDINGS_WS2_r1.md",
+    "FINDINGS_WS2_r2.md",
+    "FINDINGS_WS2_r3.md"
+   ],
+   "addressed_r1": [
+    "WS2-F1",
+    "WS2-F2",
+    "WS2-F3",
+    "WS2-F4",
+    "WS2-F5",
+    "WS2-F6",
+    "WS2-F7"
+   ],
+   "addressed_r2": [
+    "WS2-F8",
+    "WS2-F9",
+    "WS2-F10"
+   ],
+   "addressed_r3": [
+    "WS2-F11",
+    "WS2-F12"
+   ],
+   "rulings_executed": [
+    "R10",
+    "R12",
+    "R13",
+    "R14",
+    "R15"
+   ]
+  }
+ },
+ "machine": {
+  "params": {
+   "p": 4,
+   "psi_m": 0.11466,
+   "Ld": 0.00037815749999999996,
+   "Lq": 0.00086436,
+   "Rs_20C": 0.014694119999999998,
+   "I_peak": 448.9795918367347
+  },
+  "rewind_factor": 1.47,
+  "T_peak_at_Ipeak_Nm": 529.5283267073621,
+  "T_req_launch_Nm": 514.9484536082474,
+  "P_peak_kW_vs_V": {
+   "432": 121.2425924673732,
+   "662": 188.0016814338546,
+   "749": 212.92632510170287
+  },
+  "P_peak_at_floor_ok_120kW": true,
+  "P_peak_at_vnom_ok_150kW_target": true,
+  "T_max_at_20kmh_vmin_Nm": 529.5283267073621,
+  "R13_corner_515Nm_25kmh_vmin_ok": true,
+  "R13_corner_I_Apk": 440.9,
+  "R13_corner_v_req_V": 236.9,
+  "R13_corner_v_lim_V": 236.9,
+  "T_max_at_bandtop_vmin_170C_Nm": 528.8,
+  "I_cont_cases": {
+   "crawl_510Nm_V1_10p6kmh": {
+    "I_Apk": 438.0,
+    "I_Arms": 309.7,
+    "same_current_at_floor": true
+   },
+   "crawl_510Nm_V2_23p6kmh": {
+    "I_Apk": 438.0,
+    "I_Arms": 309.7,
+    "same_current_at_floor": true
+   },
+   "R13_band_top_515Nm_25kmh": {
+    "I_Apk": 440.9,
+    "I_Arms": 311.7,
+    "same_current_at_floor": true
+   }
+  },
+  "I_cont_governing_case": "R13_band_top_515Nm_25kmh",
+  "I_cont_Apk": 440.9,
+  "I_cont_Arms": 311.7,
+  "I_cont_vs_455Arms_r3_ratio": 0.685,
+  "rpm_at_100kmh": 7169.1415807160065,
+  "emf_ll_peak_at_7200_V": 598.9542770969147,
+  "char_current_A": 303.2069970845481,
+  "ucg_onset_rpm_at_432V": 5193.050820299455,
+  "ucg_onset_kmh_at_432V": 72.43615936206422,
+  "ucg_onset_rpm_at_662V": 7962.6779244591635,
+  "ucg_onset_kmh_at_662V": 111.06877768849844,
+  "ucg_onset_rpm_at_749V": 9001.288088519055,
+  "ucg_onset_kmh_at_749V": 125.55600956091129,
+  "v_bus_no_ucg_below_7200rpm_V": 598.9542770969147,
+  "gen_370Nm_at_8kmh_ok": true,
+  "gen_73kW_at_7200rpm_vmin_ok": true,
+  "F1_70kmh_flat_wheel_kW": 29.856784567901233,
+  "F1_70kmh_shaft_kW": 30.780190276186836,
+  "F1_ok": true,
+  "F1_70kmh_shaft_kW_CdA5p4": 36.23710767468499,
+  "F1_ok_CdA5p4": true,
+  "P_dc_peak_draw_at_vmin_kW": 130.7,
+  "I_dc_peak_draw_at_vmin_A": 302.0,
+  "rotor_tip_speed_at_7400_ms": 69.7433569096934,
+  "airgap_shear_at_peak_kPa": 63.05802521710197
+ },
+ "topology": {
+  "mass_single_motor_kg": 96.0,
+  "mass_twin_motors_kg": 114.0,
+  "twin_penalty_motors_kg": 18.0,
+  "twin_penalty_second_inverter_kg": 16.0,
+  "twin_penalty_total_kg": 34.0,
+  "IM_crawl_rotor_loss_W": 2403.0,
+  "IM_rotor_dT_over_stator_K": 120.0,
+  "PM_spin_shaft_drag_85kmh_W": 1109.0,
+  "PM_spin_bus_draw_85kmh_W": 371.0,
+  "PM_spin_total_85kmh_W": 1480.0,
+  "PM_spin_total_100kmh_W": 1813.0
+ },
+ "maps": {
+  "files": {
+   "432": "data/effmap_motor_inverter_432V.csv",
+   "662": "data/effmap_motor_inverter_662V.csv",
+   "749": "data/effmap_motor_inverter_749V.csv",
+   "capability": "data/capability_vs_rpm.csv",
+   "peak_power_vs_vbus": "data/peak_power_vs_vbus.csv",
+   "thermal_S2": "data/thermal_S2_10min_662V.csv",
+   "thermal_crawl": "data/thermal_crawl_510Nm_jacket.csv"
+  },
+  "stats": {
+   "432": {
+    "n_feasible": 3337,
+    "best_eta": 0.9565,
+    "best_eta_at": [
+     5100.0,
+     120.0
+    ]
+   },
+   "662": {
+    "n_feasible": 4203,
+    "best_eta": 0.9572,
+    "best_eta_at": [
+     7200.0,
+     150.0
+    ]
+   },
+   "749": {
+    "n_feasible": 4435,
+    "best_eta": 0.9566,
+    "best_eta_at": [
+     7400.0,
+     180.0
+    ]
+   }
+  }
+ },
+ "thermal": {
+  "S1_180Nm_oilspray": {
+   "rpm": 2387,
+   "Tw": 82.6,
+   "Ts": 68.5,
+   "Tr": 79.6,
+   "ok": true
+  },
+  "S1_180Nm_jacket": {
+   "rpm": 2387,
+   "Tw": 98.1,
+   "Ts": 68.6,
+   "Tr": 79.7,
+   "ok": true
+  },
+  "S1gen_50kW_70kmh": {
+   "rpm": 5018,
+   "T_Nm": -95.1,
+   "Tw": 74.3,
+   "ok": true
+  },
+  "S2_95kW_10min_662V": {
+   "rpm": 4373,
+   "T_Nm": 207.4,
+   "Tw_end": 91.7,
+   "Tw_max": 91.7,
+   "t_limit_s": null,
+   "ok": true
+  },
+  "S2_95kW_10min_432V": {
+   "rpm": 4373,
+   "T_Nm": 207.4,
+   "Tw_end": 104.5,
+   "Tw_max": 104.5,
+   "t_limit_s": null,
+   "ok": true
+  },
+  "S2_95kW_steady_Tw": 91.9,
+  "S2_is_S1_at_vnom": true,
+  "gradehold_ledger": {
+   "rpm": 4373,
+   "T_Nm": 197.7,
+   "P_cu_kW": 1.99,
+   "P_fe_kW": 2.52,
+   "P_fw_kW": 0.2,
+   "P_inv_kW": 0.45,
+   "P_motor_total_kW": 4.71,
+   "P_chain_kW": 5.16,
+   "ws1_assumed_inv_motor_kW": 7.87
+  },
+  "S2_point_ledger": {
+   "rpm": 4373,
+   "T_Nm": 207.4,
+   "P_cu_kW": 2.14,
+   "P_fe_kW": 2.64,
+   "P_fw_kW": 0.2,
+   "P_inv_kW": 0.47,
+   "P_chain_kW": 5.45
+  },
+  "peak_515Nm_20kmh_hold_s": ">1200",
+  "peak_515Nm_20kmh_ok_60s": true,
+  "peak_150kW_hold_s": ">1200",
+  "crawl_510Nm_V1_oilspray": {
+   "rpm": 760,
+   "v_kmh": 10.6,
+   "Tw_steady": 146.1,
+   "within_cont_165C": true,
+   "within_hard_180C": true
+  },
+  "crawl_510Nm_V1_jacket": {
+   "rpm": 760,
+   "v_kmh": 10.6,
+   "Tw_steady": 263.0,
+   "within_cont_165C": false,
+   "within_hard_180C": false,
+   "hold_from_S1warm_s": 117.5,
+   "distance_m": 346.0
+  },
+  "crawl_510Nm_V2_oilspray": {
+   "rpm": 1692,
+   "v_kmh": 23.6,
+   "Tw_steady": 150.7,
+   "within_cont_165C": true,
+   "within_hard_180C": true
+  },
+  "crawl_510Nm_V2_jacket": {
+   "rpm": 1692,
+   "v_kmh": 23.6,
+   "Tw_steady": 273.4,
+   "within_cont_165C": false,
+   "within_hard_180C": false,
+   "hold_from_S1warm_s": 111.0,
+   "distance_m": 728.0
+  },
+  "crawl_bandtop_515Nm_oilspray": {
+   "rpm": 1792,
+   "v_kmh": 25.0,
+   "Tw_steady": 152.8,
+   "within_cont_165C": true,
+   "within_hard_180C": true
+  },
+  "crawl_bandtop_515Nm_jacket": {
+   "rpm": 1792,
+   "v_kmh": 25.0,
+   "Tw_steady": 279.5,
+   "within_cont_165C": false,
+   "within_hard_180C": false,
+   "hold_from_S1warm_s": 107.0,
+   "distance_m": 743.0
+  },
+  "crawl_bandtop_Tw_same_at_432V": true,
+  "T_cont_at_crawlspeed_oilspray_Nm": 530.0,
+  "grade_cont_GVW_oilspray_pct": 21.0,
+  "T_cont_at_crawlspeed_jacket_Nm": 361.0,
+  "grade_cont_GVW_jacket_pct": 13.8,
+  "crawl_Gws_sensitivity": {
+   "G_ws_60": {
+    "Tw_steady": 207.2,
+    "within_cont_165C": false,
+    "within_hard_180C": false
+   },
+   "G_ws_75": {
+    "Tw_steady": 172.9,
+    "within_cont_165C": false,
+    "within_hard_180C": true
+   },
+   "G_ws_90": {
+    "Tw_steady": 152.8,
+    "within_cont_165C": true,
+    "within_hard_180C": true
+   },
+   "G_ws_120": {
+    "Tw_steady": 130.3,
+    "within_cont_165C": true,
+    "within_hard_180C": true
+   }
+  },
+  "G_ws_cont_limit_floor_WK": 80.1,
+  "hold_148Nm_standstill_oilspray": {
+   "Tw_steady": 82.8,
+   "sustainable": true
+  },
+  "hold_148Nm_standstill_jacket": {
+   "Tw_steady": 100.3,
+   "sustainable": true
+  },
+  "stall_515Nm_hold_s": 98.5,
+  "inverter_loss_peak_W": 1138.0,
+  "inverter_Tj_peak_C": 131.0,
+  "inverter_Tj_cont_cases_C": {
+   "432V": 120.0,
+   "662V": 130.0,
+   "749V": 133.0
+  },
+  "inverter_loss_cont_at_vmax_W": 1169.0,
+  "inverter_Tj_cont_at_vmax_C": 133.0,
+  "crawl_loss_V1speed_kW": 8.79,
+  "crawl_loss_V2speed_kW": 10.27,
+  "crawl_loss_bandtop_kW": 10.57,
+  "crawl_loss_members_kW": {
+   "V1": {
+    "P_cu_kW": 6.76,
+    "P_fe_kW": 0.9,
+    "P_fw_kW": 0.03,
+    "P_inv_kW": 1.1
+   },
+   "V2": {
+    "P_cu_kW": 6.91,
+    "P_fe_kW": 2.2,
+    "P_fw_kW": 0.06,
+    "P_inv_kW": 1.1
+   },
+   "bandtop": {
+    "P_cu_kW": 7.02,
+    "P_fe_kW": 2.37,
+    "P_fw_kW": 0.07,
+    "P_inv_kW": 1.11
+   }
+  },
+  "crawl_loss_worst_case": "bandtop",
+  "crawl_loss_kW": 10.57,
+  "crawl_loss_bandtop_at_steadyTw_kW": 10.27
+ },
+ "ratio_sweep": {
+  "rows": [
+   {
+    "ratio": 8.0,
+    "scale": 1.25,
+    "mass_kg": 115.5,
+    "T_req_Nm": 644.0,
+    "T_avail_Nm": 662.0,
+    "rpm_at_100kmh": 5735.0,
+    "within_R3_7200rpm": true,
+    "sub_loss_kWh": 1.197,
+    "sub_eta_mot": 0.9162,
+    "reg_loss_kWh": 2.878,
+    "reg_eta_mot": 0.9245,
+    "spin85_shaft_W": 1090.0,
+    "crawl_Tw_steady": 151.2
+   },
+   {
+    "ratio": 9.0,
+    "scale": 1.111,
+    "mass_kg": 104.7,
+    "T_req_Nm": 572.0,
+    "T_avail_Nm": 588.0,
+    "rpm_at_100kmh": 6452.0,
+    "within_R3_7200rpm": true,
+    "sub_loss_kWh": 1.15,
+    "sub_eta_mot": 0.9186,
+    "reg_loss_kWh": 2.91,
+    "reg_eta_mot": 0.9268,
+    "spin85_shaft_W": 1100.0,
+    "crawl_Tw_steady": 148.5
+   },
+   {
+    "ratio": 10.0,
+    "scale": 1.0,
+    "mass_kg": 96.0,
+    "T_req_Nm": 515.0,
+    "T_avail_Nm": 530.0,
+    "rpm_at_100kmh": 7169.0,
+    "within_R3_7200rpm": true,
+    "sub_loss_kWh": 1.116,
+    "sub_eta_mot": 0.9201,
+    "reg_loss_kWh": 2.952,
+    "reg_eta_mot": 0.9284,
+    "spin85_shaft_W": 1109.0,
+    "crawl_Tw_steady": 146.1
+   },
+   {
+    "ratio": 11.0,
+    "scale": 0.909,
+    "mass_kg": 88.9,
+    "T_req_Nm": 468.0,
+    "T_avail_Nm": 481.0,
+    "rpm_at_100kmh": 7886.0,
+    "within_R3_7200rpm": false,
+    "sub_loss_kWh": 1.091,
+    "sub_eta_mot": 0.9212,
+    "reg_loss_kWh": 2.972,
+    "reg_eta_mot": 0.9295,
+    "spin85_shaft_W": 1117.0,
+    "crawl_Tw_steady": 143.8
+   },
+   {
+    "ratio": 12.0,
+    "scale": 0.833,
+    "mass_kg": 83.0,
+    "T_req_Nm": 429.0,
+    "T_avail_Nm": 441.0,
+    "rpm_at_100kmh": 8603.0,
+    "within_R3_7200rpm": false,
+    "sub_loss_kWh": 1.073,
+    "sub_eta_mot": 0.9219,
+    "reg_loss_kWh": 2.917,
+    "reg_eta_mot": 0.9302,
+    "spin85_shaft_W": 1134.0,
+    "crawl_Tw_steady": 141.6
+   }
+  ],
+  "file": "data/ratio_sweep.csv",
+  "min_total_cycle_loss_ratio": 12.0,
+  "decision": "retain 10:1 unless sweep shows >5% total-loss advantage",
+  "loss_spread_pct_of_10to1": 2.1,
+  "total_loss_kWh_by_ratio": {
+   "8": 4.075,
+   "9": 4.06,
+   "10": 4.068,
+   "11": 4.063,
+   "12": 3.99
+  },
+  "inside_rpm_line_beating_10to1": [
+   9.0
+  ],
+  "delta_9_vs_10_pct": 0.2,
+  "mass_delta_9_vs_10_kg": 8.7,
+  "delta_11_vs_10_pct": 0.12,
+  "delta_12_vs_10_pct": 1.92,
+  "mass_per_point_kg": {
+   "10_to_11": 7.1,
+   "11_to_12": 5.9
+  }
+ },
+ "bus": {
+  "ruling": {
+   "basis": "R10 (BASELINE v2) \u2014 pack-native window, ruled, not a WS2 proposal; the r1-r3 400V-vs-800V trade is superseded on the record",
+   "nominal_V": 662.4,
+   "window_V": [
+    432.0,
+    748.8
+   ],
+   "transient_10s_V": 777.6,
+   "device_class_V": 1200.0,
+   "granularity_V": 27.6
+  },
+  "string": {
+   "n_series": 288,
+   "v_string_min": 432.0,
+   "v_string_nom": 662.4,
+   "v_string_max": 748.8,
+   "v_string_transient": 777.6,
+   "granularity_V": 27.6,
+   "matches_R10_window": true
+  },
+  "cables": {
+   "sizing_convention": "R14: every run's sizing current is an explicit max over the enumerated continuous case set (governing case labeled); voltage-dependent cases are taken at the lowest voltage at which their sustained power must flow (the F10 rule, carried); the motor-run continuous basis is the R13 crawl phase current (F11 closure); the chopper run is sized at the full hardware ceiling (F12 closure)",
+   "detail": {
+    "genset_to_bus": {
+     "rule": "max over enumerated continuous cases (R14)",
+     "cases_A": {
+      "R6 125 kW sustained at the 432.0 V floor (charge-depleted running)": 289.4,
+      "R6 125 kW at 662.4 V nominal": 188.7
+     },
+     "i_size_A": 289.4,
+     "governing_case": "R6 125 kW sustained at the 432.0 V floor (charge-depleted running)",
+     "mm2": 120,
+     "ampacity_A": 320,
+     "margin_pct": 10.6,
+     "conductor_T_steady_C": 101.4,
+     "mass_kg": 7.26
+    },
+    "pack_to_bus": {
+     "rule": "max over enumerated continuous cases (R14)",
+     "cases_A": {
+      "R2 50 kW continuous descent charge at the floor": 115.7,
+      "R8 125 kW discharge 1-min at the floor, x0.5 thermal derate for repetition": 144.7,
+      "R8 110 kW charge 1-min at the floor, x0.5 thermal derate for repetition": 127.3
+     },
+     "i_size_A": 144.7,
+     "governing_case": "R8 125 kW discharge 1-min at the floor, x0.5 thermal derate for repetition",
+     "mm2": 50,
+     "ampacity_A": 180,
+     "margin_pct": 24.4,
+     "conductor_T_steady_C": 97.9,
+     "mass_kg": 2.42,
+     "transient_cases": {
+      "R8 125 kW discharge at the floor, undegraded, 60 s": {
+       "I_A": 289.4,
+       "duration_s": 60.0,
+       "adiabatic_dT_K": 9.6,
+       "conductor_T_end_C": 107.5,
+       "within_130C_shortterm": true
+      }
+     },
+     "transients_ok": true,
+     "note": "R8 peaks restated bus-side per R12 (125 kW discharge / 110 kW charge); the undegraded 1-min transient is cleared by adiabatic rise, and the x0.5 continuous-equivalent derate is thereby substantiated, not asserted"
+    },
+    "inverter_to_motor": {
+     "rule": "max over enumerated continuous cases (R14)",
+     "cases_A": {
+      "R13 continuous crawl corner, 515 Nm at 25 km/h (band top; MTPA, voltage-independent)": 311.7,
+      "crawl 510 Nm at the WS1 settle speeds": 309.7,
+      "S2 95 kW / 207.4 Nm at the 432.0 V floor (10-min)": 208.2,
+      "S2 95 kW / 207.4 Nm at 662.4 V nominal": 164.8
+     },
+     "i_size_A": 311.7,
+     "governing_case": "R13 continuous crawl corner, 515 Nm at 25 km/h (band top; MTPA, voltage-independent)",
+     "mm2": 120,
+     "ampacity_A": 320,
+     "margin_pct": 2.7,
+     "conductor_T_steady_C": 104.0,
+     "mass_kg": 6.53,
+     "transient_cases": {
+      "60-s peak envelope (449 A_pk)": {
+       "I_A": 317.5,
+       "duration_s": 60.0,
+       "adiabatic_dT_K": 0.1,
+       "conductor_T_end_C": 104.1,
+       "within_130C_shortterm": true
+      }
+     },
+     "transients_ok": true,
+     "note": "F11 closure: the continuous basis IS the crawl phase current (R13); every 10-min case sits below it"
+    },
+    "chopper_to_resistor": {
+     "rule": "max over enumerated continuous cases (R14)",
+     "cases_A": {
+      "R2 50 kW continuous, PWM rms sqrt(P/R) (voltage-independent)": 115.7,
+      "full chopper duty at the 748.8 V ceiling, continuous": 200.6,
+      "full chopper duty during a 777.6 V 10-s transient": 208.3
+     },
+     "i_size_A": 208.3,
+     "governing_case": "full chopper duty during a 777.6 V 10-s transient",
+     "mm2": 70,
+     "ampacity_A": 225,
+     "margin_pct": 8.0,
+     "conductor_T_steady_C": 102.1,
+     "mass_kg": 1.69,
+     "note": "F12 closure: sized at the full hardware ceiling, not the 50 kW requirement \u2014 the cable never limits the bank (cable-limited ceiling reported in results resistor block)"
+    }
+   },
+   "cable_mass_kg": 17.9
+  },
+  "s2_phase_current_Arms": 164.8,
+  "s2_phase_current_floor_Arms": 208.2,
+  "I_dc_genset_at_floor_A": 289.4,
+  "I_dc_genset_at_vnom_A": 188.7,
+  "I_dc_pack_125kW_at_floor_A": 289.4
+ },
+ "resistor": {
+  "R_ohm": 3.73248,
+  "P_fullduty_at_vmin_kW": 50.0,
+  "P_fullduty_at_vnom_kW": 117.55555555555554,
+  "P_fullduty_at_vmax_kW": 150.22222222222223,
+  "P_fullduty_at_vtransient_kW": 162.0,
+  "meets_50kW_everywhere": true,
+  "I_on_at_vmax_A": 200.6172839506173,
+  "I_on_at_vnom_A": 177.46913580246914,
+  "I_on_at_vtransient_A": 208.33333333333334,
+  "I_rms_50kW_A": 115.74074074074075,
+  "ribbon_length_m": 103.68000000000002,
+  "ribbon_area_m2": 10.368000000000002,
+  "ribbon_mass_kg": 16.381440000000005,
+  "assembly_mass_kg": 53.868032000000014,
+  "assembly_volume_L": 89.78005333333336,
+  "P_design_cont_kW": 150.22222222222223,
+  "air_flow_m3_h": 3261.2694105231417,
+  "blower_W": 1449.4530713436186,
+  "ribbon_T_at_design_C": 361.48376771833557,
+  "ribbon_T_at_50kW_C": 200.37551440329216,
+  "ribbon_T_margin_K": 288.51623228166443,
+  "P_ribbon_limit_sea_kW": 329.70240000000007,
+  "ribbon_tau_s": 13.166666666666666,
+  "transient_10s_dT_K": 14.379416922783074,
+  "alt_2000m_density_ratio": 0.791,
+  "ribbon_T_at_design_2000m_C": 430.98623601331764,
+  "ribbon_T_at_50kW_2000m_C": 236.70364861081575,
+  "ribbon_T_margin_2000m_K": 219.01376398668236,
+  "P_ribbon_limit_2000m_kW": 263.2022191301486,
+  "blower_W_2000m": 1146.9884562858274,
+  "chopper_loss_50kW_W": 57.000908779149526,
+  "chopper_duty_50kW_at_vnom": 0.42533081285444235,
+  "chopper_loss_ceiling_W": 100.61823654930652,
+  "descent_24min_energy_kWh": 8.82,
+  "descent_24min_mean_kW": 22.0,
+  "descent_worst_steady_kW": 45.6,
+  "margin_over_worst_steady": 1.0964912280701753,
+  "cable_limited_ceiling_kW": 189.0,
+  "cable_limited_ceiling_note": "70 mm2 run at 225 A ampacity; sits ABOVE every element operating point, so the bank is element-limited (voltage-limited), never cable-limited \u2014 F12 closed by construction"
+ },
+ "traction": {
+  "envelope": [
+   {
+    "mass_case": "gvw",
+    "m_kg": 6600.0,
+    "mu": 0.8,
+    "F_drive_flat_N": 43643.600000000006,
+    "F_drive_20pct_N": 46558.36271407516,
+    "F_brake_N": 27404.120930232562,
+    "T_wheel_drive_Nm": 16148.132000000001,
+    "T_wheel_brake_Nm": 10139.524744186048,
+    "T_motor_drive_Nm": 1664.7558762886601,
+    "T_motor_brake_Nm": 983.5339001860466,
+    "launch_spec_ok_flat": true,
+    "launch_spec_ok_20pct": true
+   },
+   {
+    "mass_case": "gvw",
+    "m_kg": 6600.0,
+    "mu": 0.5,
+    "F_drive_flat_N": 24549.524999999998,
+    "F_drive_20pct_N": 26189.079026667278,
+    "F_brake_N": 18412.143750000003,
+    "T_wheel_drive_Nm": 9083.32425,
+    "T_wheel_brake_Nm": 6812.493187500001,
+    "T_motor_drive_Nm": 936.4251804123712,
+    "T_motor_brake_Nm": 660.8118391875001,
+    "launch_spec_ok_flat": true,
+    "launch_spec_ok_20pct": true
+   },
+   {
+    "mass_case": "gvw",
+    "m_kg": 6600.0,
+    "mu": 0.3,
+    "F_drive_flat_N": 13809.1078125,
+    "F_drive_20pct_N": 14731.356952500344,
+    "F_brake_N": 11628.722368421053,
+    "T_wheel_drive_Nm": 5109.369890625,
+    "T_wheel_brake_Nm": 4302.6272763157895,
+    "T_motor_drive_Nm": 526.7391639819588,
+    "T_motor_brake_Nm": 417.35484580263153,
+    "launch_spec_ok_flat": true,
+    "launch_spec_ok_20pct": true
+   },
+   {
+    "mass_case": "curb",
+    "m_kg": 3700.0,
+    "mu": 0.8,
+    "F_drive_flat_N": 17217.58870588235,
+    "F_drive_20pct_N": 18558.15885100851,
+    "F_brake_N": 11707.96032,
+    "T_wheel_drive_Nm": 6370.507821176469,
+    "T_wheel_brake_Nm": 4331.9453184,
+    "T_motor_drive_Nm": 656.7533836264402,
+    "T_motor_brake_Nm": 420.19869588480003,
+    "launch_spec_ok_flat": true,
+    "launch_spec_ok_20pct": true
+   },
+   {
+    "mass_case": "curb",
+    "m_kg": 3700.0,
+    "mu": 0.5,
+    "F_drive_flat_N": 9888.48,
+    "F_drive_20pct_N": 10658.40204280894,
+    "F_brake_N": 7784.548085106382,
+    "T_wheel_drive_Nm": 3658.7376,
+    "T_wheel_brake_Nm": 2880.2827914893614,
+    "T_motor_drive_Nm": 377.1894432989691,
+    "T_motor_brake_Nm": 279.38743077446804,
+    "launch_spec_ok_flat": false,
+    "launch_spec_ok_20pct": false
+   },
+   {
+    "mass_case": "curb",
+    "m_kg": 3700.0,
+    "mu": 0.3,
+    "F_drive_flat_N": 5628.827076923076,
+    "F_drive_20pct_N": 6067.090393598935,
+    "F_brake_N": 4878.3168000000005,
+    "T_wheel_drive_Nm": 2082.666018461538,
+    "T_wheel_brake_Nm": 1804.9772160000002,
+    "T_motor_drive_Nm": 214.70783695479776,
+    "T_motor_brake_Nm": 175.082789952,
+    "launch_spec_ok_flat": false,
+    "launch_spec_ok_20pct": false
+   }
+  ],
+  "mu_required": {
+   "mu_launch_flat_gvw": 0.29384849171767036,
+   "mu_launch_20pct_gvw": 0.2769077012872191,
+   "mu_launch_flat_curb": 0.6541697402260811,
+   "mu_launch_20pct_curb": 0.6138212067466656
+  },
+  "files": [
+   "data/traction_envelope.csv",
+   "data/regen_adhesion_curves.csv"
+  ]
+ },
+ "cycles": {
+  "VOLT_SUB_V1": {
+   "variant": "V1",
+   "v_dc": 662.4,
+   "ratio": 10.0,
+   "decimate": 1,
+   "duration_h": 0.9681111111105349,
+   "stand_frac": 0.4556983817286228,
+   "lockup_frac": 0.0,
+   "E_shaft_mot_kWh": 9.19048413230241,
+   "E_dc_mot_kWh": 9.98597650839378,
+   "E_shaft_gen_kWh": 3.2181979841388872,
+   "E_dc_gen_kWh": 2.927071889333784,
+   "E_loss_mach_kWh": 0.9422164816377895,
+   "E_loss_inv_kWh": 0.17087198925864172,
+   "E_spin_shaft_kWh": 0.0,
+   "E_spin_bus_kWh": 0.0,
+   "E_rollspin_shaft_kWh": 0.0002462434569550665,
+   "E_rollspin_bus_kWh": 0.0005806096213219366,
+   "n_infeasible": 0,
+   "eta_mot_avg": 0.9203390499243902,
+   "eta_gen_avg": 0.9095375436067208,
+   "mean_heat_kW": 1.150606899549907
+  },
+  "VOLT_REG_V2_iMMD_approx": {
+   "variant": "V2",
+   "v_dc": 662.4,
+   "ratio": 10.0,
+   "decimate": 1,
+   "duration_h": 1.8373055555573699,
+   "stand_frac": 0.08501277535030223,
+   "lockup_frac": 0.7009207323518372,
+   "E_shaft_mot_kWh": 7.484445420962199,
+   "E_dc_mot_kWh": 8.062069654474287,
+   "E_shaft_gen_kWh": 4.1072423445833515,
+   "E_dc_gen_kWh": 3.7277242182762533,
+   "E_loss_mach_kWh": 0.8500707346800134,
+   "E_loss_inv_kWh": 0.11644329180581908,
+   "E_spin_shaft_kWh": 1.4851173681417928,
+   "E_spin_bus_kWh": 0.5016837747873195,
+   "E_rollspin_shaft_kWh": 0.00017556501209158132,
+   "E_rollspin_bus_kWh": 0.00040829695815608675,
+   "n_infeasible": 0,
+   "eta_mot_avg": 0.9283528599642502,
+   "eta_gen_avg": 0.907597824898838,
+   "mean_heat_kW": 1.6077342293177195
+  },
+  "chain_of_record": "R12: bus->wheel = these measured inverter+motor maps x 0.97 reduction (declared derate). No scalar PE member on the traction side. All energies bus-side. WS1's scalar shaft-bus and bus-wheel chains are superseded on the record.",
+  "note": "V2 approximation: lockup engaged whenever v>=65 km/h and P_wheel>0; regen taken by the motor everywhere (WS1's regen-priority clutch strategy). Reference traces only \u2014 means, not extrema (stable to a few % per WS1 s.4.8).",
+  "file": "data/cycle_loss_summary.csv"
+ },
+ "heat_ledger": {
+  "rows": [
+   {
+    "component": "traction motor",
+    "case": "V2 6% grade hold, 90.5 kW shaft, 10 min, +45C (restated at the R10 voltage per R12)",
+    "kW": 4.71,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "traction inverter",
+    "case": "V2 6% grade hold",
+    "kW": 0.45,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "reduction (motor path)",
+    "case": "V2 6% grade hold",
+    "kW": 2.71,
+    "sink": "gear oil / case convection"
+   },
+   {
+    "component": "motor+inverter",
+    "case": "S2 rating point 95 kW / 207.4 Nm",
+    "kW": 5.45,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "brake resistor",
+    "case": "6% descent, R2 continuous",
+    "kW": 50.0,
+    "sink": "ambient air (forced), NOT coolant (R15)"
+   },
+   {
+    "component": "brake resistor",
+    "case": "24-min 25 km/h descent (WS1 4.6)",
+    "kW": 22.0,
+    "sink": "ambient air; 8.82 kWh total"
+   },
+   {
+    "component": "brake resistor",
+    "case": "WS2-E5 second-stage ceiling: full duty at the 748.8 V operating ceiling (continuous-capable)",
+    "kW": 150.2,
+    "sink": "ambient air (forced), NOT coolant (R15)"
+   },
+   {
+    "component": "chopper",
+    "case": "R2 50 kW continuous",
+    "kW": 0.06,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "motor+inverter",
+    "case": "20% crawl 510 Nm (V1 speed 10.6 km/h), R13 continuous",
+    "kW": 8.79,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "motor+inverter",
+    "case": "20% crawl 510 Nm (V2 speed 23.6 km/h), R13 continuous",
+    "kW": 10.27,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "motor+inverter",
+    "case": "R13 crawl band top 515 Nm at 25 km/h \u2014 LOOP-SIZING CASE",
+    "kW": 10.57,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "motor+inverter",
+    "case": "VOLT-SUB V1 cycle average",
+    "kW": 1.15,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "motor+inverter (incl lockup spin)",
+    "case": "VOLT-REG V2 cycle average",
+    "kW": 1.61,
+    "sink": "LT coolant loop"
+   },
+   {
+    "component": "blower (resistor)",
+    "case": "whenever chopper active",
+    "kW": 1.45,
+    "sink": "electrical load on bus"
+   },
+   {
+    "component": "pack heater (WS3-OWNED, coexisting member per R15)",
+    "case": "R15 blend order: regen -> pack heater (if cold) -> resistor -> friction; heater feeds from the DC bus",
+    "kW": 8.0,
+    "sink": "pack coolant loop; electrical load on bus (WS3 owns the heater, WS2 owns the resistor)"
+   }
+  ],
+  "file": "data/heat_ledger_ws2.csv"
+ },
+ "interface": {
+  "dc_bus": {
+   "basis": "R10 (BASELINE v2), pack-native 288s LTO string \u2014 ruled, consumed here, no longer a proposal",
+   "nominal_V": 662.4,
+   "window_V": [
+    432.0,
+    748.8
+   ],
+   "transient_10s_V": 777.6,
+   "granularity_V": 27.6,
+   "chopper_hw_overvoltage_backstop_V": 800.0,
+   "device_class_V": 1200.0
+  },
+  "machine": {
+   "type": "IPM-PMSM, 8-pole, hairpin, WEG jacket + oil spray (spray build MANDATORY per R13)",
+   "name": "VM250-HV (VM250-OS rewound x1.47 for the R10 window; specified, not vendor-selected)",
+   "rewind_factor_vs_r3": 1.47,
+   "ratio": 10.0,
+   "ratio_arrangement": "3.571:1 motor stage into common 2.8:1 final drive",
+   "S1_Nm": 180.0,
+   "S1_kW": 45.0,
+   "S2_10min_kW": 95.0,
+   "T_peak_Nm": 530.0,
+   "rpm_max": 7200,
+   "peak_1min_kW": {
+    "rule": "capability vs bus voltage; monotone rising, so the window FLOOR is the worst case (R14); full curve in data/peak_power_vs_vbus.csv",
+    "cases": {
+     "432": 121.2,
+     "662": 188.0,
+     "749": 212.9
+    },
+    "worst_case_value": 121.2,
+    "governing_case": "432 V window floor",
+    "R3_120kW_met_everywhere_in_window": true
+   },
+   "T_515Nm_available_everywhere_in_window": true,
+   "asc_required": {
+    "rule": "UCG onset (EMF = bus V) vs bus voltage; the window FLOOR is the worst case (R14)",
+    "cases_kmh": {
+     "432": 72.4,
+     "662": 111.1,
+     "749": 125.6
+    },
+    "worst_case_value_kmh": 72.4,
+    "governing_case": "432 V window floor",
+    "no_ucg_below_7200rpm_above_V": 599.0
+   }
+  },
+  "electrical_ratings": {
+   "note": "R13/F11: the continuous rating basis IS the crawl phase current; R14: each tier is an explicit max over its enumerated case set. Crawl currents are MTPA and voltage-independent across the window (verified).",
+   "continuous_Arms": {
+    "rule": "max",
+    "cases": {
+     "R13_crawl_band_top_515Nm_25kmh": 311.7,
+     "crawl_510Nm_V1_10.6kmh": 309.7,
+     "crawl_510Nm_V2_23.6kmh": 309.7
+    },
+    "value": 311.7,
+    "governing_case": "R13_crawl_band_top_515Nm_25kmh"
+   },
+   "ten_min_Arms": {
+    "rule": "max",
+    "cases": {
+     "S2_95kW_at_432.0V_floor": 208.2,
+     "S2_95kW_at_662.4V_nominal": 164.8
+    },
+    "value": 208.2,
+    "governing_case": "S2_95kW_at_432.0V_floor",
+    "note": "sits BELOW the continuous rating \u2014 subsumed"
+   },
+   "peak_60s_Apk": 449.0,
+   "peak_60s_Arms": 317.5,
+   "inverter_Tj_at_continuous_rating_C": {
+    "rule": "max over window voltages (switching loss rises with bus voltage; R14)",
+    "cases": {
+     "432V": 120.0,
+     "662V": 130.0,
+     "749V": 133.0
+    },
+    "value": 133.0,
+    "governing_case": "749V window ceiling"
+   },
+   "inverter_Tj_at_peak_C": 131.0
+  },
+  "mass_kg": {
+   "motor_kg": 96.0,
+   "inverter_kg": 16.0,
+   "reduction_motor_stage_kg": 32.0,
+   "resistor_assembly_kg": 53.9,
+   "chopper_kg": 6.0,
+   "hv_cables_kg": 17.9,
+   "contactors_precharge_kg": 9.0,
+   "total_kg": 230.8
+  },
+  "volume_L": {
+   "motor_L": 21.0,
+   "inverter_L": 11.0,
+   "resistor_L": 90.0,
+   "reduction_stage_L": 18.0
+  },
+  "coolant": {
+   "loop": "LT",
+   "fluid": "WEG 50/50",
+   "flow_lpm": 12.0,
+   "max_inlet_C": 65.0,
+   "order": "inverter then motor",
+   "heat_worst_case_kW": {
+    "rule": "max",
+    "cases": {
+     "crawl_510Nm_V1_10.6kmh (R13 continuous)": 8.79,
+     "crawl_510Nm_V2_23.6kmh (R13 continuous)": 10.27,
+     "crawl_band_top_515Nm_25.0kmh (R13 continuous)": 10.57,
+     "S2_rating_95kW_207.4Nm (10-min)": 5.45,
+     "grade_hold_90.5kW_197.7Nm (10-min)": 5.16
+    },
+    "value": 10.57,
+    "governing_case": "crawl_band_top_515Nm_25.0kmh (R13 continuous)",
+    "convention": "motor+inverter chain loss at the 170 C winding bookkeeping convention, 662.4 V; size the LT loop to this"
+   },
+   "heat_at_S2_rating_kW": 5.45,
+   "heat_at_gradehold_90p5kW_kW": 5.16
+  },
+  "ws7_verification": {
+   "G_ws_heat_run_requirement_WK": 90.0,
+   "basis": "R13: oil-spray winding->sink conductance G_ws >= 90 W/K must be verified by WS7 heat run",
+   "continuous_limit_floor_WK": 80.1,
+   "floor_note": "G_ws at which the hottest continuous case (R13 band top) sits exactly on the 165 C line \u2014 re-derived this round; r3's 75 W/K was the 510 Nm V1-speed member"
+  },
+  "resistor": {
+   "R_ohm": 3.7325,
+   "P_cont_kW_any_bus_V": {
+    "rule": "min over window voltages of full-duty V^2/R = the power available at ANY bus voltage; R2 requires >= 50 (R14)",
+    "cases": {
+     "432V window floor": 50.0,
+     "662V nominal": 117.6,
+     "749V window ceiling": 150.2
+    },
+    "value": 50.0,
+    "governing_case": "432V window floor"
+   },
+   "second_stage_ceiling_kW": {
+    "rule": "min over the limiting mechanisms (R14); continuous-capable, not time-boxed",
+    "cases": {
+     "element, full duty at 748.8 V operating ceiling (V^2/R)": 150.2,
+     "cable-limited (70 mm2 chopper run at 225 A)": 189.0,
+     "ribbon-limited at the 2,000 m / +45 C corner": 263.2
+    },
+    "value": 150.2,
+    "governing_case": "element, full duty at 748.8 V operating ceiling (V^2/R)"
+   },
+   "P_fullduty_at_vtransient_kW": 162.0,
+   "control": "bus-voltage droop, WS5 setpoint 700-760 V (default 745), plus direct 0-100% power command at 100 Hz",
+   "sink": "forced air, not coolant (R15: retardation shall not share a failure domain with the pack loop)"
+  },
+  "spin_drag": {
+   "note": "PM lockup spin drag at the R10 winding (R4 directive item 7); G1-R charges this to case (a) \u2014 it is a lockup-only tax the series path does not pay",
+   "shaft_drag_85kmh_W": 1109.0,
+   "bus_draw_85kmh_W": 371.0,
+   "total_100kmh_W": 1813.0,
+   "E_engine_side_VOLTREG_kWh": 1.49,
+   "E_bus_side_VOLTREG_kWh": 0.5
+  },
+  "dc_bus_loads_coexisting": {
+   "note": "R15: coexisting DC-bus loads for WS5/WS6 bookkeeping",
+   "resistor_blower_kW": 1.45,
+   "pack_heater_kW": 8.0,
+   "pack_heater_owner": "WS3 (WS2 owns the resistor)"
+  },
+  "efficiency_maps": {
+   "432": "data/effmap_motor_inverter_432V.csv",
+   "662": "data/effmap_motor_inverter_662V.csv",
+   "749": "data/effmap_motor_inverter_749V.csv",
+   "capability": "data/capability_vs_rpm.csv",
+   "peak_power_vs_vbus": "data/peak_power_vs_vbus.csv",
+   "thermal_S2": "data/thermal_S2_10min_662V.csv",
+   "thermal_crawl": "data/thermal_crawl_510Nm_jacket.csv"
+  },
+  "traction_control": {
+   "required_day_one": true,
+   "torque_limit_law": "T_wheel <= mu_est*N_r_est*r_dyn/(1 -+ mu_est*h/L)",
+   "envelope_file": "data/traction_envelope.csv"
+  }
+ },
+ "headline": {
+  "bus_window": "432.0-748.8 V",
+  "bus_nominal": "662.4 V",
+  "bus_transient": "777.6 V",
+  "device_class": "1200 V",
+  "peak_power_vnom_kW": "188 kW",
+  "peak_power_vmin_kW": "121 kW",
+  "peak_power_vmax_kW": "213 kW",
+  "peak_torque": "530 Nm",
+  "i_cont_arms": "312 Arms",
+  "i_cont_ratio_vs_r3": "0.685",
+  "s2_Tw_end": "92 C",
+  "s2_steady_Tw": "92 C",
+  "crawl_oilspray_Tw": "146 C",
+  "crawl_bandtop_Tw": "153 C",
+  "crawl_jacket_hold": "118 s",
+  "stall_515_hold": "98 s",
+  "resistor_R": "3.73 ohm",
+  "resistor_mass": "54 kg",
+  "resistor_fullduty_vmax": "150 kW",
+  "spin_energy_lockup_reg": "1.49 kWh",
+  "spin_drag_85_W": "1,109 W",
+  "total_mass": "231 kg",
+  "eta_sub": "0.920",
+  "eta_reg": "0.928"
+ }
+}

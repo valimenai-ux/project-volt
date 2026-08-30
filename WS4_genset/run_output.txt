@@ -1,0 +1,138 @@
+building VOLT-REG ensemble ...
+  built 8 cycles
+G1-R regression anchor: prior convention, nominal ...
+  [prior-nominal] seed 23: a=19.41kg, b=20.72kg
+  [prior-nominal] seed 3: a=19.57kg, b=20.93kg
+  [prior-nominal] seed 4: a=19.53kg, b=20.87kg
+  [prior-nominal] seed 5: a=19.59kg, b=20.90kg
+  [prior-nominal] seed 6: a=19.49kg, b=20.80kg
+  [prior-nominal] seed 7: a=19.45kg, b=20.87kg
+  [prior-nominal] seed 8: a=19.45kg, b=20.84kg
+  [prior-nominal] seed 9: a=19.55kg, b=20.90kg
+G1-R nominal (a, b, bp) ...
+  [nominal] seed 23: a=19.51kg, b=19.04kg, bp=19.00kg
+  [nominal] seed 3: a=19.69kg, b=19.22kg, bp=19.16kg
+  [nominal] seed 4: a=19.64kg, b=19.14kg, bp=19.13kg
+  [nominal] seed 5: a=19.68kg, b=19.21kg, bp=19.15kg
+  [nominal] seed 6: a=19.58kg, b=19.10kg, bp=19.11kg
+  [nominal] seed 7: a=19.61kg, b=19.16kg, bp=19.11kg
+  [nominal] seed 8: a=19.60kg, b=19.12kg, bp=19.09kg
+  [nominal] seed 9: a=19.66kg, b=19.17kg, bp=19.16kg
+G1-R sensitivity: CdA 5.4 ...
+  [cda5.4] seed 23: a=22.52kg, b=22.50kg
+  [cda5.4] seed 3: a=22.75kg, b=22.74kg
+  [cda5.4] seed 4: a=22.68kg, b=22.70kg
+  [cda5.4] seed 5: a=22.73kg, b=22.73kg
+  [cda5.4] seed 6: a=22.64kg, b=22.62kg
+  [cda5.4] seed 7: a=22.62kg, b=22.65kg
+  [cda5.4] seed 8: a=22.64kg, b=22.67kg
+  [cda5.4] seed 9: a=22.72kg, b=22.74kg
+G1-R sensitivity: aux 4 kW ...
+  [aux4] seed 23: a=20.23kg, b=19.84kg
+  [aux4] seed 3: a=20.40kg, b=20.02kg
+  [aux4] seed 4: a=20.36kg, b=19.94kg
+  [aux4] seed 5: a=20.43kg, b=19.98kg
+  [aux4] seed 6: a=20.30kg, b=19.95kg
+  [aux4] seed 7: a=20.33kg, b=19.96kg
+  [aux4] seed 8: a=20.32kg, b=19.92kg
+  [aux4] seed 9: a=20.38kg, b=19.97kg
+G1-R sensitivity: hot day +45 C, sea level ...
+  [hot45] seed 23: a=18.73kg, b=18.12kg
+  [hot45] seed 3: a=18.87kg, b=18.26kg
+  [hot45] seed 4: a=18.85kg, b=18.22kg
+  [hot45] seed 5: a=18.86kg, b=18.25kg
+  [hot45] seed 6: a=18.76kg, b=18.21kg
+  [hot45] seed 7: a=18.82kg, b=18.23kg
+  [hot45] seed 8: a=18.79kg, b=18.19kg
+  [hot45] seed 9: a=18.86kg, b=18.28kg
+G1-R sensitivity: 2,000 m / +45 C ...
+  [alt] seed 23: a=16.72kg, b=15.83kg
+  [alt] seed 3: a=16.86kg, b=15.97kg
+  [alt] seed 4: a=16.82kg, b=15.91kg
+  [alt] seed 5: a=16.84kg, b=15.96kg
+  [alt] seed 6: a=16.80kg, b=15.89kg
+  [alt] seed 7: a=16.84kg, b=15.93kg
+  [alt] seed 8: a=16.82kg, b=15.89kg
+  [alt] seed 9: a=16.84kg, b=15.95kg
+G1-R sensitivity: reference 4HK1 torque curve ...
+  [refcurve] seed 23: a=19.51kg, b=19.13kg
+  [refcurve] seed 3: a=19.69kg, b=19.29kg
+  [refcurve] seed 4: a=19.64kg, b=19.21kg
+  [refcurve] seed 5: a=19.69kg, b=19.28kg
+  [refcurve] seed 6: a=19.59kg, b=19.22kg
+  [refcurve] seed 7: a=19.61kg, b=19.23kg
+  [refcurve] seed 8: a=19.60kg, b=19.21kg
+  [refcurve] seed 9: a=19.67kg, b=19.28kg
+G1-R one-factor: spin drag alone (scalar chain) ...
+  [spin-only] seed 23: a=19.78kg, b=20.72kg
+  [spin-only] seed 3: a=19.94kg, b=20.93kg
+  [spin-only] seed 4: a=19.90kg, b=20.87kg
+  [spin-only] seed 5: a=19.96kg, b=20.90kg
+  [spin-only] seed 6: a=19.86kg, b=20.80kg
+  [spin-only] seed 7: a=19.83kg, b=20.87kg
+  [spin-only] seed 8: a=19.83kg, b=20.84kg
+  [spin-only] seed 9: a=19.92kg, b=20.90kg
+G1-R one-factor: map-vs-scalar swap alone (no spin) ...
+  [maps-only] seed 23: a=19.16kg, b=19.04kg
+  [maps-only] seed 3: a=19.33kg, b=19.22kg
+  [maps-only] seed 4: a=19.29kg, b=19.14kg
+  [maps-only] seed 5: a=19.33kg, b=19.21kg
+  [maps-only] seed 6: a=19.23kg, b=19.10kg
+  [maps-only] seed 7: a=19.25kg, b=19.16kg
+  [maps-only] seed 8: a=19.24kg, b=19.12kg
+  [maps-only] seed 9: a=19.31kg, b=19.17kg
+G1-R genset-conditioning bracket: 3%-class replacement ...
+  [rect-repl] seed 23: a=19.52kg, b=19.39kg
+  [rect-repl] seed 3: a=19.69kg, b=19.55kg
+  [rect-repl] seed 4: a=19.64kg, b=19.50kg
+  [rect-repl] seed 5: a=19.69kg, b=19.53kg
+  [rect-repl] seed 6: a=19.59kg, b=19.45kg
+  [rect-repl] seed 7: a=19.61kg, b=19.51kg
+  [rect-repl] seed 8: a=19.60kg, b=19.47kg
+  [rect-repl] seed 9: a=19.67kg, b=19.53kg
+G1-R genset-conditioning bracket: declared + 3% stacked ...
+  [rect-stack] seed 23: a=19.57kg, b=19.61kg
+  [rect-stack] seed 3: a=19.75kg, b=19.77kg
+  [rect-stack] seed 4: a=19.70kg, b=19.72kg
+  [rect-stack] seed 5: a=19.75kg, b=19.76kg
+  [rect-stack] seed 6: a=19.64kg, b=19.67kg
+  [rect-stack] seed 7: a=19.66kg, b=19.73kg
+  [rect-stack] seed 8: a=19.65kg, b=19.70kg
+  [rect-stack] seed 9: a=19.73kg, b=19.75kg
+G1-R map-vintage robustness: 432 V map ...
+  [vmap432] seed 23: a=19.50kg, b=18.98kg
+  [vmap432] seed 3: a=19.67kg, b=19.17kg
+  [vmap432] seed 4: a=19.62kg, b=19.09kg
+  [vmap432] seed 5: a=19.67kg, b=19.12kg
+  [vmap432] seed 6: a=19.57kg, b=19.04kg
+  [vmap432] seed 7: a=19.60kg, b=19.10kg
+  [vmap432] seed 8: a=19.59kg, b=19.06kg
+  [vmap432] seed 9: a=19.65kg, b=19.12kg
+G1-R map-vintage robustness: 749 V map ...
+  [vmap749] seed 23: a=19.51kg, b=19.08kg
+  [vmap749] seed 3: a=19.69kg, b=19.27kg
+  [vmap749] seed 4: a=19.64kg, b=19.19kg
+  [vmap749] seed 5: a=19.69kg, b=19.26kg
+  [vmap749] seed 6: a=19.58kg, b=19.15kg
+  [vmap749] seed 7: a=19.61kg, b=19.20kg
+  [vmap749] seed 8: a=19.60kg, b=19.17kg
+  [vmap749] seed 9: a=19.67kg, b=19.22kg
+building VOLT-SUB ensemble ...
+V1 start-stop sweeps ...
+
+==== WS4 summary (G1-R) ====
+traction chain vintage: WS2 round 4, data/effmap_motor_inverter_662V.csv (662 V map, WS2 bus nominal 662.4 V)
+spin member: 1153 W shaft + 390 W bus while locked (WS2 export 1.4851 + 0.5017 kWh/VOLT-REG)
+R6 corner: derate 0.9312; candidate delivers 122.9 kW vs required 122.1 kW
+G1-R nominal margin (a beats b by): min -2.58% median -2.50% max -2.37%  (kill criterion >= 5.0%; passes: False)
+  prior convention (anchor, reproduced): min 6.26% median 6.45%
+  one-factor spin drag alone:     min 4.49% (delta -1.77 pp)
+  one-factor map-vs-scalar alone: min -0.75% (delta -7.01 pp)
+  genset-conditioning bracket: 3%-replacement min -0.79%, stacked min 0.09% (kill outcome invariant)
+G1-R cda_5.4: min -0.09% median 0.02%
+G1-R aux_4kW: min -2.25% median -1.98%
+G1-R hot_45C_sea_level: min -3.49% median -3.31%
+G1-R alt2000m_45C: min -5.90% median -5.66%
+G1-R reference_curve: min -2.23% median -2.02%
+V1 starts/8h shift at R8 floor (0.8 kWh hyst): 57-74
+V1 fuel saving vs continuous: 6.2%

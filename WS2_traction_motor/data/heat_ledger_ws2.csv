@@ -1,0 +1,16 @@
+component,case,kW,sink
+traction motor,"V2 6% grade hold, 90.5 kW shaft, 10 min, +45C (restated at the R10 voltage per R12)",4.71,LT coolant loop
+traction inverter,V2 6% grade hold,0.45,LT coolant loop
+reduction (motor path),V2 6% grade hold,2.71,gear oil / case convection
+motor+inverter,S2 rating point 95 kW / 207.4 Nm,5.45,LT coolant loop
+brake resistor,"6% descent, R2 continuous",50.0,"ambient air (forced), NOT coolant (R15)"
+brake resistor,24-min 25 km/h descent (WS1 4.6),22.0,ambient air; 8.82 kWh total
+brake resistor,WS2-E5 second-stage ceiling: full duty at the 748.8 V operating ceiling (continuous-capable),150.2,"ambient air (forced), NOT coolant (R15)"
+chopper,R2 50 kW continuous,0.06,LT coolant loop
+motor+inverter,"20% crawl 510 Nm (V1 speed 10.6 km/h), R13 continuous",8.79,LT coolant loop
+motor+inverter,"20% crawl 510 Nm (V2 speed 23.6 km/h), R13 continuous",10.27,LT coolant loop
+motor+inverter,R13 crawl band top 515 Nm at 25 km/h — LOOP-SIZING CASE,10.57,LT coolant loop
+motor+inverter,VOLT-SUB V1 cycle average,1.15,LT coolant loop
+motor+inverter (incl lockup spin),VOLT-REG V2 cycle average,1.61,LT coolant loop
+blower (resistor),whenever chopper active,1.45,electrical load on bus
+"pack heater (WS3-OWNED, coexisting member per R15)",R15 blend order: regen -> pack heater (if cold) -> resistor -> friction; heater feeds from the DC bus,8.0,"pack coolant loop; electrical load on bus (WS3 owns the heater, WS2 owns the resistor)"

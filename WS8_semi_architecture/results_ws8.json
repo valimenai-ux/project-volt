@@ -121,7 +121,7 @@
   "bytes": 239614,
   "evidence_quality": "SEARCH-SUMMARY LEVEL ONLY. This environment's egress policy denies direct HTTPS CONNECT to external hosts - patent databases, SAE, NREL, NACFE and OEM sites all return 403 at the gateway (verified against the proxy's own status endpoint). Server-side web SEARCH does work and returned substantive, sourced results, so the scan was RUN rather than deferred; but no patent claim text and no primary document was read verbatim. Every finding in the claim map is therefore a lead, flagged provisional per the E13 precedent, and is NOT a freedom-to-operate opinion. Any decision that turns on claim scope needs a re-run with database access or outside counsel.",
   "why_not_deferred": "The assignment permits DEFERRED if the environment restricts web access. It restricts it partially, not wholly. Deferring would have thrown away a real and convergent result - so the scan is reported with its evidence limit stated instead.",
-  "note": "The S3 verdict in this report rests on the physics in Task 5, not on the scan. The scan corroborates it independently, which is worth something, but nothing in section 8 depends on it."
+  "note": "The S3 verdict in this report rests on the physics in Task 5, not on the scan. The scan corroborates it independently (section 8), which is worth something, but no verdict in section 9 depends on it."
  },
  "task1_cycles": {
   "cycles": {
@@ -29695,6 +29695,33 @@
    "agree": true
   },
   "all_pass": true
+ },
+ "determinism": {
+  "what": "CLAUDE.md rule 1 requires that re-running the pipeline reproduces every committed artifact byte-identically. Checked in two independent halves, because the pipeline has two independent sources of possible drift: the simulation, and the derived blocks built on top of it.",
+  "half_1_simulation": {
+   "method": "the full 8-seed nominal corner re-simulated FROM SCRATCH in a separate process with a separate worker pool (run_ws8.py --jobs 3 --only-nominal), then its trial slice compared against the committed run",
+   "wall_clock_fields": "excluded from the comparison and from the committed artifact alike: per-candidate and total runtimes are the only values in this structure that cannot reproduce, and _strip_runtimes removes them before the record is written",
+   "task3_trial_nominal_sha256": "bccb2920a42dfe73a20442626a88d9c7af23f6720309f6758bccedd5f821fd4e",
+   "matches_committed_run": true,
+   "task1_cycles_identical": true,
+   "task2_calibration_identical": true
+  },
+  "half_2_derived_blocks": {
+   "method": "run_ws8.py --from-checkpoint run twice over the same checkpoint; results_ws8.json and all seven data/*.csv exports compared byte-for-byte",
+   "results_json_byte_identical": true,
+   "all_csv_exports_byte_identical": true,
+   "csv_files": [
+    "candidate_runs.csv",
+    "cycle_stats.csv",
+    "fleet_mission.csv",
+    "heat_ledger_ws6.csv",
+    "mass_ledger.csv",
+    "s3_fixed_ratio_sweep.csv",
+    "whr_gate.csv"
+   ]
+  },
+  "not_checked": "the four sensitivity corners and the WHR gate were not re-simulated from scratch \u2014 they are the same code path as the nominal corner with different Ctx constants, and re-running them would have cost another hour of compute for no additional class of evidence. Stated rather than implied.",
+  "status": "PASS"
  },
  "escalations": [
   {

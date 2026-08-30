@@ -1030,9 +1030,33 @@ def provenance():
     w("../.venv/bin/python verify_ws8.py     # asserts report == results")
     w("```")
     w("")
-    w(f"Fixed seeds {meta['seeds']}. Re-running reproduces every committed "
-      f"artifact byte-identically (rule 1).")
+    w(f"Fixed seeds {meta['seeds']}.")
     w("")
+    d = g("determinism")
+    if d and d.get("status") != "NOT RUN":
+        h1, h2 = d["half_1_simulation"], d["half_2_derived_blocks"]
+        w(f"### Regeneration check (rule 1): **{d['status']}**")
+        w("")
+        w(d["what"])
+        w("")
+        w(f"**Half 1 - the simulation.** {h1['method']}. Result: trial "
+          f"slice **{'byte-identical' if h1['matches_committed_run'] else 'DIFFERS'}** "
+          f"(sha256 `{h1['task3_trial_nominal_sha256'][:16]}...`); cycle "
+          f"ensemble "
+          f"{'identical' if h1['task1_cycles_identical'] else 'DIFFERS'}; "
+          f"S0 calibration "
+          f"{'identical' if h1['task2_calibration_identical'] else 'DIFFERS'}.")
+        w("")
+        w(f"Wall-clock fields are {h1['wall_clock_fields']}.")
+        w("")
+        w(f"**Half 2 - the derived blocks.** {h2['method']}. Result: "
+          f"`results_ws8.json` "
+          f"**{'byte-identical' if h2['results_json_byte_identical'] else 'DIFFERS'}**, "
+          f"and all {len(h2['csv_files'])} CSV exports "
+          f"{'byte-identical' if h2['all_csv_exports_byte_identical'] else 'DIFFER'}.")
+        w("")
+        w(f"**Not checked:** {d['not_checked']}")
+        w("")
 
 
 def main():

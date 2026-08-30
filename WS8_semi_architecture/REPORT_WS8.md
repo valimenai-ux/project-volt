@@ -41,7 +41,7 @@ S3 fails for a reason that has nothing to do with fuel, and it is the most usefu
 
 **Why not deferred.** The assignment permits DEFERRED if the environment restricts web access. It restricts it partially, not wholly. Deferring would have thrown away a real and convergent result - so the scan is reported with its evidence limit stated instead.
 
-The S3 verdict in this report rests on the physics in Task 5, not on the scan. The scan corroborates it independently, which is worth something, but nothing in section 8 depends on it.
+The S3 verdict in this report rests on the physics in Task 5, not on the scan. The scan corroborates it independently (section 8), which is worth something, but no verdict in section 9 depends on it.
 
 ---
 
@@ -399,7 +399,9 @@ Criteria, pre-committed and quoted from the assignment: a candidate ADVANCES onl
 1. **No candidate clears the bar as specified.** The margins are not catastrophic - several candidates are within a point or two of S0 - but 'within a point or two' is not >= 3%, and the criteria were armed before the numbers were seen.
 2. **S3 should be spared further work regardless of its fuel number.** Its fuel result is not the finding; its capability result is. A fixed-ratio diesel axle cannot hold the specified mountain grade at any ratio that also permits highway cruise, and an e-axle fault leaves the combination immobile from rest. Those are structural, not parametric.
 3. **The binding constraint on this vehicle is mass, not efficiency.** Every electrified candidate wins on fuel per kilometre and gives it back on payload. Any future work that does not attack the powertrain mass ledger is not attacking the problem.
-4. **The escalations in section 10 change the answer if ruled the other way**, ESC-WS8-1 and ESC-WS8-3 especially. They are not footnotes.
+4. **What decides these architectures is the fleet's duty, not the architecture.** The corner sweep in section 6.1 spans about fourteen points for S1 - from roughly +10% on the grade-heavy corridor to about -4% at -10 C - and the sign flips inside that span. An operator running loaded over mountains and an operator running light in winter are not looking at the same vehicle. If Vehicle One is to be specified for a duty rather than for an average, that duty needs naming before any of these numbers mean much.
+5. **The cold corner is the one to attack first.** It is binding for all four candidates, and its cause is specific and fixable rather than fundamental: WS3's cells accept about an eighth of their warm charge power at -10 C, so descent regen goes to the resistor instead of the pack, while the conventional truck heats its cab from engine coolant for free. Pack preconditioning and a heat-recovery path for cab heat are the obvious counters, and neither is modelled here.
+6. **The escalations in section 11 change the answer if ruled the other way**, ESC-WS8-1 and ESC-WS8-3 especially. They are not footnotes.
 
 ---
 
@@ -1571,4 +1573,16 @@ cd WS8_semi_architecture
 ../.venv/bin/python verify_ws8.py     # asserts report == results
 ```
 
-Fixed seeds [8101, 8102, 8103, 8104, 8105, 8106, 8107, 8108]. Re-running reproduces every committed artifact byte-identically (rule 1).
+Fixed seeds [8101, 8102, 8103, 8104, 8105, 8106, 8107, 8108].
+
+### Regeneration check (rule 1): **PASS**
+
+CLAUDE.md rule 1 requires that re-running the pipeline reproduces every committed artifact byte-identically. Checked in two independent halves, because the pipeline has two independent sources of possible drift: the simulation, and the derived blocks built on top of it.
+
+**Half 1 - the simulation.** the full 8-seed nominal corner re-simulated FROM SCRATCH in a separate process with a separate worker pool (run_ws8.py --jobs 3 --only-nominal), then its trial slice compared against the committed run. Result: trial slice **byte-identical** (sha256 `bccb2920a42dfe73...`); cycle ensemble identical; S0 calibration identical.
+
+Wall-clock fields are excluded from the comparison and from the committed artifact alike: per-candidate and total runtimes are the only values in this structure that cannot reproduce, and _strip_runtimes removes them before the record is written.
+
+**Half 2 - the derived blocks.** run_ws8.py --from-checkpoint run twice over the same checkpoint; results_ws8.json and all seven data/*.csv exports compared byte-for-byte. Result: `results_ws8.json` **byte-identical**, and all 7 CSV exports byte-identical.
+
+**Not checked:** the four sensitivity corners and the WHR gate were not re-simulated from scratch — they are the same code path as the nominal corner with different Ctx constants, and re-running them would have cost another hour of compute for no additional class of evidence. Stated rather than implied.

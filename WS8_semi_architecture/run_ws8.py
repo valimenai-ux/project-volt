@@ -489,6 +489,7 @@ def main():
     R["heat_ledger"] = heat_ledger(seeds, cs["nominal"])
 
     R["sanity"] = sanity_checks(R)
+    R["determinism"] = _load_determinism()
     R["escalations"] = escalations(R)
     R["interface_ws8"] = _clean_nan(interface_block(R))
     R["headline"] = headline(R)
@@ -517,6 +518,28 @@ def main():
 CHECKPOINT = os.path.join(DATA, "_checkpoint.json")
 
 
+DETERMINISM_FILE = os.path.join(DATA, "determinism_check.json")
+
+
+def _load_determinism():
+    """The rule-1 regeneration evidence, recorded as an artifact.
+
+    The check itself cannot run inside the process it is checking - it
+    compares two independent runs - so it is performed outside and its
+    result committed alongside the run it certifies."""
+    if not os.path.exists(DETERMINISM_FILE):
+        return dict(status="NOT RUN",
+                    note="data/determinism_check.json absent")
+    d = json.load(open(DETERMINISM_FILE))
+    d["status"] = ("PASS" if (d["half_1_simulation"]["matches_committed_run"]
+                              and d["half_2_derived_blocks"]
+                              ["results_json_byte_identical"]
+                              and d["half_2_derived_blocks"]
+                              ["all_csv_exports_byte_identical"])
+                   else "FAIL")
+    return d
+
+
 def _rebuild_from_checkpoint(args):
     """Re-run only the derived blocks against a saved trial."""
     R = json.load(open(CHECKPOINT), object_pairs_hook=OrderedDict)
@@ -540,6 +563,7 @@ def _rebuild_from_checkpoint(args):
               flush=True)
     R["heat_ledger"] = heat_ledger(seeds, corners()["nominal"])
     R["sanity"] = sanity_checks(R)
+    R["determinism"] = _load_determinism()
     R["escalations"] = escalations(R)
     R["interface_ws8"] = _clean_nan(interface_block(R))
     R["headline"] = headline(R)

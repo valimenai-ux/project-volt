@@ -33,3 +33,10 @@
     S4: payload   15475 kg  fleet 0.7983 MJ/payload-tkm  (208 s)
    [checkpoint written: 0.6 MB]
   corner grade_heavy
+    S0: payload   20785 kg  fleet 0.7645 MJ/payload-tkm  (62 s)
+    S1: payload   19398 kg  fleet 0.6884 MJ/payload-tkm  (381 s)
+    S2: payload   19106 kg  fleet 0.7068 MJ/payload-tkm  (419 s)
+    S3: payload   19559 kg  fleet 0.7491 MJ/payload-tkm  (417 s)
+    S4: payload   19344 kg  fleet 0.6902 MJ/payload-tkm  (379 s)
+   [checkpoint written: 0.7 MB]
+  corner cold_minus10C

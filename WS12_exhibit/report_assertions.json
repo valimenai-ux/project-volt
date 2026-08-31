@@ -1,0 +1,524 @@
+{
+ "_rule": "every headline number in REPORT_WS12.md, with the key path in exhibit_data.json it came from and the string it formats to. exhibit_verify.py check 13 re-resolves each one and asserts the string is present in the report verbatim.",
+ "assertions": [
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "app",
+    "stack"
+   ],
+   "pre": "",
+   "s": "Vite + React + TypeScript, static, no server",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "app",
+    "vite_base"
+   ],
+   "pre": "",
+   "s": "/project-volt/",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "app",
+    "screens_n"
+   ],
+   "pre": "",
+   "s": "6",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "app",
+    "front_door"
+   ],
+   "pre": "",
+   "s": "verdict",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "entries_total"
+   ],
+   "pre": "",
+   "s": "488",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "by_kind",
+    "cite"
+   ],
+   "pre": "",
+   "s": "239",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "by_kind",
+    "quote"
+   ],
+   "pre": "",
+   "s": "46",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "by_kind",
+    "file"
+   ],
+   "pre": "",
+   "s": "53",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "by_kind",
+    "fileref"
+   ],
+   "pre": "",
+   "s": "1",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "by_kind",
+    "derived"
+   ],
+   "pre": "",
+   "s": "149",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "guard_rails",
+    "method_claim"
+   ],
+   "pre": "",
+   "s": "catches internal inconsistency",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "guard_rails",
+    "method_claim_never"
+   ],
+   "pre": "",
+   "s": "catches wrong physics",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "badges",
+    "positions_total"
+   ],
+   "pre": "",
+   "s": "19",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "waterfall",
+    0,
+    "value",
+    "s"
+   ],
+   "pre": "",
+   "s": "+6.26%",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "waterfall",
+    1,
+    "value",
+    "s"
+   ],
+   "pre": "",
+   "s": "-7.01 pp",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "waterfall",
+    2,
+    "value",
+    "s"
+   ],
+   "pre": "",
+   "s": "-1.77 pp",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "waterfall",
+    3,
+    "value",
+    "s"
+   ],
+   "pre": "",
+   "s": "-0.06 pp",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "waterfall",
+    4,
+    "value",
+    "s"
+   ],
+   "pre": "",
+   "s": "-2.58%",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "criterion",
+    "s"
+   ],
+   "pre": "",
+   "s": "5.0%",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "missedBy",
+    "s"
+   ],
+   "pre": "",
+   "s": "7.58 pp",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "seedsTotal",
+    "s"
+   ],
+   "pre": "",
+   "s": "8",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "verdict",
+    "cards",
+    0,
+    "seedsPositive",
+    "s"
+   ],
+   "pre": "",
+   "s": "0",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "race",
+    "headline",
+    "perKm",
+    "s"
+   ],
+   "pre": "",
+   "s": "+8.41%",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "race",
+    "headline",
+    "perPayload",
+    "s"
+   ],
+   "pre": "",
+   "s": "-7.93%",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "screens",
+    "race",
+    "headline",
+    "freightGiven",
+    "s"
+   ],
+   "pre": "",
+   "s": "16.19 pp",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "by_kind",
+    "cite"
+   ],
+   "pre": "",
+   "s": "239",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "cut_elements_n"
+   ],
+   "pre": "",
+   "s": "8",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "published_n"
+   ],
+   "pre": "",
+   "s": "10",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "stride"
+   ],
+   "pre": "",
+   "s": "10",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "segment_rows"
+   ],
+   "pre": "",
+   "s": "3000",
+   "suf": ""
+  },
+  {
+   "fmt": ",d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "source_rows_10Hz"
+   ],
+   "pre": "",
+   "s": "512,557",
+   "suf": ""
+  },
+  {
+   "fmt": ",d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "rows_1Hz"
+   ],
+   "pre": "",
+   "s": "51,263",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "segments_total"
+   ],
+   "pre": "",
+   "s": "177",
+   "suf": ""
+  },
+  {
+   "fmt": ",d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "source_bytes"
+   ],
+   "pre": "",
+   "s": "54,392,870",
+   "suf": ""
+  },
+  {
+   "fmt": ",d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "published_bytes"
+   ],
+   "pre": "",
+   "s": "34,359,646",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "badge"
+   ],
+   "pre": "",
+   "s": "the replay is decimated; the record is not",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "published_payload_scope"
+   ],
+   "pre": "",
+   "s": "app/public/traces + app/public/maps",
+   "suf": ""
+  },
+  {
+   "fmt": ",d",
+   "path": [
+    "interface_ws12",
+    "published_payload_bytes"
+   ],
+   "pre": "",
+   "s": "34,602,996",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "registry_total"
+   ],
+   "pre": "",
+   "s": "23",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "registry_r34_conforming"
+   ],
+   "pre": "",
+   "s": "2",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "registry_r34_refused"
+   ],
+   "pre": "",
+   "s": "1",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "traces",
+    "registry_pre_r34"
+   ],
+   "pre": "",
+   "s": "20",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "escalations_n"
+   ],
+   "pre": "",
+   "s": "9",
+   "suf": ""
+  }
+ ],
+ "n": 43
+}

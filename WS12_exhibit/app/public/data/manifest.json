@@ -1,0 +1,6261 @@
+{
+ "_rule": "every number of record the app can render, with the file and key path it resolves to and the string it formats to. exhibit_verify.py re-opens each file with its own resolver and its own formatter and asserts the string.",
+ "badges": [
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.race.semi.rows[0].statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.race.semi.rows[1].statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.race.semi.rows[2].statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.race.semi.rows[3].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.race.semi.rows[4].statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.race.semi.statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.rounds.gap.statusBadge"
+  },
+  {
+   "badge": "NOT CONVERGED",
+   "key": "$.screens.rounds.kx.statusBadge"
+  },
+  {
+   "badge": "NOT CUT",
+   "key": "$.screens.sim.statusBadge"
+  },
+  {
+   "badge": "FROZEN-RATIFIED",
+   "key": "$.screens.verdict.cards[0].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.verdict.cards[1].rows[0].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.verdict.cards[1].rows[1].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.verdict.cards[1].rows[2].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.verdict.cards[1].rows[3].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.verdict.cards[1].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.verdict.cards[2].rows[1].statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.verdict.cards[2].rows[2].statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "key": "$.screens.verdict.cards[3].rows[0].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "key": "$.screens.verdict.cards[3].rows[1].statusBadge"
+  }
+ ],
+ "counts": {
+  "cite": 239,
+  "derived": 149,
+  "file": 53,
+  "fileref": 1,
+  "quote": 46,
+  "total": 488
+ },
+ "entries": [
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.guardRails.methodClaim.evidence[0]",
+   "kind": "quote",
+   "s": "Ruler uncalibrated (ESC-1); all Vehicle Zero verdicts are model-relative.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.guardRails.methodClaim.evidence[1]",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "anchor",
+    "calibrate_order_satisfied"
+   ],
+   "pre": "",
+   "s": "False",
+   "suf": "",
+   "tier": "RECORD",
+   "v": false
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.guardRails.methodClaim.evidence[2]",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "anchor",
+    "calibrate_order_statement"
+   ],
+   "pre": "",
+   "s": "The assignment orders 'Calibrate to a public NPR fuel-economy reference and state it'. WS11 obtained the reference and did NOT calibrate to it: no ruler parameter was moved to close the residual, because the anchor is an in-use aggregate over an unknown duty, load, body and driver mix and cannot resolve a cycle-specific level. This is recorded as a NON-SATISFACTION of the order, not as a treatment choice (adjudication r1/B3). The consequence for each verdict is priced in `ruler_fuel_flip_points`: V2's KILL is being put to the lead on an UNCALIBRATED ruler.",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "The assignment orders 'Calibrate to a public NPR fuel-economy reference and state it'. WS11 obtained the reference and did NOT calibrate to it: no ruler parameter was moved to close the residual, because the anchor is an in-use aggregate over an unknown duty, load, body and driver mix and cannot resolve a cycle-specific level. This is recorded as a NON-SATISFACTION of the order, not as a treatment choice (adjudication r1/B3). The consequence for each verdict is priced in `ruler_fuel_flip_points`: V2's KILL is being put to the lead on an UNCALIBRATED ruler."
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.guardRails.noPromotion.rule",
+   "kind": "quote",
+   "s": "R52 — Every verdict and number keeps the status it holds at freeze, labeled FROZEN-<status>. Nothing is promoted; nothing is quietly demoted. The public record states each status plainly.",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 3798,
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.provenance.baseline.file",
+   "kind": "file",
+   "s": "BASELINE_v7_FREEZE.md · sha256 4c2fa940…b2fe",
+   "sha256": "4c2fa9406552d771eeb75b263d87fac07fd9d02c5ddb3735112d24e78e88b2fe",
+   "tier": "RECORD"
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.provenance.baseline.quote",
+   "kind": "quote",
+   "s": "Supersedes BASELINE_v6.md as the program's governing state. The research track is FROZEN by the principal's decision.",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 113307,
+   "file": "WS1_loads_duty_cycles/results.json",
+   "key": "$.provenance.resultsFiles[0]",
+   "kind": "file",
+   "s": "results.json · sha256 14cb3463…7f84",
+   "sha256": "14cb34639be0aa16a68ff508e4a27ffb714a5079fbe15eb1577e24e833c47f84",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 1752867,
+   "file": "WS4_genset/results_ws4.json",
+   "key": "$.provenance.resultsFiles[1]",
+   "kind": "file",
+   "s": "results_ws4.json · sha256 b02a6c82…6d0b",
+   "sha256": "b02a6c82fbbe8d3e006fb1d756fbee51b2cb04f50e4281c65e04c97e63876d0b",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 763874,
+   "file": "WS5_controls/results_ws5.json",
+   "key": "$.provenance.resultsFiles[2]",
+   "kind": "file",
+   "s": "results_ws5.json · sha256 9c702dd9…8861",
+   "sha256": "9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 4000786,
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "key": "$.provenance.resultsFiles[3]",
+   "kind": "file",
+   "s": "results_ws8.json · sha256 de125deb…a3d5",
+   "sha256": "de125deb97bdb9d8b61c378206493adeaf22d294ca8005a8d9817c4ab03fa3d5",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 4258868,
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "key": "$.provenance.resultsFiles[4]",
+   "kind": "file",
+   "s": "results_ws9.json · sha256 7960d780…4b89",
+   "sha256": "7960d780c12d5f00daa6419e92ed32fbd743b42a830d9eb1a3307d06a4514b89",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 637985,
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "key": "$.provenance.resultsFiles[5]",
+   "kind": "file",
+   "s": "results_ws11.json · sha256 44948bf8…dc97",
+   "sha256": "44948bf81c9910280abe3c21ae7d0bf439551160385c408a0196cdf936f9dc97",
+   "tier": "RECORD"
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.method.claimsSource",
+   "kind": "quote",
+   "s": "## What the program found (the publishable claims, each with status)",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 5630,
+   "file": "BASELINE_v5.md",
+   "key": "$.screens.method.sources[0]",
+   "kind": "file",
+   "s": "BASELINE_v5.md · sha256 41331e1a…03d6",
+   "sha256": "41331e1ab86cc2fbc7d441e1007370aed62db03f9c41697cf388164626ce03d6",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 3798,
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.method.sources[1]",
+   "kind": "file",
+   "s": "BASELINE_v7_FREEZE.md · sha256 4c2fa940…b2fe",
+   "sha256": "4c2fa9406552d771eeb75b263d87fac07fd9d02c5ddb3735112d24e78e88b2fe",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 9710,
+   "file": "LEAD_HANDOVER.md",
+   "key": "$.screens.method.sources[2]",
+   "kind": "file",
+   "s": "LEAD_HANDOVER.md · sha256 b9335563…5aa1",
+   "sha256": "b93355630819769273b3b13f2d9ce1aaad8223628e9561981f85676cda055aa1",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 92722,
+   "file": "NIGHT_REPORT.md",
+   "key": "$.screens.method.sources[3]",
+   "kind": "file",
+   "s": "NIGHT_REPORT.md · sha256 a8c947f9…1df4",
+   "sha256": "a8c947f988a8c1fb081c9f6b10a9ea14b712023c8e0ac7daae385f42d1891df4",
+   "tier": "RECORD"
+  },
+  {
+   "file": "PM_LOG.md",
+   "key": "$.screens.method.sources[4]",
+   "kind": "fileref",
+   "s": "PM_LOG.md",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 34927,
+   "file": "PM_PACKET_KX.md",
+   "key": "$.screens.method.sources[5]",
+   "kind": "file",
+   "s": "PM_PACKET_KX.md · sha256 224dd173…14e7",
+   "sha256": "224dd1731d2108bc1fdaa78bd4cea6e8ea00fce7a02a5e042a156a6cb81414e7",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 2005,
+   "file": "TRACE_SCHEMA.md",
+   "key": "$.screens.method.sources[6]",
+   "kind": "file",
+   "s": "TRACE_SCHEMA.md · sha256 8dd3eb95…fc22",
+   "sha256": "8dd3eb9503824d70ad19e592c7e1d22862f82e0875ea0cadfacc9cc0e3bcfc22",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 37921,
+   "file": "WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.method.sources[7]",
+   "kind": "file",
+   "s": "FINDINGS_WS11_r1.md · sha256 909de560…e361",
+   "sha256": "909de5603c7d6b71960f627019b9772840c11e36c9ff7f781a89152f9e40e361",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 2902262,
+   "file": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "key": "$.screens.method.sources[8]",
+   "kind": "file",
+   "s": "trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv · sha256 2439e0c2…509a",
+   "sha256": "2439e0c2327725342adab50d3f9897110d46ea1a97c667b9f4b3bce25f40509a",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 2901562,
+   "file": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "key": "$.screens.method.sources[9]",
+   "kind": "file",
+   "s": "trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv · sha256 576acbaa…6bfc",
+   "sha256": "576acbaade5a16649f4613803fc0defbcb4afa25bb7f52800dcc854518ca6bfc",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 6022015,
+   "file": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "key": "$.screens.method.sources[10]",
+   "kind": "file",
+   "s": "trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv · sha256 d0b7e5c3…6daa",
+   "sha256": "d0b7e5c3e852061d09f36d5c5dfde5adb1bde66cc4a54c17bcefc3c5aae86daa",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 5672261,
+   "file": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv",
+   "key": "$.screens.method.sources[11]",
+   "kind": "file",
+   "s": "trace_V2_VOLT-REG_nominal_seed23_10Hz.csv · sha256 56a09f48…764d",
+   "sha256": "56a09f48e34dc86c95577931f5cd9bf4f2a0c900b972d51686dca1a1b84c764d",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 5655705,
+   "file": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "key": "$.screens.method.sources[12]",
+   "kind": "file",
+   "s": "trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv · sha256 f83f80e0…d4ab",
+   "sha256": "f83f80e069019f291f0775150258423ed167eab095fb5a61a0bb2bef8162d4ab",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 5341044,
+   "file": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "key": "$.screens.method.sources[13]",
+   "kind": "file",
+   "s": "trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv · sha256 566ea46b…2cab",
+   "sha256": "566ea46b9f7b8fbdb40ad6eab6fc153503f169c55e99d13b6a9035bc0a5d2cab",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 2721361,
+   "file": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "key": "$.screens.method.sources[14]",
+   "kind": "file",
+   "s": "trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv · sha256 2344970d…437e",
+   "sha256": "2344970d7e8e9ea88d97107e210a6470c10d9fd186f1036986aba50ede02437e",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 2720811,
+   "file": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "key": "$.screens.method.sources[15]",
+   "kind": "file",
+   "s": "trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv · sha256 065aef64…5347",
+   "sha256": "065aef64bc077c0300f4b4aa2550a0a251d11be3205365bb5344d7bc4b205347",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 637985,
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "key": "$.screens.method.sources[16]",
+   "kind": "file",
+   "s": "results_ws11.json · sha256 44948bf8…dc97",
+   "sha256": "44948bf81c9910280abe3c21ae7d0bf439551160385c408a0196cdf936f9dc97",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 113307,
+   "file": "WS1_loads_duty_cycles/results.json",
+   "key": "$.screens.method.sources[17]",
+   "kind": "file",
+   "s": "results.json · sha256 14cb3463…7f84",
+   "sha256": "14cb34639be0aa16a68ff508e4a27ffb714a5079fbe15eb1577e24e833c47f84",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 42944,
+   "file": "WS4_genset/FINDINGS_KX_r3.md",
+   "key": "$.screens.method.sources[18]",
+   "kind": "file",
+   "s": "FINDINGS_KX_r3.md · sha256 fadf22b9…7715",
+   "sha256": "fadf22b9881fd259470f2a2133a99dd50ed0fc059986cbfccdea0b8884f07715",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 125929,
+   "file": "WS4_genset/data/bsfc_map_V1_candidate.csv",
+   "key": "$.screens.method.sources[19]",
+   "kind": "file",
+   "s": "bsfc_map_V1_candidate.csv · sha256 95e262f4…1b1c",
+   "sha256": "95e262f4cfa18108b70440e1b9d150a902798b2eda71323f32ade9b8a4e91b1c",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 117421,
+   "file": "WS4_genset/data/bsfc_map_V2_candidate.csv",
+   "key": "$.screens.method.sources[20]",
+   "kind": "file",
+   "s": "bsfc_map_V2_candidate.csv · sha256 95bb657f…bbfb",
+   "sha256": "95bb657f6fb6f9615ffc4816251b201c0eb43a43918d2e42daeaafe383ddbbfb",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 1752867,
+   "file": "WS4_genset/results_ws4.json",
+   "key": "$.screens.method.sources[21]",
+   "kind": "file",
+   "s": "results_ws4.json · sha256 b02a6c82…6d0b",
+   "sha256": "b02a6c82fbbe8d3e006fb1d756fbee51b2cb04f50e4281c65e04c97e63876d0b",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 6016991,
+   "file": "WS5_controls/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "key": "$.screens.method.sources[22]",
+   "kind": "file",
+   "s": "trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv · sha256 e1d1c950…cf5d",
+   "sha256": "e1d1c950064f03e15afd63505b0f0f997ff9833aed1b73caa9d81492ba55cf5d",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 14438858,
+   "file": "WS5_controls/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv",
+   "key": "$.screens.method.sources[23]",
+   "kind": "file",
+   "s": "trace_V2_VOLT-REG_nominal_seed23_10Hz.csv · sha256 7d2568e8…fd0a",
+   "sha256": "7d2568e8f8bceb6cb23843eb1f56c469da9966fc6b18416e93213c4b46f2fd0a",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 763874,
+   "file": "WS5_controls/results_ws5.json",
+   "key": "$.screens.method.sources[24]",
+   "kind": "file",
+   "s": "results_ws5.json · sha256 9c702dd9…8861",
+   "sha256": "9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 43575,
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "key": "$.screens.method.sources[25]",
+   "kind": "file",
+   "s": "FINDINGS_WS8_r3.md · sha256 2f4b95b6…da69",
+   "sha256": "2f4b95b65b53c89695aab4276c9651418a3b975c6820804fc87022bb6b58da69",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 4000786,
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "key": "$.screens.method.sources[26]",
+   "kind": "file",
+   "s": "results_ws8.json · sha256 de125deb…a3d5",
+   "sha256": "de125deb97bdb9d8b61c378206493adeaf22d294ca8005a8d9817c4ab03fa3d5",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 4258868,
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "key": "$.screens.method.sources[27]",
+   "kind": "file",
+   "s": "results_ws9.json · sha256 7960d780…4b89",
+   "sha256": "7960d780c12d5f00daa6419e92ed32fbd743b42a830d9eb1a3307d06a4514b89",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".2f",
+   "key": "$.screens.race.headline.freightGiven",
+   "kind": "cite",
+   "path": [
+    "one_factor",
+    "rows",
+    "V2_on_VOLT-REG",
+    "mass_payload_denominator",
+    "cost_pp"
+   ],
+   "pre": "",
+   "s": "16.19 pp",
+   "suf": " pp",
+   "tier": "RECORD",
+   "v": 16.187444937496835
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.headline.perKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+8.41%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 8.412459148168649
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.headline.perPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "-7.93%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -7.9251801992324005
+  },
+  {
+   "file": "LEAD_HANDOVER.md",
+   "key": "$.screens.race.headline.trapQuote",
+   "kind": "quote",
+   "s": "at fixed gross weight every powertrain kilogram displaces payload 1:1, so the metric of record is fuel energy per PAYLOAD tonne-km",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[0].derived.candFuelG",
+   "kind": "derived",
+   "s": "2,053.7 g",
+   "tier": "DERIVED",
+   "v": 2053.6875
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[0].derived.candKm",
+   "kind": "derived",
+   "s": "19.820 km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[0].derived.candLitres",
+   "kind": "derived",
+   "s": "2.47 L",
+   "tier": "DERIVED",
+   "v": 2.4683743990384617
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[0].derived.candPerKm",
+   "kind": "derived",
+   "s": "1.2319 kWh/km",
+   "tier": "DERIVED",
+   "v": 1.2319199856652265
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[0].derived.candPerPayload",
+   "kind": "derived",
+   "s": "0.4542 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.454247782324936
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[0].derived.gapPp",
+   "kind": "derived",
+   "s": "+4.50 pp",
+   "tier": "DERIVED",
+   "v": 4.5001321940420915
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[0].derived.marginPerKm",
+   "kind": "derived",
+   "s": "+35.08%",
+   "tier": "DERIVED",
+   "v": 35.08319941360555
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[0].derived.marginPerPayload",
+   "kind": "derived",
+   "s": "+30.58%",
+   "tier": "DERIVED",
+   "v": 30.583067219563457
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[0].derived.rulerFuelG",
+   "kind": "derived",
+   "s": "3,163.6 g",
+   "tier": "DERIVED",
+   "v": 3163.5685699988435
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[0].derived.rulerKm",
+   "kind": "derived",
+   "s": "19.820 km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[0].derived.rulerLitres",
+   "kind": "derived",
+   "s": "3.80 L",
+   "tier": "DERIVED",
+   "v": 3.8023660697101485
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[0].derived.rulerPerKm",
+   "kind": "derived",
+   "s": "1.8977 kWh/km",
+   "tier": "DERIVED",
+   "v": 1.8976905431833893
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[0].derived.rulerPerPayload",
+   "kind": "derived",
+   "s": "0.6544 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.6543760493735825
+  },
+  {
+   "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "key": "$.screens.race.pairs[0].derived.socDriftKWh",
+   "kind": "derived",
+   "s": "+1.114 kWh",
+   "tier": "DERIVED",
+   "v": 1.1139026040000004
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> SOC, last row",
+   "key": "$.screens.race.pairs[0].derived.socEnd",
+   "kind": "derived",
+   "s": "44.95%",
+   "tier": "DERIVED",
+   "v": 44.95
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> SOC, first row",
+   "key": "$.screens.race.pairs[0].derived.socStart",
+   "kind": "derived",
+   "s": "55.00%",
+   "tier": "DERIVED",
+   "v": 55.00000000000001
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[0].massRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "mass_kg_ruler"
+   ],
+   "pre": "",
+   "s": "6,600 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 6600.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[0].payloadCand",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,712 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2712.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[0].payloadRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[0].reconciliation.candDeltaPct",
+   "kind": "derived",
+   "s": "-12.874%",
+   "tier": "DERIVED",
+   "v": -12.873512899846489
+  },
+  {
+   "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[0].reconciliation.candImpliedBsfc",
+   "kind": "derived",
+   "s": "228.7 g/kWh",
+   "tier": "DERIVED",
+   "v": 228.7212954773986
+  },
+  {
+   "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[0].reconciliation.candImpliedGenEta",
+   "kind": "derived",
+   "s": "0.9394",
+   "tier": "DERIVED",
+   "v": 0.9394379894211597
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> P_batt_bus_kW, integrated",
+   "key": "$.screens.race.pairs[0].reconciliation.candNetPackBus",
+   "kind": "derived",
+   "s": "-0.571 kWh",
+   "tier": "DERIVED",
+   "v": -0.5713815111108812
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[0].reconciliation.mechanisms[0].rows[0].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_g"
+   ],
+   "pre": "",
+   "s": "19,130.2 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19130.22878287748
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[0].reconciliation.mechanisms[0].rows[1].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_corrected_g"
+   ],
+   "pre": "",
+   "s": "19,037.0 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19037.02416510558
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[0].reconciliation.mechanisms[0].rows[2].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "soc_drift_kwh_cells"
+   ],
+   "pre": "",
+   "s": "0.4491 kWh",
+   "suf": " kWh",
+   "tier": "RECORD",
+   "v": 0.449138648606448
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[0].reconciliation.rulerDeltaPct",
+   "kind": "derived",
+   "s": "-0.002%",
+   "tier": "DERIVED",
+   "v": -0.002155656924726456
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[0].record.candPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "candidate",
+    "per_km",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "1.4139 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 1.4139442856787185
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[0].record.candPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "candidate",
+    "per_payload_tkm",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "0.5214 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.521365887049675
+  },
+  {
+   "derivedFrom": "margin_pct_per_km_paired.per_seed[11] minus margin_pct_per_payload_tkm_paired.per_seed[11], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V1_on_VOLT-SUB -> nominal",
+   "key": "$.screens.race.pairs[0].record.gapPp",
+   "kind": "derived",
+   "s": "+5.16 pp",
+   "tier": "DERIVED",
+   "v": 5.164945054490669
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[0].record.marginPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "+25.49%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 25.49292027777289
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[0].record.marginPerKmEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+25.29%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 25.29282778781245
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[0].record.marginPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "+20.33%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 20.32797522328222
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[0].record.marginPerPayloadEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+20.11%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 20.11401201499117
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[0].record.rulerPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "ruler",
+    "per_km",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "1.8977 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 1.8977314517628419
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[0].record.rulerPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "ruler",
+    "per_payload_tkm",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "0.6544 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.6543901557802904
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[1].derived.candFuelG",
+   "kind": "derived",
+   "s": "2,104.7 g",
+   "tier": "DERIVED",
+   "v": 2104.6875
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[1].derived.candKm",
+   "kind": "derived",
+   "s": "19.820 km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[1].derived.candLitres",
+   "kind": "derived",
+   "s": "2.53 L",
+   "tier": "DERIVED",
+   "v": 2.5296724759615383
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[1].derived.candPerKm",
+   "kind": "derived",
+   "s": "1.2625 kWh/km",
+   "tier": "DERIVED",
+   "v": 1.2625127215458931
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[1].derived.candPerPayload",
+   "kind": "derived",
+   "s": "0.4655 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.46552828965556536
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[1].derived.gapPp",
+   "kind": "derived",
+   "s": "+4.54 pp",
+   "tier": "DERIVED",
+   "v": 4.54081636307351
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[1].derived.marginPerKm",
+   "kind": "derived",
+   "s": "+34.50%",
+   "tier": "DERIVED",
+   "v": 34.49630863481213
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[1].derived.marginPerPayload",
+   "kind": "derived",
+   "s": "+29.96%",
+   "tier": "DERIVED",
+   "v": 29.95549227173862
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[1].derived.rulerFuelG",
+   "kind": "derived",
+   "s": "3,213.1 g",
+   "tier": "DERIVED",
+   "v": 3213.082279998868
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[1].derived.rulerKm",
+   "kind": "derived",
+   "s": "19.820 km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[1].derived.rulerLitres",
+   "kind": "derived",
+   "s": "3.86 L",
+   "tier": "DERIVED",
+   "v": 3.861877740383255
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[1].derived.rulerPerKm",
+   "kind": "derived",
+   "s": "1.9274 kWh/km",
+   "tier": "DERIVED",
+   "v": 1.9273917167618728
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[1].derived.rulerPerPayload",
+   "kind": "derived",
+   "s": "0.6646 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.664617833366163
+  },
+  {
+   "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "key": "$.screens.race.pairs[1].derived.socDriftKWh",
+   "kind": "derived",
+   "s": "+1.178 kWh",
+   "tier": "DERIVED",
+   "v": 1.1781875304000007
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> SOC, last row",
+   "key": "$.screens.race.pairs[1].derived.socEnd",
+   "kind": "derived",
+   "s": "44.37%",
+   "tier": "DERIVED",
+   "v": 44.37
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> SOC, first row",
+   "key": "$.screens.race.pairs[1].derived.socStart",
+   "kind": "derived",
+   "s": "55.00%",
+   "tier": "DERIVED",
+   "v": 55.00000000000001
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[1].massRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "mass_kg_ruler"
+   ],
+   "pre": "",
+   "s": "6,600 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 6600.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[1].payloadCand",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,712 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2712.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[1].payloadRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[1].reconciliation.candDeltaPct",
+   "kind": "derived",
+   "s": "-13.185%",
+   "tier": "DERIVED",
+   "v": -13.184598248886173
+  },
+  {
+   "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[1].reconciliation.candImpliedBsfc",
+   "kind": "derived",
+   "s": "228.7 g/kWh",
+   "tier": "DERIVED",
+   "v": 228.72129547739854
+  },
+  {
+   "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[1].reconciliation.candImpliedGenEta",
+   "kind": "derived",
+   "s": "0.9394",
+   "tier": "DERIVED",
+   "v": 0.9394379894211349
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> P_batt_bus_kW, integrated",
+   "key": "$.screens.race.pairs[1].reconciliation.candNetPackBus",
+   "kind": "derived",
+   "s": "-0.632 kWh",
+   "tier": "DERIVED",
+   "v": -0.6319615666663501
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[1].reconciliation.mechanisms[0].rows[0].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_g"
+   ],
+   "pre": "",
+   "s": "19,130.2 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19130.22878287748
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[1].reconciliation.mechanisms[0].rows[1].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_corrected_g"
+   ],
+   "pre": "",
+   "s": "19,037.0 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19037.02416510558
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[1].reconciliation.mechanisms[0].rows[2].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "soc_drift_kwh_cells"
+   ],
+   "pre": "",
+   "s": "0.4491 kWh",
+   "suf": " kWh",
+   "tier": "RECORD",
+   "v": 0.449138648606448
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[1].reconciliation.rulerDeltaPct",
+   "kind": "derived",
+   "s": "-0.002%",
+   "tier": "DERIVED",
+   "v": -0.002204224135213849
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[1].record.candPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "candidate",
+    "per_km",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "1.4542 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 1.4542497023342926
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[1].record.candPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "candidate",
+    "per_payload_tkm",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "0.5362 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.5362277663474531
+  },
+  {
+   "derivedFrom": "margin_pct_per_km_paired.per_seed[11] minus margin_pct_per_payload_tkm_paired.per_seed[11], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V1_on_VOLT-SUB -> cold_-10C",
+   "key": "$.screens.race.pairs[1].record.gapPp",
+   "kind": "derived",
+   "s": "+5.23 pp",
+   "tier": "DERIVED",
+   "v": 5.230311882125267
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[1].record.marginPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "margin_pct_per_km_paired",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "+24.55%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 24.549969019554812
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[1].record.marginPerKmEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+24.37%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 24.367030104468736
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[1].record.marginPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "margin_pct_per_payload_tkm_paired",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "+19.32%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 19.319657137429544
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[1].record.marginPerPayloadEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+19.12%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 19.12403661613544
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[1].record.rulerPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "ruler",
+    "per_km",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "1.9274 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 1.9274342017317379
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[1].record.rulerPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "ruler",
+    "per_payload_tkm",
+    "per_seed",
+    "11"
+   ],
+   "pre": "",
+   "s": "0.6646 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.6646324833557716
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[2].derived.candFuelG",
+   "kind": "derived",
+   "s": "18,757.1 g",
+   "tier": "DERIVED",
+   "v": 18757.115239998973
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[2].derived.candKm",
+   "kind": "derived",
+   "s": "131.959 km",
+   "tier": "DERIVED",
+   "v": 131.95867094722394
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[2].derived.candLitres",
+   "kind": "derived",
+   "s": "22.54 L",
+   "tier": "DERIVED",
+   "v": 22.544609663460303
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[2].derived.candPerKm",
+   "kind": "derived",
+   "s": "1.6899 kWh/km",
+   "tier": "DERIVED",
+   "v": 1.6899325930133096
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[2].derived.candPerPayload",
+   "kind": "derived",
+   "s": "0.6867 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.6866853283272286
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[2].derived.gapPp",
+   "kind": "derived",
+   "s": "+16.14 pp",
+   "tier": "DERIVED",
+   "v": 16.140511476383097
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[2].derived.marginPerKm",
+   "kind": "derived",
+   "s": "+9.52%",
+   "tier": "DERIVED",
+   "v": 9.51754272578858
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[2].derived.marginPerPayload",
+   "kind": "derived",
+   "s": "-6.62%",
+   "tier": "DERIVED",
+   "v": -6.622968750594516
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[2].derived.rulerFuelG",
+   "kind": "derived",
+   "s": "20,730.1 g",
+   "tier": "DERIVED",
+   "v": 20730.112560001147
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[2].derived.rulerKm",
+   "kind": "derived",
+   "s": "131.959 km",
+   "tier": "DERIVED",
+   "v": 131.95867094722394
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[2].derived.rulerLitres",
+   "kind": "derived",
+   "s": "24.92 L",
+   "tier": "DERIVED",
+   "v": 24.9160006730783
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[2].derived.rulerPerKm",
+   "kind": "derived",
+   "s": "1.8677 kWh/km",
+   "tier": "DERIVED",
+   "v": 1.8676908695040055
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[2].derived.rulerPerPayload",
+   "kind": "derived",
+   "s": "0.6440 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.6440313343117261
+  },
+  {
+   "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "key": "$.screens.race.pairs[2].derived.socDriftKWh",
+   "kind": "derived",
+   "s": "+0.285 kWh",
+   "tier": "DERIVED",
+   "v": 0.28484872560000063
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> SOC, last row",
+   "key": "$.screens.race.pairs[2].derived.socEnd",
+   "kind": "derived",
+   "s": "52.43%",
+   "tier": "DERIVED",
+   "v": 52.43
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> SOC, first row",
+   "key": "$.screens.race.pairs[2].derived.socStart",
+   "kind": "derived",
+   "s": "55.00%",
+   "tier": "DERIVED",
+   "v": 55.00000000000001
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[2].massRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "mass_kg_ruler"
+   ],
+   "pre": "",
+   "s": "6,600 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 6600.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[2].payloadCand",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,461 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2461.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[2].payloadRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[2].reconciliation.candDeltaPct",
+   "kind": "derived",
+   "s": "-0.651%",
+   "tier": "DERIVED",
+   "v": -0.6511332837246908
+  },
+  {
+   "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[2].reconciliation.candImpliedBsfc",
+   "kind": "derived",
+   "s": "203.6 g/kWh",
+   "tier": "DERIVED",
+   "v": 203.61536109344408
+  },
+  {
+   "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[2].reconciliation.candImpliedGenEta",
+   "kind": "derived",
+   "s": "0.9518",
+   "tier": "DERIVED",
+   "v": 0.9517613403588643
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> P_batt_bus_kW, integrated",
+   "key": "$.screens.race.pairs[2].reconciliation.candNetPackBus",
+   "kind": "derived",
+   "s": "+1.650 kWh",
+   "tier": "DERIVED",
+   "v": 1.6504523194448424
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[2].reconciliation.mechanisms[0].rows[0].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_g"
+   ],
+   "pre": "",
+   "s": "19,130.2 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19130.22878287748
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[2].reconciliation.mechanisms[0].rows[1].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_corrected_g"
+   ],
+   "pre": "",
+   "s": "19,037.0 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19037.02416510558
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[2].reconciliation.mechanisms[0].rows[2].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "soc_drift_kwh_cells"
+   ],
+   "pre": "",
+   "s": "0.4491 kWh",
+   "suf": " kWh",
+   "tier": "RECORD",
+   "v": 0.449138648606448
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[2].reconciliation.rulerDeltaPct",
+   "kind": "derived",
+   "s": "-0.362%",
+   "tier": "DERIVED",
+   "v": -0.36224614532491445
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[2].record.candPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "candidate",
+    "per_km",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "1.7010 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 1.7010084250276258
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[2].record.candPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "candidate",
+    "per_payload_tkm",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "0.6912 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.6911858695764429
+  },
+  {
+   "derivedFrom": "margin_pct_per_km_paired.per_seed[23] minus margin_pct_per_payload_tkm_paired.per_seed[23], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V2_on_VOLT-REG -> nominal",
+   "key": "$.screens.race.pairs[2].record.gapPp",
+   "kind": "derived",
+   "s": "+16.19 pp",
+   "tier": "DERIVED",
+   "v": 16.187444937496835
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[2].record.marginPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "+9.25%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 9.254437377722793
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[2].record.marginPerKmEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+8.41%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 8.412459148168649
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[2].record.marginPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "-6.93%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -6.933007559774041
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[2].record.marginPerPayloadEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "-7.93%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -7.9251801992324005
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[2].record.rulerPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "ruler",
+    "per_km",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "1.8745 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 1.8744811050519001
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[2].record.rulerPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "ruler",
+    "per_payload_tkm",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "0.6464 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.6463727948454828
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[3].derived.candFuelG",
+   "kind": "derived",
+   "s": "23,002.2 g",
+   "tier": "DERIVED",
+   "v": 23002.2368700171
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[3].derived.candKm",
+   "kind": "derived",
+   "s": "141.957 km",
+   "tier": "DERIVED",
+   "v": 141.95743344721234
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[3].derived.candLitres",
+   "kind": "derived",
+   "s": "27.65 L",
+   "tier": "DERIVED",
+   "v": 27.646919314924396
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[3].derived.candPerKm",
+   "kind": "derived",
+   "s": "1.9264 kWh/km",
+   "tier": "DERIVED",
+   "v": 1.9264298578998211
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[3].derived.candPerPayload",
+   "kind": "derived",
+   "s": "0.7828 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.7827833636325969
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[3].derived.gapPp",
+   "kind": "derived",
+   "s": "+16.82 pp",
+   "tier": "DERIVED",
+   "v": 16.81970476258292
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[3].derived.marginPerKm",
+   "kind": "derived",
+   "s": "+5.71%",
+   "tier": "DERIVED",
+   "v": 5.710037766021388
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[3].derived.marginPerPayload",
+   "kind": "derived",
+   "s": "-11.11%",
+   "tier": "DERIVED",
+   "v": -11.109666996561531
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> fuel_g_per_s",
+   "key": "$.screens.race.pairs[3].derived.rulerFuelG",
+   "kind": "derived",
+   "s": "24,395.2 g",
+   "tier": "DERIVED",
+   "v": 24395.21273000144
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> v_kmh",
+   "key": "$.screens.race.pairs[3].derived.rulerKm",
+   "kind": "derived",
+   "s": "141.957 km",
+   "tier": "DERIVED",
+   "v": 141.95743344721234
+  },
+  {
+   "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "key": "$.screens.race.pairs[3].derived.rulerLitres",
+   "kind": "derived",
+   "s": "29.32 L",
+   "tier": "DERIVED",
+   "v": 29.321169146636347
+  },
+  {
+   "derivedFrom": "integrated",
+   "key": "$.screens.race.pairs[3].derived.rulerPerKm",
+   "kind": "derived",
+   "s": "2.0431 kWh/km",
+   "tier": "DERIVED",
+   "v": 2.043091133199762
+  },
+  {
+   "derivedFrom": "integrated / payload of record",
+   "key": "$.screens.race.pairs[3].derived.rulerPerPayload",
+   "kind": "derived",
+   "s": "0.7045 kWh/t-km",
+   "tier": "DERIVED",
+   "v": 0.7045141838619869
+  },
+  {
+   "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "key": "$.screens.race.pairs[3].derived.socDriftKWh",
+   "kind": "derived",
+   "s": "+0.285 kWh",
+   "tier": "DERIVED",
+   "v": 0.28484872560000063
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> SOC, last row",
+   "key": "$.screens.race.pairs[3].derived.socEnd",
+   "kind": "derived",
+   "s": "52.43%",
+   "tier": "DERIVED",
+   "v": 52.43
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> SOC, first row",
+   "key": "$.screens.race.pairs[3].derived.socStart",
+   "kind": "derived",
+   "s": "55.00%",
+   "tier": "DERIVED",
+   "v": 55.00000000000001
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[3].massRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "mass_kg_ruler"
+   ],
+   "pre": "",
+   "s": "6,600 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 6600.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[3].payloadCand",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,461 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2461.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.pairs[3].payloadRuler",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[3].reconciliation.candDeltaPct",
+   "kind": "derived",
+   "s": "-1.292%",
+   "tier": "DERIVED",
+   "v": -1.292117613295435
+  },
+  {
+   "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[3].reconciliation.candImpliedBsfc",
+   "kind": "derived",
+   "s": "206.9 g/kWh",
+   "tier": "DERIVED",
+   "v": 206.9342770387572
+  },
+  {
+   "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "key": "$.screens.race.pairs[3].reconciliation.candImpliedGenEta",
+   "kind": "derived",
+   "s": "0.9537",
+   "tier": "DERIVED",
+   "v": 0.9537065861358177
+  },
+  {
+   "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> P_batt_bus_kW, integrated",
+   "key": "$.screens.race.pairs[3].reconciliation.candNetPackBus",
+   "kind": "derived",
+   "s": "+1.034 kWh",
+   "tier": "DERIVED",
+   "v": 1.0342100944449877
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[3].reconciliation.mechanisms[0].rows[0].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_g"
+   ],
+   "pre": "",
+   "s": "19,130.2 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19130.22878287748
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ",.1f",
+   "key": "$.screens.race.pairs[3].reconciliation.mechanisms[0].rows[1].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "fuel_corrected_g"
+   ],
+   "pre": "",
+   "s": "19,037.0 g",
+   "suf": " g",
+   "tier": "RECORD",
+   "v": 19037.02416510558
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[3].reconciliation.mechanisms[0].rows[2].v",
+   "kind": "cite",
+   "path": [
+    "gate_g1",
+    "nominal",
+    "_raw_reference_seed",
+    "b",
+    "soc_drift_kwh_cells"
+   ],
+   "pre": "",
+   "s": "0.4491 kWh",
+   "suf": " kWh",
+   "tier": "RECORD",
+   "v": 0.449138648606448
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[3].reconciliation.mechanisms[1].rows[0].v",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "capability_and_limit_worst_case",
+    "V2_on_VOLT-REG",
+    "ruler_worst_unserved_wheel_kWh"
+   ],
+   "pre": "",
+   "s": "3.2582 kWh",
+   "suf": " kWh",
+   "tier": "RECORD",
+   "v": 3.2581836361968852
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".1f",
+   "key": "$.screens.race.pairs[3].reconciliation.mechanisms[1].rows[1].v",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "capability_and_limit_worst_case",
+    "V2_on_VOLT-REG",
+    "ruler_worst_capability_infeasible_s"
+   ],
+   "pre": "",
+   "s": "555.6 s",
+   "suf": " s",
+   "tier": "RECORD",
+   "v": 555.5999999994947
+  },
+  {
+   "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "key": "$.screens.race.pairs[3].reconciliation.rulerDeltaPct",
+   "kind": "derived",
+   "s": "-2.929%",
+   "tier": "DERIVED",
+   "v": -2.929072572880419
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[3].record.candPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "candidate",
+    "per_km",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "1.9516 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 1.9516474381982094
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[3].record.candPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "candidate",
+    "per_payload_tkm",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "0.7930 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.7930302471345833
+  },
+  {
+   "derivedFrom": "margin_pct_per_km_paired.per_seed[23] minus margin_pct_per_payload_tkm_paired.per_seed[23], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V2_on_VOLT-REG -> climb_10km_6pct",
+   "key": "$.screens.race.pairs[3].record.gapPp",
+   "kind": "derived",
+   "s": "+16.54 pp",
+   "tier": "DERIVED",
+   "v": 16.54076960093089
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[3].record.marginPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "margin_pct_per_km_paired",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "+7.27%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 7.273726679063879
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[3].record.marginPerKmEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+6.67%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 6.669740990955244
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[3].record.marginPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "margin_pct_per_payload_tkm_paired",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "-9.27%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -9.267042921867011
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.pairs[3].record.marginPerPayloadEnsembleMin",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "-9.98%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -9.978769250804442
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[3].record.rulerPerKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "ruler",
+    "per_km",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "2.1047 kWh/km",
+   "suf": " kWh/km",
+   "tier": "RECORD",
+   "v": 2.104740510214766
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.race.pairs[3].record.rulerPerPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "ruler",
+    "per_payload_tkm",
+    "per_seed",
+    "23"
+   ],
+   "pre": "",
+   "s": "0.7258 kWh/t-km",
+   "suf": " kWh/t-km",
+   "tier": "RECORD",
+   "v": 0.7257725897292298
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.controlDuty",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "duties",
+    "control"
+   ],
+   "pre": "",
+   "s": "LH-520",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "LH-520"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ".1f",
+   "key": "$.screens.race.semi.criterionCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "advance_kill",
+    "every_corner_pct"
+   ],
+   "pre": "",
+   "s": "0.0%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 0.0
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ".1f",
+   "key": "$.screens.race.semi.criterionNominal",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "advance_kill",
+    "nominal_pct"
+   ],
+   "pre": "",
+   "s": "3.0%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 3.0
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.designDuty",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "duties",
+    "design"
+   ],
+   "pre": "",
+   "s": "GH-REG-165",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "GH-REG-165"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.gatingRule",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "duties",
+    "gating"
+   ],
+   "pre": "",
+   "s": "ADVANCE/KILL is read on the DESIGN duty; the control duty is reported alongside and NEVER gates",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE/KILL is read on the DESIGN duty; the control duty is reported alongside and NEVER gates"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.metric",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "advance_kill",
+    "metric"
+   ],
+   "pre": "",
+   "s": "primary energy per payload tonne-km",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "primary energy per payload tonne-km"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv",
+   "key": "$.screens.race.semi.noReplay.traceHeaderQuote",
+   "kind": "quote",
+   "s": "electrical quantities are NOT in this file; they are per-candidate dispatch and live in results_ws9.json",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 6726404,
+   "file": "WS9_vehicle_one_wave2/data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv",
+   "key": "$.screens.race.semi.noReplay.tracesOnDisk[0]",
+   "kind": "file",
+   "s": "trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv · sha256 c5ac3026…4be9",
+   "sha256": "c5ac3026585e06dc8e5b476ed7346e79470c7c85db6eb6b87faef99ca3104be9",
+   "tier": "RECORD"
+  },
+  {
+   "bytes": 6709983,
+   "file": "WS9_vehicle_one_wave2/data/trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv",
+   "key": "$.screens.race.semi.noReplay.tracesOnDisk[1]",
+   "kind": "file",
+   "s": "trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv · sha256 daae922d…9a5e",
+   "sha256": "daae922d3dc1d92a0fdaf2e17c99671679be72dbd2289d8076cf08d6e6499a5e",
+   "tier": "RECORD"
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.race.semi.openFindings",
+   "kind": "quote",
+   "s": "with the Opus pre-adjudication's findings (PRE-B1..B3) on the record against them and R46's trip-time consequence for S5-13L recorded as expected-but-not-executed.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[0].controlMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S6",
+    "LH-520",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "+7.26%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 7.26221115026216
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[0].designMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S6",
+    "GH-REG-165",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "+7.50%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 7.501926011481562
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.semi.rows[0].payload",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S6",
+    "payload_kg"
+   ],
+   "pre": "",
+   "s": "20,655 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 20655.0
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[0].title",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S6",
+    "title"
+   ],
+   "pre": "",
+   "s": "Zero-mass stack - opposed-piston-class engine + predictive energy management, mechanical drive as S0",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "Zero-mass stack - opposed-piston-class engine + predictive energy management, mechanical drive as S0"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[0].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S6",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "ADVANCE",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[0].worstCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S6",
+    "worst_case_margin_pct_design_duty",
+    "value"
+   ],
+   "pre": "",
+   "s": "+7.29%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 7.286067575714271
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[0].worstCornerCase",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S6",
+    "worst_case_margin_pct_design_duty",
+    "governing_case"
+   ],
+   "pre": "",
+   "s": "payload_minus20",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "payload_minus20"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[1].controlMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5-13L",
+    "LH-520",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "-1.38%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -1.3829278233895805
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[1].designMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5-13L",
+    "GH-REG-165",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "+5.36%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 5.358821363140897
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.semi.rows[1].payload",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5-13L",
+    "payload_kg"
+   ],
+   "pre": "",
+   "s": "19,706 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 19706.323484784123
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[1].title",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5-13L",
+    "title"
+   ],
+   "pre": "",
+   "s": "Minimal transmission with the 13 L engine - the other end of the ratio law",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "Minimal transmission with the 13 L engine - the other end of the ratio law"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[1].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5-13L",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "ADVANCE",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[1].worstCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5-13L",
+    "worst_case_margin_pct_design_duty",
+    "value"
+   ],
+   "pre": "",
+   "s": "+3.93%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 3.9303556282370424
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[1].worstCornerCase",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5-13L",
+    "worst_case_margin_pct_design_duty",
+    "governing_case"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[2].controlMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S7",
+    "LH-520",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "-1.45%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -1.4536978706378807
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[2].designMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S7",
+    "GH-REG-165",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "+4.51%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 4.509131390991899
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.semi.rows[2].payload",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S7",
+    "payload_kg"
+   ],
+   "pre": "",
+   "s": "19,846 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 19845.51109083291
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[2].title",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S7",
+    "title"
+   ],
+   "pre": "",
+   "s": "Marginal-mass electrification - one EXISTING trailer axle motorised, tractor untouched",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "Marginal-mass electrification - one EXISTING trailer axle motorised, tractor untouched"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[2].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S7",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "ADVANCE",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[2].worstCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S7",
+    "worst_case_margin_pct_design_duty",
+    "value"
+   ],
+   "pre": "",
+   "s": "+3.58%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 3.5839250592339016
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[2].worstCornerCase",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S7",
+    "worst_case_margin_pct_design_duty",
+    "governing_case"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[3].controlMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S4p",
+    "LH-520",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "-6.81%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -6.807699516392367
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[3].designMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S4p",
+    "GH-REG-165",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "+11.95%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 11.953945283686181
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.semi.rows[3].payload",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S4p",
+    "payload_kg"
+   ],
+   "pre": "",
+   "s": "20,134 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 20134.370309324804
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[3].title",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S4p",
+    "title"
+   ],
+   "pre": "",
+   "s": "Range-extended BEV re-posed - cited external energy cell (ESC-1c), electricity term (ESC-3)",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "Range-extended BEV re-posed - cited external energy cell (ESC-1c), electricity term (ESC-3)"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[3].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S4p",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "ADVANCE",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[3].worstCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S4p",
+    "worst_case_margin_pct_design_duty",
+    "value"
+   ],
+   "pre": "",
+   "s": "+7.40%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 7.3986780758134145
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[3].worstCornerCase",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S4p",
+    "worst_case_margin_pct_design_duty",
+    "governing_case"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[4].controlMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5",
+    "LH-520",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "-5.75%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -5.747274831617208
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[4].designMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5",
+    "GH-REG-165",
+    "margin_vs_ruler_pct",
+    "min"
+   ],
+   "pre": "",
+   "s": "+1.90%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 1.902903061223159
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ",.0f",
+   "key": "$.screens.race.semi.rows[4].payload",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5",
+    "payload_kg"
+   ],
+   "pre": "",
+   "s": "19,970 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 19970.047033385985
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[4].title",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5",
+    "title"
+   ],
+   "pre": "",
+   "s": "Minimal transmission - 2-speed dog box, motor-synchronised shifts, torque-fill through the shift",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "Minimal transmission - 2-speed dog box, motor-synchronised shifts, torque-fill through the shift"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[4].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "+.2f",
+   "key": "$.screens.race.semi.rows[4].worstCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5",
+    "worst_case_margin_pct_design_duty",
+    "value"
+   ],
+   "pre": "",
+   "s": "+0.27%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 0.2663407984308728
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": "str",
+   "key": "$.screens.race.semi.rows[4].worstCornerCase",
+   "kind": "cite",
+   "path": [
+    "interface_ws9",
+    "candidates",
+    "S5",
+    "worst_case_margin_pct_design_duty",
+    "governing_case"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.race.semi.statusQuote",
+   "kind": "quote",
+   "s": "R53 — The Fable adjudication of WS9 is CANCELLED. WS9's four ADVANCE verdicts remain FROZEN-PROVISIONAL, unadjudicated at Fable tier,",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "key": "$.screens.rounds.adjudications[0].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 9523,
+   "file": "WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "key": "$.screens.rounds.adjudications[0].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS2_r1.md · sha256 f4bedc66…d224",
+   "sha256": "f4bedc662891807cf3bf0df06537bf94c2b22fe2e7f4fc73d2d5da98b5fed224",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "key": "$.screens.rounds.adjudications[0].material",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "key": "$.screens.rounds.adjudications[0].minor",
+   "kind": "derived",
+   "s": "5",
+   "tier": "RECORD",
+   "v": 5
+  },
+  {
+   "file": "WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "key": "$.screens.rounds.adjudications[0].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: no blocking findings. Two material findings (WS2-F1, WS2-F2), five minor.",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "key": "$.screens.rounds.adjudications[1].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 10945,
+   "file": "WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "key": "$.screens.rounds.adjudications[1].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS2_r2.md · sha256 551a5651…e27b",
+   "sha256": "551a5651edbc868e00c8f810d0d435d101147535ed58b594a35c89268cebe27b",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "key": "$.screens.rounds.adjudications[1].material",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "key": "$.screens.rounds.adjudications[1].minor",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "file": "WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "key": "$.screens.rounds.adjudications[1].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: no blocking findings. One NEW material finding (WS2-F8:",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "key": "$.screens.rounds.adjudications[2].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 10807,
+   "file": "WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "key": "$.screens.rounds.adjudications[2].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS2_r3.md · sha256 e2fe3ae6…4eb7",
+   "sha256": "e2fe3ae6dbc238e18a3c8d9c145b37217a4392548067702efb3dbe44243d4eb7",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "key": "$.screens.rounds.adjudications[2].material",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "key": "$.screens.rounds.adjudications[2].minor",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "file": "WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "key": "$.screens.rounds.adjudications[2].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: no blocking findings. All three round-2 findings (F8, F9, F10) are genuinely resolved",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "key": "$.screens.rounds.adjudications[3].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 14935,
+   "file": "WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "key": "$.screens.rounds.adjudications[3].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS2_r4.md · sha256 477b73f9…7b94",
+   "sha256": "477b73f99ec50efd049aeb4914a5abbf3a09f7a2a72c74de588c21f0a5e37b94",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "key": "$.screens.rounds.adjudications[3].material",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "key": "$.screens.rounds.adjudications[3].minor",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "file": "WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "key": "$.screens.rounds.adjudications[3].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: no blocking or material findings.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r1.md",
+   "key": "$.screens.rounds.adjudications[4].blocking",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "bytes": 11387,
+   "file": "WS3_battery/FINDINGS_WS3_r1.md",
+   "key": "$.screens.rounds.adjudications[4].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS3_r1.md · sha256 684b60df…608e",
+   "sha256": "684b60dfe45eada95a778741ca4efb4bd8c665716b0ccb9a72adca048e90608e",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r1.md",
+   "key": "$.screens.rounds.adjudications[4].material",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r1.md",
+   "key": "$.screens.rounds.adjudications[4].minor",
+   "kind": "derived",
+   "s": "4",
+   "tier": "RECORD",
+   "v": 4
+  },
+  {
+   "file": "WS3_battery/FINDINGS_WS3_r1.md",
+   "key": "$.screens.rounds.adjudications[4].verdictQuote",
+   "kind": "quote",
+   "s": "Two findings of consequence (one blocking, one material), then minors.",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r2.md",
+   "key": "$.screens.rounds.adjudications[5].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 11298,
+   "file": "WS3_battery/FINDINGS_WS3_r2.md",
+   "key": "$.screens.rounds.adjudications[5].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS3_r2.md · sha256 bcaccc5a…1221",
+   "sha256": "bcaccc5ad96cd0e62b256dc3bcbf9883d644bc52216f0cfad1b86a9b73151221",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r2.md",
+   "key": "$.screens.rounds.adjudications[5].material",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r2.md",
+   "key": "$.screens.rounds.adjudications[5].minor",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "file": "WS3_battery/FINDINGS_WS3_r2.md",
+   "key": "$.screens.rounds.adjudications[5].verdictQuote",
+   "kind": "quote",
+   "s": "**No blocking or material findings.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r1.md",
+   "key": "$.screens.rounds.adjudications[6].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 13102,
+   "file": "WS4_genset/FINDINGS_WS4_r1.md",
+   "key": "$.screens.rounds.adjudications[6].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS4_r1.md · sha256 2a338fe5…0d92",
+   "sha256": "2a338fe530b30d6bc9b18a7f84aacd5fd35db0d062d9aaba7b240bc2b2cd0d92",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r1.md",
+   "key": "$.screens.rounds.adjudications[6].material",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r1.md",
+   "key": "$.screens.rounds.adjudications[6].minor",
+   "kind": "derived",
+   "s": "5",
+   "tier": "RECORD",
+   "v": 5
+  },
+  {
+   "file": "WS4_genset/FINDINGS_WS4_r1.md",
+   "key": "$.screens.rounds.adjudications[6].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: no blocking findings. Two material findings (F1, F2) and five minor findings.",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r2.md ('no new findings of any severity')",
+   "key": "$.screens.rounds.adjudications[7].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 10725,
+   "file": "WS4_genset/FINDINGS_WS4_r2.md",
+   "key": "$.screens.rounds.adjudications[7].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS4_r2.md · sha256 16f2fe27…a2f6",
+   "sha256": "16f2fe2783513740051c133a33d60bcbb31deb55f13e036440ba8652ebc2a2f6",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r2.md ('no new findings of any severity')",
+   "key": "$.screens.rounds.adjudications[7].material",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r2.md ('no new findings of any severity')",
+   "key": "$.screens.rounds.adjudications[7].minor",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "file": "WS4_genset/FINDINGS_WS4_r2.md",
+   "key": "$.screens.rounds.adjudications[7].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: no blocking or material findings. No new findings of any severity.",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r3.md",
+   "key": "$.screens.rounds.adjudications[8].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 17713,
+   "file": "WS4_genset/FINDINGS_WS4_r3.md",
+   "key": "$.screens.rounds.adjudications[8].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS4_r3.md · sha256 93db39a6…bdee",
+   "sha256": "93db39a6d15e25f67dc7f43be38793e59d069753fc08685e5bacc7d10905bdee",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r3.md",
+   "key": "$.screens.rounds.adjudications[8].material",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r3.md",
+   "key": "$.screens.rounds.adjudications[8].minor",
+   "kind": "derived",
+   "s": "4",
+   "tier": "RECORD",
+   "v": 4
+  },
+  {
+   "file": "WS4_genset/FINDINGS_WS4_r3.md",
+   "key": "$.screens.rounds.adjudications[8].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: no blocking findings. One material finding (F1) and four minor findings (F2–F5).",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r1.md",
+   "key": "$.screens.rounds.adjudications[9].blocking",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "bytes": 32791,
+   "file": "WS4_genset/FINDINGS_KX_r1.md",
+   "key": "$.screens.rounds.adjudications[9].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_KX_r1.md · sha256 ad42cdfe…2dc8",
+   "sha256": "ad42cdfed79822f9d4be88f0676a2608a1a7919050f2e8af837b840f7ec42dc8",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r1.md",
+   "key": "$.screens.rounds.adjudications[9].material",
+   "kind": "derived",
+   "s": "3",
+   "tier": "RECORD",
+   "v": 3
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r1.md",
+   "key": "$.screens.rounds.adjudications[9].minor",
+   "kind": "derived",
+   "s": "8",
+   "tier": "RECORD",
+   "v": 8
+  },
+  {
+   "file": "WS4_genset/FINDINGS_KX_r1.md",
+   "key": "$.screens.rounds.adjudications[9].verdictQuote",
+   "kind": "quote",
+   "s": "**NOT CLEAN. Two BLOCKING findings, three MATERIAL, eight MINOR.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r2.md",
+   "key": "$.screens.rounds.adjudications[10].blocking",
+   "kind": "derived",
+   "s": "0",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "bytes": 37141,
+   "file": "WS4_genset/FINDINGS_KX_r2.md",
+   "key": "$.screens.rounds.adjudications[10].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_KX_r2.md · sha256 4646d384…696c",
+   "sha256": "4646d38469c4413812cfae35829b2901ef544c805bb2a5a21dd296c92e84696c",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r2.md",
+   "key": "$.screens.rounds.adjudications[10].material",
+   "kind": "derived",
+   "s": "3",
+   "tier": "RECORD",
+   "v": 3
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r2.md",
+   "key": "$.screens.rounds.adjudications[10].minor",
+   "kind": "derived",
+   "s": "4",
+   "tier": "RECORD",
+   "v": 4
+  },
+  {
+   "file": "WS4_genset/FINDINGS_KX_r2.md",
+   "key": "$.screens.rounds.adjudications[10].verdictQuote",
+   "kind": "quote",
+   "s": "**NOT CLEAN. No blocking findings. Three MATERIAL, four MINOR.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r3.md",
+   "key": "$.screens.rounds.adjudications[11].blocking",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "bytes": 42944,
+   "file": "WS4_genset/FINDINGS_KX_r3.md",
+   "key": "$.screens.rounds.adjudications[11].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_KX_r3.md · sha256 fadf22b9…7715",
+   "sha256": "fadf22b9881fd259470f2a2133a99dd50ed0fc059986cbfccdea0b8884f07715",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r3.md",
+   "key": "$.screens.rounds.adjudications[11].material",
+   "kind": "derived",
+   "s": "3",
+   "tier": "RECORD",
+   "v": 3
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r3.md",
+   "key": "$.screens.rounds.adjudications[11].minor",
+   "kind": "derived",
+   "s": "6",
+   "tier": "RECORD",
+   "v": 6
+  },
+  {
+   "file": "WS4_genset/FINDINGS_KX_r3.md",
+   "key": "$.screens.rounds.adjudications[11].verdictQuote",
+   "kind": "quote",
+   "s": "**NOT CLEAN. One BLOCKING finding, three MATERIAL, six MINOR.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "key": "$.screens.rounds.adjudications[12].blocking",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "bytes": 28937,
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "key": "$.screens.rounds.adjudications[12].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS8_r1.md · sha256 b3db6878…3ce8",
+   "sha256": "b3db6878367b39f13ce2d430181ffcccd6e8c078308caf5d534b40c8656c3ce8",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "key": "$.screens.rounds.adjudications[12].material",
+   "kind": "derived",
+   "s": "5",
+   "tier": "RECORD",
+   "v": 5
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "key": "$.screens.rounds.adjudications[12].minor",
+   "kind": "derived",
+   "s": "6",
+   "tier": "RECORD",
+   "v": 6
+  },
+  {
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "key": "$.screens.rounds.adjudications[12].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: NOT CLEAN. Two blocking findings, five material, six minor.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "key": "$.screens.rounds.adjudications[13].blocking",
+   "kind": "derived",
+   "s": "1",
+   "tier": "RECORD",
+   "v": 1
+  },
+  {
+   "bytes": 21242,
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "key": "$.screens.rounds.adjudications[13].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS8_r2.md · sha256 08924729…fd56",
+   "sha256": "08924729469d8d719bc94348c7636dce15d3031d7950aa8f36381c96e52dfd56",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "key": "$.screens.rounds.adjudications[13].material",
+   "kind": "derived",
+   "s": "4",
+   "tier": "RECORD",
+   "v": 4
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "key": "$.screens.rounds.adjudications[13].minor",
+   "kind": "derived",
+   "s": "7",
+   "tier": "RECORD",
+   "v": 7
+  },
+  {
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "key": "$.screens.rounds.adjudications[13].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: NOT CLEAN. One blocking, four material, seven minor.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "key": "$.screens.rounds.adjudications[14].blocking",
+   "kind": "derived",
+   "s": "2",
+   "tier": "RECORD",
+   "v": 2
+  },
+  {
+   "bytes": 43575,
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "key": "$.screens.rounds.adjudications[14].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS8_r3.md · sha256 2f4b95b6…da69",
+   "sha256": "2f4b95b65b53c89695aab4276c9651418a3b975c6820804fc87022bb6b58da69",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "key": "$.screens.rounds.adjudications[14].material",
+   "kind": "derived",
+   "s": "6",
+   "tier": "RECORD",
+   "v": 6
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "key": "$.screens.rounds.adjudications[14].minor",
+   "kind": "derived",
+   "s": "12",
+   "tier": "RECORD",
+   "v": 12
+  },
+  {
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "key": "$.screens.rounds.adjudications[14].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict: NOT CLEAN. Two blocking, six material, twelve minor.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "key": "$.screens.rounds.adjudications[15].blocking",
+   "kind": "derived",
+   "s": "4",
+   "tier": "RECORD",
+   "v": 4
+  },
+  {
+   "bytes": 43119,
+   "file": "WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "key": "$.screens.rounds.adjudications[15].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS9_PRE_r1.md · sha256 caf7f170…8939",
+   "sha256": "caf7f1702094cd2cb39ae026774ae09105adc1493031aa4947abf19d62dc8939",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "key": "$.screens.rounds.adjudications[15].material",
+   "kind": "derived",
+   "s": "6",
+   "tier": "RECORD",
+   "v": 6
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "key": "$.screens.rounds.adjudications[15].minor",
+   "kind": "derived",
+   "s": "9",
+   "tier": "RECORD",
+   "v": 9
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "key": "$.screens.rounds.adjudications[15].verdictQuote",
+   "kind": "quote",
+   "s": "**RESULT: NOT CLEAN. Four blocking, six material, nine minor.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.adjudications[16].blocking",
+   "kind": "derived",
+   "s": "3",
+   "tier": "RECORD",
+   "v": 3
+  },
+  {
+   "bytes": 37921,
+   "file": "WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.adjudications[16].fileFact",
+   "kind": "file",
+   "s": "FINDINGS_WS11_r1.md · sha256 909de560…e361",
+   "sha256": "909de5603c7d6b71960f627019b9772840c11e36c9ff7f781a89152f9e40e361",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.adjudications[16].material",
+   "kind": "derived",
+   "s": "8",
+   "tier": "RECORD",
+   "v": 8
+  },
+  {
+   "derivedFrom": "read from the verdict line of WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.adjudications[16].minor",
+   "kind": "derived",
+   "s": "13",
+   "tier": "RECORD",
+   "v": 13
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.adjudications[16].verdictQuote",
+   "kind": "quote",
+   "s": "**Verdict on the round: NOT CLEAN — 3 blocking, 8 material, 13 minor.**",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "count of first-pass rounds with a findings file on disk",
+   "key": "$.screens.rounds.defectRate.firstPassRounds",
+   "kind": "derived",
+   "s": "7",
+   "tier": "DERIVED",
+   "v": 7
+  },
+  {
+   "derivedFrom": "count of those whose verdict line records at least one blocking or material finding",
+   "key": "$.screens.rounds.defectRate.firstPassWithDefects",
+   "kind": "derived",
+   "s": "7",
+   "tier": "DERIVED",
+   "v": 7
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.rounds.defectRate.programClaim",
+   "kind": "quote",
+   "s": "five-for-five first-pass defect detection, including the lead's own errors (ratified by its record).",
+   "tier": "RECORD"
+  },
+  {
+   "file": "BASELINE_v5.md",
+   "key": "$.screens.rounds.defectRate.programClaimRule",
+   "kind": "quote",
+   "s": "first-pass base rate in this program is five for five material-or- blocking",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "PM_LOG.md 2026-08-31 07:40 entry, and WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.gap.blocking",
+   "kind": "derived",
+   "s": "3",
+   "tier": "RECORD",
+   "v": 3
+  },
+  {
+   "file": "PM_LOG.md",
+   "key": "$.screens.rounds.gap.consequenceQuote",
+   "kind": "quote",
+   "s": "Consequence stated plainly for the lead: WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "PM_LOG.md",
+   "key": "$.screens.rounds.gap.gateQuote",
+   "kind": "quote",
+   "s": "a gate PASS on r2 is evidence of reproducibility only and is NOT evidence the findings are closed.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "PM_LOG.md",
+   "key": "$.screens.rounds.gap.logQuote",
+   "kind": "quote",
+   "s": "PRINCIPAL DECISION — ADJUDICATIONS CUT FOR WS11 AND WS5 | The principal (Vali), asked directly how to close the night, chose: let WS11 r2 and WS5 finish, GATE them, SKIP their adjudication rounds, and write NIGHT_REPORT.md marking both GATED BUT UNADJUDICATED.",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "PM_LOG.md 2026-08-31 07:40 entry, and WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.gap.material",
+   "kind": "derived",
+   "s": "8",
+   "tier": "RECORD",
+   "v": 8
+  },
+  {
+   "derivedFrom": "PM_LOG.md 2026-08-31 07:40 entry, and WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "key": "$.screens.rounds.gap.minor",
+   "kind": "derived",
+   "s": "13",
+   "tier": "RECORD",
+   "v": 13
+  },
+  {
+   "file": "NIGHT_REPORT.md",
+   "key": "$.screens.rounds.gap.nightReportQuote",
+   "kind": "quote",
+   "s": "**ADJUDICATION NOT RUN.** Cut by the principal at 07:40 when closing the shift.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "str",
+   "key": "$.screens.rounds.kx.corner",
+   "kind": "cite",
+   "path": [
+    "series_duty_v2",
+    "r6_rating_family_probe",
+    "cases",
+    "r6_rating_corner_full",
+    "condition"
+   ],
+   "pre": "",
+   "s": "the full R6 rating corner: +20% payload, CdA 5.4, 4 kW aux, 2,000 m / +45 C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "the full R6 rating corner: +20% payload, CdA 5.4, 4 kW aux, 2,000 m / +45 C"
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".3f",
+   "key": "$.screens.rounds.kx.designPoint",
+   "kind": "cite",
+   "path": [
+    "heat_ledger_ws6",
+    "series_duty_v2_transient_vs_R20_design_point",
+    "r20_design_point_radiator_package_kW"
+   ],
+   "pre": "",
+   "s": "95.018 kW",
+   "suf": " kW",
+   "tier": "RECORD",
+   "v": 95.01823316663226
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".1f",
+   "key": "$.screens.rounds.kx.designPointAmbient",
+   "kind": "cite",
+   "path": [
+    "heat_ledger_ws6",
+    "series_duty_v2_transient_vs_R20_design_point",
+    "r20_design_point_air_temperature_C"
+   ],
+   "pre": "",
+   "s": "45.0 C",
+   "suf": " C",
+   "tier": "RECORD",
+   "v": 45.0
+  },
+  {
+   "file": "PM_PACKET_KX.md",
+   "key": "$.screens.rounds.kx.dispositionQuote",
+   "kind": "quote",
+   "s": "**STATUS: NOT CONVERGED.** Three rework rounds exhausted; the final adjudication round is not clean.",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "the derived R6-corner radiator package against the exported R20 design point",
+   "key": "$.screens.rounds.kx.exceedance",
+   "kind": "derived",
+   "s": "+8.95%",
+   "tier": "DERIVED",
+   "v": 8.949243664277082
+  },
+  {
+   "file": "WS4_genset/FINDINGS_KX_r3.md",
+   "key": "$.screens.rounds.kx.findingQuote",
+   "kind": "quote",
+   "s": "The R6 corner exceeds R20's design point by **+8.95 % on the 2-minute rolling window** — and by the same margin on the instantaneous peak — **at the same +45 °C ambient the design point is stated in**.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "PM_LOG.md",
+   "key": "$.screens.rounds.kx.logQuote",
+   "kind": "quote",
+   "s": "3 rework rounds exhausted, final round not clean. Workstream stopped per the standing mandate. NO FOURTH ROUND RUN.",
+   "tier": "RECORD"
+  },
+  {
+   "derivedFrom": "WS4_genset/results_ws4.json -> series_duty_v2 -> r6_rating_family_probe -> cases -> r6_rating_corner_full -> per_seed -> 3 -> engine_reject_2min_max_kW (max over the 8-seed set) x the declared radiator package share",
+   "key": "$.screens.rounds.kx.r6Radiator",
+   "kind": "derived",
+   "s": "103.522 kW",
+   "tier": "DERIVED",
+   "v": 103.52164637820512
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".5f",
+   "key": "$.screens.rounds.kx.r6Reject",
+   "kind": "cite",
+   "path": [
+    "series_duty_v2",
+    "r6_rating_family_probe",
+    "cases",
+    "r6_rating_corner_full",
+    "per_seed",
+    "3",
+    "engine_reject_2min_max_kW"
+   ],
+   "pre": "",
+   "s": "215.67010 kW",
+   "suf": " kW",
+   "tier": "RECORD",
+   "v": 215.67009662126068
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".2f",
+   "key": "$.screens.rounds.kx.radiatorShare",
+   "kind": "cite",
+   "path": [
+    "heat_ledger_ws6",
+    "series_duty_v2_nominal_cycle_average",
+    "radiator_package_share"
+   ],
+   "pre": "",
+   "s": "0.48",
+   "suf": "",
+   "tier": "RECORD",
+   "v": 0.48
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.rounds.kx.statusQuote",
+   "kind": "quote",
+   "s": "KX: NOT CONVERGED after three rounds (radiator sizing case 103.5 vs 95.0 kW).",
+   "tier": "RECORD"
+  },
+  {
+   "file": "PM_PACKET_KX.md",
+   "key": "$.screens.rounds.kx.theCitationPoint.consumerQuote",
+   "kind": "quote",
+   "s": "**WS6 has not run and R3-B1 lands squarely on what it would consume.**",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.airDensity.members[0].value",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "rho_air_cold"
+   ],
+   "pre": "",
+   "s": "1.341 kg/m³",
+   "suf": " kg/m³",
+   "tier": "RECORD",
+   "v": 1.341
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.airDensity.members[1].value",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "rho_air"
+   ],
+   "pre": "",
+   "s": "1.196 kg/m³",
+   "suf": " kg/m³",
+   "tier": "RECORD",
+   "v": 1.196
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.airDensity.members[2].value",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "rho_air_hot_alt"
+   ],
+   "pre": "",
+   "s": "0.871 kg/m³",
+   "suf": " kg/m³",
+   "tier": "RECORD",
+   "v": 0.871
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".6f",
+   "key": "$.screens.sandbox.anchors.ceiling.record",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "S3_fixed_ratio_feasibility",
+    "ratio_ceiling_closed_form",
+    "value"
+   ],
+   "pre": "",
+   "s": "3.769911:1",
+   "suf": ":1",
+   "tier": "RECORD",
+   "v": 3.769911184307752
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".4f",
+   "key": "$.screens.sandbox.anchors.rows[0].record",
+   "kind": "cite",
+   "path": [
+    "baseline_crosscheck",
+    "cruise85_force_N"
+   ],
+   "pre": "",
+   "s": "1987.5751 N",
+   "suf": " N",
+   "tier": "RECORD",
+   "v": 1987.5751111111113
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".4f",
+   "key": "$.screens.sandbox.anchors.rows[1].record",
+   "kind": "cite",
+   "path": [
+    "sensitivity",
+    "climb_10km_6pc",
+    "per_speed",
+    "60kmh",
+    "wheel_force_N"
+   ],
+   "pre": "",
+   "s": "5159.4542 N",
+   "suf": " N",
+   "tier": "RECORD",
+   "v": 5159.454193792384
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ".4f",
+   "key": "$.screens.sandbox.anchors.rows[2].record",
+   "kind": "cite",
+   "path": [
+    "two_walls",
+    "two_speed_solve",
+    "ENG-13L",
+    "solve",
+    "force_required",
+    "total_N"
+   ],
+   "pre": "",
+   "s": "23796.7812 N",
+   "suf": " N",
+   "tier": "RECORD",
+   "v": 23796.78122556096
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.endpoints.one.citations.CdA_m2",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "CdA"
+   ],
+   "pre": "",
+   "s": "5.50 m²",
+   "suf": " m²",
+   "tier": "RECORD",
+   "v": 5.5
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".4f",
+   "key": "$.screens.sandbox.endpoints.one.citations.Crr",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "Crr"
+   ],
+   "pre": "",
+   "s": "0.0055",
+   "suf": "",
+   "tier": "RECORD",
+   "v": 0.0055
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sandbox.endpoints.one.citations.T_peak_Nm",
+   "kind": "cite",
+   "path": [
+    "task2_s0_calibration",
+    "engine",
+    "peak_torque_Nm"
+   ],
+   "pre": "",
+   "s": "2,373 Nm",
+   "suf": " Nm",
+   "tier": "RECORD",
+   "v": 2373.0
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sandbox.endpoints.one.citations.m_kg",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "m_gcw"
+   ],
+   "pre": "",
+   "s": "36,300 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 36300.0
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.endpoints.one.citations.r_dyn_m",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "r_dyn"
+   ],
+   "pre": "",
+   "s": "0.500 m",
+   "suf": " m",
+   "tier": "RECORD",
+   "v": 0.5
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.endpoints.one.citations.rho_air",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "rho_air"
+   ],
+   "pre": "",
+   "s": "1.196 kg/m³",
+   "suf": " kg/m³",
+   "tier": "RECORD",
+   "v": 1.196
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sandbox.endpoints.one.citations.rpm_ceiling",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "S3_fixed_ratio_feasibility",
+    "ratio_ceiling_closed_form",
+    "rpm_ceiling"
+   ],
+   "pre": "",
+   "s": "2,100 rpm",
+   "suf": " rpm",
+   "tier": "RECORD",
+   "v": 2100.0
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ".0f",
+   "key": "$.screens.sandbox.endpoints.one.citations.v_climb_kmh",
+   "kind": "cite",
+   "path": [
+    "two_walls",
+    "two_speed_solve",
+    "ENG-13L",
+    "solve",
+    "force_required",
+    "v_ref_kmh"
+   ],
+   "pre": "",
+   "s": "45 km/h",
+   "suf": " km/h",
+   "tier": "RECORD",
+   "v": 45.0
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".1f",
+   "key": "$.screens.sandbox.endpoints.one.citations.v_cruise_kmh",
+   "kind": "cite",
+   "path": [
+    "params",
+    "cycle",
+    "linehaul_v_hi_kmh"
+   ],
+   "pre": "",
+   "s": "105.0 km/h",
+   "suf": " km/h",
+   "tier": "RECORD",
+   "v": 105.0
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.CdA_m2",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "CdA"
+   ],
+   "pre": "",
+   "s": "4.20 m²",
+   "suf": " m²",
+   "tier": "RECORD",
+   "v": 4.2
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".4f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.Crr",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "Crr"
+   ],
+   "pre": "",
+   "s": "0.0090",
+   "suf": "",
+   "tier": "RECORD",
+   "v": 0.009
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.eta_driveline",
+   "kind": "cite",
+   "path": [
+    "params",
+    "driveline",
+    "eta_direct"
+   ],
+   "pre": "",
+   "s": "0.950",
+   "suf": "",
+   "tier": "RECORD",
+   "v": 0.95
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.m_kg",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "m_gvw"
+   ],
+   "pre": "",
+   "s": "6,600 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 6600.0
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.r_dyn_m",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "r_dyn"
+   ],
+   "pre": "",
+   "s": "0.370 m",
+   "suf": " m",
+   "tier": "RECORD",
+   "v": 0.37
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".3f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.rho_air",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "rho_air"
+   ],
+   "pre": "",
+   "s": "1.200 kg/m³",
+   "suf": " kg/m³",
+   "tier": "RECORD",
+   "v": 1.2
+  },
+  {
+   "file": "WS1_loads_duty_cycles/results.json",
+   "fmt": ".1f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.v_cruise_kmh",
+   "kind": "cite",
+   "path": [
+    "cycles",
+    "VOLT-REG",
+    "max_speed_kmh"
+   ],
+   "pre": "",
+   "s": "100.0 km/h",
+   "suf": " km/h",
+   "tier": "RECORD",
+   "v": 99.99999999999986
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.sandbox.model.ratioMax",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "S3_fixed_ratio_feasibility",
+    "ratio_ceiling_closed_form",
+    "rule"
+   ],
+   "pre": "",
+   "s": "PHYSICS BOUND, solved in closed form: ratio <= rpm_ceiling * 2*pi * r_dyn / (60 * v_cruise)",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "PHYSICS BOUND, solved in closed form: ratio <= rpm_ceiling * 2*pi * r_dyn / (60 * v_cruise)"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.sandbox.s3.anyFeasible",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "S3_fixed_ratio_feasibility",
+    "any_feasible"
+   ],
+   "pre": "",
+   "s": "False",
+   "suf": "",
+   "tier": "RECORD",
+   "v": false
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.s3.forceAvailable",
+   "kind": "cite",
+   "path": [
+    "two_walls",
+    "single_ratio_closed_form",
+    "ENG-11L",
+    "F_available_at_ceiling_kN"
+   ],
+   "pre": "",
+   "s": "12.44 kN",
+   "suf": " kN",
+   "tier": "RECORD",
+   "v": 12.444784632648085
+  },
+  {
+   "derivedFrom": "F_available_at_ceiling_kN / force_required.total_N, both exported",
+   "key": "$.screens.sandbox.s3.forceFraction",
+   "kind": "derived",
+   "s": "52.30%",
+   "tier": "DERIVED",
+   "v": 52.29608372110722
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.s3.forceRequired",
+   "kind": "cite",
+   "path": [
+    "two_walls",
+    "single_ratio_closed_form",
+    "ENG-11L",
+    "F_required_6pct_kN"
+   ],
+   "pre": "",
+   "s": "23.80 kN",
+   "suf": " kN",
+   "tier": "RECORD",
+   "v": 23.79678122556096
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.s3.maxWithoutOverspeed",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "S3_fixed_ratio_feasibility",
+    "max_ratio_without_overspeed"
+   ],
+   "pre": "",
+   "s": "3.60:1",
+   "suf": ":1",
+   "tier": "RECORD",
+   "v": 3.6
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sandbox.s3.overCeilingRpm",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "S3_fixed_ratio_feasibility",
+    "ratio_needed_to_hold_6pct",
+    "over_ceiling_by_rpm"
+   ],
+   "pre": "",
+   "s": "1,732 rpm",
+   "suf": " rpm",
+   "tier": "RECORD",
+   "v": 1732.4510296527815
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.s3.ratioNeeded",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "S3_fixed_ratio_feasibility",
+    "ratio_needed_to_hold_6pct",
+    "ratio"
+   ],
+   "pre": "",
+   "s": "6.88:1",
+   "suf": ":1",
+   "tier": "RECORD",
+   "v": 6.879999999999896
+  },
+  {
+   "derivedFrom": "ws12_sandbox.ratio_ceiling() on the exported rpm ceiling, r_dyn and cruise speed",
+   "key": "$.screens.sandbox.s3.recomputedCeiling",
+   "kind": "derived",
+   "s": "3.769911:1",
+   "tier": "DERIVED",
+   "v": 3.769911184307752
+  },
+  {
+   "file": "WS9_vehicle_one_wave2/results_ws9.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.s3.spanNeeded",
+   "kind": "cite",
+   "path": [
+    "two_walls",
+    "single_ratio_closed_form",
+    "ENG-11L",
+    "span_needed"
+   ],
+   "pre": "",
+   "s": "1.91:1",
+   "suf": ":1",
+   "tier": "RECORD",
+   "v": 1.9121890758263222
+  },
+  {
+   "file": "TRACE_SCHEMA.md",
+   "key": "$.screens.sim.blendOrder.quote",
+   "kind": "quote",
+   "s": "blend order R15: pack -> heater -> resistor -> friction; the four must sum to the braking demand served electrically plus friction",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": "str",
+   "key": "$.screens.sim.controlConstants.architecture",
+   "kind": "cite",
+   "path": [
+    "interface_ws5",
+    "_architecture"
+   ],
+   "pre": "",
+   "s": "pure series, both variants. No clutch, no mode selection, no synchronisation (BASELINE_v3).",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "pure series, both variants. No clutch, no mode selection, no synchronisation (BASELINE_v3)."
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": ".0f",
+   "key": "$.screens.sim.controlConstants.chopperRateHz",
+   "kind": "cite",
+   "path": [
+    "interface_ws5",
+    "supervisor",
+    "chopper_command_rate_Hz"
+   ],
+   "pre": "",
+   "s": "100 Hz",
+   "suf": " Hz",
+   "tier": "RECORD",
+   "v": 100.0
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": ".0f",
+   "key": "$.screens.sim.controlConstants.loopRateHz",
+   "kind": "cite",
+   "path": [
+    "interface_ws5",
+    "supervisor",
+    "loop_rate_Hz"
+   ],
+   "pre": "",
+   "s": "10 Hz",
+   "suf": " Hz",
+   "tier": "RECORD",
+   "v": 10.0
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": ".2f",
+   "key": "$.screens.sim.controlConstants.pinnedBsfc",
+   "kind": "cite",
+   "path": [
+    "interface_ws5",
+    "dispatch_v2_r22b",
+    "pinned_point",
+    "bsfc"
+   ],
+   "pre": "",
+   "s": "203.62 g/kWh",
+   "suf": " g/kWh",
+   "tier": "RECORD",
+   "v": 203.61665610230665
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": ".1f",
+   "key": "$.screens.sim.controlConstants.v1FixedPoint",
+   "kind": "cite",
+   "path": [
+    "interface_ws5",
+    "dispatch_v1_r19",
+    "fixed_point_bus_kW"
+   ],
+   "pre": "",
+   "s": "35.0 kW",
+   "suf": " kW",
+   "tier": "RECORD",
+   "v": 35.0
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": "str",
+   "key": "$.screens.sim.controlConstants.v2Strategy",
+   "kind": "cite",
+   "path": [
+    "interface_ws5",
+    "dispatch_v2_r22b",
+    "recommended"
+   ],
+   "pre": "",
+   "s": "load_follow",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "load_follow"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.payloadNote.ledgerRuler",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "masses",
+    "payload_at_gvw_kg",
+    "ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.payloadNote.ledgerV1",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "masses",
+    "payload_at_gvw_kg",
+    "V1"
+   ],
+   "pre": "",
+   "s": "2,712 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2712.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.payloadNote.ledgerV2",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "masses",
+    "payload_at_gvw_kg",
+    "V2"
+   ],
+   "pre": "",
+   "s": "2,461 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2461.0
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.sim.statusNote.baselineQuote",
+   "kind": "quote",
+   "s": "WS5: status per its packet at freeze.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": "str",
+   "key": "$.screens.sim.statusNote.quote",
+   "kind": "cite",
+   "path": [
+    "_meta",
+    "adjudication"
+   ],
+   "pre": "",
+   "s": "CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one.",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one."
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[0].archivalNotice",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "_archival_notice"
+   ],
+   "pre": "",
+   "s": "ARCHIVED. Gate G1's kill clause was EXECUTED in BASELINE_v3 (ratified 2026-08-30): the clutch, the lockup device and actuator, clutch-sync control, R11's condition-aware mode policy, fault spec F-1 and the i-MMD topology reference are all deleted with it. Both variants are pure series. This block is retained as the record of the decision and its provenance. NO FIELD OF THIS BLOCK MAY BE CONSUMED AS A LIVE REQUIREMENT - consume interface_ws4 -> series_duty_v2 instead. Mode (a) does not exist in any live architecture. FROZEN MEMBER SET (KX r3, adjudication KX2-m3): results_ws4.json -> gate_g1 -> <case> -> _raw_reference_seed is projected through the explicit 53-member key list of record (run_ws4.py G1_RAW_KEYS_OF_RECORD), in the record's own key order, so the archive cannot grow when the simulator gains a field. KX r2 let 234 such members leak in - including mode-(a) over-rating counters that did not exist when the gate was run - with 0 values changed; they are withdrawn here. Every diagnostic added after 2026-08-30 belongs to the LIVE block.",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ARCHIVED. Gate G1's kill clause was EXECUTED in BASELINE_v3 (ratified 2026-08-30): the clutch, the lockup device and actuator, clutch-sync control, R11's condition-aware mode policy, fault spec F-1 and the i-MMD topology reference are all deleted with it. Both variants are pure series. This block is retained as the record of the decision and its provenance. NO FIELD OF THIS BLOCK MAY BE CONSUMED AS A LIVE REQUIREMENT - consume interface_ws4 -> series_duty_v2 instead. Mode (a) does not exist in any live architecture. FROZEN MEMBER SET (KX r3, adjudication KX2-m3): results_ws4.json -> gate_g1 -> <case> -> _raw_reference_seed is projected through the explicit 53-member key list of record (run_ws4.py G1_RAW_KEYS_OF_RECORD), in the record's own key order, so the archive cannot grow when the simulator gains a field. KX r2 let 234 such members leak in - including mode-(a) over-rating counters that did not exist when the gate was run - with 0 values changed; they are withdrawn here. Every diagnostic added after 2026-08-30 belongs to the LIVE block."
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[0].convention",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "convention"
+   ],
+   "pre": "",
+   "s": "G1-R (R12): traction = WS2 measured map [data/effmap_motor_inverter_662V.csv, 662 V] x 0.97 reduction, no scalar PE member, no part_load_factor; PM spin drag charged to (a) locked samples at 1.1532 kW shaft + 0.3896 kW bus (WS2 export)",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "G1-R (R12): traction = WS2 measured map [data/effmap_motor_inverter_662V.csv, 662 V] x 0.97 reduction, no scalar PE member, no part_load_factor; PM spin drag charged to (a) locked samples at 1.1532 kW shaft + 0.3896 kW bus (WS2 export)"
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".1f",
+   "key": "$.screens.verdict.cards[0].criterion",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "kill_criterion_pct"
+   ],
+   "pre": "",
+   "s": "5.0%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 5.0
+  },
+  {
+   "file": "LEAD_HANDOVER.md",
+   "key": "$.screens.verdict.cards[0].criterionText",
+   "kind": "quote",
+   "s": "D1. Pre-commit, then measure. Every gate has a numeric kill criterion written BEFORE the computation.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[0].executedBy",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "executed_by"
+   ],
+   "pre": "",
+   "s": "BASELINE_v3.md, GATE G1: EXECUTED. THE CLUTCH IS DELETED.",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "BASELINE_v3.md, GATE G1: EXECUTED. THE CLUTCH IS DELETED."
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[0].gateStatus",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "status"
+   ],
+   "pre": "",
+   "s": "executed_kill_2026-08-30",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "executed_kill_2026-08-30"
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[0].governingCase",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "margin_pct_ensemble_min_governing_case"
+   ],
+   "pre": "",
+   "s": "seed 4 of 8-seed VOLT-REG ensemble [nominal]",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "seed 4 of 8-seed VOLT-REG ensemble [nominal]"
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": ".2f",
+   "key": "$.screens.verdict.cards[0].missedBy",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "missed_by_pp"
+   ],
+   "pre": "",
+   "s": "7.58 pp",
+   "suf": " pp",
+   "tier": "RECORD",
+   "v": 7.581644717955561
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[0].passes",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "passes"
+   ],
+   "pre": "",
+   "s": "False",
+   "suf": "",
+   "tier": "RECORD",
+   "v": false
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "d",
+   "key": "$.screens.verdict.cards[0].seedsPositive",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "seeds_margin_positive_n"
+   ],
+   "pre": "",
+   "s": "0",
+   "suf": "",
+   "tier": "RECORD",
+   "v": 0
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "d",
+   "key": "$.screens.verdict.cards[0].seedsTotal",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "seeds_total"
+   ],
+   "pre": "",
+   "s": "8",
+   "suf": "",
+   "tier": "RECORD",
+   "v": 8
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.verdict.cards[0].statusQuote",
+   "kind": "quote",
+   "s": "Vehicle Zero: architecture ratified (pure series, both variants).",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[0].waterfall[0].value",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "attribution_rows",
+    "prior_convention",
+    "min"
+   ],
+   "pre": "",
+   "s": "+6.26%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 6.261345943773722
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[0].waterfall[1].value",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "attribution_rows",
+    "map_vs_scalar_alone",
+    "delta_pp_min"
+   ],
+   "pre": "",
+   "s": "-7.01 pp",
+   "suf": " pp",
+   "tier": "RECORD",
+   "v": -7.013618051692167
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[0].waterfall[2].value",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "attribution_rows",
+    "spin_drag_alone",
+    "delta_pp_min"
+   ],
+   "pre": "",
+   "s": "-1.77 pp",
+   "suf": " pp",
+   "tier": "RECORD",
+   "v": -1.7681550624315525
+  },
+  {
+   "derivedFrom": "both_g1r.delta_pp_min minus map_vs_scalar_alone.delta_pp_min minus spin_drag_alone.delta_pp_min, all three from WS4_genset/results_ws4.json -> interface_ws4 -> gate_g1 -> attribution_rows",
+   "key": "$.screens.verdict.cards[0].waterfall[3].value",
+   "kind": "derived",
+   "s": "-0.06 pp",
+   "tier": "DERIVED",
+   "v": -0.06121754760556186
+  },
+  {
+   "file": "WS4_genset/results_ws4.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[0].waterfall[4].value",
+   "kind": "cite",
+   "path": [
+    "interface_ws4",
+    "gate_g1",
+    "verdict",
+    "margin_pct_ensemble_min"
+   ],
+   "pre": "",
+   "s": "-2.58%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -2.5816447179555606
+  },
+  {
+   "file": "WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "key": "$.screens.verdict.cards[1].adjudicationQuote",
+   "kind": "quote",
+   "s": "**Verdict: NOT CLEAN. Two blocking, six material, twelve minor.**",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".1f",
+   "key": "$.screens.verdict.cards[1].criterionCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "advance_kill",
+    "every_corner_pct"
+   ],
+   "pre": "",
+   "s": "0.0%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 0.0
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".1f",
+   "key": "$.screens.verdict.cards[1].criterionNominal",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "advance_kill",
+    "nominal_pct"
+   ],
+   "pre": "",
+   "s": "3.0%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 3.0
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ",.0f",
+   "key": "$.screens.verdict.cards[1].gcw",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "gcw_kg"
+   ],
+   "pre": "",
+   "s": "36,300 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 36300.0
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].metric",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "metric_of_record"
+   ],
+   "pre": "",
+   "s": "fleet-mission fuel energy per PAYLOAD tonne-km [MJ/(t.km)], fleet mission = 70% LH-520 + 30% REG-165 by distance",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "fleet-mission fuel energy per PAYLOAD tonne-km [MJ/(t.km)], fleet mission = 70% LH-520 + 30% REG-165 by distance"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].numbersVersion",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "numbers_version"
+   ],
+   "pre": "",
+   "s": "r3",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "r3"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[0].bindingReason",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S1",
+    "binding_reason"
+   ],
+   "pre": "",
+   "s": "fails the nominal >=3% criterion",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "fails the nominal >=3% criterion"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[0].perKmMedian",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S1",
+    "ensemble",
+    "median"
+   ],
+   "pre": "",
+   "s": "+7.36%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 7.359206303223637
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[0].perKmMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S1",
+    "ensemble",
+    "min"
+   ],
+   "pre": "",
+   "s": "+6.03%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 6.031890631883995
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[0].perPayloadMedian",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S1",
+    "nominal_margin_pct_median"
+   ],
+   "pre": "",
+   "s": "+0.73%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 0.7337463427837478
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[0].perPayloadMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S1",
+    "nominal_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-0.69%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -0.6884959422473613
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[0].verdict",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S1",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[0].worstCorner",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S1",
+    "worst_corner"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[0].worstCornerMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S1",
+    "worst_corner_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-12.87%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -12.866708553446385
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[1].bindingReason",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S2",
+    "binding_reason"
+   ],
+   "pre": "",
+   "s": "fails the nominal >=3% criterion",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "fails the nominal >=3% criterion"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[1].perKmMedian",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S2",
+    "ensemble",
+    "median"
+   ],
+   "pre": "",
+   "s": "+9.81%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 9.81470645414946
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[1].perKmMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S2",
+    "ensemble",
+    "min"
+   ],
+   "pre": "",
+   "s": "+8.62%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 8.622645202258077
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[1].perPayloadMedian",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S2",
+    "nominal_margin_pct_median"
+   ],
+   "pre": "",
+   "s": "+1.89%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 1.8879465349681643
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[1].perPayloadMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S2",
+    "nominal_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "+0.59%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 0.5911100699440873
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[1].verdict",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S2",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[1].worstCorner",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S2",
+    "worst_corner"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[1].worstCornerMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S2",
+    "worst_corner_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-9.23%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -9.227055078976527
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[2].bindingReason",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S3",
+    "binding_reason"
+   ],
+   "pre": "",
+   "s": "fails the nominal >=3% criterion",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "fails the nominal >=3% criterion"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[2].perKmMedian",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S3",
+    "ensemble",
+    "median"
+   ],
+   "pre": "",
+   "s": "+7.44%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 7.438893779858603
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[2].perKmMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S3",
+    "ensemble",
+    "min"
+   ],
+   "pre": "",
+   "s": "+4.88%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 4.875986869353187
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[2].perPayloadMedian",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S3",
+    "nominal_margin_pct_median"
+   ],
+   "pre": "",
+   "s": "+1.64%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 1.6381290929839507
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[2].perPayloadMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S3",
+    "nominal_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-1.09%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -1.085394090482248
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[2].verdict",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S3",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[2].worstCorner",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S3",
+    "worst_corner"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[2].worstCornerMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S3",
+    "worst_corner_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-14.17%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -14.174316723180722
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[3].bindingReason",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S4",
+    "binding_reason"
+   ],
+   "pre": "",
+   "s": "fails the nominal >=3% criterion",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "fails the nominal >=3% criterion"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[3].perKmMedian",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S4",
+    "ensemble",
+    "median"
+   ],
+   "pre": "",
+   "s": "+5.95%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 5.948736865349945
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[3].perKmMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "per_km_margin_paired",
+    "corners",
+    "nominal",
+    "S4",
+    "ensemble",
+    "min"
+   ],
+   "pre": "",
+   "s": "+3.36%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 3.3595681274600055
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[3].perPayloadMedian",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S4",
+    "nominal_margin_pct_median"
+   ],
+   "pre": "",
+   "s": "-1.06%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -1.059736946707445
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[3].perPayloadMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S4",
+    "nominal_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-3.84%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -3.8418443085956486
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[3].verdict",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S4",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].rows[3].worstCorner",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S4",
+    "worst_corner"
+   ],
+   "pre": "",
+   "s": "cold_minus10C",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_minus10C"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].rows[3].worstCornerMin",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "candidates",
+    "S4",
+    "worst_corner_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-17.21%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -17.206366772152812
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.verdict.cards[1].statusQuote",
+   "kind": "quote",
+   "s": "Vehicle One: WS8 S1-S4 KILLED (final), WHR DROPPED (final); numbers FROZEN-PROVISIONAL at r3 (r3 adjudication not clean, r4 ordered and not run).",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].whr.rows[0].best",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "whr_gate",
+    "best_net_margin_pct",
+    "S1"
+   ],
+   "pre": "",
+   "s": "+1.75%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 1.751782303438002
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].whr.rows[0].result",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "whr_gate",
+    "result",
+    "S1"
+   ],
+   "pre": "",
+   "s": "DROPPED",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "DROPPED"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].whr.rows[1].best",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "whr_gate",
+    "best_net_margin_pct",
+    "S2"
+   ],
+   "pre": "",
+   "s": "+1.83%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 1.834617721374109
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].whr.rows[1].result",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "whr_gate",
+    "result",
+    "S2"
+   ],
+   "pre": "",
+   "s": "DROPPED",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "DROPPED"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[1].whr.rows[2].best",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "whr_gate",
+    "best_net_margin_pct",
+    "S3"
+   ],
+   "pre": "",
+   "s": "+2.38%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 2.378908568404933
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[1].whr.rows[2].result",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "whr_gate",
+    "result",
+    "S3"
+   ],
+   "pre": "",
+   "s": "DROPPED",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "DROPPED"
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".1f",
+   "key": "$.screens.verdict.cards[1].whr.threshold",
+   "kind": "cite",
+   "path": [
+    "interface_ws8",
+    "whr_gate",
+    "threshold_pct"
+   ],
+   "pre": "",
+   "s": "2.5%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 2.5
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.verdict.cards[2].claimQuote",
+   "kind": "quote",
+   "s": "3. It has a DUTY boundary: the same truck wins +20% on stop-go and loses on regional duty (V1 provisional, V2 kill).",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[2].rows[0].perKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+33.56%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 33.563545495597026
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[2].rows[0].perPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+21.71%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 21.712426630325638
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[2].rows[1].perKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+8.41%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 8.412459148168649
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[2].rows[1].perPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "-7.93%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -7.9251801992324005
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[2].rows[2].perKm",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_km_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+25.29%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 25.29282778781245
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[2].rows[2].perPayload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "margin_pct_per_payload_tkm_paired",
+    "min"
+   ],
+   "pre": "",
+   "s": "+20.11%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 20.11401201499117
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".1f",
+   "key": "$.screens.verdict.cards[3].criterionCorner",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "criterion",
+    "corner_threshold_pct"
+   ],
+   "pre": "",
+   "s": "0.0%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 0.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".1f",
+   "key": "$.screens.verdict.cards[3].criterionNominal",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "criterion",
+    "nominal_threshold_pct"
+   ],
+   "pre": "",
+   "s": "3.0%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 3.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].criterionText",
+   "kind": "cite",
+   "path": [
+    "advance_kill",
+    "criterion",
+    "statement"
+   ],
+   "pre": "",
+   "s": "ADVANCE only if >= 3% better than the ruler on the candidate's design duty at nominal, ensemble-min, AND >= 0% at every corner. Metric: fuel energy per payload tonne-km, paired per-seed.",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE only if >= 3% better than the ruler on the candidate's design duty at nominal, ensemble-min, AND >= 0% at every corner. Metric: fuel energy per payload tonne-km, paired per-seed."
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".2f",
+   "key": "$.screens.verdict.cards[3].esc1.anchorLper100",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "anchor",
+    "fourhk1_era",
+    "l_per_100km"
+   ],
+   "pre": "",
+   "s": "32.01 L/100 km",
+   "suf": " L/100 km",
+   "tier": "RECORD",
+   "v": 32.01421566201477
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].esc1.anchorName",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "anchor",
+    "name"
+   ],
+   "pre": "",
+   "s": "Fuelly - Isuzu NPR-HD, all model years (owner fuel logs)",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "Fuelly - Isuzu NPR-HD, all model years (owner fuel logs)"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].esc1.calibrateOrderSatisfied",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "anchor",
+    "calibrate_order_satisfied"
+   ],
+   "pre": "",
+   "s": "False",
+   "suf": "",
+   "tier": "RECORD",
+   "v": false
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".2f",
+   "key": "$.screens.verdict.cards[3].esc1.modelLper100",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "l_per_100km_VOLT_SUB",
+    "median"
+   ],
+   "pre": "",
+   "s": "19.18 L/100 km",
+   "suf": " L/100 km",
+   "tier": "RECORD",
+   "v": 19.176978725674477
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].esc1.worstResidual",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "anchor",
+    "worst_residual_vs_model_pct"
+   ],
+   "pre": "",
+   "s": "-40.10%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -40.09855206782973
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].esc1.worstResidualGoverning",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler",
+    "anchor",
+    "worst_residual_governing_case"
+   ],
+   "pre": "",
+   "s": "fourhk1_era (min over the enumerated two-member anchor set)",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "fourhk1_era (min over the enumerated two-member anchor set)"
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.verdict.cards[3].killQuote",
+   "kind": "quote",
+   "s": "V2 Trucker: FROZEN-KILL, -7.93% headline, a draw at the ruler's pessimistic end, never reaching the bar.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "PM_LOG.md",
+   "key": "$.screens.verdict.cards[3].reworkUnverified.quote",
+   "kind": "quote",
+   "s": "WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK.",
+   "tier": "RECORD"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[0].flipDirection",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler_fuel_flip_points",
+    "V1_on_VOLT-SUB",
+    "direction_that_would_overturn_the_verdict"
+   ],
+   "pre": "",
+   "s": "LEANER",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "LEANER"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[0].flipPoint",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler_fuel_flip_points",
+    "V1_on_VOLT-SUB",
+    "pct_ruler_fuel_error_to_draw"
+   ],
+   "pre": "",
+   "s": "-20.11%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -20.114012014991168
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[0].nominalGoverning",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V1_on_VOLT-SUB",
+    "nominal_margin_pct_min_governing_case"
+   ],
+   "pre": "",
+   "s": "seed 4 of the enumerated 8-seed VOLT-SUB ensemble",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "seed 4 of the enumerated 8-seed VOLT-SUB ensemble"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[0].nominalMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V1_on_VOLT-SUB",
+    "nominal_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "+20.11%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 20.11401201499117
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[0].pessimistic",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdict_robustness",
+    "rows",
+    "V1_on_VOLT-SUB",
+    "pessimistic_min"
+   ],
+   "pre": "",
+   "s": "+37.78%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 37.78314378327905
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[0].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V1_on_VOLT-SUB",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "ADVANCE",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[0].worstCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V1_on_VOLT-SUB",
+    "worst_corner_margin_pct"
+   ],
+   "pre": "",
+   "s": "+19.12%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 19.12403661613544
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[0].worstCornerGoverning",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V1_on_VOLT-SUB",
+    "worst_corner_governing_case"
+   ],
+   "pre": "",
+   "s": "cold_-10C (min over the enumerated corner set ['alt2000m_45C', 'cold_-10C', 'payload_m20', 'payload_p20']), itself at seed 4 of the enumerated 8-seed VOLT-SUB ensemble",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "cold_-10C (min over the enumerated corner set ['alt2000m_45C', 'cold_-10C', 'payload_m20', 'payload_p20']), itself at seed 4 of the enumerated 8-seed VOLT-SUB ensemble"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[1].flipDirection",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler_fuel_flip_points",
+    "V2_on_VOLT-REG",
+    "direction_that_would_overturn_the_verdict"
+   ],
+   "pre": "",
+   "s": "THIRSTIER",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "THIRSTIER"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[1].flipPoint",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "ruler_fuel_flip_points",
+    "V2_on_VOLT-REG",
+    "pct_ruler_fuel_error_to_draw"
+   ],
+   "pre": "",
+   "s": "+6.93%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 6.93300755977404
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[1].nominalGoverning",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V2_on_VOLT-REG",
+    "nominal_margin_pct_min_governing_case"
+   ],
+   "pre": "",
+   "s": "seed 5 of the enumerated 8-seed VOLT-REG ensemble",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "seed 5 of the enumerated 8-seed VOLT-REG ensemble"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[1].nominalMin",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V2_on_VOLT-REG",
+    "nominal_margin_pct_min"
+   ],
+   "pre": "",
+   "s": "-7.93%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -7.9251801992324005
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[1].pessimistic",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdict_robustness",
+    "rows",
+    "V2_on_VOLT-REG",
+    "pessimistic_min"
+   ],
+   "pre": "",
+   "s": "+0.13%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 0.13239410830944548
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[1].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V2_on_VOLT-REG",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].rows[1].worstCorner",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V2_on_VOLT-REG",
+    "worst_corner_margin_pct"
+   ],
+   "pre": "",
+   "s": "-9.98%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": -9.978769250804442
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].rows[1].worstCornerGoverning",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V2_on_VOLT-REG",
+    "worst_corner_governing_case"
+   ],
+   "pre": "",
+   "s": "climb_10km_6pct (min over the enumerated corner set ['alt2000m_45C', 'climb_10km_6pct', 'cold_-10C', 'payload_m20', 'payload_p20']), itself at seed 5 of the enumerated 8-seed VOLT-REG+CLIMB ensemble",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "climb_10km_6pct (min over the enumerated corner set ['alt2000m_45C', 'climb_10km_6pct', 'cold_-10C', 'payload_m20', 'payload_p20']), itself at seed 5 of the enumerated 8-seed VOLT-REG+CLIMB ensemble"
+  },
+  {
+   "file": "BASELINE_v7_FREEZE.md",
+   "key": "$.screens.verdict.cards[3].statusQuote",
+   "kind": "quote",
+   "s": "V1 Postal vs stock NPR: FROZEN-PROVISIONAL ADVANCE, +20.11% nominal ensemble-min per payload tonne-km, worst corner +19.12%, robust to all ruler-modelling brackets",
+   "tier": "RECORD"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+# WS12 exhibit — Python dependencies
+#
+# The build pipeline (build_exhibit_data.py) and the verifier
+# (exhibit_verify.py) use the Python STANDARD LIBRARY ONLY: json, csv,
+# hashlib, math, os, re, sys, decimal. Nothing is pinned because nothing
+# is imported. This is deliberate: float formatting is the whole product
+# on this workstream, and stdlib formatting is the same on every machine
+# that runs CPython 3.11+.
+#
+# Interpreter of record: CPython 3.14.3 (the repo-root .venv), invoked as
+#   ../.venv/bin/python3 build_exhibit_data.py
+#   ../.venv/bin/python3 exhibit_verify.py
+#
+# The web app's toolchain is pinned in app/package.json and
+# app/package-lock.json (Vite + React + TypeScript, no server).

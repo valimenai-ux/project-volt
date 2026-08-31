@@ -1,0 +1,5 @@
+# WS12 keeps no build state in git beyond the emitted payload under
+# app/public/, which is part of the record.
+__pycache__/
+*.pyc
+.DS_Store

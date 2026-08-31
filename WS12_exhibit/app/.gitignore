@@ -1,0 +1,7 @@
+# Build outputs and installed dependencies. Everything under public/ IS
+# committed: it is the published record payload, emitted deterministically
+# by ../build_exhibit_data.py, and `npm ci && npm run build` must produce a
+# complete site from a clean checkout without re-running Python.
+node_modules/
+dist/
+tsconfig.tsbuildinfo

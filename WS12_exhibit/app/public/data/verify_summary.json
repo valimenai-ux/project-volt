@@ -1,0 +1,59 @@
+{
+ "assertions_total": 1119,
+ "checks": {
+  "1 MANIFEST/BUNDLE": {
+   "checked": 488,
+   "failed": 0
+  },
+  "10 DECIMATION BADGE": {
+   "checked": 1,
+   "failed": 0
+  },
+  "11 SANDBOX": {
+   "checked": 27,
+   "failed": 0
+  },
+  "12 SEVERITIES": {
+   "checked": 17,
+   "failed": 0
+  },
+  "13 REPORT": {
+   "checked": 43,
+   "failed": 0
+  },
+  "2 CITATIONS": {
+   "checked": 239,
+   "failed": 0
+  },
+  "3 QUOTES": {
+   "checked": 46,
+   "failed": 0
+  },
+  "4 FILE FACTS": {
+   "checked": 54,
+   "failed": 0
+  },
+  "5 DERIVED": {
+   "checked": 149,
+   "failed": 0
+  },
+  "6 BADGES": {
+   "checked": 20,
+   "failed": 0
+  },
+  "7 APP SOURCE": {
+   "checked": 15,
+   "failed": 0
+  },
+  "8 DECIMATION": {
+   "checked": 10,
+   "failed": 0
+  },
+  "9 SUBSEQUENCE": {
+   "checked": 10,
+   "failed": 0
+  }
+ },
+ "failures_total": 0,
+ "result": "PASS"
+}

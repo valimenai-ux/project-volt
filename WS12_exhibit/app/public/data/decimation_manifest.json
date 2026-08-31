@@ -1,0 +1,1755 @@
+{
+ "_rule": "one row per published trace: source path, source sha256, stride, and output row count. Decimation is by strided sample, never by averaging.",
+ "badge": "the replay is decimated; the record is not",
+ "rows": [
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "SOC",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s",
+    "engine_on"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "SOC"
+   ],
+   "columnsWithheld": [
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "P_shaft_eng_kW",
+    "engine_on"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "V1 pure series (mode b) / VOLT-SUB / cold_-10C / seed 11",
+    "mass 6600 kg, payload 2712 kg; delivered pack 11.083608 kWh usable; R16 acceptance 66.985 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+   ],
+   "id": "ws11-V1_VOLT-SUB_cold_-10C_seed11",
+   "meta": {},
+   "outputRows10Hz": 34852,
+   "outputRows1Hz": 3486,
+   "publishedBytes": 1754858,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 1852
+    }
+   ],
+   "sourceBytes": 2902262,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "sourceRows": 34852,
+   "sourceSha256": "2439e0c2327725342adab50d3f9897110d46ea1a97c667b9f4b3bce25f40509a",
+   "stride": 10,
+   "urlBase": "traces/ws11-V1_VOLT-SUB_cold_-10C_seed11",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "SOC",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s",
+    "engine_on"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "SOC"
+   ],
+   "columnsWithheld": [
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "P_shaft_eng_kW",
+    "engine_on"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "V1 pure series (mode b) / VOLT-SUB / nominal / seed 11",
+    "mass 6600 kg, payload 2712 kg; delivered pack 11.083608 kWh usable; R16 acceptance 130.752 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+   ],
+   "id": "ws11-V1_VOLT-SUB_nominal_seed11",
+   "meta": {},
+   "outputRows10Hz": 34852,
+   "outputRows1Hz": 3486,
+   "publishedBytes": 1754558,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 1852
+    }
+   ],
+   "sourceBytes": 2901562,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "sourceRows": 34852,
+   "sourceSha256": "576acbaade5a16649f4613803fc0defbcb4afa25bb7f52800dcc854518ca6bfc",
+   "stride": 10,
+   "urlBase": "traces/ws11-V1_VOLT-SUB_nominal_seed11",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "SOC",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s",
+    "engine_on"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "SOC"
+   ],
+   "columnsWithheld": [
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "P_shaft_eng_kW",
+    "engine_on"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "V2 pure series (mode b) / VOLT-REG / climb_10km_6pct / seed 23",
+    "mass 6600 kg, payload 2461 kg; delivered pack 11.083608 kWh usable; R16 acceptance 130.752 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+   ],
+   "id": "ws11-V2_VOLT-REG_climb_10km_6pct_seed23",
+   "meta": {},
+   "outputRows10Hz": 69934,
+   "outputRows1Hz": 6994,
+   "publishedBytes": 3636098,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0012.csv",
+     "i": 12,
+     "row0": 36000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0013.csv",
+     "i": 13,
+     "row0": 39000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0014.csv",
+     "i": 14,
+     "row0": 42000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0015.csv",
+     "i": 15,
+     "row0": 45000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0016.csv",
+     "i": 16,
+     "row0": 48000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0017.csv",
+     "i": 17,
+     "row0": 51000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0018.csv",
+     "i": 18,
+     "row0": 54000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0019.csv",
+     "i": 19,
+     "row0": 57000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0020.csv",
+     "i": 20,
+     "row0": 60000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0021.csv",
+     "i": 21,
+     "row0": 63000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0022.csv",
+     "i": 22,
+     "row0": 66000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0023.csv",
+     "i": 23,
+     "row0": 69000,
+     "rows": 934
+    }
+   ],
+   "sourceBytes": 6022015,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "sourceRows": 69934,
+   "sourceSha256": "d0b7e5c3e852061d09f36d5c5dfde5adb1bde66cc4a54c17bcefc3c5aae86daa",
+   "stride": 10,
+   "urlBase": "traces/ws11-V2_VOLT-REG_climb_10km_6pct_seed23",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "SOC",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s",
+    "engine_on"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "SOC"
+   ],
+   "columnsWithheld": [
+    "P_bus_load_kW",
+    "P_gen_bus_kW",
+    "P_batt_bus_kW",
+    "P_shaft_eng_kW",
+    "engine_on"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "V2 pure series (mode b) / VOLT-REG / nominal / seed 23",
+    "mass 6600 kg, payload 2461 kg; delivered pack 11.083608 kWh usable; R16 acceptance 130.752 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+   ],
+   "id": "ws11-V2_VOLT-REG_nominal_seed23",
+   "meta": {},
+   "outputRows10Hz": 66143,
+   "outputRows1Hz": 6615,
+   "publishedBytes": 3435903,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0012.csv",
+     "i": 12,
+     "row0": 36000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0013.csv",
+     "i": 13,
+     "row0": 39000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0014.csv",
+     "i": 14,
+     "row0": 42000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0015.csv",
+     "i": 15,
+     "row0": 45000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0016.csv",
+     "i": 16,
+     "row0": 48000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0017.csv",
+     "i": 17,
+     "row0": 51000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0018.csv",
+     "i": 18,
+     "row0": 54000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0019.csv",
+     "i": 19,
+     "row0": 57000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0020.csv",
+     "i": 20,
+     "row0": 60000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0021.csv",
+     "i": 21,
+     "row0": 63000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0022.csv",
+     "i": 22,
+     "row0": 66000,
+     "rows": 143
+    }
+   ],
+   "sourceBytes": 5672261,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv",
+   "sourceRows": 66143,
+   "sourceSha256": "56a09f48e34dc86c95577931f5cd9bf4f2a0c900b972d51686dca1a1b84c764d",
+   "stride": 10,
+   "urlBase": "traces/ws11-V2_VOLT-REG_nominal_seed23",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsWithheld": [
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "RULER (stock NPR-HD) / VOLT-REG / climb_10km_6pct / seed 23",
+    "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+   ],
+   "id": "ws11-ruler_VOLT-REG_climb_10km_6pct_seed23",
+   "meta": {},
+   "outputRows10Hz": 69934,
+   "outputRows1Hz": 6994,
+   "publishedBytes": 3097502,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0012.csv",
+     "i": 12,
+     "row0": 36000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0013.csv",
+     "i": 13,
+     "row0": 39000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0014.csv",
+     "i": 14,
+     "row0": 42000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0015.csv",
+     "i": 15,
+     "row0": 45000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0016.csv",
+     "i": 16,
+     "row0": 48000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0017.csv",
+     "i": 17,
+     "row0": 51000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0018.csv",
+     "i": 18,
+     "row0": 54000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0019.csv",
+     "i": 19,
+     "row0": 57000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0020.csv",
+     "i": 20,
+     "row0": 60000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0021.csv",
+     "i": 21,
+     "row0": 63000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0022.csv",
+     "i": 22,
+     "row0": 66000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0023.csv",
+     "i": 23,
+     "row0": 69000,
+     "rows": 934
+    }
+   ],
+   "sourceBytes": 5655705,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "sourceRows": 69934,
+   "sourceSha256": "f83f80e069019f291f0775150258423ed167eab095fb5a61a0bb2bef8162d4ab",
+   "stride": 10,
+   "urlBase": "traces/ws11-ruler_VOLT-REG_climb_10km_6pct_seed23",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsWithheld": [
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "RULER (stock NPR-HD) / VOLT-REG / nominal / seed 23",
+    "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+   ],
+   "id": "ws11-ruler_VOLT-REG_nominal_seed23",
+   "meta": {},
+   "outputRows10Hz": 66143,
+   "outputRows1Hz": 6615,
+   "publishedBytes": 2926501,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0012.csv",
+     "i": 12,
+     "row0": 36000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0013.csv",
+     "i": 13,
+     "row0": 39000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0014.csv",
+     "i": 14,
+     "row0": 42000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0015.csv",
+     "i": 15,
+     "row0": 45000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0016.csv",
+     "i": 16,
+     "row0": 48000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0017.csv",
+     "i": 17,
+     "row0": 51000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0018.csv",
+     "i": 18,
+     "row0": 54000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0019.csv",
+     "i": 19,
+     "row0": 57000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0020.csv",
+     "i": 20,
+     "row0": 60000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0021.csv",
+     "i": 21,
+     "row0": 63000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0022.csv",
+     "i": 22,
+     "row0": 66000,
+     "rows": 143
+    }
+   ],
+   "sourceBytes": 5341044,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "sourceRows": 66143,
+   "sourceSha256": "566ea46b9f7b8fbdb40ad6eab6fc153503f169c55e99d13b6a9035bc0a5d2cab",
+   "stride": 10,
+   "urlBase": "traces/ws11-ruler_VOLT-REG_nominal_seed23",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsWithheld": [
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "RULER (stock NPR-HD) / VOLT-SUB / cold_-10C / seed 11",
+    "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+   ],
+   "id": "ws11-ruler_VOLT-SUB_cold_-10C_seed11",
+   "meta": {},
+   "outputRows10Hz": 34852,
+   "outputRows1Hz": 3486,
+   "publishedBytes": 1486440,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 1852
+    }
+   ],
+   "sourceBytes": 2721361,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "sourceRows": 34852,
+   "sourceSha256": "2344970d7e8e9ea88d97107e210a6470c10d9fd186f1036986aba50ede02437e",
+   "stride": 10,
+   "urlBase": "traces/ws11-ruler_VOLT-SUB_cold_-10C_seed11",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "v_kmh",
+    "grade_pct",
+    "P_wheel_kW",
+    "fuel_g_per_s"
+   ],
+   "columnsWithheld": [
+    "gear",
+    "lockup",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "Project Volt WS11 - R34 10 Hz trace",
+    "RULER (stock NPR-HD) / VOLT-SUB / nominal / seed 11",
+    "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+   ],
+   "id": "ws11-ruler_VOLT-SUB_nominal_seed11",
+   "meta": {},
+   "outputRows10Hz": 34852,
+   "outputRows1Hz": 3486,
+   "publishedBytes": 1486140,
+   "schemaClass": "PRE-R34",
+   "schemaConforms": false,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 1852
+    }
+   ],
+   "sourceBytes": 2720811,
+   "sourcePath": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "sourceRows": 34852,
+   "sourceSha256": "065aef64bc077c0300f4b4aa2550a0a251d11be3205365bb5344d7bc4b205347",
+   "stride": 10,
+   "urlBase": "traces/ws11-ruler_VOLT-SUB_nominal_seed11",
+   "use": "race"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "x_m",
+    "v_kmh",
+    "grade_pct",
+    "z_m",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "fuel_cum_g",
+    "P_friction_brake_kW",
+    "trip_time_flag",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "engine_state",
+    "P_gen_bus_kW",
+    "P_bus_load_kW",
+    "P_motor_bus_kW",
+    "P_motor_mech_kW",
+    "P_regen_pack_kW",
+    "P_heater_kW",
+    "P_resistor_kW",
+    "soc_pct",
+    "T_pack_C",
+    "genset_state",
+    "P_batt_bus_kW",
+    "Tj_inv_C",
+    "V_bus_V",
+    "P_dis_cap_kW",
+    "P_chg_cap_kW",
+    "state_DISPATCH",
+    "state_BLEND",
+    "state_VEHICLE",
+    "state_THERMAL",
+    "state_TRACTION",
+    "state_FAULT"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "x_m",
+    "v_kmh",
+    "grade_pct",
+    "z_m",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "fuel_cum_g",
+    "P_friction_brake_kW",
+    "trip_time_flag",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "engine_state",
+    "P_gen_bus_kW",
+    "P_bus_load_kW",
+    "P_motor_bus_kW",
+    "P_motor_mech_kW",
+    "P_regen_pack_kW",
+    "P_heater_kW",
+    "P_resistor_kW",
+    "soc_pct",
+    "T_pack_C",
+    "genset_state",
+    "P_batt_bus_kW"
+   ],
+   "columnsWithheld": [
+    "Tj_inv_C",
+    "V_bus_V",
+    "P_dis_cap_kW",
+    "P_chg_cap_kW",
+    "state_DISPATCH",
+    "state_BLEND",
+    "state_VEHICLE",
+    "state_THERMAL",
+    "state_TRACTION",
+    "state_FAULT"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "program: Project Volt",
+    "workstream: WS5",
+    "round: r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+    "vehicle: V1",
+    "architecture: pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+    "duty: VOLT-SUB",
+    "corner: nominal",
+    "seed: 11",
+    "mass_kg: 6600.0",
+    "payload_kg: 2900.0",
+    "baseline_version: BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+    "results_file: results_ws5.json",
+    "results_sha256: 9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+    "generated_utc: 2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+    "note: V1 R19 start-stop at the 35 kW bus fixed point on WS3's 3.0 kWh band",
+    "note: bus-side electrical quantities (R12)",
+    "note: columns absent by design: gear / lockup / motor_disconnect / P_comp_brake_kW / T_motor_C - see the V2 trace header",
+    "note: soc_pct is on the USABLE window, not on nameplate"
+   ],
+   "id": "ws5-V1_VOLT-SUB_nominal_seed11",
+   "meta": {
+    "architecture": "pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+    "baseline_version": "BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+    "corner": "nominal",
+    "duty": "VOLT-SUB",
+    "generated_utc": "2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+    "mass_kg": "6600.0",
+    "note": "V1 R19 start-stop at the 35 kW bus fixed point on WS3's 3.0 kWh band",
+    "payload_kg": "2900.0",
+    "program": "Project Volt",
+    "results_file": "results_ws5.json",
+    "results_sha256": "9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+    "round": "r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+    "seed": "11",
+    "vehicle": "V1",
+    "workstream": "WS5"
+   },
+   "outputRows10Hz": 34852,
+   "outputRows1Hz": 3486,
+   "publishedBytes": 4016156,
+   "schemaClass": "R34",
+   "schemaConforms": true,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 1852
+    }
+   ],
+   "sourceBytes": 6016991,
+   "sourcePath": "WS5_controls/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "sourceRows": 34852,
+   "sourceSha256": "e1d1c950064f03e15afd63505b0f0f997ff9833aed1b73caa9d81492ba55cf5d",
+   "stride": 10,
+   "urlBase": "traces/ws5-V1_VOLT-SUB_nominal_seed11",
+   "use": "sim"
+  },
+  {
+   "columnsInSource": [
+    "t_s",
+    "x_m",
+    "v_kmh",
+    "grade_pct",
+    "z_m",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "fuel_cum_g",
+    "P_friction_brake_kW",
+    "trip_time_flag",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "engine_state",
+    "P_gen_bus_kW",
+    "P_bus_load_kW",
+    "P_motor_bus_kW",
+    "P_motor_mech_kW",
+    "P_regen_pack_kW",
+    "P_heater_kW",
+    "P_resistor_kW",
+    "soc_pct",
+    "T_pack_C",
+    "genset_state",
+    "P_batt_bus_kW",
+    "Tj_inv_C",
+    "V_bus_V",
+    "P_dis_cap_kW",
+    "P_chg_cap_kW",
+    "state_DISPATCH",
+    "state_BLEND",
+    "state_VEHICLE",
+    "state_THERMAL",
+    "state_TRACTION",
+    "state_FAULT"
+   ],
+   "columnsPublished": [
+    "t_s",
+    "x_m",
+    "v_kmh",
+    "grade_pct",
+    "z_m",
+    "P_wheel_kW",
+    "fuel_g_per_s",
+    "fuel_cum_g",
+    "P_friction_brake_kW",
+    "trip_time_flag",
+    "N_eng_rpm",
+    "T_eng_Nm",
+    "P_shaft_eng_kW",
+    "engine_state",
+    "P_gen_bus_kW",
+    "P_bus_load_kW",
+    "P_motor_bus_kW",
+    "P_motor_mech_kW",
+    "P_regen_pack_kW",
+    "P_heater_kW",
+    "P_resistor_kW",
+    "soc_pct",
+    "T_pack_C",
+    "genset_state",
+    "P_batt_bus_kW"
+   ],
+   "columnsWithheld": [
+    "Tj_inv_C",
+    "V_bus_V",
+    "P_dis_cap_kW",
+    "P_chg_cap_kW",
+    "state_DISPATCH",
+    "state_BLEND",
+    "state_VEHICLE",
+    "state_THERMAL",
+    "state_TRACTION",
+    "state_FAULT"
+   ],
+   "decimation": "strided sample (every 10th row), never averaged",
+   "headerLines": [
+    "program: Project Volt",
+    "workstream: WS5",
+    "round: r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+    "vehicle: V2",
+    "architecture: pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+    "duty: VOLT-REG",
+    "corner: nominal",
+    "seed: 23",
+    "mass_kg: 6600.0",
+    "payload_kg: 2900.0",
+    "baseline_version: BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+    "results_file: results_ws5.json",
+    "results_sha256: 9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+    "generated_utc: 2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+    "note: WS5 recommended R22b dispatch: load-following (R22b c)",
+    "note: bus-side electrical quantities (R12); states are the supervisor state machine's active state per region",
+    "note: columns absent by design (TRACE_SCHEMA: an absent trace must not read as a measured zero): gear / lockup / motor_disconnect - this architecture has none; P_comp_brake_kW - a pure-series engine is not coupled to the road and cannot compression-brake; T_motor_C - WS5 does not model motor winding temperature",
+    "note: soc_pct is on the USABLE window (WS5's convention throughout), not on nameplate"
+   ],
+   "id": "ws5-V2_VOLT-REG_nominal_seed23",
+   "meta": {
+    "architecture": "pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+    "baseline_version": "BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+    "corner": "nominal",
+    "duty": "VOLT-REG",
+    "generated_utc": "2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+    "mass_kg": "6600.0",
+    "note": "WS5 recommended R22b dispatch: load-following (R22b c)",
+    "payload_kg": "2900.0",
+    "program": "Project Volt",
+    "results_file": "results_ws5.json",
+    "results_sha256": "9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+    "round": "r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+    "seed": "23",
+    "vehicle": "V2",
+    "workstream": "WS5"
+   },
+   "outputRows10Hz": 66143,
+   "outputRows1Hz": 6615,
+   "publishedBytes": 10765490,
+   "schemaClass": "R34",
+   "schemaConforms": true,
+   "segmentRows": 3000,
+   "segments": [
+    {
+     "file": "seg_0000.csv",
+     "i": 0,
+     "row0": 0,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0001.csv",
+     "i": 1,
+     "row0": 3000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0002.csv",
+     "i": 2,
+     "row0": 6000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0003.csv",
+     "i": 3,
+     "row0": 9000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0004.csv",
+     "i": 4,
+     "row0": 12000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0005.csv",
+     "i": 5,
+     "row0": 15000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0006.csv",
+     "i": 6,
+     "row0": 18000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0007.csv",
+     "i": 7,
+     "row0": 21000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0008.csv",
+     "i": 8,
+     "row0": 24000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0009.csv",
+     "i": 9,
+     "row0": 27000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0010.csv",
+     "i": 10,
+     "row0": 30000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0011.csv",
+     "i": 11,
+     "row0": 33000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0012.csv",
+     "i": 12,
+     "row0": 36000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0013.csv",
+     "i": 13,
+     "row0": 39000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0014.csv",
+     "i": 14,
+     "row0": 42000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0015.csv",
+     "i": 15,
+     "row0": 45000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0016.csv",
+     "i": 16,
+     "row0": 48000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0017.csv",
+     "i": 17,
+     "row0": 51000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0018.csv",
+     "i": 18,
+     "row0": 54000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0019.csv",
+     "i": 19,
+     "row0": 57000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0020.csv",
+     "i": 20,
+     "row0": 60000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0021.csv",
+     "i": 21,
+     "row0": 63000,
+     "rows": 3000
+    },
+    {
+     "file": "seg_0022.csv",
+     "i": 22,
+     "row0": 66000,
+     "rows": 143
+    }
+   ],
+   "sourceBytes": 14438858,
+   "sourcePath": "WS5_controls/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv",
+   "sourceRows": 66143,
+   "sourceSha256": "7d2568e8f8bceb6cb23843eb1f56c469da9966fc6b18416e93213c4b46f2fd0a",
+   "stride": 10,
+   "urlBase": "traces/ws5-V2_VOLT-REG_nominal_seed23",
+   "use": "sim"
+  }
+ ],
+ "totals": {
+  "publishedBytes": 34359646,
+  "rows1Hz": 51263,
+  "sourceBytes": 54392870,
+  "sourceRows": 512557,
+  "traces": 10
+ }
+}

@@ -200,3 +200,17 @@ anywhere in this program; the one ruler used to size Vehicle Zero's
 claims against a real truck was never calibrated and sits -31.69%
 below its own sourced anchor (ESC-1). Every verdict in this repository
 is model-relative.
+
+## Post-close amendments
+
+- 2026-08-31, principal-ordered, visualization only: the exhibit's
+  simulator gained a side-by-side lane view — both trucks on a shared
+  route axis, positions derived exclusively from each truck's own
+  trace of record. The record's answer: every paired speed column is
+  byte-identical, 0.000 m separation on all four pairs; the climb's
+  shortfall is booked in the energy ledger (ruler capability-limited
+  555.6 s, 3.2582 kWh unserved wheel energy), not the position axis.
+  No verdict, number, status, baseline or report of the research
+  record was touched (`WS12_exhibit/REPORT_WS12.md` §0b;
+  `PM_LOG.md`, entries 2026-08-31 14:21-14:47 PDT). Tag
+  `v1.0-findings` remains at `af52981`, the findings release.

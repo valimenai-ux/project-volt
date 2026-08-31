@@ -496,6 +496,10 @@ def g1_config(tag, engine, veh=VEH, aux=2.0, derate=1.0, modes=("a", "b"),
             margin_pct_min_governing_case=(
                 f"seed {REG_SEEDS[int(np.argmin(m))]} of 8-seed VOLT-REG "
                 f"ensemble [{tag}]"),
+            # R14 (adjudication KX-m3): the _max sibling, labelled too
+            margin_pct_max_governing_case=(
+                f"seed {REG_SEEDS[int(np.argmax(m))]} of 8-seed VOLT-REG "
+                f"ensemble [{tag}]"),
             # R23/F1 erratum: the per-seed SIGN split is now an exported
             # number, not report prose. Counted over the enumerated
             # 8-seed case set with the governing set labeled inline
@@ -676,6 +680,19 @@ R["gate_g1_genset_conditioning_bracket"] = dict(
 
 
 R["gate_g1_prior_convention"] = G1_PRIOR
+
+
+def _DELTA_GOV(cfg):
+    """R14 label for a one-factor delta_pp_min (adjudication KX-m3): the
+    delta is a difference of two ensemble MINIMA, so both governing seeds
+    are named."""
+    return (f"difference of ensemble minima over the enumerated 8-seed "
+            f"VOLT-REG set: row min at "
+            f"{cfg['ensemble']['margin_pct_min_governing_case']} minus "
+            f"prior-convention min at "
+            f"{G1_PRIOR['ensemble']['margin_pct_min_governing_case']}")
+
+
 R["gate_g1_one_factor"] = dict(
     _note=("directive item 3: one-factor rows at nominal. delta = "
            "row margin minus prior-convention margin, in percentage "
@@ -686,12 +703,14 @@ R["gate_g1_one_factor"] = dict(
         **_mrg(G1_SPIN),
         delta_pp_min=G1_SPIN["ensemble"]["margin_pct_min"]
         - G1_PRIOR["ensemble"]["margin_pct_min"],
+        delta_pp_min_governing_case=_DELTA_GOV(G1_SPIN),
         delta_pp_median=G1_SPIN["ensemble"]["margin_pct_median"]
         - G1_PRIOR["ensemble"]["margin_pct_median"]),
     map_vs_scalar_alone=dict(
         **_mrg(G1_MAPS),
         delta_pp_min=G1_MAPS["ensemble"]["margin_pct_min"]
         - G1_PRIOR["ensemble"]["margin_pct_min"],
+        delta_pp_min_governing_case=_DELTA_GOV(G1_MAPS),
         delta_pp_median=G1_MAPS["ensemble"]["margin_pct_median"]
         - G1_PRIOR["ensemble"]["margin_pct_median"]),
     both_g1r=dict(
@@ -700,6 +719,7 @@ R["gate_g1_one_factor"]["both_g1r"] = dict(
     **_mrg(G1["nominal"]),
     delta_pp_min=G1["nominal"]["ensemble"]["margin_pct_min"]
     - G1_PRIOR["ensemble"]["margin_pct_min"],
+    delta_pp_min_governing_case=_DELTA_GOV(G1["nominal"]),
     delta_pp_median=G1["nominal"]["ensemble"]["margin_pct_median"]
     - G1_PRIOR["ensemble"]["margin_pct_median"])
 
@@ -802,6 +822,15 @@ def boundary_exposure_case(chain, cyc, veh, m=None, regen_cap_kw=75.0):
                                           motoring=True)
     ob = chain.boundary_exposure(rpm, trq) & drive
     ob_strict = chain.boundary_exposure_strict(rpm, trq) & drive
+    # KX r2 / adjudication KX-m2 (closes D5): the same strict criterion
+    # evaluated by LINEAR INTERPOLATION of the feasible envelope between
+    # bracketing rpm columns (the r3 adjudicator's implementation), and
+    # the nearest-column count with the degenerate rpm = 0 column's
+    # samples excluded. The gap between WS4's published count and the r3
+    # adjudicator's is exactly that one column.
+    ob_strict_lin = chain.boundary_exposure_strict_linear(rpm, trq) & drive
+    deg = chain.nearest_col_is_degenerate(rpm)
+    ob_strict_nodeg = ob_strict & ~deg
     excess = chain.boundary_excess_loss_kw(rpm, trq) * ob
     blend = np.clip((v - CTL.v_regen_blend_lo)
                     / (CTL.v_regen_blend_hi - CTL.v_regen_blend_lo), 0.0, 1.0)
@@ -812,6 +841,15 @@ def boundary_exposure_case(chain, cyc, veh, m=None, regen_cap_kw=75.0):
     return dict(
         exposure_s_motoring=float(ob.sum()) * dt,
         exposure_s_motoring_strict=float(ob_strict.sum()) * dt,
+        exposure_s_motoring_strict_linear_envelope=float(
+            ob_strict_lin.sum()) * dt,
+        exposure_s_motoring_strict_excl_degenerate_rpm0_col=float(
+            ob_strict_nodeg.sum()) * dt,
+        exposure_s_motoring_strict_on_degenerate_rpm0_col=float(
+            (ob_strict & deg).sum()) * dt,
+        exposed_speed_kmh_max_strict_linear=(
+            float((v * 3.6)[ob_strict_lin].max())
+            if ob_strict_lin.any() else 0.0),
         exposure_s_motoring_strict_on_locked_samples=float(
             (ob_strict & locked).sum()) * dt,
         exposure_s_motoring_on_locked_samples=float((ob & locked).sum()) * dt,
@@ -856,6 +894,10 @@ for _case, _veh in _F2_CASES.items():
         _rows[str(sd)] = _r
     _env = {}
     for _k in ("exposure_s_motoring", "exposure_s_motoring_strict",
+               "exposure_s_motoring_strict_linear_envelope",
+               "exposure_s_motoring_strict_excl_degenerate_rpm0_col",
+               "exposure_s_motoring_strict_on_degenerate_rpm0_col",
+               "exposed_speed_kmh_max_strict_linear",
                "exposure_s_motoring_strict_on_locked_samples",
                "exposure_s_motoring_on_locked_samples",
                "exposure_s_motoring_on_unlocked_samples",
@@ -900,6 +942,70 @@ R["chain_boundary_exposure"] = dict(
     supersedes=("REPORT_WS4.md s4.1 r3 wording 'the convention is "
                 "mode-neutral and negligible (~0.001 kWh)' - true at the "
                 "reference seed, false as a general claim"),
+    # -------------------------------------------------------------------
+    # KX r2 / adjudication KX-m2: D5 is CLOSED. The KX round disclosed
+    # that its strict count (nearest rpm column) did not match the r3
+    # adjudicator's (3.6-7.6 s at nominal) and declined to reconcile. The
+    # reconciliation is arithmetic, and it is one map column.
+    # -------------------------------------------------------------------
+    d5_reconciliation=dict(
+        status="CLOSED (was: disclosed as unreconciled, D5)",
+        finding=("the entire gap is WS2's rpm = 0 map column. It has "
+                 "exactly ONE feasible cell, at T = 0, so its feasible "
+                 "torque envelope has ZERO WIDTH. Under the nearest-column "
+                 "rule every motoring sample below 50 rpm - road speed "
+                 "below 0.70 km/h, i.e. the instant of a standing start - "
+                 "is tested against that zero-width envelope and flagged. "
+                 "Evaluating the same envelope by LINEAR INTERPOLATION "
+                 "between bracketing rpm columns, as the r3 adjudicator "
+                 "did, removes the degeneracy and reproduces that "
+                 "adjudicator's published counts."),
+        degenerate_rpm_columns=[float(CHAIN.rpms[k])
+                                for k in CHAIN.degenerate_rpm_columns()],
+        degenerate_column_speed_ceiling_kmh=float(
+            50.0 / CHAIN.ratio * CHAIN.r_dyn * 2 * np.pi / 60.0 * 3.6),
+        counts_s_per_cycle={
+            _c: dict(
+                stencil_criterion_ws4_headline=[
+                    _f2[_c]["envelope"]["exposure_s_motoring_min"],
+                    _f2[_c]["envelope"]["exposure_s_motoring_max"]],
+                strict_nearest_column=[
+                    _f2[_c]["envelope"]["exposure_s_motoring_strict_min"],
+                    _f2[_c]["envelope"]["exposure_s_motoring_strict_max"]],
+                strict_linear_envelope_r3_adjudicator_criterion=[
+                    _f2[_c]["envelope"][
+                        "exposure_s_motoring_strict_linear_envelope_min"],
+                    _f2[_c]["envelope"][
+                        "exposure_s_motoring_strict_linear_envelope_max"]],
+                strict_nearest_column_excl_rpm0=[
+                    _f2[_c]["envelope"][
+                        "exposure_s_motoring_strict_excl_"
+                        "degenerate_rpm0_col_min"],
+                    _f2[_c]["envelope"][
+                        "exposure_s_motoring_strict_excl_"
+                        "degenerate_rpm0_col_max"]],
+                attributable_to_rpm0_column=[
+                    _f2[_c]["envelope"][
+                        "exposure_s_motoring_strict_on_"
+                        "degenerate_rpm0_col_min"],
+                    _f2[_c]["envelope"][
+                        "exposure_s_motoring_strict_on_"
+                        "degenerate_rpm0_col_max"]])
+            for _c in ("nominal", "cda_5.4")},
+        nothing_moves=("those samples book ZERO unbooked loss: "
+                       "unbooked_bus_kWh_linear equals "
+                       "unbooked_bus_kWh_linear_locked_only at nominal, "
+                       "confirming the unlocked launch exposure "
+                       "contributes nothing to the pp bound. Every "
+                       "exported pp figure is unchanged by this "
+                       "reconciliation; what changes is that the printed "
+                       "exposure SECONDS are now stated with the "
+                       "artefact separated out."),
+        disclosure=("the KX round printed the stencil count as 'the "
+                    "measured exposure' without saying that roughly four "
+                    "fifths of the strict count is a boundary artefact of "
+                    "the grid's first column. s4.1, F-9 and D5 now carry "
+                    "both counts.")),
     cases=_f2)
 
 # ---------------------------------------------------------------- F3 erratum
@@ -966,6 +1072,10 @@ R["chain_weighting_convention"] = dict(
         eta_bus_to_wheel_min_governing_case=(
             f"seed {REG_SEEDS[int(np.argmin(_sd_vals))]} of the enumerated "
             "8-seed VOLT-REG ensemble [nominal]"),
+        # R14 (adjudication KX-m3): the _max sibling was unlabelled
+        eta_bus_to_wheel_max_governing_case=(
+            f"seed {REG_SEEDS[int(np.argmax(_sd_vals))]} of the enumerated "
+            "8-seed VOLT-REG ensemble [nominal]"),
         series_fuel_to_wheel_g_per_kWh_ref_seed=_pinKX["bsfc"] / (
             _pinKX["eta_gen"] * _eta_series_ref),
         per_seed=_sd_eta,
@@ -1000,8 +1110,46 @@ def load_r16_curve(path, col="V2pack_chg_cont_kW_bus"):
 
 
 R16_T, R16_P = load_r16_curve(os.path.join(WS3_DIR, "regen_acceptance.csv"))
+# KX r2 / KX-B1: WS3's 10-s PULSE column. The previous round never
+# consulted it; the adjudicator's point is that every measured pack-charge
+# excursion is LONGER than the 10 s window it would excuse, so the pulse
+# rating is the right column to state and the wrong one to hide behind.
+R16_T_PULSE, R16_P_PULSE = load_r16_curve(
+    os.path.join(WS3_DIR, "regen_acceptance.csv"),
+    col="V2pack_chg_pulse10s_kW_bus")
 COAST_SH_KW = float(WS2X["spin"]["point_check_shaft_drag_85kmh_W"]) / 1e3
 COAST_BUS_KW = float(WS2X["spin"]["point_check_bus_draw_85kmh_W"]) / 1e3
+
+# --- KX r2 / KX-M3: the payload denominator, exported as a first-class
+# member with its basis and its caveat, never as a bare number. The
+# denominator is IDENTICAL in all three ordered cases (all run at GVW),
+# so the payload-denominated field is the per-km field divided by this
+# constant and carries no information the per-km field does not.
+PAYLOAD_T = VEH.m_payload_at_gvw / 1000.0
+PAYLOAD_BASIS = dict(
+    payload_basis_t=PAYLOAD_T,
+    payload_basis_kg=VEH.m_payload_at_gvw,
+    payload_basis_source=("WS1 volt_params.Vehicle: m_gvw 6,600 kg minus "
+                          "m_curb_operating 3,700 kg [WS1-ASSUMPTION: "
+                          "'NPR-HD chassis-cab + 16 ft dry-freight body + "
+                          "driver + full fuel/DEF']"),
+    payload_basis_is_preconversion=True,
+    identical_in_all_ordered_cases=True,
+    _caveat=("PRE-CONVERSION WS1 CURB. This denominator is the CONVENTIONAL "
+             "truck's payload at GVW. It does NOT charge the series "
+             "powertrain's mass (WS3 pack, WS4 genset + generator, WS2 "
+             "spine, less the deleted engine and gearbox), and it is the "
+             "same constant in all three ordered cases - so "
+             "fuel_energy_kWh_per_payload_tonne_km is EXACTLY the per-km "
+             "value divided by "
+             f"{PAYLOAD_T:.1f} and carries no information the per-km field "
+             "does not. It is NOT the R32 metric: R32's payload "
+             "denomination exists precisely to charge conversion mass "
+             "(D13/R36: 'won 6-10% per km and gave 6-8% back in freight'), "
+             "and a denominator that does not charge it cannot discharge "
+             "R32. Do not denominate any candidate comparison on this "
+             "field. ESC-7 asks the lead to ratify a Vehicle Zero payload "
+             "basis or hold R32 open; WS4 does not invent one."))
 
 KX_CASES = {
     "nominal": dict(
@@ -1044,6 +1192,71 @@ SD = dict(
                                "delivered pack"),
         traction_chain=("R12: WS2 r4 measured inverter+motor map x 0.97 "
                         "reduction, both directions, no scalar PE member"),
+        # ---------------------------------------------------------------
+        # KX r2 / adjudication KX-M2. The KX round carried the resolvable
+        # chain of record ONLY inside interface_ws4 -> gate_g1, whose own
+        # archival notice forbids consuming any of its fields. A consumer
+        # obeying that notice could not resolve the map, voltage or
+        # reduction the LIVE numbers were produced with. The chain is
+        # duplicated here, WS4-relative, so the live block resolves on its
+        # own; verify_ws4.py asserts that it does, without reading gate_g1.
+        # ---------------------------------------------------------------
+        chain_of_record=dict(
+            map_file=R["ws2_chain_of_record"]["map_file_ws4_relative"],
+            map_file_owner=R["ws2_chain_of_record"]["map_file_owner"],
+            map_file_as_exported_by_owner=R["ws2_chain_of_record"][
+                "map_file"],
+            map_voltage_V=R["ws2_chain_of_record"]["map_voltage_V"],
+            map_feasible_points=R["ws2_chain_of_record"][
+                "map_feasible_points"],
+            reduction_flat=R["ws2_chain_of_record"]["reduction_flat"],
+            vintage=R["ws2_chain_of_record"]["vintage"],
+            ws2_rework_round=R["ws2_chain_of_record"]["ws2_rework_round"],
+            ws2_bus_nominal_V=R["ws2_chain_of_record"]["ws2_bus_nominal_V"],
+            map_file_sha256=R["ws2_chain_of_record"]["input_sha256"][
+                "map_file"],
+            _note=("resolvable from THIS block. Duplicated from "
+                   "results_ws4.json -> ws2_chain_of_record so that "
+                   "series_duty_v2 does not depend on the ARCHIVED "
+                   "gate_g1 block for its own chain (adjudication "
+                   "KX-M2). Same map, same run, same numbers.")),
+        boundary_convention_exposure=dict(
+            _note=("the map-boundary convention described in the archived "
+                   "gate's block is ACTIVE in this live run - same map, "
+                   "same chain, same _interp_loss clamping - so its "
+                   "measured exposure travels with the live block too "
+                   "(adjudication KX-M2). Full tables in "
+                   "results_ws4.json -> chain_boundary_exposure. The "
+                   "linear-interpolation and rpm=0-excluded counts that "
+                   "close D5 are there as well (adjudication KX-m2)."),
+            definition=R["chain_boundary_exposure"]["definition"],
+            cases={_c: dict(
+                exposure_s_motoring_min=R["chain_boundary_exposure"][
+                    "cases"][_c]["envelope"]["exposure_s_motoring_min"],
+                exposure_s_motoring_max=R["chain_boundary_exposure"][
+                    "cases"][_c]["envelope"]["exposure_s_motoring_max"],
+                exposure_s_motoring_max_governing_case=R[
+                    "chain_boundary_exposure"]["cases"][_c]["envelope"][
+                        "exposure_s_motoring_max_governing_case"],
+                one_sided_pp_locked_linear_max=R["chain_boundary_exposure"][
+                    "cases"][_c]["envelope"][
+                        "one_sided_pp_locked_linear_max"],
+                one_sided_pp_locked_linear_max_governing_case=R[
+                    "chain_boundary_exposure"]["cases"][_c]["envelope"][
+                        "one_sided_pp_locked_linear_max_governing_case"],
+                total_pp_linear_max=R["chain_boundary_exposure"]["cases"][
+                    _c]["envelope"]["total_pp_linear_max"],
+                total_pp_linear_max_governing_case=R[
+                    "chain_boundary_exposure"]["cases"][_c]["envelope"][
+                        "total_pp_linear_max_governing_case"])
+                for _c in ("nominal", "cda_5.4", "alt2000m_45C")},
+            one_sided_note=("the one-sided pp figure prices the LOCKED "
+                            "share, which exists only in the archived "
+                            "mode (a). In this pure-series block no "
+                            "sample is locked, so the relevant figure for "
+                            "series_duty_v2 is total_pp_linear_max - the "
+                            "whole unbooked bound, which is what a "
+                            "pure-series fuel number is exposed to.")),
         r10_window=R10_DC_WINDOW,
         r16_curve_file="../WS3_battery/regen_acceptance.csv",
         r16_column="V2pack_chg_cont_kW_bus",
@@ -1063,6 +1276,9 @@ SD = dict(
                     f"{sim.EMERG_HI:.2f}. Nothing was tuned for this run; "
                     "the hysteresis sensitivity below runs WS3's own "
                     "allocated genset band instead."),
+        # KX r2 / adjudication KX-M3: the payload denominator, its basis
+        # and its caveat travel WITH the JSON, not only in report prose.
+        payload_metric_basis=PAYLOAD_BASIS,
         spin_member=("none charged: modes (b)/(b') never lock, and loaded "
                      "series machine losses are inside WS2's maps (R22d). "
                      "The true-COAST member R22d names is measured and "
@@ -1084,10 +1300,23 @@ SD_KEYS = ("fuel_kg", "fuel_energy_kWh", "fuel_energy_kWh_per_km",
            "r22d_coast_spin_shaft_kWh", "r22d_coast_spin_bus_kWh",
            "r8_envelope_dis_clip_s", "r8_envelope_chg_clip_s",
            "r8_envelope_chg_shed_kWh",
+           # KX r2 / KX-B1: the R16 curve read as a PACK charge limit
+           "pack_chg_above_r16_accept_s", "pack_chg_above_r16_accept_kWh",
+           "pack_chg_above_r16_accept_longest_s",
+           "r16_pack_cap_shed_kWh", "r16_pack_cap_clip_s",
+           # KX r2 / KX-M1: the genset's own continuous rating
+           "engine_over_continuous_rating_s",
+           "engine_over_continuous_rating_kWh",
+           "engine_over_continuous_rating_longest_s",
+           "engine_shaft_peak_kW", "generator_over_continuous_input_s",
+           "generator_shaft_input_peak_kW",
+           # KX r2 / KX-m7: transient heat for the WS6 ledger
+           "engine_reject_peak_kW", "engine_reject_2min_max_kW",
+           "engine_reject_10min_max_kW",
            "mean_bsfc_eff_g_per_kWh", "engine_reject_kWh",
            "generator_loss_kWh", "chain_loss_kWh", "friction_brake_kWh",
-           "bus_energy_kWh")
-PAYLOAD_T = VEH.m_payload_at_gvw / 1000.0
+           "bus_energy_kWh", "engine_reject_avg_kW",
+           "generator_loss_avg_kW", "chain_loss_avg_kW")
 
 
 def _sd_record(o):
@@ -1125,12 +1354,39 @@ def _sd_record(o):
         r8_envelope_dis_clip_s=o["r8_dis_clip_s"],
         r8_envelope_chg_clip_s=o["r8_chg_clip_s"],
         r8_envelope_chg_shed_kWh=o["r8_chg_shed_kwh"],
+        # KX r2 / KX-B1: WS3's R16 acceptance tested against the PACK's
+        # total bus-side charge power (regen AND genset), not only the
+        # regen leg the simulator caps.
+        pack_chg_above_r16_accept_s=o["pack_chg_above_r16_s"],
+        pack_chg_above_r16_accept_kWh=o["pack_chg_above_r16_kwh"],
+        pack_chg_above_r16_accept_longest_s=o["pack_chg_above_r16_longest_s"],
+        r16_pack_cap_shed_kWh=o["r16_pack_shed_kwh"],
+        r16_pack_cap_clip_s=o["r16_pack_clip_s"],
+        # KX r2 / KX-M1: the 132 kW continuous flat-rating this
+        # workstream owns, x the case derate.
+        engine_over_continuous_rating_s=o["eng_over_cont_s"],
+        engine_over_continuous_rating_kWh=o["eng_over_cont_kwh"],
+        engine_over_continuous_rating_longest_s=o["eng_over_cont_longest_s"],
+        engine_shaft_peak_kW=o["eng_shaft_peak_kw"],
+        generator_over_continuous_input_s=o["gen_shaft_in_over_cont_s"],
+        generator_shaft_input_peak_kW=o["gen_shaft_in_peak_kw"],
+        # KX r2 / KX-m7: transient rejection for the WS6 ledger
+        engine_reject_peak_kW=o["eng_reject_peak_kw"],
+        engine_reject_2min_max_kW=o["eng_reject_roll120s_max_kw"],
+        engine_reject_10min_max_kW=o["eng_reject_roll600s_max_kw"],
         mean_bsfc_eff_g_per_kWh=o["mean_bsfc_eff_g_per_kwh"],
         engine_reject_kWh=o["eng_reject_kwh"],
         generator_loss_kWh=o["e_gen_loss_kwh"],
         chain_loss_kWh=o["e_chain_loss_kwh"],
         friction_brake_kWh=o["e_fric_kwh"],
-        bus_energy_kWh=o["e_bus_kwh"])
+        bus_energy_kWh=o["e_bus_kwh"],
+        # KX r2 / KX-m6: THIS seed's own cycle averages. Each ledger row
+        # must be the max of these per component, not max(energy) divided
+        # by one seed's duration - and each component's governing seed is
+        # its own.
+        engine_reject_avg_kW=o["eng_reject_kwh"] / (o["duration_s"] / 3600.0),
+        generator_loss_avg_kW=o["e_gen_loss_kwh"] / (o["duration_s"] / 3600.0),
+        chain_loss_avg_kW=o["e_chain_loss_kwh"] / (o["duration_s"] / 3600.0))
 
 
 def _sd_envelope(per_seed, tag):
@@ -1151,7 +1407,16 @@ def _sd_envelope(per_seed, tag):
     return env
 
 
-_SD_TRACE = None
+# KX r2 / adjudication KX-m4: R34's "one per run" is ambiguous between
+# per PIPELINE run and per SIMULATED run. WS4 declares the reading below
+# and, rather than leave the gap, emits a full-rate 10 Hz trace for EVERY
+# ORDERED CASE at the reference seed (3 files) instead of one. Emitting
+# all 24 ordered mode-(b) runs at 10 Hz would be ~132 MB of committed
+# artefact; R34_TRACE_ALL_ORDERED_RUNS below makes that a one-constant
+# change if the lead rules for the per-simulated-run reading.
+R34_TRACE_ALL_ORDERED_RUNS = False
+R34_TRACE_SEEDS = REG_SEEDS if R34_TRACE_ALL_ORDERED_RUNS else [23]
+_SD_TRACES = {}
 _SD_SOC = []
 for _case, _cfg in KX_CASES.items():
     log(f"R22a series_duty_v2: {_case} (delivered pack "
@@ -1167,13 +1432,13 @@ for _case, _cfg in KX_CASES.items():
                 chg_accept_bus_kw=_ACCEPT[_case],
                 spin_coast_shaft_kw_85=COAST_SH_KW,
                 spin_coast_bus_kw_85=COAST_BUS_KW,
-                trace=(md == "b" and sd == 23 and _case == "nominal"),
+                trace=(md == "b" and sd in R34_TRACE_SEEDS),
                 soc_trace_stride=(50 if md == "b" else None))
             if md == "b":
                 if _pin_case is None:
                     _pin_case = _o["pinned"]
                 if "trace" in _o:
-                    _SD_TRACE = _o.pop("trace")
+                    _SD_TRACES[(_case, sd)] = _o.pop("trace")
                 _SD_SOC.append((_case, sd, _o.pop("soc_trace")))
             _per_seed[md][str(sd)] = _sd_record(_o)
         _b = _per_seed["b"][str(sd)]
@@ -1193,6 +1458,111 @@ for _case, _cfg in KX_CASES.items():
                    "record; WS5 owns the dispatch choice"),
             per_seed=_per_seed["bp"],
             ensemble=_sd_envelope(_per_seed["bp"], _case + "/bp")))
+
+# ---------------------------------------------------------------------------
+# KX r2 / adjudication KX-B2. The KX round compared (b) and (b') on fuel,
+# starts and unserved energy only - none of the three capability axes on
+# which R22b and ESC-9 are actually decided, and two of which are the whole
+# substance of ESC-9. Measured, (b') satisfies every envelope (b) violates.
+# WS4 still does NOT choose the dispatch (R22b assigns that to WS5); it
+# reports that its own companion answers the question ESC-9 asks.
+# ---------------------------------------------------------------------------
+ENG_CONT_KW_BY_CASE = {c: ENG_V2.rated_cont_kw * cfg["derate"]
+                       for c, cfg in KX_CASES.items()}
+
+
+def _axis(key, limit, limit_label):
+    """One capability axis, mode (b) vs mode (b'), as an R14 max over the
+    enumerated 3-case x 8-seed set with the governing case inline.
+    limit=None -> informational row, no compliance verdict."""
+    def _m(which):
+        def env(c):
+            return (SD["cases"][c]["ensemble"] if which == "b"
+                    else SD["cases"][c]["companion_bp"]["ensemble"])
+        vals = {c: env(c)[key + "_max"] for c in KX_CASES}
+        worst = max(vals, key=lambda c: vals[c])
+        return dict(
+            per_case_max=vals,
+            worst_case_max=vals[worst],
+            worst_case_max_governing_case=(
+                f"case {worst} of the enumerated ordered case set "
+                f"{{{', '.join(KX_CASES)}}}; within it, "
+                f"{env(worst)[key + '_max_governing_case']}"),
+            within_limit_on_every_ordered_seed=(
+                None if limit is None else bool(vals[worst] <= limit)))
+    return dict(limit=limit, limit_label=limit_label,
+                mode_b_block_of_record=_m("b"),
+                mode_bp_companion=_m("bp"))
+
+
+SD["companion_bp_capability_comparison"] = dict(
+    ruling="R22b (WS5 owns the dispatch choice) / ESC-9 / KX-B2",
+    _status=("MEASUREMENT, NOT A RECOMMENDATION. WS4 does not choose "
+             "between (b) and (b'); R22b assigns that to WS5. What the KX "
+             "round failed to report is that its own load-following "
+             "companion satisfies R8's bus-side envelope, WS3's R16 "
+             "acceptance read on the pack, and the engine's own continuous "
+             "flat-rating - on every seed of every ordered case - where the "
+             "pinned mode of record violates all three. ESC-9 asks the lead "
+             "to choose between remedies; one of them is already measured "
+             "here, at the fuel deltas in fuel_kWh_per_km_by_case."),
+    axes=dict(
+        pack_discharge_peak_kW_bus=_axis(
+            "pack_dis_peak_kW", 125.0,
+            "R8 bus-side discharge envelope as restated by R12/ES-4"),
+        pack_charge_peak_kW_bus=_axis(
+            "pack_chg_peak_kW", 110.0, "R8 bus-side charge envelope"),
+        pack_charge_above_r16_accept_s=_axis(
+            "pack_chg_above_r16_accept_s", 0.0,
+            "WS3 R16 continuous charge acceptance at the declared cells, "
+            "read as a PACK limit (KX-B1)"),
+        engine_over_continuous_rating_s=_axis(
+            "engine_over_continuous_rating_s", 0.0,
+            "the 4HK1-V2C 132 kW continuous flat-rating x the case derate "
+            "(KX-M1)"),
+        engine_shaft_peak_kW=_axis(
+            "engine_shaft_peak_kW", None,
+            "informational: compare per case against "
+            "engine_continuous_rating_kW_by_case below; the compliance "
+            "verdict is the derate-aware seconds row above")),
+    engine_continuous_rating_kW_by_case=ENG_CONT_KW_BY_CASE,
+    engine_automotive_peak_kW=ENG_V2.peak_power_kw(),
+    generator_continuous_shaft_input_kW=GEN_V2.cont_kw_in,
+    r16_accept_kW_bus_by_case=_ACCEPT,
+    fuel_kWh_per_km_by_case={
+        c: dict(mode_b=[SD["cases"][c]["ensemble"][
+                    "fuel_energy_kWh_per_km_min"],
+                    SD["cases"][c]["ensemble"]["fuel_energy_kWh_per_km_max"]],
+                mode_bp=[SD["cases"][c]["companion_bp"]["ensemble"][
+                    "fuel_energy_kWh_per_km_min"],
+                    SD["cases"][c]["companion_bp"]["ensemble"][
+                        "fuel_energy_kWh_per_km_max"]],
+                bp_penalty_pct_on_median=100.0 * (
+                    SD["cases"][c]["companion_bp"]["ensemble"][
+                        "fuel_energy_kWh_per_km_median"]
+                    - SD["cases"][c]["ensemble"][
+                        "fuel_energy_kWh_per_km_median"])
+                / SD["cases"][c]["ensemble"]["fuel_energy_kWh_per_km_median"])
+        for c in KX_CASES},
+    genset_starts_by_case={
+        c: dict(mode_b=[SD["cases"][c]["ensemble"]["genset_starts_min"],
+                        SD["cases"][c]["ensemble"]["genset_starts_max"]],
+                mode_bp=[SD["cases"][c]["companion_bp"]["ensemble"][
+                    "genset_starts_min"],
+                    SD["cases"][c]["companion_bp"]["ensemble"][
+                        "genset_starts_max"]])
+        for c in KX_CASES},
+    reading=("on the three capability axes above, the load-following "
+             "companion is inside every limit on every ordered seed and "
+             "the pinned mode of record is outside all three. The fuel "
+             "cost of that is inside the ensemble spread at nominal and at "
+             "CdA 5.4 and about the corner penalty above at "
+             "alt2000m_45C. This is one endpoint of R22b's question "
+             "measured on the same trace as the other, which is what the "
+             "companion exists for. It is not a WS4 recommendation and it "
+             "does not price the axes R22b must also weigh - start "
+             "transients, emissions aftertreatment temperature, engine "
+             "duty at part load - none of which this run models."))
 
 # --- unserved-energy verdict (the directive: expected zero; nonzero is a
 # finding, not a tuning knob)
@@ -1263,31 +1633,135 @@ SD["soc_window_check"] = dict(
 # plainly whether the curve bound anything and where it would.
 _pk_regen = max(SD["cases"][c]["ensemble"]["regen_bus_peak_kW_max"]
                 for c in KX_CASES)
+_pk_pack_chg = max(SD["cases"][c]["ensemble"]["pack_chg_peak_kW_max"]
+                   for c in KX_CASES)
 _cold_mask = R16_T <= 10.0
 _hot_mask = R16_T >= 45.0
+
+
+def _r16_case_env(key, fmt_case=True):
+    """min/max/governing over the enumerated 3-case x 8-seed set."""
+    per = {c: (SD["cases"][c]["ensemble"][key + "_min"],
+               SD["cases"][c]["ensemble"][key + "_max"],
+               SD["cases"][c]["ensemble"][key + "_max_governing_case"])
+           for c in KX_CASES}
+    worst = max(KX_CASES, key=lambda c: per[c][1])
+    return dict(per_case_min={c: per[c][0] for c in KX_CASES},
+                per_case_max={c: per[c][1] for c in KX_CASES},
+                per_case_max_governing_case={c: per[c][2] for c in KX_CASES},
+                worst_case_max=per[worst][1],
+                worst_case_max_governing_case=(
+                    f"case {worst} of the enumerated ordered case set "
+                    f"{{{', '.join(KX_CASES)}}}; within it, {per[worst][2]}"))
+
+
+_pack_bound = bool(max(SD["cases"][c]["ensemble"][
+    "pack_chg_above_r16_accept_s_max"] for c in KX_CASES) > 0.0)
 SD["r16_binding_analysis"] = dict(
     ruling="R16 (regen_acceptance.csv is the interface of record)",
+    # ---------------------------------------------------------------
+    # KX r2 / adjudication KX-B1. The previous round exported a single
+    # `bound_any_sample: false`. That field answered the REGEN-LEG
+    # question and was read as answering the PACK question. Both are now
+    # exported, each under a name that says which one it is.
+    # ---------------------------------------------------------------
+    _two_readings=(
+        "WS3's regen_acceptance.csv admits two readings and they differ "
+        "MEASURABLY on this duty. (1) REGEN-LEG rule: WS3's REPORT_WS3 "
+        "s4.2 presents the curve to WS5 as a regen-blend rule ('regen "
+        "follows the acceptance curve at all temperatures with the "
+        "resistor as overflow'; 'WS5 should drive the blend from it "
+        "directly'). Under that reading the simulator's regen-leg cap is "
+        "correct and nothing binds. (2) PACK rule: the file's own header "
+        "is 'pack regen-acceptance vs cell temperature' and the column is "
+        "V2pack_chg_cont_kW_bus - a PACK charge limit, bus-side. A pack "
+        "cannot tell whether its charge current comes from regen or from "
+        "the genset. Under that reading the constraint is ACTIVE on every "
+        "ordered case, because the genset is on for 0.482-0.685 of cycle "
+        "time across the ordered cases and its p_gen_elec is added to the "
+        "pack AFTER the regen cap "
+        "(ws4_sim.run_g1_mode: the cap sits inside the pw < 0 regen "
+        "branch; p_batt_bus = p_gen_elec - p_bus_load is formed "
+        "afterwards). The KX round chose reading (1) without recording "
+        "that a choice existed. WS4 does not choose between them now "
+        "either - the physical quantity the curve names is the pack's and "
+        "the conservative reading is the pack one, but the semantics of "
+        "WS3's interface are WS3's and the blend order is WS5's. Both are "
+        "measured below and the enforcement cost is bracketed; ESC-8 puts "
+        "the choice to the lead."),
+    # --- reading (1): the regen leg, which is what the run enforces
+    regen_leg_bound_any_sample=bool(max(
+        SD["cases"][c]["ensemble"]["regen_shed_by_r16_kWh_max"]
+        for c in KX_CASES) > 1e-12),
+    regen_leg_enforced_in_ordered_run=True,
     peak_regen_to_pack_kW_bus=_pk_regen,
     peak_regen_governing_case=max(
         KX_CASES, key=lambda c: SD["cases"][c]["ensemble"][
             "regen_bus_peak_kW_max"]),
+    # --- reading (2): the pack, which is what the run VIOLATES
+    pack_charge_bound_by_r16_any_sample=_pack_bound,
+    pack_charge_enforced_in_ordered_run=False,
+    peak_pack_charge_kW_bus=_pk_pack_chg,
+    peak_pack_charge_governing_case=max(
+        KX_CASES, key=lambda c: SD["cases"][c]["ensemble"][
+            "pack_chg_peak_kW_max"]),
+    pack_charge_above_r16_accept_s=_r16_case_env(
+        "pack_chg_above_r16_accept_s"),
+    pack_charge_above_r16_accept_kWh=_r16_case_env(
+        "pack_chg_above_r16_accept_kWh"),
+    pack_charge_above_r16_accept_longest_s=_r16_case_env(
+        "pack_chg_above_r16_accept_longest_s"),
     accept_kW_bus_at_declared_cells=_ACCEPT,
-    bound_any_sample=bool(max(
-        SD["cases"][c]["ensemble"]["regen_shed_by_r16_kWh_max"]
-        for c in KX_CASES) > 1e-12),
+    # --- the pulse column, consulted (KX-B1: it does not excuse these)
+    pulse10s_column="V2pack_chg_pulse10s_kW_bus",
+    pulse10s_kW_bus_at_declared_cells={
+        k: float(np.interp(c["t_cell_C"], R16_T_PULSE, R16_P_PULSE))
+        for k, c in KX_CASES.items()},
+    pulse10s_window_s=10.0,
+    pulse10s_covers_the_excursions=bool(max(
+        SD["cases"][c]["ensemble"]["pack_chg_above_r16_accept_longest_s_max"]
+        for c in KX_CASES) <= 10.0),
+    pulse10s_note=("WS3's 10-s pulse column rates 204.173 kW at 25 C and "
+                   "200.553 kW at 45 C cells, both above this run's "
+                   "147.6 kW pack-charge peak - but EVERY measured "
+                   "excursion above the CONTINUOUS acceptance is longer "
+                   "than the 10 s window that column rates (longest "
+                   "single excursions above), so the pulse rating does not "
+                   "cover them. Stated because the previous round never "
+                   "consulted this column."),
+    # --- the hot end, on the PACK quantity (KX-B1 re-scopes ESC-8)
     cold_side_binding_cell_C=float(np.interp(
         _pk_regen, R16_P[_cold_mask], R16_T[_cold_mask])),
     hot_side_binding_cell_C=float(np.interp(
         _pk_regen, R16_P[_hot_mask][::-1], R16_T[_hot_mask][::-1])),
+    cold_side_binding_cell_C_pack_quantity=float(np.interp(
+        _pk_pack_chg, R16_P[_cold_mask], R16_T[_cold_mask])),
     accept_at_ws3_loop_ceiling_55C_kW=float(np.interp(55.0, R16_T, R16_P)),
-    note=("all three ordered cases are warm, so R16's curve is NOT binding "
-          "in this run: peak regen-to-pack is far below the acceptance at "
-          "the declared cell temperatures and regen_shed_by_r16_kWh is zero "
-          "on every seed. The curve binds below the cold-side temperature "
-          "above, and again above the hot-side one - and WS3's pack-loop "
-          "SIZING LINE permits cells to 55 C at +45 C ambient, where "
-          "acceptance falls to the value above. That hot-end crossing is "
-          "escalated (ESC-8), not resolved here."))
+    accept_at_50C_kW=float(np.interp(50.0, R16_T, R16_P)),
+    pulse10s_at_ws3_loop_ceiling_55C_kW=float(
+        np.interp(55.0, R16_T_PULSE, R16_P_PULSE)),
+    pulse10s_at_50C_kW=float(np.interp(50.0, R16_T_PULSE, R16_P_PULSE)),
+    esc8_scope_note=("ESC-8 was raised in the KX round on the peak REGEN "
+                     "quantity (69.1 kW bus vs 62.2 kW continuous "
+                     "acceptance at 55 C cells). On the PACK quantity the "
+                     "hot end is far worse and the case is roughly twice "
+                     "as large: at the 45 C declared cells the ordered run "
+                     "already charges at 147.5 kW against 129.1 kW "
+                     "continuous; at 50 C the continuous curve falls to "
+                     "95.0 kW; and at WS3's 55 C loop ceiling even the "
+                     "10-s PULSE rating (128.8 kW) sits below the run's "
+                     "147.6 kW peak. ESC-8 is restated on the pack "
+                     "quantity in s12."),
+    note=("READ BOTH FIELDS. On the REGEN LEG - the leg the ordered run "
+          "enforces - R16's curve is not binding: peak regen-to-pack is "
+          "far below acceptance at the declared cell temperatures and "
+          "regen_shed_by_r16_kWh is zero on every seed. On the PACK - the "
+          "quantity the file's own header names - the SAME curve is "
+          "exceeded on every ordered case, for the seconds and energies "
+          "above, because regen and the genset charge the pack "
+          "simultaneously. The r16_pack_acceptance_bracket below prices "
+          "enforcing the pack reading. The hot-end crossing and the choice "
+          "of reading are escalated (ESC-8), not resolved here."))
 
 # --- R8 POWER-envelope bracket (WS4 adversarial check, not ordered).
 # The ordered run constrains the pack's ENERGY, not its POWER: R8's
@@ -1342,14 +1816,171 @@ SD["r8_power_envelope_bracket"] = dict(
              "the hardest samples. This is a dispatch and rating question "
              "for WS5/WS3, not a WS4 tuning knob - escalated as ESC-9."))
 
+# --- R16 PACK-ACCEPTANCE bracket (KX r2, adjudication KX-B1 remedy (i)).
+# The ordered run applies WS3's acceptance curve to the REGEN LEG only.
+# This bracket applies the same curve to the PACK's total bus-side charge
+# power - the reading the file's own header supports - so the record shows
+# what the conservative reading costs. WS4 does not choose the reading;
+# ESC-8 does.
+log("R22a bracket: R16 acceptance enforced on the PACK charge "
+    "(WS3 V2pack_chg_cont_kW_bus at declared cells) ...")
+_R16B = {}
+for _case, _cfg in KX_CASES.items():
+    _ps = {}
+    for sd in REG_SEEDS:
+        _o = run_g1_mode(
+            REG[sd], "b", ENG_V2, GEN_V2, USABLE_KX_KWH, p_aux_kw=2.0,
+            veh=_cfg["veh"], derate=_cfg["derate"], chain=CHAIN,
+            chg_accept_bus_kw=_ACCEPT[_case],
+            r16_pack_cap_bus_kw=_ACCEPT[_case],
+            spin_coast_shaft_kw_85=COAST_SH_KW,
+            spin_coast_bus_kw_85=COAST_BUS_KW)
+        _ps[str(sd)] = _sd_record(_o)
+    _R16B[_case] = dict(per_seed=_ps,
+                        ensemble=_sd_envelope(_ps, _case + "/R16-pack"))
+    log(f"  [{_case}] shed "
+        f"{_R16B[_case]['ensemble']['r16_pack_cap_shed_kWh_min']:.3f}-"
+        f"{_R16B[_case]['ensemble']['r16_pack_cap_shed_kWh_max']:.3f} kWh, "
+        f"clipped "
+        f"{_R16B[_case]['ensemble']['r16_pack_cap_clip_s_max']:.1f} s, "
+        f"unserved "
+        f"{_R16B[_case]['ensemble']['unserved_bus_kWh_max']:.4f} kWh")
+_r16b_fuel_pp = {
+    c: 100.0 * (_R16B[c]["ensemble"]["fuel_kg_max"]
+                - SD["cases"][c]["ensemble"]["fuel_kg_max"])
+    / SD["cases"][c]["ensemble"]["fuel_kg_max"] for c in KX_CASES}
+SD["r16_pack_acceptance_bracket"] = dict(
+    ruling="R16 read as a PACK charge limit (adjudication KX-B1)",
+    _status=("WS4 bracket in response to adjudication KX-B1, NOT an ordered "
+             "case and NOT a WS4 choice of reading. The ordered "
+             "series_duty_v2 numbers above stand as run, with the regen-leg "
+             "reading; this bracket prices the pack reading so ESC-8 is "
+             "decided on measured cost rather than on assertion."),
+    cap_kW_bus_at_declared_cells=_ACCEPT,
+    enforcement=("pack charge above the acceptance is SHED (booked as "
+                 "r16_pack_cap_shed_kWh / r16_pack_cap_clip_s). This is the "
+                 "crudest of the available remedies: it discards surplus "
+                 "rather than not generating it. A supervisor that instead "
+                 "backs the genset off is exactly the load-following "
+                 "companion (b'), which stays inside the acceptance on "
+                 "every seed of every ordered case with no shed energy at "
+                 "all - see companion_bp and s4-KX.6."),
+    cases=_R16B,
+    worst_shed_kWh=max(_R16B[c]["ensemble"]["r16_pack_cap_shed_kWh_max"]
+                       for c in KX_CASES),
+    worst_shed_governing_case=max(
+        KX_CASES, key=lambda c: _R16B[c]["ensemble"][
+            "r16_pack_cap_shed_kWh_max"]),
+    worst_clip_s=max(_R16B[c]["ensemble"]["r16_pack_cap_clip_s_max"]
+                     for c in KX_CASES),
+    worst_clip_governing_case=max(
+        KX_CASES,
+        key=lambda c: _R16B[c]["ensemble"]["r16_pack_cap_clip_s_max"]),
+    worst_unserved_kWh=max(_R16B[c]["ensemble"]["unserved_bus_kWh_max"]
+                           for c in KX_CASES),
+    worst_unserved_governing_case=max(
+        KX_CASES, key=lambda c: _R16B[c]["ensemble"]["unserved_bus_kWh_max"]),
+    fuel_penalty_pct_vs_ordered=_r16b_fuel_pp,
+    fuel_penalty_pct_max=max(_r16b_fuel_pp.values()),
+    fuel_penalty_pct_max_governing_case=max(
+        _r16b_fuel_pp, key=lambda c: _r16b_fuel_pp[c]),
+    reading=("enforcing WS3's acceptance curve on the PACK costs the shed "
+             "energy and fuel above and does NOT reopen the zero-unserved "
+             "headline. The headline therefore does not depend on which "
+             "reading of R16 the lead rules for."))
+
+# --- ENGINE CONTINUOUS-RATING bracket (KX r2, adjudication KX-M1).
+# The ordered run's emergency band caps the engine at the AUTOMOTIVE
+# full-load curve, not at the 132 kW continuous flat-rating WS4 specifies
+# and R18 blocks WS6's release on. This bracket caps it at the genset's
+# own rating, so the record shows what the rating costs - and, in
+# particular, whether the zero-unserved headline depends on the
+# over-rating. It does not.
+log("R22a bracket: engine capped at its OWN continuous flat-rating in "
+    "the emergency band ...")
+_M1B = {}
+for _case, _cfg in KX_CASES.items():
+    _ps = {}
+    for sd in REG_SEEDS:
+        _o = run_g1_mode(
+            REG[sd], "b", ENG_V2, GEN_V2, USABLE_KX_KWH, p_aux_kw=2.0,
+            veh=_cfg["veh"], derate=_cfg["derate"], chain=CHAIN,
+            chg_accept_bus_kw=_ACCEPT[_case],
+            emerg_cap_cont_rating=True,
+            spin_coast_shaft_kw_85=COAST_SH_KW,
+            spin_coast_bus_kw_85=COAST_BUS_KW)
+        _ps[str(sd)] = _sd_record(_o)
+    _M1B[_case] = dict(per_seed=_ps,
+                       ensemble=_sd_envelope(_ps, _case + "/cont-rating"))
+    log(f"  [{_case}] unserved "
+        f"{_M1B[_case]['ensemble']['unserved_bus_kWh_max']:.4f} kWh, "
+        f"SOC min {_M1B[_case]['ensemble']['soc_min_min']:.3f}, over-rating "
+        f"{_M1B[_case]['ensemble']['engine_over_continuous_rating_s_max']:.1f} s, "
+        f"fuel {_M1B[_case]['ensemble']['fuel_kg_max']:.2f} kg")
+_m1b_fuel_pp = {
+    c: 100.0 * (_M1B[c]["ensemble"]["fuel_kg_max"]
+                - SD["cases"][c]["ensemble"]["fuel_kg_max"])
+    / SD["cases"][c]["ensemble"]["fuel_kg_max"] for c in KX_CASES}
+SD["engine_continuous_rating_bracket"] = dict(
+    ruling="R18 / ESC-1 (the 132 kW continuous flat-rating); KX-M1",
+    _status=("WS4 bracket in response to adjudication KX-M1, NOT an "
+             "ordered case. The ordered series_duty_v2 numbers above stand "
+             "as run, with the emergency band's automotive full-load "
+             "ceiling; this bracket prices the genset's own rating."),
+    ordered_emergency_ceiling=("engine.peak_power_kw() x derate x 0.97 = "
+                              "the 4HK1-TC AUTOMOTIVE full-load curve"),
+    bracket_emergency_ceiling=("engine.rated_cont_kw x derate = the "
+                               "WS4-specified continuous flat-rating"),
+    engine_automotive_peak_kW=ENG_V2.peak_power_kw(),
+    engine_continuous_rating_kW_by_case={
+        c: ENG_V2.rated_cont_kw * cfg["derate"]
+        for c, cfg in KX_CASES.items()},
+    cases=_M1B,
+    worst_unserved_kWh=max(_M1B[c]["ensemble"]["unserved_bus_kWh_max"]
+                           for c in KX_CASES),
+    worst_unserved_governing_case=max(
+        KX_CASES, key=lambda c: _M1B[c]["ensemble"]["unserved_bus_kWh_max"]),
+    unserved_stays_zero=bool(max(
+        _M1B[c]["ensemble"]["unserved_bus_kWh_max"]
+        for c in KX_CASES) <= 1e-9),
+    soc_min_by_case={c: _M1B[c]["ensemble"]["soc_min_min"]
+                     for c in KX_CASES},
+    soc_min_worst=min(_M1B[c]["ensemble"]["soc_min_min"] for c in KX_CASES),
+    soc_min_worst_governing_case=min(
+        KX_CASES, key=lambda c: _M1B[c]["ensemble"]["soc_min_min"]),
+    fuel_penalty_pct_vs_ordered=_m1b_fuel_pp,
+    fuel_penalty_pct_max=max(_m1b_fuel_pp.values()),
+    fuel_penalty_pct_max_governing_case=max(
+        _m1b_fuel_pp, key=lambda c: _m1b_fuel_pp[c]),
+    reading=("the zero-unserved headline does NOT rest on the emergency "
+             "band's automotive ceiling: with the engine held to its own "
+             "continuous flat-rating the run still completes every "
+             "ordered case with zero unserved bus energy, at a deeper SOC "
+             "minimum and the fuel delta above. What the over-rating buys "
+             "is SOC margin, not feasibility. Escalated as ESC-10 against "
+             "R18/ESC-1, whose +0.82 kW corner margin is a CONTINUOUS-"
+             "rating figure."))
+
 # --- hysteresis sensitivity: WS3's own allocated genset band on the
 # delivered pack, reference seed. The cycling rate is the export WS5 needs
 # and it is band-sensitive, so the band is not left implicit.
+#
+# KX r2 / adjudication KX-m8: genset starts are a STOCHASTIC output, so
+# R9 requires an 8-seed envelope, not one draw. The whole sensitivity is
+# now run over the ordered ensemble; the reference-seed rows are retained
+# under `ref_seed` so nothing previously reported is dropped.
 _hyst_kwh = float(_WS3_SOC["allocation"]["V2"]["genset_hysteresis_kWh"])
 _soc_tgt = float(_WS3_SOC["target"])
 _half = 0.5 * _hyst_kwh / USABLE_KX_KWH
-SD["hysteresis_sensitivity_ref_seed"] = dict(
-    ruling="R19 precedent / WS3 soc_strategy.allocation.V2",
+log("R22a sensitivity: WS3 allocated genset-hysteresis band, 8 seeds ...")
+SD["hysteresis_sensitivity"] = dict(
+    ruling="R19 precedent / WS3 soc_strategy.allocation.V2; R9 (8-seed)",
+    _basis=("the cycling rate is the export most sensitive to a supervisor "
+            "constant, and starts are stochastic - so both bands are run "
+            "over the SAME enumerated 8-seed VOLT-REG ensemble as the "
+            "ordered block (R9/R14), not on one draw. The KX round ran "
+            "this on the reference seed only (adjudication KX-m8); those "
+            "rows are retained under ref_seed."),
     ws3_allocated_genset_hysteresis_kWh=_hyst_kwh,
     ws3_soc_target=_soc_tgt,
     band_soc_fraction=[_soc_tgt - _half, _soc_tgt + _half],
@@ -1357,16 +1988,30 @@ SD["hysteresis_sensitivity_ref_seed"] = dict(
     simulator_band_kWh=(sim.SER_HI - sim.SER_LO) * USABLE_KX_KWH,
     cases={})
 for _case, _cfg in KX_CASES.items():
-    _o = run_g1_mode(
-        REG[23], "b", ENG_V2, GEN_V2, USABLE_KX_KWH, p_aux_kw=2.0,
-        veh=_cfg["veh"], derate=_cfg["derate"], chain=CHAIN,
-        chg_accept_bus_kw=_ACCEPT[_case],
-        ser_band=(_soc_tgt - _half, _soc_tgt + _half),
-        spin_coast_shaft_kw_85=COAST_SH_KW,
-        spin_coast_bus_kw_85=COAST_BUS_KW)
-    SD["hysteresis_sensitivity_ref_seed"]["cases"][_case] = dict(
-        ws3_band=_sd_record(_o),
-        simulator_band=SD["cases"][_case]["per_seed"]["23"])
+    _ps = {}
+    for sd in REG_SEEDS:
+        _o = run_g1_mode(
+            REG[sd], "b", ENG_V2, GEN_V2, USABLE_KX_KWH, p_aux_kw=2.0,
+            veh=_cfg["veh"], derate=_cfg["derate"], chain=CHAIN,
+            chg_accept_bus_kw=_ACCEPT[_case],
+            ser_band=(_soc_tgt - _half, _soc_tgt + _half),
+            spin_coast_shaft_kw_85=COAST_SH_KW,
+            spin_coast_bus_kw_85=COAST_BUS_KW)
+        _ps[str(sd)] = _sd_record(_o)
+    SD["hysteresis_sensitivity"]["cases"][_case] = dict(
+        ws3_band=dict(per_seed=_ps,
+                      ensemble=_sd_envelope(_ps, _case + "/WS3-band")),
+        simulator_band=dict(
+            per_seed=SD["cases"][_case]["per_seed"],
+            ensemble=SD["cases"][_case]["ensemble"]),
+        ref_seed=dict(ws3_band=_ps["23"],
+                      simulator_band=SD["cases"][_case]["per_seed"]["23"]))
+    log(f"  [{_case}] starts, WS3 band "
+        f"{SD['hysteresis_sensitivity']['cases'][_case]['ws3_band']['ensemble']['genset_starts_min']:.0f}"
+        f"-{SD['hysteresis_sensitivity']['cases'][_case]['ws3_band']['ensemble']['genset_starts_max']:.0f}"
+        f" vs simulator band "
+        f"{SD['cases'][_case]['ensemble']['genset_starts_min']:.0f}"
+        f"-{SD['cases'][_case]['ensemble']['genset_starts_max']:.0f}")
 
 # --- R22d operational member, quantified on this run
 _c_sh = [SD["cases"][c]["ensemble"]["r22d_coast_spin_shaft_kWh_max"]
@@ -1384,6 +2029,15 @@ for c in KX_CASES:
            + e["r22d_coast_spin_bus_kWh_max"])
           / _pin_c["eta_gen"] * _pin_c["bsfc"])
     _c_pp[c] = 100.0 * _g / (e["fuel_kg_max"] * 1e3)
+def _R22D_GOV(key):
+    """R14 label for a max over the enumerated 3-case x 8-seed set."""
+    worst = max(KX_CASES,
+                key=lambda c: SD["cases"][c]["ensemble"][key + "_max"])
+    return (f"case {worst} of the enumerated ordered case set "
+            f"{{{', '.join(KX_CASES)}}}; within it, "
+            f"{SD['cases'][worst]['ensemble'][key + '_max_governing_case']}")
+
+
 SD["r22d_coast_spin_member"] = dict(
     ruling="R22d",
     ws2_point_drag_85kmh_W=dict(shaft=WS2X["spin"][
@@ -1392,8 +2046,15 @@ SD["r22d_coast_spin_member"] = dict(
     scaling="[WS4-DECLARED] linear in road speed from WS2's 85 km/h point",
     coast_no_regen_s_max=max(
         SD["cases"][c]["ensemble"]["coast_no_regen_s_max"] for c in KX_CASES),
+    # R14 (adjudication KX-m3): these three are maxima over the enumerated
+    # 3-case x 8-seed set and were exported unlabelled.
+    coast_no_regen_s_max_governing_case=_R22D_GOV("coast_no_regen_s"),
     coast_spin_shaft_kWh_max=max(_c_sh),
+    coast_spin_shaft_kWh_max_governing_case=_R22D_GOV(
+        "r22d_coast_spin_shaft_kWh"),
     coast_spin_bus_kWh_max=max(_c_bus),
+    coast_spin_bus_kWh_max_governing_case=_R22D_GOV(
+        "r22d_coast_spin_bus_kWh"),
     unbooked_pp_of_cycle_fuel=_c_pp,
     unbooked_pp_max=max(_c_pp.values()),
     unbooked_pp_max_governing_case=max(_c_pp, key=lambda c: _c_pp[c]),
@@ -1407,20 +2068,77 @@ SD["r22d_coast_spin_member"] = dict(
                         "choice."))
 
 # --- heat rows for the WS6 ledger, by component and case (program rule 7)
+#
+# KX r2 / adjudication KX-m6: each row is now the MAXIMUM OF THE PER-SEED
+# CYCLE AVERAGES (each seed's own energy over its own duration), not
+# max(energy) divided by the reference seed's duration - which understated
+# the true 8-seed maximum by 0.4-0.7%. Every component carries its OWN
+# governing seed, because different seeds maximise different components.
+# KX r2 / adjudication KX-m7: a cycle mean is not the case. Peak and
+# rolling 2-min / 10-min maxima are exported alongside, so a cooling owner
+# sizing against these rows sees the transients in the duty.
+RAD_PKG_FRAC = 0.48       # ws4_models.engine_energy_split: coolant+oil+CAC
 SD_HEAT = {}
 for _case in KX_CASES:
     _e = SD["cases"][_case]["ensemble"]
-    _h = SD["cases"][_case]["per_seed"]["23"]["duration_s"] / 3600.0
     SD_HEAT[f"series_duty_v2_{_case}_cycle_average"] = dict(
         case=f"R22a pure-series V2 at the delivered pack, {_case}, "
-             "VOLT-REG cycle average (8-seed max, reference-seed duration)",
-        engine_rejection_avg_kW=_e["engine_reject_kWh_max"] / _h,
-        generator_loss_avg_kW=_e["generator_loss_kWh_max"] / _h,
-        electric_chain_loss_avg_kW=_e["chain_loss_kWh_max"] / _h,
+             "VOLT-REG (8-seed max of the per-seed cycle averages; each "
+             "component labelled with its own governing seed)",
+        engine_rejection_avg_kW=_e["engine_reject_avg_kW_max"],
+        engine_rejection_avg_kW_governing_case=_e[
+            "engine_reject_avg_kW_max_governing_case"],
+        generator_loss_avg_kW=_e["generator_loss_avg_kW_max"],
+        generator_loss_avg_kW_governing_case=_e[
+            "generator_loss_avg_kW_max_governing_case"],
+        electric_chain_loss_avg_kW=_e["chain_loss_avg_kW_max"],
+        electric_chain_loss_avg_kW_governing_case=_e[
+            "chain_loss_avg_kW_max_governing_case"],
         friction_brake_kWh_per_cycle=_e["friction_brake_kWh_max"],
+        friction_brake_kWh_per_cycle_governing_case=_e[
+            "friction_brake_kWh_max_governing_case"],
         pm_coast_spin_shaft_kWh_per_cycle=_e["r22d_coast_spin_shaft_kWh_max"],
         pm_coast_spin_bus_kWh_per_cycle=_e["r22d_coast_spin_bus_kWh_max"],
-        governing_case=_e["engine_reject_kWh_max_governing_case"],
+        # --- KX-m7: the transient the cycle mean cannot show
+        engine_rejection_peak_kW=_e["engine_reject_peak_kW_max"],
+        engine_rejection_peak_kW_governing_case=_e[
+            "engine_reject_peak_kW_max_governing_case"],
+        engine_rejection_2min_max_kW=_e["engine_reject_2min_max_kW_max"],
+        engine_rejection_2min_max_kW_governing_case=_e[
+            "engine_reject_2min_max_kW_max_governing_case"],
+        engine_rejection_10min_max_kW=_e["engine_reject_10min_max_kW_max"],
+        engine_rejection_10min_max_kW_governing_case=_e[
+            "engine_reject_10min_max_kW_max_governing_case"],
+        # the same three rows through the declared 48% radiator-package
+        # share, i.e. the numbers the HT package actually sees
+        radiator_package_avg_kW=RAD_PKG_FRAC * _e["engine_reject_avg_kW_max"],
+        radiator_package_peak_kW=RAD_PKG_FRAC * _e[
+            "engine_reject_peak_kW_max"],
+        radiator_package_2min_max_kW=RAD_PKG_FRAC * _e[
+            "engine_reject_2min_max_kW_max"],
+        radiator_package_10min_max_kW=RAD_PKG_FRAC * _e[
+            "engine_reject_10min_max_kW_max"],
+        transient_note=("SIZE AGAINST THE WINDOWS, NOT THE MEAN. The "
+                        "cycle-average row above is a mean over a ~1.5 h "
+                        "VOLT-REG realisation; the same duty rejects the "
+                        "peak above for the emergency-band excursions "
+                        "measured in engine_over_continuous_rating_s. The "
+                        "2-min and 10-min rolling maxima are the rows a "
+                        "radiator/CAC package is sized against; R20's "
+                        "declared design point is 95.0 kW of HT-package "
+                        "duty in +45 C air (ESC-4)."),
+        governing_case=("PER COMPONENT - see the *_governing_case field "
+                        "beside each row. KX r1 carried a single "
+                        "governing_case (the engine-rejection seed) "
+                        "applied to generator, chain and friction figures "
+                        "that different seeds maximise (adjudication "
+                        "KX-m6); the field is retained as this pointer so "
+                        "nothing previously exported is dropped."),
+        _construction=("8-seed max over the enumerated ensemble of each "
+                       "seed's OWN cycle average (energy / that seed's "
+                       "duration). KX r1 divided the 8-seed max ENERGY by "
+                       "the reference seed's duration, which is not the "
+                       "maximum of the quantity - adjudication KX-m6."),
         sink=("engine rejection -> HT radiator package + exhaust "
               "(49/38/10/3 split, see _split_model); generator and "
               "rectifier -> LT loop; chain losses -> WS2's LT loop; "
@@ -1435,23 +2153,33 @@ _TRACE_COLS = [("t_s", "{:.4f}"), ("v_kmh", "{:.4f}"),
                ("P_batt_bus_kW", "{:.4f}"), ("SOC", "{:.6f}"),
                ("P_shaft_eng_kW", "{:.4f}"), ("fuel_g_per_s", "{:.5f}"),
                ("engine_on", "{:.0f}")]
-_trace_file = "data/trace_series_duty_v2_nominal_seed23_10Hz.csv"
-with open(_trace_file, "w") as f:
-    f.write("# Project Volt WS4 - R34 10 Hz trace, one per run.\n")
-    f.write("# series_duty_v2 / nominal / mode (b) pure series at the "
-            "pinned point / VOLT-REG seed 23 (reference)\n")
-    f.write(f"# delivered pack {USABLE_KX_KWH:.6f} kWh usable at the bus; "
-            f"R16 acceptance {_ACCEPT['nominal']:.3f} kW bus at "
-            f"{KX_CASES['nominal']['t_cell_C']:.1f} C cells; WS2 r4 662 V "
-            "map chain; all electrical quantities bus-side (R12)\n")
-    f.write("# SOC is fraction of USABLE bus energy, not of nameplate\n")
-    f.write(",".join(c for c, _ in _TRACE_COLS) + "\n")
-    _n = len(_SD_TRACE["t_s"])
-    _cols = [_SD_TRACE[c] for c, _ in _TRACE_COLS]
-    _fmts = [fm for _, fm in _TRACE_COLS]
-    for _i in range(_n):
-        f.write(",".join(fm.format(col[_i])
-                         for col, fm in zip(_cols, _fmts)) + "\n")
+# KX r2 / adjudication KX-m4: one full-rate trace per ORDERED CASE (see
+# R34_TRACE_ALL_ORDERED_RUNS above), each named by case and seed.
+_TRACE_FILES = {}
+for (_case, _sd), _tr in sorted(_SD_TRACES.items()):
+    _tf = f"data/trace_series_duty_v2_{_case}_seed{_sd}_10Hz.csv"
+    with open(_tf, "w") as f:
+        f.write("# Project Volt WS4 - R34 10 Hz trace. One file per ORDERED "
+                "CASE at the reference seed; see results_ws4.json -> "
+                "series_duty_v2 -> _trace_files -> r34_interpretation.\n")
+        f.write(f"# series_duty_v2 / {_case} / mode (b) pure series at the "
+                f"pinned point / VOLT-REG seed {_sd}\n")
+        f.write(f"# delivered pack {USABLE_KX_KWH:.6f} kWh usable at the bus; "
+                f"R16 acceptance {_ACCEPT[_case]:.3f} kW bus at "
+                f"{KX_CASES[_case]['t_cell_C']:.1f} C cells; WS2 r4 "
+                f"{WS2X['map_voltage_V']:.0f} V map chain; all electrical "
+                "quantities bus-side (R12)\n")
+        f.write("# SOC is fraction of USABLE bus energy, not of nameplate\n")
+        f.write(",".join(c for c, _ in _TRACE_COLS) + "\n")
+        _n = len(_tr["t_s"])
+        _cols = [_tr[c] for c, _ in _TRACE_COLS]
+        _fmts = [fm for _, fm in _TRACE_COLS]
+        for _i in range(_n):
+            f.write(",".join(fm.format(col[_i])
+                             for col, fm in zip(_cols, _fmts)) + "\n")
+    _TRACE_FILES[f"{_case}_seed{_sd}"] = dict(file=_tf, rows=_n)
+_trace_file = _TRACE_FILES["nominal_seed23"]["file"]
+_SD_TRACE = _SD_TRACES[("nominal", 23)]
 _soc_file = "data/series_duty_v2_soc_trajectories.csv"
 with open(_soc_file, "w") as f:
     f.write("# Project Volt WS4 - R22a SOC trajectories, mode (b) pure "
@@ -1470,9 +2198,39 @@ with open(_soc_file, "w") as f:
                     f"{_tr['engine_on'][_i]:.0f}\n")
 SD["_trace_files"] = dict(
     ruling="R34 (BASELINE_v5 program hygiene)",
+    # ------------------------------------------------------------------
+    # KX r2 / adjudication KX-m4: the interpretation, stated. The KX round
+    # asserted "one per run" (R34's own words, and the trace header's)
+    # while emitting one trace for 24 ordered mode-(b) runs, and never
+    # said which reading it meant.
+    # ------------------------------------------------------------------
+    r34_interpretation=(
+        "[WS4-DECLARED] R34 reads 'every pipeline exports a 10 Hz trace "
+        "file per run'. WS4 takes 'run' to mean a PIPELINE run, not each "
+        "simulated realisation: this pipeline executes 24 ordered mode-(b) "
+        "runs plus 24 companion (b') runs plus the brackets and "
+        "sensitivities (168 simulated runs in the KX section alone), and "
+        "emitting all of them at 10 Hz would be ~132 MB of committed "
+        "artefact for the ordered set alone. Under that reading one trace "
+        "would suffice; WS4 emits one per ORDERED CASE at the reference "
+        "seed instead, so R34's stated consumer (the WS10 exhibit / "
+        "simulator) has a full-rate witness of each ordered CASE, and the "
+        "5 s SOC trajectories cover all 24 ordered runs. If the lead rules "
+        "for the per-simulated-run reading, run_ws4.py's "
+        "R34_TRACE_ALL_ORDERED_RUNS constant emits all 24 with no other "
+        "change. Flagged to the lead in s12 as a clarification request, "
+        "not self-resolved."),
+    r34_all_ordered_runs_emitted=R34_TRACE_ALL_ORDERED_RUNS,
+    ordered_mode_b_runs=len(KX_CASES) * len(REG_SEEDS),
+    traces_emitted_n=len(_TRACE_FILES),
+    traces_by_case={k: v["file"] for k, v in sorted(_TRACE_FILES.items())},
+    trace_rows_by_case={k: v["rows"] for k, v in sorted(_TRACE_FILES.items())},
     trace_10Hz=_trace_file,
     trace_10Hz_rows=len(_SD_TRACE["t_s"]),
+    trace_10Hz_note=("the nominal reference-seed trace, retained under its "
+                     "KX name so consumers pinned to it do not break"),
     soc_trajectories=_soc_file,
+    soc_trajectories_covers_runs=len(_SD_SOC),
     soc_decimation_s=5.0)
 
 # ---------------------------------------------------------------------------
@@ -1637,6 +2395,86 @@ R["heat_ledger_ws6"] = dict(
     # the ones WS6 should size the Vehicle Zero V2 loops against.
     **SD_HEAT)
 
+# --- KX r2 / adjudication KX-m6: the SUPERSEDED r1 rows, carried as a
+# literal historical record so the changelog's before/after numbers are
+# rendered from JSON and pinned, not transcribed by hand.
+R["heat_ledger_ws6"]["series_duty_v2_cycle_average_kx_r1_superseded"] = dict(
+    _note=("KX round-1 values, SUPERSEDED by adjudication KX-m6. "
+           "Constructed as ensemble max ENERGY / the reference seed's "
+           "duration, which is not the maximum of the quantity. Retained "
+           "as a literal so the r2 changelog's before/after is a rendering "
+           "and not a transcription. NOT a live figure - consume the "
+           "series_duty_v2_*_cycle_average rows."),
+    construction="max(energy over 8 seeds) / per_seed['23'].duration_s",
+    engine_rejection_avg_kW=dict(nominal=72.55157571545092,
+                                 cda_5_4=86.29487052804603,
+                                 alt2000m_45C=59.738549020587584),
+    generator_loss_avg_kW=dict(nominal=2.4385599075764177,
+                               cda_5_4=2.839620718733693,
+                               alt2000m_45C=2.0059115626603305),
+    electric_chain_loss_avg_kW=dict(nominal=4.22398212399598,
+                                    cda_5_4=4.724173290158409,
+                                    alt2000m_45C=3.793377243714757),
+    understatement_pct=dict(
+        nominal=100.0 * (SD_HEAT["series_duty_v2_nominal_cycle_average"][
+            "engine_rejection_avg_kW"] - 72.55157571545092)
+        / 72.55157571545092,
+        cda_5_4=100.0 * (SD_HEAT["series_duty_v2_cda_5.4_cycle_average"][
+            "engine_rejection_avg_kW"] - 86.29487052804603)
+        / 86.29487052804603,
+        alt2000m_45C=100.0 * (SD_HEAT[
+            "series_duty_v2_alt2000m_45C_cycle_average"][
+                "engine_rejection_avg_kW"] - 59.738549020587584)
+        / 59.738549020587584))
+
+# --- KX r2 / adjudication KX-m7: the transient rows checked against R20's
+# declared radiator design point, explicitly, so a cooling owner reading a
+# cycle-mean row is not surprised by the duty's transients.
+_R20_DESIGN_KW = split_corner["radiator_package_kW"]
+_r20_rows = {
+    c: dict(
+        radiator_package_peak_kW=SD_HEAT[
+            f"series_duty_v2_{c}_cycle_average"]["radiator_package_peak_kW"],
+        radiator_package_2min_max_kW=SD_HEAT[
+            f"series_duty_v2_{c}_cycle_average"][
+                "radiator_package_2min_max_kW"],
+        radiator_package_10min_max_kW=SD_HEAT[
+            f"series_duty_v2_{c}_cycle_average"][
+                "radiator_package_10min_max_kW"],
+        exceeds_r20_design_point_on_peak=bool(
+            SD_HEAT[f"series_duty_v2_{c}_cycle_average"][
+                "radiator_package_peak_kW"] > _R20_DESIGN_KW),
+        exceeds_r20_design_point_on_2min=bool(
+            SD_HEAT[f"series_duty_v2_{c}_cycle_average"][
+                "radiator_package_2min_max_kW"] > _R20_DESIGN_KW))
+    for c in KX_CASES}
+R["heat_ledger_ws6"]["series_duty_v2_transient_vs_R20_design_point"] = dict(
+    ruling="R20 / ESC-4 (radiator design case = the R6 corner)",
+    r20_design_point_radiator_package_kW=_R20_DESIGN_KW,
+    r20_design_point_basis=("engine at 132 kW x derate continuous, 2,000 m "
+                            "/ +45 C, x the declared 48% radiator-package "
+                            "share - heat_ledger_ws6 -> "
+                            "V2_R6_corner_continuous"),
+    cases=_r20_rows,
+    worst_2min_kW=max(r["radiator_package_2min_max_kW"]
+                      for r in _r20_rows.values()),
+    worst_2min_governing_case=max(
+        _r20_rows, key=lambda c: _r20_rows[c]["radiator_package_2min_max_kW"]),
+    r20_survives_on_the_2min_window=bool(
+        max(_r20_rows[c]["radiator_package_2min_max_kW"]
+            for c in KX_CASES if c == "alt2000m_45C") <= _R20_DESIGN_KW),
+    reading=("the ordered duty's INSTANTANEOUS radiator-package peak "
+             "exceeds R20's design point at every case, and at the "
+             "alt2000m_45C corner - the only ordered case in R20's own "
+             "+45 C ambient - it does so by the peak row above. The 2-min "
+             "rolling average at that corner stays UNDER the design point, "
+             "so R20/ESC-4's 'radiator design case = the R6 corner' "
+             "SURVIVES on the window that matters thermally. The rows are "
+             "exported anyway: the KX round gave WS6 a 59.7 kW cycle mean "
+             "for a case carrying a >200 kW transient, and program rule 7 "
+             "asks for heat by component AND CASE, not by cycle mean "
+             "(adjudication KX-m7)."))
+
 # ---------------------------------------------------------------------------
 # 8. machine-readable interface block
 # ---------------------------------------------------------------------------
@@ -1701,9 +2539,47 @@ IFACE_ENV_KEYS = IFACE_SEED_KEYS + (
     "pack_chg_peak_kW", "pack_dis_over_r8_125kW_s",
     "pack_chg_over_r8_110kW_s", "regen_bus_peak_kW",
     "regen_shed_by_r16_kWh", "engine_reject_kWh")
+IFACE_ENV_KEYS = IFACE_ENV_KEYS + (
+    # KX r2 / adjudication KX-B1 + KX-M1 + KX-m7: the capability axes and
+    # transient-heat rows the live block must carry, not only the archived
+    # one. All R14-labelled by _env_subset.
+    "pack_chg_above_r16_accept_s", "pack_chg_above_r16_accept_kWh",
+    "pack_chg_above_r16_accept_longest_s",
+    "engine_over_continuous_rating_s", "engine_over_continuous_rating_kWh",
+    "engine_over_continuous_rating_longest_s", "engine_shaft_peak_kW",
+    "generator_over_continuous_input_s", "generator_shaft_input_peak_kW",
+    "engine_reject_peak_kW", "engine_reject_2min_max_kW",
+    "engine_reject_10min_max_kW", "engine_reject_avg_kW")
 IFACE_R8_KEYS = ("unserved_bus_kWh", "r8_envelope_dis_clip_s",
                  "r8_envelope_chg_shed_kWh", "fuel_kg",
                  "fuel_energy_kWh_per_km", "genset_starts")
+# KX r2 / adjudication KX-B2: the companion (b') exported only fuel,
+# starts and unserved - i.e. none of the three capability axes on which
+# R22b and ESC-9 are actually decided. It now carries the SAME capability
+# export set as the block of record.
+IFACE_BP_KEYS = IFACE_R8_KEYS + (
+    "pack_dis_peak_kW", "pack_chg_peak_kW", "pack_dis_over_r8_125kW_s",
+    "pack_chg_over_r8_110kW_s", "pack_chg_above_r16_accept_s",
+    "pack_chg_above_r16_accept_kWh", "engine_over_continuous_rating_s",
+    "engine_over_continuous_rating_kWh", "engine_shaft_peak_kW",
+    "generator_over_continuous_input_s", "emergency_band_s",
+    "genset_starts_per_h", "genset_on_frac", "soc_min", "soc_max",
+    "above_pin_engine_s", "motor_over_rating_s", "regen_bus_peak_kW",
+    "engine_reject_avg_kW", "engine_reject_peak_kW",
+    "engine_reject_2min_max_kW", "engine_reject_10min_max_kW")
+# KX r2 / adjudication KX-m8: the sensitivity's own axes, 8-seed.
+IFACE_HYST_KEYS = ("genset_starts", "genset_starts_per_h", "genset_on_frac",
+                   "fuel_energy_kWh_per_km", "fuel_kg", "unserved_bus_kWh",
+                   "soc_min", "soc_max", "emergency_band_s",
+                   "pack_dis_peak_kW", "pack_chg_peak_kW")
+IFACE_R16B_KEYS = ("unserved_bus_kWh", "r16_pack_cap_shed_kWh",
+                   "r16_pack_cap_clip_s", "fuel_kg",
+                   "fuel_energy_kWh_per_km", "genset_starts",
+                   "pack_chg_peak_kW")
+IFACE_M1B_KEYS = ("unserved_bus_kWh", "fuel_kg", "fuel_energy_kWh_per_km",
+                  "soc_min", "emergency_band_s", "genset_starts",
+                  "engine_over_continuous_rating_s", "engine_shaft_peak_kW",
+                  "pack_dis_peak_kW")
 
 
 def _env_subset(env, keys):
@@ -1799,6 +2675,9 @@ R["interface_ws4"] = {
                 g1n["margin_pct_min_governing_case"],
             "margin_pct_ensemble_median": g1n["margin_pct_median"],
             "margin_pct_ensemble_max": g1n["margin_pct_max"],
+            # R14 (adjudication KX-m3): the _max sibling was unlabelled
+            "margin_pct_ensemble_max_governing_case":
+                g1n["margin_pct_max_governing_case"],
             "kill_criterion_pct": 5.0,
             "passes": g1n["passes_kill_criterion"],
             "missed_by_pp": 5.0 - g1n["margin_pct_min"],
@@ -1879,6 +2758,10 @@ R["interface_ws4"] = {
             "nominal_one_sided_pp_max":
                 R["chain_boundary_exposure"]["cases"]["nominal"]["envelope"]
                  ["one_sided_pp_locked_linear_max"],
+            # R14 (adjudication KX-m3): label present on both siblings
+            "nominal_one_sided_pp_max_governing_case":
+                R["chain_boundary_exposure"]["cases"]["nominal"]["envelope"]
+                 ["one_sided_pp_locked_linear_max_governing_case"],
             "cda_5.4_one_sided_pp_max":
                 R["chain_boundary_exposure"]["cases"]["cda_5.4"]["envelope"]
                  ["one_sided_pp_locked_linear_max"],
@@ -1917,16 +2800,52 @@ R["interface_ws4"] = {
                     _c]["ensemble"], IFACE_R8_KEYS)
             for _c in R["series_duty_v2"]["r8_power_envelope_bracket"][
                 "cases"]},
-        "hysteresis_sensitivity_ref_seed": dict(
+        # KX r2 / adjudication KX-B1: the cost of the PACK reading of R16
+        "r16_pack_acceptance_bracket": {
+            k: v for k, v in
+            R["series_duty_v2"]["r16_pack_acceptance_bracket"].items()
+            if k != "cases"},
+        "r16_pack_acceptance_bracket_ensembles": {
+            _c: _env_subset(
+                R["series_duty_v2"]["r16_pack_acceptance_bracket"]["cases"][
+                    _c]["ensemble"], IFACE_R16B_KEYS)
+            for _c in R["series_duty_v2"]["r16_pack_acceptance_bracket"][
+                "cases"]},
+        # KX r2 / adjudication KX-M1: what the genset's own rating costs
+        "engine_continuous_rating_bracket": {
+            k: v for k, v in
+            R["series_duty_v2"]["engine_continuous_rating_bracket"].items()
+            if k != "cases"},
+        "engine_continuous_rating_bracket_ensembles": {
+            _c: _env_subset(
+                R["series_duty_v2"]["engine_continuous_rating_bracket"][
+                    "cases"][_c]["ensemble"], IFACE_M1B_KEYS)
+            for _c in R["series_duty_v2"][
+                "engine_continuous_rating_bracket"]["cases"]},
+        # KX r2 / adjudication KX-m8: 8-seed, not one draw. Renamed from
+        # `hysteresis_sensitivity_ref_seed` because it is no longer a
+        # reference-seed quantity; the reference-seed rows are retained
+        # inside each case under `ref_seed` so nothing is dropped.
+        "hysteresis_sensitivity": dict(
             {k: v for k, v in
-             R["series_duty_v2"]["hysteresis_sensitivity_ref_seed"].items()
+             R["series_duty_v2"]["hysteresis_sensitivity"].items()
              if k != "cases"},
+            _renamed_from=("series_duty_v2 -> hysteresis_sensitivity_ref_"
+                           "seed (KX r1). Same sensitivity, now over the "
+                           "enumerated 8-seed ensemble per R9; the r1 "
+                           "reference-seed rows are under cases -> <case> "
+                           "-> ref_seed."),
             cases={
-                _c: {_b: {_k: _v for _k, _v in _row.items()
-                          if _k in IFACE_SEED_KEYS}
-                     for _b, _row in _bands.items()}
-                for _c, _bands in R["series_duty_v2"][
-                    "hysteresis_sensitivity_ref_seed"]["cases"].items()}),
+                _c: dict(
+                    ws3_band_ensemble=_env_subset(
+                        _cb["ws3_band"]["ensemble"], IFACE_HYST_KEYS),
+                    simulator_band_ensemble=_env_subset(
+                        _cb["simulator_band"]["ensemble"], IFACE_HYST_KEYS),
+                    ref_seed={_b: {_k: _v for _k, _v in _row.items()
+                                   if _k in IFACE_SEED_KEYS}
+                              for _b, _row in _cb["ref_seed"].items()})
+                for _c, _cb in R["series_duty_v2"][
+                    "hysteresis_sensitivity"]["cases"].items()}),
         "r22d_coast_spin_member":
             R["series_duty_v2"]["r22d_coast_spin_member"],
         "cases": {
@@ -1950,10 +2869,21 @@ R["interface_ws4"] = {
                 "per_seed_full": ("results_ws4.json -> series_duty_v2 -> "
                                   f"cases -> {_c} -> per_seed (all 37 "
                                   "fields, same run)"),
+                # KX r2 / adjudication KX-B2: the companion now carries the
+                # capability axes R22b/ESC-9 turn on, not only fuel and
+                # starts. WS4 still does not choose the dispatch.
                 "companion_bp_ensemble": _env_subset(
                     R["series_duty_v2"]["cases"][_c]["companion_bp"][
-                        "ensemble"], IFACE_R8_KEYS)}
-            for _c in R["series_duty_v2"]["cases"]}},
+                        "ensemble"], IFACE_BP_KEYS),
+                "companion_bp_note": R["series_duty_v2"]["cases"][_c][
+                    "companion_bp"]["_note"]}
+            for _c in R["series_duty_v2"]["cases"]},
+        # KX r2 / adjudication KX-B2: the (b) vs (b') comparison on the
+        # three capability axes, as an explicit machine-readable verdict
+        # per axis. R14: each row is a max over the enumerated 3-case x
+        # 8-seed set with its governing case labelled.
+        "companion_bp_capability_comparison":
+            R["series_duty_v2"]["companion_bp_capability_comparison"]},
     # R22d operational note, as a named member for WS5 (KX item 3)
     "spin_drag_operational_note_r22d": {
         "ruling": "R22d (BASELINE_v3)",
@@ -2209,15 +3139,50 @@ for _c in R["series_duty_v2"]["cases"]:
         f"{_e['soc_min_min']:.3f}-{_e['soc_max_max']:.3f}; pack peak "
         f"{_e['pack_dis_peak_kW_max']:.1f} kW dis / "
         f"{_e['pack_chg_peak_kW_max']:.1f} kW chg")
-log(f"R16 curve binding in this run: "
-    f"{R['series_duty_v2']['r16_binding_analysis']['bound_any_sample']} "
-    f"(peak regen-to-pack "
-    f"{R['series_duty_v2']['r16_binding_analysis']['peak_regen_to_pack_kW_bus']:.1f}"
-    f" kW bus; binds below "
-    f"{R['series_duty_v2']['r16_binding_analysis']['cold_side_binding_cell_C']:.1f}"
-    f" C and above "
-    f"{R['series_duty_v2']['r16_binding_analysis']['hot_side_binding_cell_C']:.1f}"
-    " C cells)")
+_r16a = R["series_duty_v2"]["r16_binding_analysis"]
+log(f"R16 curve, REGEN LEG (enforced): binding "
+    f"{_r16a['regen_leg_bound_any_sample']} (peak regen-to-pack "
+    f"{_r16a['peak_regen_to_pack_kW_bus']:.1f} kW bus; binds below "
+    f"{_r16a['cold_side_binding_cell_C']:.1f} C and above "
+    f"{_r16a['hot_side_binding_cell_C']:.1f} C cells)")
+log(f"R16 curve, PACK charge (measured, NOT enforced): binding "
+    f"{_r16a['pack_charge_bound_by_r16_any_sample']} - pack charge peaks at "
+    f"{_r16a['peak_pack_charge_kW_bus']:.1f} kW bus vs "
+    f"{min(_ACCEPT.values()):.1f}-{max(_ACCEPT.values()):.1f} kW accepted; "
+    "above acceptance for " + ", ".join(
+        f"{_c} {_r16a['pack_charge_above_r16_accept_s']['per_case_min'][_c]:.1f}-"
+        f"{_r16a['pack_charge_above_r16_accept_s']['per_case_max'][_c]:.1f} s"
+        for _c in KX_CASES)
+    + f"; longest single excursion "
+    f"{_r16a['pack_charge_above_r16_accept_longest_s']['worst_case_max']:.1f} s "
+    f"(10-s pulse column covers them: "
+    f"{_r16a['pulse10s_covers_the_excursions']}) [KX-B1]")
+_r16b = R["series_duty_v2"]["r16_pack_acceptance_bracket"]
+log(f"R16 PACK-acceptance bracket (enforced): worst shed "
+    f"{_r16b['worst_shed_kWh']:.3f} kWh [{_r16b['worst_shed_governing_case']}], "
+    f"worst clip {_r16b['worst_clip_s']:.1f} s, worst unserved "
+    f"{_r16b['worst_unserved_kWh']:.4f} kWh, fuel penalty up to "
+    f"{_r16b['fuel_penalty_pct_max']:+.2f}%")
+_m1 = R["series_duty_v2"]["companion_bp_capability_comparison"]["axes"][
+    "engine_over_continuous_rating_s"]
+log("Genset above its OWN 132 kW continuous flat-rating x derate: "
+    + ", ".join(
+        f"{_c} {R['series_duty_v2']['cases'][_c]['ensemble']['engine_over_continuous_rating_s_min']:.1f}-"
+        f"{R['series_duty_v2']['cases'][_c]['ensemble']['engine_over_continuous_rating_s_max']:.1f} s"
+        for _c in KX_CASES)
+    + f"; worst {_m1['mode_b_block_of_record']['worst_case_max']:.1f} s at "
+    f"{_m1['mode_b_block_of_record']['worst_case_max_governing_case'].split(';')[0]}"
+    f"; engine shaft peak "
+    f"{max(R['series_duty_v2']['cases'][_c]['ensemble']['engine_shaft_peak_kW_max'] for _c in KX_CASES):.1f} kW "
+    f"vs automotive peak {ENG_V2.peak_power_kw():.1f} kW [KX-M1]")
+_cmp = R["series_duty_v2"]["companion_bp_capability_comparison"]["axes"]
+log("Companion (b') on the capability axes (KX-B2): "
+    + ", ".join(
+        f"{_k}: b={'in' if _v['mode_b_block_of_record']['within_limit_on_every_ordered_seed'] else 'OUT'}"
+        f"/bp={'in' if _v['mode_bp_companion']['within_limit_on_every_ordered_seed'] else 'OUT'}"
+        for _k, _v in _cmp.items()
+        if _v["mode_b_block_of_record"]["within_limit_on_every_ordered_seed"]
+        is not None))
 _r8b = R["series_duty_v2"]["r8_power_envelope_bracket"]
 log(f"R8 power-envelope bracket (125/110 kW bus enforced): worst unserved "
     f"{_r8b['worst_unserved_kWh']:.3f} kWh "
@@ -2228,8 +3193,13 @@ log(f"R8 power-envelope bracket (125/110 kW bus enforced): worst unserved "
 log(f"R22d true-coast spin member (reported, not charged): up to "
     f"{R['series_duty_v2']['r22d_coast_spin_member']['unbooked_pp_max']:.3f}"
     " pp of cycle fuel")
-log(f"R34 10 Hz trace: {R['series_duty_v2']['_trace_files']['trace_10Hz']} "
-    f"({R['series_duty_v2']['_trace_files']['trace_10Hz_rows']:,} rows)")
+_tf = R["series_duty_v2"]["_trace_files"]
+log(f"R34 10 Hz traces ({_tf['traces_emitted_n']}, one per ordered case at "
+    f"the reference seed; all {_tf['ordered_mode_b_runs']} ordered runs at "
+    f"5 s in {_tf['soc_trajectories']}): "
+    + ", ".join(f"{k} ({v:,} rows)"
+                for k, v in zip(_tf["traces_by_case"].values(),
+                                _tf["trace_rows_by_case"].values())))
 
 with open("run_output.txt", "w") as f:
     f.write("\n".join(_LOG) + "\n")

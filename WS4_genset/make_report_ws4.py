@@ -282,7 +282,8 @@ T.update({
                "{:.4f}"),
         _sdrow("Motor over-rating exposure [s]", "motor_over_rating_s",
                "{:.1f}"),
-        _sdrow("Fuel energy per payload t·km (R32 flag)",
+        _sdrow("Fuel energy per payload t·km \u2014 **companion, not the "
+               "R32 metric** (§4-KX.1, ESC-7)",
                "fuel_energy_kWh_per_payload_tonne_km", "{:.4f}"),
     ]),
     "SDBPTABLE": "\n".join([
@@ -308,7 +309,8 @@ T.update({
         f"{g('series_duty_v2/r16_binding_analysis/hot_side_binding_cell_C'):.1f}",
     "R1655":
         f"{g('series_duty_v2/r16_binding_analysis/accept_at_ws3_loop_ceiling_55C_kW'):.1f}",
-    "R16BOUND": f"{g('series_duty_v2/r16_binding_analysis/bound_any_sample')}",
+    "R16BOUND":
+        f"{g('series_duty_v2/r16_binding_analysis/regen_leg_bound_any_sample')}",
     # R8 power-envelope bracket
     "R8WORST":
         f"{g('series_duty_v2/r8_power_envelope_bracket/worst_unserved_kWh'):.3f}",
@@ -343,23 +345,23 @@ T.update({
     "R22DW": f"{g('interface_ws4/spin_drag_operational_note_r22d/ws2_point_drag_85kmh_W_shaft'):,.0f}",
     "R22DWB": f"{g('interface_ws4/spin_drag_operational_note_r22d/ws2_point_draw_85kmh_W_bus'):.0f}",
     # hysteresis sensitivity
-    "HYSTWS3": f"{g('series_duty_v2/hysteresis_sensitivity_ref_seed/ws3_allocated_genset_hysteresis_kWh'):.1f}",
-    "HYSTSIM": f"{g('series_duty_v2/hysteresis_sensitivity_ref_seed/simulator_band_kWh'):.2f}",
+    "HYSTWS3": f"{g('series_duty_v2/hysteresis_sensitivity/ws3_allocated_genset_hysteresis_kWh'):.1f}",
+    "HYSTSIM": f"{g('series_duty_v2/hysteresis_sensitivity/simulator_band_kWh'):.2f}",
     "HYSTTABLE": "\n".join([
         "| Reference seed 23 | " + " | ".join(SDLBL[c] for c in SDORD)
         + " |",
         "|---|---|---|---|",
         "| Genset starts — simulator band | " + " | ".join(
-            f"{g(f'series_duty_v2/hysteresis_sensitivity_ref_seed/cases/{c}/simulator_band/genset_starts'):.0f}"
+            f"{g(f'series_duty_v2/hysteresis_sensitivity/cases/{c}/ref_seed/simulator_band/genset_starts'):.0f}"
             for c in SDORD) + " |",
         "| Genset starts — WS3 allocated band | " + " | ".join(
-            f"{g(f'series_duty_v2/hysteresis_sensitivity_ref_seed/cases/{c}/ws3_band/genset_starts'):.0f}"
+            f"{g(f'series_duty_v2/hysteresis_sensitivity/cases/{c}/ref_seed/ws3_band/genset_starts'):.0f}"
             for c in SDORD) + " |",
         "| kWh/km — simulator band | " + " | ".join(
-            f"{g(f'series_duty_v2/hysteresis_sensitivity_ref_seed/cases/{c}/simulator_band/fuel_energy_kWh_per_km'):.3f}"
+            f"{g(f'series_duty_v2/hysteresis_sensitivity/cases/{c}/ref_seed/simulator_band/fuel_energy_kWh_per_km'):.3f}"
             for c in SDORD) + " |",
         "| kWh/km — WS3 allocated band | " + " | ".join(
-            f"{g(f'series_duty_v2/hysteresis_sensitivity_ref_seed/cases/{c}/ws3_band/fuel_energy_kWh_per_km'):.3f}"
+            f"{g(f'series_duty_v2/hysteresis_sensitivity/cases/{c}/ref_seed/ws3_band/fuel_energy_kWh_per_km'):.3f}"
             for c in SDORD) + " |",
     ]),
     # heat rows for WS6
@@ -423,6 +425,370 @@ T.update({
     "GATESTATUS": g("interface_ws4/gate_g1/status"),
 })
 
+# ---------------------------------------------------------------------------
+# KX r2 tokens (rework against FINDINGS_KX_r1.md). Every one of these is a
+# rendering of results_ws4.json; verify_ws4.py pins them.
+# ---------------------------------------------------------------------------
+R16A = R["series_duty_v2"]["r16_binding_analysis"]
+R16B = R["series_duty_v2"]["r16_pack_acceptance_bracket"]
+BPC = R["series_duty_v2"]["companion_bp_capability_comparison"]
+D5R = R["chain_boundary_exposure"]["d5_reconciliation"]
+HYS = R["series_duty_v2"]["hysteresis_sensitivity"]
+TR20 = R["heat_ledger_ws6"]["series_duty_v2_transient_vs_R20_design_point"]
+TRF = R["series_duty_v2"]["_trace_files"]
+
+
+def _r16rng(block, c, fmt="{:.1f}"):
+    return (fmt.format(R16A[block]["per_case_min"][c]) + "\u2013"
+            + fmt.format(R16A[block]["per_case_max"][c]))
+
+
+def _bprow(label, key, fmt, blk="companion_bp"):
+    cells = " | ".join(
+        _rng(SDC[c][blk]["ensemble"] if blk == "companion_bp"
+             else SDC[c]["ensemble"], key, fmt) for c in SDORD)
+    return f"| {label} | {cells} |"
+
+
+T.update({
+    # --- KX-B1: the two readings of R16
+    "R16LEGBOUND": f"{R16A['regen_leg_bound_any_sample']}",
+    "R16PACKBOUND": f"{R16A['pack_charge_bound_by_r16_any_sample']}",
+    "R16PACKPK": f"{R16A['peak_pack_charge_kW_bus']:.1f}",
+    "R16PACKPKA": f"{SDC['alt2000m_45C']['ensemble']['pack_chg_peak_kW_max']:.1f}",
+    "R16PACKPKGOV": R16A["peak_pack_charge_governing_case"],
+    "R16ABOVEN": _r16rng("pack_charge_above_r16_accept_s", "nominal"),
+    "R16ABOVEC": _r16rng("pack_charge_above_r16_accept_s", "cda_5.4"),
+    "R16ABOVEA": _r16rng("pack_charge_above_r16_accept_s", "alt2000m_45C"),
+    "R16LONGEST":
+        f"{R16A['pack_charge_above_r16_accept_longest_s']['worst_case_max']:.1f}",
+    "R16LONGESTGOV":
+        R16A["pack_charge_above_r16_accept_longest_s"][
+            "worst_case_max_governing_case"],
+    "R16EXCESSKWH":
+        f"{R16A['pack_charge_above_r16_accept_kWh']['worst_case_max']:.3f}",
+    "R16EXCESSGOV":
+        R16A["pack_charge_above_r16_accept_kWh"][
+            "worst_case_max_governing_case"],
+    "R16PULSE25": f"{R16A['pulse10s_kW_bus_at_declared_cells']['nominal']:.1f}",
+    "R16PULSE45":
+        f"{R16A['pulse10s_kW_bus_at_declared_cells']['alt2000m_45C']:.1f}",
+    "R16PULSECOVERS": f"{R16A['pulse10s_covers_the_excursions']}",
+    "R1650": f"{R16A['accept_at_50C_kW']:.1f}",
+    "R16PULSE55": f"{R16A['pulse10s_at_ws3_loop_ceiling_55C_kW']:.1f}",
+    "R16TABLE": "\n".join([
+        "| R16 read as a PACK charge limit (measured, NOT enforced) | "
+        + " | ".join(SDLBL[c] for c in SDORD) + " |",
+        "|---|---|---|---|",
+        "| R16 continuous acceptance at declared cells [kW bus] | "
+        + " | ".join(f"{R16A['accept_kW_bus_at_declared_cells'][c]:.3f}"
+                     for c in SDORD) + " |",
+        "| **Pack charge above acceptance [s/cycle]** | "
+        + " | ".join(_r16rng("pack_charge_above_r16_accept_s", c)
+                     for c in SDORD) + " |",
+        "| Longest single excursion [s] | "
+        + " | ".join(
+            f"{R16A['pack_charge_above_r16_accept_longest_s']['per_case_max'][c]:.1f}"
+            for c in SDORD) + " |",
+        "| Excess energy, worst seed [kWh] | "
+        + " | ".join(
+            f"{R16A['pack_charge_above_r16_accept_kWh']['per_case_max'][c]:.3f}"
+            for c in SDORD) + " |",
+        "| Pack charge peak [kW bus] | "
+        + " | ".join(f"{SDC[c]['ensemble']['pack_chg_peak_kW_max']:.1f}"
+                     for c in SDORD) + " |",
+        "| WS3 10-s **pulse** rating at declared cells [kW bus] | "
+        + " | ".join(f"{R16A['pulse10s_kW_bus_at_declared_cells'][c]:.3f}"
+                     for c in SDORD) + " |",
+    ]),
+    "R16BTABLE": "\n".join([
+        "| R16 acceptance ENFORCED on the pack | "
+        + " | ".join(SDLBL[c] for c in SDORD) + " |",
+        "|---|---|---|---|",
+        "| Charge shed [kWh/cycle] | " + " | ".join(
+            _rng(g(f"series_duty_v2/r16_pack_acceptance_bracket/cases/{c}/"
+                   "ensemble"), "r16_pack_cap_shed_kWh", "{:.3f}")
+            for c in SDORD) + " |",
+        "| Charge clipped [s/cycle] | " + " | ".join(
+            _rng(g(f"series_duty_v2/r16_pack_acceptance_bracket/cases/{c}/"
+                   "ensemble"), "r16_pack_cap_clip_s", "{:.1f}")
+            for c in SDORD) + " |",
+        "| **Unserved bus energy [kWh]** | " + " | ".join(
+            _rng(g(f"series_duty_v2/r16_pack_acceptance_bracket/cases/{c}/"
+                   "ensemble"), "unserved_bus_kWh", "{:.4f}")
+            for c in SDORD) + " |",
+        "| Fuel per cycle [kg] | " + " | ".join(
+            _rng(g(f"series_duty_v2/r16_pack_acceptance_bracket/cases/{c}/"
+                   "ensemble"), "fuel_kg", "{:.2f}")
+            for c in SDORD) + " |",
+    ]),
+    "R16BSHED": f"{R16B['worst_shed_kWh']:.3f}",
+    "R16BSHEDGOV": R16B["worst_shed_governing_case"],
+    "R16BCLIP": f"{R16B['worst_clip_s']:.1f}",
+    "R16BUNS": f"{R16B['worst_unserved_kWh']:.4f}",
+    "R16BFUEL": f"{R16B['fuel_penalty_pct_max']:+.2f}",
+    "R16BFUELGOV": R16B["fuel_penalty_pct_max_governing_case"],
+    # --- KX-M1: the genset above its own continuous rating
+    "M1CONTN":
+        f"{BPC['engine_continuous_rating_kW_by_case']['nominal']:.1f}",
+    "M1CONTA":
+        f"{BPC['engine_continuous_rating_kW_by_case']['alt2000m_45C']:.1f}",
+    "M1AUTO": f"{BPC['engine_automotive_peak_kW']:.1f}",
+    "M1GENCONT": f"{BPC['generator_continuous_shaft_input_kW']:.1f}",
+    "M1SN": _rng(SDC["nominal"]["ensemble"],
+                 "engine_over_continuous_rating_s", "{:.1f}"),
+    "M1SC": _rng(SDC["cda_5.4"]["ensemble"],
+                 "engine_over_continuous_rating_s", "{:.1f}"),
+    "M1SA": _rng(SDC["alt2000m_45C"]["ensemble"],
+                 "engine_over_continuous_rating_s", "{:.1f}"),
+    "M1WORSTS":
+        f"{BPC['axes']['engine_over_continuous_rating_s']['mode_b_block_of_record']['worst_case_max']:.1f}",
+    "M1WORSTGOV":
+        BPC["axes"]["engine_over_continuous_rating_s"][
+            "mode_b_block_of_record"]["worst_case_max_governing_case"],
+    "M1PEAK":
+        f"{BPC['axes']['engine_shaft_peak_kW']['mode_b_block_of_record']['worst_case_max']:.1f}",
+    "M1PEAKPCT": "{:.0f}".format(
+        100.0 * BPC["axes"]["engine_shaft_peak_kW"][
+            "mode_b_block_of_record"]["worst_case_max"]
+        / BPC["engine_continuous_rating_kW_by_case"]["nominal"]),
+    "M1TABLE": "\n".join([
+        "| Genset vs its own rating (mode (b), 8-seed) | "
+        + " | ".join(SDLBL[c] for c in SDORD) + " |",
+        "|---|---|---|---|",
+        "| Continuous flat-rating x case derate [kW shaft] | "
+        + " | ".join(f"{BPC['engine_continuous_rating_kW_by_case'][c]:.1f}"
+                     for c in SDORD) + " |",
+        "| **Seconds above it [s/cycle]** | "
+        + " | ".join(_rng(SDC[c]["ensemble"],
+                          "engine_over_continuous_rating_s", "{:.1f}")
+                     for c in SDORD) + " |",
+        "| Longest continuous excursion [s] | "
+        + " | ".join(
+            f"{SDC[c]['ensemble']['engine_over_continuous_rating_longest_s_max']:.1f}"
+            for c in SDORD) + " |",
+        "| Energy delivered above the rating [kWh] | "
+        + " | ".join(
+            f"{SDC[c]['ensemble']['engine_over_continuous_rating_kWh_max']:.2f}"
+            for c in SDORD) + " |",
+        "| Peak engine shaft [kW] | "
+        + " | ".join(f"{SDC[c]['ensemble']['engine_shaft_peak_kW_max']:.1f}"
+                     for c in SDORD) + " |",
+        "| Generator above its "
+        + f"{BPC['generator_continuous_shaft_input_kW']:.0f}"
+        + " kW continuous shaft input [s] | "
+        + " | ".join(
+            f"{SDC[c]['ensemble']['generator_over_continuous_input_s_max']:.1f}"
+            for c in SDORD) + " |",
+    ]),
+    # --- KX-B2: the companion on the capability axes
+    "SDBPTABLE2": "\n".join([
+        "| Companion (b\u2032) load-following, 8-seed | "
+        + " | ".join(SDLBL[c] for c in SDORD) + " |",
+        "|---|---|---|---|",
+        _bprow("Fuel energy kWh/km", "fuel_energy_kWh_per_km", "{:.3f}"),
+        _bprow("Genset starts per cycle", "genset_starts", "{:.0f}"),
+        _bprow("Unserved bus energy [kWh]", "unserved_bus_kWh", "{:.4f}"),
+        _bprow("**Pack discharge peak [kW bus]** (R8 125)",
+               "pack_dis_peak_kW", "{:.1f}"),
+        _bprow("**Pack charge peak [kW bus]** (R8 110)",
+               "pack_chg_peak_kW", "{:.1f}"),
+        _bprow("**Pack charge above R16 acceptance [s]**",
+               "pack_chg_above_r16_accept_s", "{:.1f}"),
+        _bprow("**Engine above its continuous rating [s]**",
+               "engine_over_continuous_rating_s", "{:.1f}"),
+        _bprow("Peak engine shaft [kW]", "engine_shaft_peak_kW", "{:.1f}"),
+        _bprow("Emergency-band time [s/cycle]", "emergency_band_s", "{:.1f}"),
+    ]),
+    "BPPENN": "{:+.2f}".format(
+        BPC["fuel_kWh_per_km_by_case"]["nominal"]["bp_penalty_pct_on_median"]),
+    "BPPENC": "{:+.2f}".format(
+        BPC["fuel_kWh_per_km_by_case"]["cda_5.4"]["bp_penalty_pct_on_median"]),
+    "BPPENA": "{:+.2f}".format(
+        BPC["fuel_kWh_per_km_by_case"]["alt2000m_45C"][
+            "bp_penalty_pct_on_median"]),
+    "BPDISPK": "{:.1f}".format(
+        BPC["axes"]["pack_discharge_peak_kW_bus"]["mode_bp_companion"][
+            "worst_case_max"]),
+    "BPCHGPK": "{:.1f}".format(
+        BPC["axes"]["pack_charge_peak_kW_bus"]["mode_bp_companion"][
+            "worst_case_max"]),
+    "BPENGPK": "{:.1f}".format(
+        BPC["axes"]["engine_shaft_peak_kW"]["mode_bp_companion"][
+            "worst_case_max"]),
+    "BPINR8DIS": "{}".format(
+        BPC["axes"]["pack_discharge_peak_kW_bus"]["mode_bp_companion"][
+            "within_limit_on_every_ordered_seed"]),
+    "BPINR8CHG": "{}".format(
+        BPC["axes"]["pack_charge_peak_kW_bus"]["mode_bp_companion"][
+            "within_limit_on_every_ordered_seed"]),
+    "BPINR16": "{}".format(
+        BPC["axes"]["pack_charge_above_r16_accept_s"]["mode_bp_companion"][
+            "within_limit_on_every_ordered_seed"]),
+    "BPINENG": "{}".format(
+        BPC["axes"]["engine_over_continuous_rating_s"]["mode_bp_companion"][
+            "within_limit_on_every_ordered_seed"]),
+    # --- KX-M3: the payload denominator
+    "PAYT": f"{g('series_duty_v2/_inputs/payload_metric_basis/payload_basis_t'):.1f}",
+    "PAYKG": f"{g('series_duty_v2/_inputs/payload_metric_basis/payload_basis_kg'):,.0f}",
+    # --- KX-M2: the live block's own chain of record
+    "COR_MAP": g("series_duty_v2/_inputs/chain_of_record/map_file"),
+    "COR_V": f"{g('series_duty_v2/_inputs/chain_of_record/map_voltage_V'):.0f}",
+    "COR_RED": f"{g('series_duty_v2/_inputs/chain_of_record/reduction_flat'):.2f}",
+    "COR_RND": f"{g('series_duty_v2/_inputs/chain_of_record/ws2_rework_round'):.0f}",
+    "COR_TPPN": "{:.4f}".format(
+        g("series_duty_v2/_inputs/boundary_convention_exposure/cases/"
+          "nominal/total_pp_linear_max")),
+    "COR_TPPC": "{:.4f}".format(
+        g("series_duty_v2/_inputs/boundary_convention_exposure/cases/"
+          "cda_5.4/total_pp_linear_max")),
+    "COR_TPPA": "{:.4f}".format(
+        g("series_duty_v2/_inputs/boundary_convention_exposure/cases/"
+          "alt2000m_45C/total_pp_linear_max")),
+    # --- KX-m2: D5 closed
+    "D5LINN": "{:.1f}\u2013{:.1f}".format(
+        *D5R["counts_s_per_cycle"]["nominal"][
+            "strict_linear_envelope_r3_adjudicator_criterion"]),
+    "D5LINC": "{:.1f}\u2013{:.1f}".format(
+        *D5R["counts_s_per_cycle"]["cda_5.4"][
+            "strict_linear_envelope_r3_adjudicator_criterion"]),
+    "D5NODEGN": "{:.1f}\u2013{:.1f}".format(
+        *D5R["counts_s_per_cycle"]["nominal"]["strict_nearest_column_excl_rpm0"]),
+    "D5NODEGC": "{:.1f}\u2013{:.1f}".format(
+        *D5R["counts_s_per_cycle"]["cda_5.4"]["strict_nearest_column_excl_rpm0"]),
+    "D5ONRPM0N": "{:.1f}\u2013{:.1f}".format(
+        *D5R["counts_s_per_cycle"]["nominal"]["attributable_to_rpm0_column"]),
+    "D5RPM0COLS": ", ".join(f"{v:.0f}" for v in D5R["degenerate_rpm_columns"]),
+    "D5VCEIL": f"{D5R['degenerate_column_speed_ceiling_kmh']:.2f}",
+    "D5TABLE": "\n".join([
+        "| Boundary-exposure criterion (motoring, s/cycle, 8-seed) | "
+        "Nominal | CdA 5.4 |",
+        "|---|---|---|",
+        *[f"| {lbl} | "
+          + " | ".join("{:.1f}\u2013{:.1f}".format(
+              *D5R["counts_s_per_cycle"][c][key]) for c in ("nominal",
+                                                            "cda_5.4"))
+          + " |"
+          for lbl, key in (
+              ("Stencil criterion (WS4 headline)",
+               "stencil_criterion_ws4_headline"),
+              ("Strict, nearest rpm column (WS4 r1)",
+               "strict_nearest_column"),
+              ("**Strict, linear envelope (r3 adjudicator)**",
+               "strict_linear_envelope_r3_adjudicator_criterion"),
+              ("Strict, nearest column excl. the rpm = 0 column",
+               "strict_nearest_column_excl_rpm0"),
+              ("\u2003of which: attributable to the rpm = 0 column",
+               "attributable_to_rpm0_column"))]]),
+    # --- KX-m7: transient heat
+    "HEATTRTABLE": "\n".join([
+        "| Engine rejection, mode (b), 8-seed max [kW] | "
+        + " | ".join(SDLBL[c] for c in SDORD) + " |",
+        "|---|---|---|---|",
+        "| Cycle average | " + " | ".join(
+            f"{g(f'heat_ledger_ws6/series_duty_v2_{c}_cycle_average/engine_rejection_avg_kW'):.1f}"
+            for c in SDORD) + " |",
+        "| 10-min rolling maximum | " + " | ".join(
+            f"{g(f'heat_ledger_ws6/series_duty_v2_{c}_cycle_average/engine_rejection_10min_max_kW'):.1f}"
+            for c in SDORD) + " |",
+        "| 2-min rolling maximum | " + " | ".join(
+            f"{g(f'heat_ledger_ws6/series_duty_v2_{c}_cycle_average/engine_rejection_2min_max_kW'):.1f}"
+            for c in SDORD) + " |",
+        "| **Peak (0.1 s)** | " + " | ".join(
+            f"{g(f'heat_ledger_ws6/series_duty_v2_{c}_cycle_average/engine_rejection_peak_kW'):.1f}"
+            for c in SDORD) + " |",
+        "| Implied radiator package, 2-min max [kW] | " + " | ".join(
+            f"{g(f'heat_ledger_ws6/series_duty_v2_{c}_cycle_average/radiator_package_2min_max_kW'):.1f}"
+            for c in SDORD) + " |",
+        "| Implied radiator package, peak [kW] | " + " | ".join(
+            f"{g(f'heat_ledger_ws6/series_duty_v2_{c}_cycle_average/radiator_package_peak_kW'):.1f}"
+            for c in SDORD) + " |",
+    ]),
+    "R20DESIGN": f"{TR20['r20_design_point_radiator_package_kW']:.1f}",
+    "R20ALT2MIN":
+        f"{TR20['cases']['alt2000m_45C']['radiator_package_2min_max_kW']:.1f}",
+    "R20ALTPEAK":
+        f"{TR20['cases']['alt2000m_45C']['radiator_package_peak_kW']:.1f}",
+    "R20SURVIVES": f"{TR20['r20_survives_on_the_2min_window']}",
+    # --- KX-m8: 8-seed hysteresis
+    "HYSTTABLE8": "\n".join([
+        "| 8-seed envelope | " + " | ".join(SDLBL[c] for c in SDORD) + " |",
+        "|---|---|---|---|",
+        "| Genset starts \u2014 simulator band | " + " | ".join(
+            _rng(HYS["cases"][c]["simulator_band"]["ensemble"],
+                 "genset_starts", "{:.0f}") for c in SDORD) + " |",
+        "| Genset starts \u2014 WS3 allocated band | " + " | ".join(
+            _rng(HYS["cases"][c]["ws3_band"]["ensemble"],
+                 "genset_starts", "{:.0f}") for c in SDORD) + " |",
+        "| kWh/km \u2014 simulator band | " + " | ".join(
+            _rng(HYS["cases"][c]["simulator_band"]["ensemble"],
+                 "fuel_energy_kWh_per_km", "{:.3f}") for c in SDORD) + " |",
+        "| kWh/km \u2014 WS3 allocated band | " + " | ".join(
+            _rng(HYS["cases"][c]["ws3_band"]["ensemble"],
+                 "fuel_energy_kWh_per_km", "{:.3f}") for c in SDORD) + " |",
+        "| Unserved bus energy [kWh] \u2014 WS3 band | " + " | ".join(
+            _rng(HYS["cases"][c]["ws3_band"]["ensemble"],
+                 "unserved_bus_kWh", "{:.4f}") for c in SDORD) + " |",
+    ]),
+    # --- KX-m4: R34
+    "R34N": f"{TRF['traces_emitted_n']:.0f}",
+    "R34ORD": f"{TRF['ordered_mode_b_runs']:.0f}",
+    "R34FILES": ", ".join(f"`{v}`" for v in TRF["traces_by_case"].values()),
+    "R34SOCRUNS": f"{TRF['soc_trajectories_covers_runs']:.0f}",
+    # --- KX-m6: the corrected ledger rows
+    "HEATPKN": "{:.1f}".format(
+        g("heat_ledger_ws6/series_duty_v2_nominal_cycle_average/"
+          "engine_rejection_peak_kW")),
+    "HEATPKC": "{:.1f}".format(
+        g("heat_ledger_ws6/series_duty_v2_cda_5.4_cycle_average/"
+          "engine_rejection_peak_kW")),
+    "HEATPKA": "{:.1f}".format(
+        g("heat_ledger_ws6/series_duty_v2_alt2000m_45C_cycle_average/"
+          "engine_rejection_peak_kW")),
+    "HEAT2N": "{:.1f}".format(
+        g("heat_ledger_ws6/series_duty_v2_nominal_cycle_average/"
+          "engine_rejection_2min_max_kW")),
+    "HEAT2C": "{:.1f}".format(
+        g("heat_ledger_ws6/series_duty_v2_cda_5.4_cycle_average/"
+          "engine_rejection_2min_max_kW")),
+    "HEAT2A": "{:.1f}".format(
+        g("heat_ledger_ws6/series_duty_v2_alt2000m_45C_cycle_average/"
+          "engine_rejection_2min_max_kW")),
+    "LEDGER1N": "{:.4f}".format(
+        g("heat_ledger_ws6/series_duty_v2_cycle_average_kx_r1_superseded/"
+          "engine_rejection_avg_kW/nominal")),
+    "LEDGER1C": "{:.4f}".format(
+        g("heat_ledger_ws6/series_duty_v2_cycle_average_kx_r1_superseded/"
+          "engine_rejection_avg_kW/cda_5_4")),
+    "LEDGER1A": "{:.4f}".format(
+        g("heat_ledger_ws6/series_duty_v2_cycle_average_kx_r1_superseded/"
+          "engine_rejection_avg_kW/alt2000m_45C")),
+    "LEDGERUPN": "{:+.2f}".format(
+        g("heat_ledger_ws6/series_duty_v2_cycle_average_kx_r1_superseded/"
+          "understatement_pct/nominal")),
+    "LEDGERUPA": "{:+.2f}".format(
+        g("heat_ledger_ws6/series_duty_v2_cycle_average_kx_r1_superseded/"
+          "understatement_pct/alt2000m_45C")),
+    "M1BUNS": "{:.4f}".format(
+        g("series_duty_v2/engine_continuous_rating_bracket/"
+          "worst_unserved_kWh")),
+    "M1BSOC": "{:.3f}".format(
+        g("series_duty_v2/engine_continuous_rating_bracket/soc_min_worst")),
+    "M1BSOCGOV": g("series_duty_v2/engine_continuous_rating_bracket/"
+                   "soc_min_worst_governing_case"),
+    "M1BFUEL": "{:+.2f}".format(
+        g("series_duty_v2/engine_continuous_rating_bracket/"
+          "fuel_penalty_pct_max")),
+    "SDCDASOCMINMIN": "{:.3f}".format(
+        SDC["cda_5.4"]["ensemble"]["soc_min_min"]),
+    "LEDGERN":
+        f"{g('heat_ledger_ws6/series_duty_v2_nominal_cycle_average/engine_rejection_avg_kW'):.4f}",
+    "LEDGERC":
+        f"{g('heat_ledger_ws6/series_duty_v2_cda_5.4_cycle_average/engine_rejection_avg_kW'):.4f}",
+    "LEDGERA":
+        f"{g('heat_ledger_ws6/series_duty_v2_alt2000m_45C_cycle_average/engine_rejection_avg_kW'):.4f}",
+})
+
 BODY = r"""# REPORT WS4 — GENSET, THE ARCHIVED GATE G1, AND THE R22a PURE-SERIES DUTY
 
 Project Volt · workstream 4 · against **BASELINE_v3.md** (ratified
@@ -431,9 +797,22 @@ Project Volt · workstream 4 · against **BASELINE_v3.md** (ratified
 were computed against BASELINE_v2.md and are **archived, not
 recomputed**.
 Author: WS4 (engine & generator). Status: **for adjudication — KX
-round** per the lead directive `KX_DIRECTIVE.md` (rulings R22, R23).
-KX changelog in §0-KX; the G1-R changelog (§0-R) and the round-2
-changelog (§0) are retained as history.
+round 2 (rework)** against `FINDINGS_KX_r1.md` (2 blocking, 3 material,
+8 minor — all addressed), executing the lead directive
+`KX_DIRECTIVE.md` (rulings R22, R23). Rework changelog in **§0-KX2**,
+including the exported-member delta for the two workstreams consuming
+`series_duty_v2` live; the KX r1 changelog (§0-KX), the G1-R changelog
+(§0-R) and the round-2 changelog (§0) are retained as history.
+
+> **KX r2 in one line: no ordered number moved, and the block now says
+> what it does.** The two blocking findings were interface-correctness
+> defects on a live design-input block — a field asserting a constraint
+> was inactive while the pack was charged above it (B1), and a companion
+> run that omitted the very axes the escalation it feeds turns on (B2).
+> Both are fixed at source and both are now measured, bracketed and
+> escalated rather than decided by WS4. Every `series_duty_v2` fuel,
+> unserved-energy, above-pin, SOC, starts and pack-peak value is
+> byte-identical to the r1 vintage; §0-KX2 lists the member-level delta.
 
 **The clutch is dead.** BASELINE_v3 executed Gate G1's kill clause on
 the numbers this report carries. Nothing in this round re-runs or
@@ -446,15 +825,15 @@ requirements. The live V2 design input is the new §4-KX block,
 
 Everything below is produced by runnable code in this folder.
 `./.venv/bin/python run_ws4.py` regenerates every number, map, table,
-trace and figure in ~3 min (`pip install -r requirements.txt` into any
+trace and figure in ~4 min (`pip install -r requirements.txt` into any
 Python ≥3.12 venv first); `results_ws4.json` is the machine-readable
 form; `make_report_ws4.py` generates this report with the Interfaces
 block and every headline injected from that JSON; and `verify_ws4.py`
 asserts that every headline number here matches `results_ws4.json`
 verbatim — no *current* number is transcribed by hand, and the R23
-errata carry their own checker pins (including an occurrence count, so
-a corrected phrase cannot be corrected in only three of four places
-again). (Historical values quoted in the changelogs — the r2 record and
+errata carry their own checker pins (including, from KX r2, a
+**per-section** placement pin, so a corrected phrase cannot be corrected
+in only three of four *places* again — a count is not a place check). (Historical values quoted in the changelogs — the r2 record and
 the unreproducible r3-interim run — are quotations of the prior record;
 the r3-interim margins are carried as a literal historical block in
 `results_ws4.json` and rendered from it.) All stochastic inputs are
@@ -478,8 +857,16 @@ kx_input_provenance → input_sha256` (and, for the archived gate,
 > @SDDISPK@ kW against R8's 125 kW, and enforcing the envelope costs
 > @R8WORST@ kWh of unserved energy at the corner (§4-KX, ESC-9) — and
 > the R3 motor rating is still exceeded, unchanged from the gate
-> record. R16's cold curves are consumed and are **not binding** at any
-> ordered (warm) case; the hot end is escalated (ESC-8). Fuel energy
+> record. R16's curve is consumed and is **not binding on the regen
+> leg** at any ordered (warm) case — but read as the **pack** charge
+> limit its own header names, the same curve is **exceeded on every
+> ordered case** (@R16ABOVEN@ / @R16ABOVEC@ / @R16ABOVEA@ s per cycle,
+> peak pack charge @R16PACKPK@ kW bus), because regen and the genset
+> charge the pack at the same time; both readings and the cost of
+> enforcing the pack one are now exported, and the choice between them
+> is escalated (ESC-8). The genset also runs above its own
+> @M1CONTN@ kW continuous flat-rating for up to @M1WORSTS@ s per cycle
+> (ESC-10). Fuel energy
 > per km, above-pin duty, SOC trajectories, genset cycling and the
 > per-seed tables are exported for WS5's R22b dispatch question.
 >
@@ -510,6 +897,168 @@ kx_input_provenance → input_sha256` (and, for the archived gate,
 > to map voltage across WS2's full exported window (§6). The kill
 > clause was armed at ≥5% on these numbers (BASELINE_v2); BASELINE_v3
 > executed it. WS4 reported the number; the lead executed.**
+
+---
+
+## 0-KX2. KX rework changelog (response to `FINDINGS_KX_r1.md`)
+
+KX round 1 was adjudicated **NOT CLEAN: 2 blocking, 3 material, 8
+minor.** Every finding is addressed below at root cause, with what
+changed and where. **No ordered number in `series_duty_v2` moved** —
+the block's fuel, unserved-energy, above-pin, SOC, starts and pack-peak
+values are byte-for-byte the r1 values, which is the correct outcome
+because none of the findings said an ordered number was wrong. What
+changed is what the block *says about itself*: three exported member
+sets are new, two members are renamed, and the WS6 ledger rows are
+recomputed. The member-level delta is listed at the end of this section
+for the two workstreams (WS11, WS5) consuming this block live.
+
+### Blocking
+
+- **KX-B1 — R16's cap applied to the regen leg only; `bound_any_sample:
+  false` exported while the pack is charged above its own acceptance
+  curve.** *Root cause:* `ws4_sim.run_g1_mode` applied
+  `chg_accept_bus_kw` inside the `pw < 0.0` regen branch, and
+  `p_batt_bus = p_gen_elec - p_bus_load` was formed afterwards and never
+  tested. *Fixed at source:* the pack-side exceedance of the same curve
+  is now measured on every run
+  (`pack_chg_above_r16_accept_s`/`_kWh`/`_longest_s`, per seed, R14
+  envelopes, both (b) and (b′)); the misleading field is **renamed**
+  `bound_any_sample` → `regen_leg_bound_any_sample` and joined by
+  `pack_charge_bound_by_r16_any_sample`; both readings of WS3's
+  interface are stated in `r16_binding_analysis → _two_readings`; WS3's
+  10-s **pulse** column — never consulted in r1 — is loaded and shown not
+  to cover the excursions; and a new bracket
+  (`r16_pack_acceptance_bracket`) enforces the pack reading and prices
+  it. Measured: @R16ABOVEN@ / @R16ABOVEC@ / @R16ABOVEA@ s per cycle above
+  acceptance, longest @R16LONGEST@ s, peak pack charge @R16PACKPK@ kW
+  bus. **WS4 does not choose the reading** — that is WS3's interface
+  semantics and WS5's blend order — and ESC-8 is restated on the pack
+  quantity with the 50 °C and 55 °C continuous *and* pulse values, as
+  the adjudicator's remedy (ii) requires. §4-KX.4 rewritten. The
+  headline is invariant: enforcing the pack reading leaves unserved
+  energy at @R16BUNS@ kWh.
+- **KX-B2 — the (b′) companion exported only fuel and starts, omitting
+  every axis R22b turns on.** *Root cause:* the interface projected
+  `companion_bp` through `IFACE_R8_KEYS` (six fields). *Fixed at
+  source:* a dedicated `IFACE_BP_KEYS` gives the companion the **same**
+  capability export set as the block of record — pack discharge/charge
+  peaks, both R8 exceedance counters, the new R16 pack counter, the new
+  engine over-rating counters, emergency-band time, SOC envelope and the
+  heat rows — and a new
+  `companion_bp_capability_comparison` block states each axis as an
+  explicit (b) vs (b′) verdict with R14 governing cases. §4-KX.6 carries
+  the rows; ESC-9 now records, **without recommending**, that the
+  load-following endpoint satisfies R8, R16-on-the-pack and the engine's
+  continuous rating on every ordered seed at the fuel deltas already
+  printed.
+
+### Material
+
+- **KX-M1 — the genset runs above its own 132 kW continuous
+  flat-rating; no counter, no prose, and §4-KX.3's exceedance list
+  omitted the component this workstream owns.** *Root cause:* the
+  emergency band capped on `p_peak_kw` = the **automotive** peak.
+  *Fixed:* the ceiling is now a named quantity in the simulator
+  (`emerg_ceiling_kw`) and stated in §4-KX.1;
+  `engine_over_continuous_rating_s`/`_kWh`/`_longest_s`,
+  `engine_shaft_peak_kW` and `generator_over_continuous_input_s` are
+  exported per seed with R14 envelopes for **both** (b) and (b′);
+  §4-KX.3 carries the row alongside the motor and pack rows; a bracket
+  (`engine_continuous_rating_bracket`) caps the engine at its own rating
+  and confirms the headline does not rest on the over-rating; and it is
+  raised as its own escalation, **ESC-10**, against R18/ESC-1.
+- **KX-M2 — the live block could not resolve its own chain of record.**
+  *Root cause:* the F4 fix landed inside `gate_g1`, whose archival
+  notice forbids consumption, and `series_duty_v2` carried only prose
+  plus a hash-table label. *Fixed:* `series_duty_v2 → _inputs →
+  chain_of_record` now carries the WS4-relative map path, voltage,
+  reduction, WS2 round, feasible-cell count and the map's SHA-256, and
+  `_inputs → boundary_convention_exposure` carries the convention's
+  measured exposure for all three ordered cases. `verify_ws4.py` asserts
+  the live block resolves **without reading `gate_g1`**.
+- **KX-M3 — the payload-denominated metric carried no denominator,
+  basis or caveat into the interface.** *Fixed:* `_inputs →
+  payload_metric_basis` carries the tonnage, WS1 source, the fact that
+  it is identical in all three cases, and an explicit caveat that the
+  field equals per-km ÷ @PAYT@ and is **not** the R32 metric. ESC-7
+  restated to say which curb the @PAYT@ t belongs to (WS1's
+  **pre-conversion** operating curb) and that it does not charge the
+  series powertrain's mass. The field is kept rather than withdrawn, so
+  no exported member disappears under live consumers.
+
+### Minor
+
+- **m1** — the hard-coded "*i.e. they are launch samples*" clause in
+  `make_report_ws4.py` was refuted by its own rendered @BEXNV@ km/h.
+  Clause deleted; the claim that survives is rendered from data (the
+  rpm = 0-column share, §4.1).
+- **m2 — D5 CLOSED.** The whole gap between WS4's strict count and the
+  r3 adjudicator's is WS2's degenerate rpm = 0 map column.
+  `ws4_chain.boundary_exposure_strict_linear` (the adjudicator's
+  interpolated-envelope criterion) and `nearest_col_is_degenerate` now
+  ship; both counts and the artefact share are exported
+  (`chain_boundary_exposure → d5_reconciliation`) and printed in §4.1,
+  §8 F-9 and §9 D5. Reproduces the adjudicator's published figures
+  exactly: @D5LINN@ s nominal, @D5LINC@ s at CdA 5.4. No pp figure moves.
+- **m3** — R14 governing-case labels added to the eight fields whose
+  siblings had them: `gate_g1/boundary_convention_exposure/
+  nominal_one_sided_pp_max`, `chain_weighting_convention/
+  series_duty_weighted/eta_bus_to_wheel_max`, the three
+  `r22d_coast_spin_member` maxima (which appear twice, and are labelled
+  in both places because they are the same object),
+  `gate_g1/verdict/margin_pct_ensemble_max`, and the three
+  `attribution_rows/*/delta_pp_min`.
+- **m4** — R34's interpretation is **declared**
+  (`_trace_files → r34_interpretation`), the trace header no longer
+  asserts an unqualified "one per run", @R34N@ traces are emitted (one
+  per ordered case, up from one), and the ambiguity is flagged to the
+  lead as **ESC-11** rather than self-resolved.
+- **m5** — §0-R's list of the four F1 locations named ESC-6, which
+  carries no seed count; the fourth occurrence is §0-R itself. Sentence
+  reconciled with §0-KX's (which was correct), and `verify_ws4.py` now
+  pins the phrase **per section slice** — headline, §0-R, §6, ESC-2 —
+  instead of counting total occurrences.
+- **m6** — the WS6 ledger rows divided the 8-seed maximum energy by the
+  reference seed's duration. Each row is now the max of the **per-seed
+  cycle averages**, and each component carries **its own** governing
+  seed. Engine rejection: @LEDGER1N@ → **@LEDGERN@**, @LEDGER1C@ →
+  **@LEDGERC@**, @LEDGER1A@ → **@LEDGERA@** kW (the r1 rows are retained
+  as a literal at `heat_ledger_ws6 →
+  series_duty_v2_cycle_average_kx_r1_superseded`).
+- **m7** — peak and rolling **2-min / 10-min** maximum engine rejection
+  are exported per case with R14 labels, plus the implied radiator-
+  package rows and an explicit comparison against R20's @R20DESIGN@ kW
+  design point (§4-KX.7). R20/ESC-4 survives on the 2-min window at the
+  corner (@R20ALT2MIN@ kW): @R20SURVIVES@.
+- **m8** — the hysteresis sensitivity now runs both bands over the
+  **8-seed** ensemble (R9). The block is renamed
+  `hysteresis_sensitivity_ref_seed` → `hysteresis_sensitivity`; the r1
+  reference-seed rows are retained unchanged under `cases → <case> →
+  ref_seed` and are still printed in §4-KX.6.
+
+### Exported-member delta (for live consumers of `series_duty_v2`)
+
+Two workstreams are consuming this block as a live design input while it
+was ungated (WS11's Vehicle Zero ruler trial and WS5's R22b dispatch
+question). **No value inside `series_duty_v2` changed. Exactly nine
+numbers changed anywhere in `results_ws4.json`, and all nine are the
+WS6 ledger rows corrected under m6** (engine / generator / chain cycle
+averages, three cases). The changes a consumer must hot-swap for are:
+
+| Kind | Member | Note |
+|---|---|---|
+| **renamed** | `r16_binding_analysis → bound_any_sample` → `regen_leg_bound_any_sample` | value unchanged (@R16LEGBOUND@); joined by `pack_charge_bound_by_r16_any_sample` = @R16PACKBOUND@ |
+| **renamed** | `hysteresis_sensitivity_ref_seed` → `hysteresis_sensitivity` | now 8-seed; r1 rows preserved at `cases → <case> → ref_seed`, values identical |
+| **recomputed** | `heat_ledger_ws6 → series_duty_v2_*_cycle_average` (engine / generator / chain rows) | +0.4–0.7 %, m6; `governing_case` is now a pointer to per-component labels |
+| **added** | `_inputs → chain_of_record`, `_inputs → boundary_convention_exposure`, `_inputs → payload_metric_basis` | M2, M3 |
+| **added** | pack-R16, engine-rating and transient-heat fields in every `cases[*].ensemble` and in `companion_bp_ensemble` | B1, B2, M1, m7 |
+| **added** | `r16_pack_acceptance_bracket`, `engine_continuous_rating_bracket`, `companion_bp_capability_comparison` | B1, M1, B2 |
+| **added** | two further 10 Hz traces | m4 |
+
+Everything else in `series_duty_v2` — every case ensemble value, every
+per-seed ordered export, the unserved-energy verdict, the SOC-window
+check and the R8 bracket — is byte-identical to the r1 vintage.
 
 ---
 
@@ -603,6 +1152,13 @@ R22b; WS4 does not choose the dispatch.
 ESC-5's energy half is closed by this round; ESC-1 through ESC-6 are
 otherwise unchanged or disposed by BASELINE_v3.
 
+*(KX r2 adds two more and restates three: **ESC-10** (R18/ESC-1 — the
+genset above its own continuous flat-rating) and **ESC-11** (R34 — the
+"one trace per run" reading); ESC-7 restated on which curb the payload
+denominator belongs to, ESC-8 restated on the pack quantity and widened
+to the choice of reading, ESC-9 extended with the (b′) measurement. See
+§0-KX2 and §12.)*
+
 ### Interface restatement (directive item 3)
 
 `interface_ws4 → gate_g1` carries `status: @GATESTATUS@`, an explicit
@@ -622,6 +1178,9 @@ exposure, and an explicit double-count warning.
 Complied with from this artefact: `@TRACEFILE@` (@TRACEROWS@ rows at
 10 Hz — WS1's builders integrate at 0.1 s, so the trace is native, not
 resampled) plus `@SOCFILE@` for the per-seed SOC trajectories.
+*(Superseded by KX r2: @R34N@ traces are now emitted, one per ordered
+case, and R34's interpretation is declared rather than assumed —
+§0-KX2 m4 and ESC-11.)*
 
 ---
 
@@ -717,8 +1276,13 @@ code drift.
   "sign reversed everywhere" language overstated the CdA 5.4 ensemble,
   which is break-even. *KX/R23-F1 corrects that replacement claim in
   turn: the r3 round printed "two" where the data has @CDAPOSN@ of 8
-  seeds marginally positive (seeds @CDAPOSSEEDS@) — corrected in the
-  headline, §6, ESC-2 and ESC-6.* Additionally the sign's
+  seeds marginally positive (seeds @CDAPOSSEEDS@) — corrected in all
+  four places the phrase occurs: the headline, this §0-R entry, the §6
+  table and ESC-2. (KX r2, adjudication m5: the r1 wording of this
+  sentence said "the headline, §6, ESC-2 and ESC-6"; ESC-6 carries no
+  seed count and the fourth occurrence is this sentence. §0-KX's list
+  was the correct one, and `verify_ws4.py` now pins the phrase **per
+  section**, not by total count.)* Additionally the sign's
   dependence on the declared rectifier member is now bracketed
   in-pipeline (§6): the kill outcome is invariant.
 - **Directive 4 (R18 datasheet confirmation task): DONE.** §2.1 states
@@ -938,8 +1502,13 @@ negligible") is withdrawn. Measured, per condition, by a counter in
 lookup queries: at **nominal**, exposure is @BEXN@ s/cycle
 (@BEXNS@ s on the stricter outside-the-envelope test), of which
 @BEXNU@ s are *unlocked* samples both modes drive identically and only
-@BEXNL@ s are locked; the exposed samples top out at @BEXNV@ km/h,
-i.e. they are launch samples. At **CdA 5.4** exposure rises to @BEXC@
+@BEXNL@ s are locked; the exposed samples reach @BEXNV@ km/h. **KX r2
+(adjudication m1/m2):** the r1 wording added "i.e. they are launch
+samples" to that sentence — a hand-written claim its own rendered
+@BEXNV@ km/h refutes — and it is withdrawn. What *is* true, and is now
+measured rather than asserted, is that the bulk of the **strict** count
+sits on the map's degenerate rpm = 0 column, i.e. below
+@D5VCEIL@ km/h. See D5 below, now closed. At **CdA 5.4** exposure rises to @BEXC@
 s/cycle (@BEXCS@ s strict) with @BEXCL@ s of it on *locked* ~94–98
 km/h cruise samples reaching @BEXCV@ km/h — samples mode (a) serves on
 the engine and mode (b) serves through the clamped chain, so the
@@ -949,10 +1518,28 @@ cycle fuel (@BEXPPC2@ pp on a hostile 2× loss gradient) at CdA 5.4 and
 @BEXPPN@ pp at nominal — an order of magnitude below the ~0.05 pp the
 directive characterised it as, itself two orders below the 7.58-point
 shortfall, and pointing the way the r3 conclusion already pointed.
-Full tables: `results_ws4.json → chain_boundary_exposure`. WS4's count
-is larger than the r3 adjudicator's independently measured 3.6–7.6
-s/cycle at nominal; the two use different boundary criteria and WS4's
-is the more inclusive, so its pp bound is the conservative one (D5).
+Full tables: `results_ws4.json → chain_boundary_exposure`. **D5 is
+closed (KX r2, adjudication m2):** WS4's count was larger than the r3
+adjudicator's independently measured 3.6–7.6 s/cycle at nominal, and
+the whole gap is **one map column**. Evaluating the feasible-torque
+envelope by *linear interpolation between bracketing rpm columns* — the
+r3 adjudicator's implementation — gives @D5LINN@ s at nominal and
+@D5LINC@ s at CdA 5.4, reproducing that adjudicator's two published
+figures. WS4's strict counter instead snapped to the *nearest* rpm
+column, and WS2's map grid begins at rpm = @D5RPM0COLS@ — the map's
+only degenerate column, carrying exactly one feasible cell, at T = 0,
+hence a **zero-width envelope**. Every motoring sample below 50 rpm (road speed under
+@D5VCEIL@ km/h, the instant of a standing start) was therefore tested
+against it and flagged: @D5ONRPM0N@ s/cycle at nominal, i.e. about four
+fifths of the strict count. Excluding that column the nearest-column
+count falls to @D5NODEGN@ s at nominal and @D5NODEGC@ s at CdA 5.4.
+
+@D5TABLE@
+
+Nothing moves: those samples book **zero** unbooked loss
+(`unbooked_bus_kWh_linear` equals `..._locked_only`), so every pp bound
+below is unchanged; what changes is that the printed *seconds* now carry
+the artefact separated out.
 Separately, the R3
 over-*rating* counter (>150 kW motor shaft) fires @BORMIN@–@BORMAX@ s
 per cycle in mode (b) (mode (a): @AORMAX@ s) — those samples lie
@@ -1105,6 +1692,32 @@ there on hard seeds. The directive orders the verification at the
   Mode (b′) — the same genset load-following its best-BSFC locus — is
   carried as a **companion** so R22b has both endpoints; **WS4 does
   not choose the dispatch, R22b assigns that to WS5.**
+- **Emergency-band ceiling [stated explicitly, KX r2 / adjudication
+  M1]:** in the emergency band the engine is capped at the
+  **automotive full-load curve** (`engine.peak_power_kw() × derate ×
+  0.97` = @M1AUTO@ kW × derate), **not** at the @M1CONTN@ kW continuous
+  flat-rating this workstream specifies. The r1 round did not say so
+  anywhere. What that permits is measured in §4-KX.3 and bracketed;
+  the escalation is ESC-10.
+- **Traction chain of record [KX r2 / adjudication M2]:** the live block
+  now carries its own resolvable chain — `@COR_MAP@`, @COR_V@ V, WS2
+  round @COR_RND@, × the flat @COR_RED@ reduction, with the map's
+  SHA-256 — under `series_duty_v2 → _inputs → chain_of_record`. The r1
+  round carried it only inside the **archived** `gate_g1` block, whose
+  own notice forbids consuming any of its fields, so a consumer obeying
+  that notice could not resolve the chain the live numbers were made
+  with. The map-boundary convention's exposure travels with the live
+  block too (`_inputs → boundary_convention_exposure`); on the whole
+  unbooked bound it is at most @COR_TPPN@ / @COR_TPPC@ / @COR_TPPA@ pp
+  of cycle fuel across the three ordered cases.
+- **Payload denominator [KX r2 / adjudication M3]:** the payload
+  companion is denominated on **@PAYT@ t** (@PAYKG@ kg = WS1's
+  m_gvw − m_curb_operating), and that basis, its source and its
+  caveat now travel in the JSON at `_inputs → payload_metric_basis`,
+  not only in ESC-7's prose. It is the **pre-conversion** curb: it does
+  not charge the series powertrain's mass, it is identical in all three
+  cases, and the exported field is therefore exactly the per-km field
+  ÷ @PAYT@. **It is not the R32 metric** — see ESC-7.
 - **Cases (3):** nominal; CdA 5.4 (E13); and the 2,000 m/+45 °C corner
   — the *identical* case definition the archived gate used
   (ρ 0.8706 kg/m³, derate 0.9312, GVW, CdA 4.2, 2 kW aux). It is **not**
@@ -1157,9 +1770,13 @@ Reading, case by case:
   as it derates the engine: fuel energy is the lowest of the three.
   What it does not help is pack power — see below.
 
-SOC trajectories for all 24 runs: `figs/fig04_series_duty_soc.png`,
-`@SOCFILE@` (5 s decimation, every seed and case), and the full-rate
-reference trajectory inside `@TRACEFILE@`.
+SOC trajectories for all @R34SOCRUNS@ ordered runs:
+`figs/fig04_series_duty_soc.png` and `@SOCFILE@` (5 s decimation, every
+seed and case). Full-rate **10 Hz R34 traces, one per ordered case** at
+the reference seed (KX r2, adjudication m4 — r1 emitted one, for
+nominal): @R34FILES@. The R34 interpretation WS4 is working to is
+declared in `series_duty_v2 → _trace_files → r34_interpretation` and
+flagged to the lead as **ESC-11**.
 
 ### 4-KX.3 What the run does NOT establish — the pack POWER envelope (ESC-9)
 
@@ -1194,6 +1811,40 @@ if anything understated.
 
 @R8TABLE@
 
+**The third exceedance, and it is this workstream's own component
+(KX r2, adjudication M1).** The r1 §4-KX.3 enumerated the R3 motor
+rating and the R8 pack envelope and read as a complete list. It was not.
+In the emergency band the simulator caps the engine at the **automotive
+full-load curve** (`p_peak_kw × derate × 0.97`, where `p_peak_kw` =
+@M1AUTO@ kW is the 4HK1-TC's automotive peak, which §2.1 itself
+identifies as automotive and *not* the continuous rating) — not at the
+@M1CONTN@ kW continuous flat-rating WS4 specifies and R18 blocks WS6's
+release on:
+
+@M1TABLE@
+
+Worst **@M1WORSTS@ s** per cycle above the rating (@M1WORSTGOV@), peak shaft
+**@M1PEAK@ kW** — @M1PEAKPCT@ % of the continuous rating. That also
+exceeds the 10 %/1 h overload an ISO 8528-1 prime rating allows, and the
+generator is exposed on the same samples against its @M1GENCONT@ kW
+continuous shaft input. `above_pin_engine_s` counts time above the
+**pin** (@V2PINKW@ kW), not above the **rating**, and no r1 field
+distinguished them. The counters
+`engine_over_continuous_rating_s`/`_kWh`/`_longest_s`,
+`engine_shaft_peak_kW` and `generator_over_continuous_input_s` are now
+exported per seed with R14 envelopes, for **both** (b) and (b′).
+
+This does **not** touch the zero-unserved headline: capping the engine
+at its continuous rating in the emergency band leaves unserved energy at
+zero on every seed of every ordered case — WS4 ran that bracket itself:
+worst unserved **@M1BUNS@ kWh**, at the cost of a deeper SOC minimum
+(CdA 5.4: @SDCDASOCMINMIN@ → **@M1BSOC@** of usable, @M1BSOCGOV@) and no
+fuel cost at all (worst case @M1BFUEL@ %)
+(`engine_continuous_rating_bracket`; ESC-10). It
+is an unexported capability exposure on the component this workstream
+owns, and it is escalated as **ESC-10** against R18/ESC-1, whose
++0.82 kW corner margin is a *continuous*-rating figure.
+
 **Worst case @R8WORST@ kWh unserved, at @R8WORSTGOV@.** That is the
 finding, and it is a finding, not a tuning knob: R4/E24's record — "the
 spine is not sized for forced series" — extends past the R3 motor
@@ -1206,25 +1857,88 @@ a WS5/WS3 question. Escalated as **ESC-9**. The R3 motor-rating exposure
 (@SDNOMOR@ s/cycle at nominal, @SDCDAOR@ s at CdA 5.4) is the same
 record as the archived gate's and is unchanged by the larger pack.
 
-### 4-KX.4 R16 cold curves: consumed, and NOT binding here
+### 4-KX.4 R16: the curve binds nothing on the regen leg and is exceeded on the pack — both readings, measured
 
-The R16 curve is wired into the regen path as the bus-side charge
-acceptance at the declared cell temperature: @R16NOM@ kW at 25 °C cells
-(nominal, CdA 5.4) and @R16ALT@ kW at 45 °C cells (corner). Peak
-regen-to-pack over the whole run is **@R16PK@ kW bus**, so the curve
-sheds nothing: `regen_shed_by_r16_kWh` is 0.0000 kWh on every seed
-(curve bound any sample: @R16BOUND@). That is the honest result of
-consuming a cold-operation curve at three warm conditions, and it is
-stated rather than dressed up.
+**KX r2 (adjudication B1). The r1 round exported one field,
+`bound_any_sample: false`, that answered one of two questions and was
+read as answering both. Both are now measured, each under a name that
+says which it is.**
 
-Where it *would* bind, from the same curve and this run's peak regen:
-below **@R16COLD@ °C** cells on the cold side, and above **@R16HOT@ °C**
-cells on the hot side. The hot side is not hypothetical — WS3's
-pack-loop **sizing line** holds cells at or below **55 °C** at +45 °C
-ambient, and acceptance at 55 °C is **@R1655@ kW**, *below* this run's
-peak regen. A corner descent on a pack sitting at its loop's design
-ceiling would shed regen to the resistor/friction column. Escalated as
-**ESC-8**; not resolved here, because the cell-temperature trajectory
+WS3's `regen_acceptance.csv` admits two readings, and on this duty they
+differ *measurably*:
+
+1. **Regen-leg rule.** WS3's REPORT_WS3 §4.2 presents the curve to WS5
+   as a regen-blend rule ("regen follows the acceptance curve at all
+   temperatures with the resistor as overflow"; "WS5 should drive the
+   blend from it directly"). This is the reading the ordered run
+   enforces.
+2. **Pack rule.** The file's own header line is *"pack regen-acceptance
+   vs cell temperature"* and the column is `V2pack_chg_cont_kW_bus` — a
+   **pack** charge limit, bus-side. A pack cannot tell whether its
+   charge current comes from regen or from the genset.
+
+**On reading (1) nothing binds.** The curve is wired into the regen path
+as the bus-side charge acceptance at the declared cell temperature:
+@R16NOM@ kW at 25 °C cells (nominal, CdA 5.4) and @R16ALT@ kW at 45 °C
+cells (corner). Peak regen-to-pack over the whole run is
+**@R16PK@ kW bus**, so the regen leg sheds nothing: `regen_shed_by_r16_kWh` is
+0.0000 kWh on every seed (`regen_leg_bound_any_sample`:
+@R16LEGBOUND@).
+
+**On reading (2) it is exceeded on every ordered case.** The r1
+simulator applies the cap inside the regen branch, as a cap on the
+regen leg only; the genset's output is added afterwards, at
+`p_batt_bus = p_gen_elec - p_bus_load`, and was never tested against the
+curve. The genset is on for a fraction @SDNOMONFRAC@ of cycle time at
+nominal, so regen-while-charging is **structural** to the dispatch of
+record, not incidental (across the three ordered cases the on-fraction
+spans 0.482–0.685). Measured against the pack's own total charge
+power (`pack_charge_bound_by_r16_any_sample`: @R16PACKBOUND@):
+
+@R16TABLE@
+
+Peak pack charge is **@R16PACKPK@ kW bus** (@R16PACKPKGOV@) against
+@R16NOM@ / @R16ALT@ kW of continuous acceptance. **The 10-s pulse column
+does not excuse these.** WS3 rates @R16PULSE25@ kW at 25 °C and
+@R16PULSE45@ kW at 45 °C for 10 s — above the peak — but the longest
+single excursion above the *continuous* acceptance is **@R16LONGEST@ s**
+(@R16LONGESTGOV@), longer than the window that column rates
+(`pulse10s_covers_the_excursions`: @R16PULSECOVERS@). The r1 round never
+consulted this column; it is consulted here.
+
+**What enforcing the pack reading costs.** WS4 ran the bracket rather
+than argue the point — pack charge above the acceptance is shed:
+
+@R16BTABLE@
+
+Worst shed **@R16BSHED@ kWh** at @R16BSHEDGOV@, up to @R16BCLIP@ s of
+clipping, fuel penalty at most **@R16BFUEL@ %** (@R16BFUELGOV@), and
+**unserved bus energy stays @R16BUNS@ kWh**. So the §4-KX.2 headline
+does not depend on which reading the lead rules for. Note the shed
+formulation is the crudest remedy available — it discards surplus rather
+than not generating it; the supervisor that instead backs the genset off
+is the load-following companion (b′), which stays inside the acceptance
+on every seed of every ordered case (§4-KX.6).
+
+**WS4 does not choose the reading.** The physical quantity the curve
+names is the pack's and the conservative reading is the pack one, but
+the semantics of WS3's interface are WS3's and the blend order is WS5's.
+The r1 round chose the permissive reading without recording that a
+choice existed; that is the defect, and the choice goes to the lead.
+
+**Where the curve would bind on temperature**, from the same curve and
+this run's peak regen: below **@R16COLD@ °C** cells on the cold side, and
+above **@R16HOT@ °C** cells on the hot side. The hot side is not
+hypothetical — WS3's pack-loop **sizing line** holds cells at or below
+**55 °C** at +45 °C ambient, and acceptance at 55 °C is **@R1655@ kW**,
+*below* this run's peak regen. On the **pack** quantity the hot end is
+worse by roughly a factor of two: at the 45 °C declared cells (the corner
+case) the ordered run already charges at @R16PACKPKA@ kW against
+@R16ALT@ kW continuous; at
+50 °C the continuous curve falls to **@R1650@ kW**; and at the 55 °C loop
+ceiling even the **10-s pulse** rating is **@R16PULSE55@ kW**, still
+below the run's peak. Escalated as **ESC-8**, now stated on the pack
+quantity; not resolved here, because the cell-temperature trajectory
 belongs to WS3/WS6 and the blend order to WS5.
 
 ### 4-KX.5 R22d true-coast spin member — measured, reported, not charged
@@ -1256,21 +1970,57 @@ double-charging driving samples.
 sensitive to a supervisor constant, so the constant is not left
 implicit. The ratified simulator's band is 0.35–0.75 of usable =
 @HYSTSIM@ kWh; WS3's own allocation for V2 is @HYSTWS3@ kWh of genset
-hysteresis about the 0.55 target. Reference seed, both bands:
+hysteresis about the 0.55 target. **KX r2 (adjudication m8): both bands
+are now run over the full 8-seed ensemble**, because genset starts are a
+stochastic output and R9 requires an envelope, not one draw:
+
+@HYSTTABLE8@
+
+The r1 reference-seed rows are retained (`hysteresis_sensitivity →
+cases → <case> → ref_seed`) and reproduce unchanged:
 
 @HYSTTABLE@
 
-The tighter WS3 band cycles the genset more and costs a little fuel;
-neither band changes any conclusion above. WS5 owns the choice.
+Over the ensemble the picture is the r1 picture: the tighter WS3 band
+cycles the genset more and costs a little fuel; unserved energy stays
+zero on both bands at every case; neither band changes any conclusion
+above. WS5 owns the choice. What the r1 round could not say, and now
+can, is that this holds across the ensemble rather than on seed 23.
 
 **Load-following companion (b′), for R22b.**
 
-@SDBPTABLE@
+**KX r2 (adjudication B2). The r1 round compared (b) and (b′) on fuel,
+starts and unserved energy only — none of the three capability axes on
+which R22b and ESC-9 are actually decided, and two of which are the whole
+substance of ESC-9.** The companion now carries the same capability
+export set as the block of record:
 
-At nominal and CdA 5.4 the pinned and load-following dispatches are
-within a fraction of a percent of each other; at the corner the pin is
-better, because load-following drags the derated engine off its island.
-That is a data point for R22b, not a verdict.
+@SDBPTABLE2@
+
+**Measured, mode (b′) is inside every envelope that mode (b) is outside
+of, on every seed of every ordered case:**
+
+| Capability axis | limit | mode (b), block of record | mode (b′), companion |
+|---|---|---|---|
+| Pack discharge peak [kW bus] | R8 125 | **@SDDISPK@ — outside** | @BPDISPK@ — inside: @BPINR8DIS@ |
+| Pack charge peak [kW bus] | R8 110 | **@SDCHGPK@ — outside** | @BPCHGPK@ — inside: @BPINR8CHG@ |
+| Pack charge above R16 acceptance [s] | 0 | **@R16ABOVEN@ / @R16ABOVEC@ / @R16ABOVEA@ — outside** | 0.0 on every seed: @BPINR16@ |
+| Engine above its continuous rating [s] | 0 | **@M1SN@ / @M1SC@ / @M1SA@ — outside** | 0.0 on every seed: @BPINENG@ |
+| Peak engine shaft [kW] | @M1CONTN@ / @M1CONTA@ by case | **@M1PEAK@** | @BPENGPK@ |
+
+The fuel cost of that, on the paired per-case median: @BPPENN@ % at
+nominal, @BPPENC@ % at CdA 5.4, @BPPENA@ % at the corner — inside the
+ensemble spread at nominal and CdA 5.4, and a real penalty only at the
+corner, where load-following drags the derated engine off its island.
+
+**This is a measurement, not a recommendation.** WS4 does not choose the
+dispatch; R22b assigns that to WS5, and this table does not price the
+axes R22b must also weigh — start transients, aftertreatment
+temperature, engine duty at part load — none of which this run models.
+But ESC-9 asks the lead to rule between remedies, one of which is "run
+the genset earlier so the pack never has to cover the peak alone", and
+WS4's own companion demonstrates that remedy on the same trace. Saying
+so is the difference between an escalation and a leading question.
 
 ### 4-KX.7 Heat to the WS6 ledger (program rule 7)
 
@@ -1280,10 +2030,41 @@ Vehicle Zero V2 rows WS6 should size against:
 
 @SDHEATTABLE@
 
+**KX r2 (adjudication m6): the construction of these rows is corrected.**
+The r1 rows divided the 8-seed maximum *energy* by the **reference
+seed's** duration, which is not the maximum of the quantity. Each row is
+now the maximum of the **per-seed cycle averages** (each seed's own
+energy over its own duration), and each component carries **its own**
+governing seed rather than borrowing the engine-rejection seed's. Engine
+rejection moves @LEDGER1N@ → **@LEDGERN@** kW at nominal, @LEDGER1C@ →
+**@LEDGERC@** at CdA 5.4 and @LEDGER1A@ → **@LEDGERA@** at the corner:
+the r1 rows understated the true 8-seed maximum by @LEDGERUPN@ % to
+@LEDGERUPA@ %. Generator and chain rows move by the same construction.
+The superseded rows are retained as a literal historical block
+(`heat_ledger_ws6 → series_duty_v2_cycle_average_kx_r1_superseded`), so
+this before/after is a rendering and not a transcription.
+
+**KX r2 (adjudication m7): a cycle mean is not the case.** Program rule 7
+asks for heat by component *and case*, and the r1 §4-KX.7 gave WS6 a
+@LEDGER1A@ kW cycle mean for a case that carries a >200 kW transient. The
+windows a cooling package is actually sized against are now exported:
+
+@HEATTRTABLE@
+
+Read against **R20/ESC-4's declared radiator design point of
+@R20DESIGN@ kW** of HT-package duty in +45 °C air: the instantaneous
+radiator-package peak exceeds it at every case, and at `alt2000m_45C` —
+the only ordered case in R20's own +45 °C ambient — it reaches
+**@R20ALTPEAK@ kW**. The **2-minute** rolling average there is
+**@R20ALT2MIN@ kW**, which stays *under* the design point, so
+**R20/ESC-4's "radiator design case = the R6 corner" survives**
+(`r20_survives_on_the_2min_window`: @R20SURVIVES@) — the finding is that
+the rows WS6 was pointed at could not have shown this either way.
+
 Splits follow §7's declared 49/38/10/3 exhaust/coolant+oil/CAC/radiation
-balance; the R22d coast-spin members (≤0.0002 kWh/cycle) land in the
-traction machine on WS2's LT-loop line and are exported per case in
-`heat_ledger_ws6`.
+balance (radiator package = 48 %); the R22d coast-spin members
+(≤0.0002 kWh/cycle) land in the traction machine on WS2's LT-loop line
+and are exported per case in `heat_ledger_ws6`.
 
 ## 5. Start-stop analysis (V1)
 
@@ -1430,17 +2211,51 @@ archived mode-(a) row above. Full tables in §4-KX.7 and
   discharge / @SDCHGPK@ kW charge against R8's 125/110 kW envelope, and
   enforcing that envelope costs up to @R8WORST@ kWh of unserved energy
   at @R8WORSTGOV@ (§4-KX.3, ESC-9).
-- **F-8** *(new, KX/R16)* The R16 charge-acceptance curve is consumed
-  and binds nothing at any ordered case (peak regen @R16PK@ kW bus vs
-  @R16NOM@ kW accepted at 25 °C cells); it would bind below @R16COLD@ °C
-  and above @R16HOT@ °C cells — and WS3's pack-loop sizing ceiling of
-  55 °C accepts only @R1655@ kW (§4-KX.4, ESC-8).
-- **F-9** *(new, KX/R23-F2)* The map-boundary convention's exposure is
-  @BEXN@ s/cycle at nominal (of which only @BEXNL@ s locked) and
-  @BEXC@ s/cycle at CdA 5.4 (of which @BEXCL@ s locked, up to
-  @BEXCV@ km/h) — one-sided in mode (b)'s favour at CdA 5.4 by at most
-  @BEXPPC2@ pp. Immaterial to the archived verdict; the r3
-  mode-neutrality wording is withdrawn (§4.1).
+- **F-8** *(new, KX/R16; RESTATED KX r2, adjudication B1)* The R16
+  charge-acceptance curve binds nothing **on the regen leg** — the leg
+  the ordered run enforces (peak regen @R16PK@ kW bus vs @R16NOM@ kW
+  accepted at 25 °C cells). Read as the **pack** charge limit its own
+  header names, the same curve is **exceeded on every ordered case**:
+  @R16ABOVEN@ / @R16ABOVEC@ / @R16ABOVEA@ s per cycle above continuous
+  acceptance, longest single excursion @R16LONGEST@ s — longer than
+  WS3's 10-s pulse window — peak pack charge @R16PACKPK@ kW bus, because
+  regen and the genset charge the pack simultaneously. Enforcing the
+  pack reading sheds at most @R16BSHED@ kWh and leaves unserved energy
+  at @R16BUNS@ kWh. On temperature the curve would bind below
+  @R16COLD@ °C and above @R16HOT@ °C cells, and WS3's pack-loop sizing
+  ceiling of 55 °C accepts only @R1655@ kW continuous / @R16PULSE55@ kW
+  for 10 s (§4-KX.4, ESC-8). *The r1 wording — "consumed and binds
+  nothing at any ordered case" — is withdrawn: it was true of the
+  regen leg and false of the pack.*
+- **F-10** *(new, KX r2 — for WS6/R20)* The pure-series duty's engine
+  rejection is @LEDGERN@ / @LEDGERC@ / @LEDGERA@ kW as a **cycle mean**
+  but @HEATPKN@ / @HEATPKC@ / @HEATPKA@ kW at the **peak**, with 2-min
+  rolling maxima of @HEAT2N@ / @HEAT2C@ / @HEAT2A@ kW. Through the
+  declared 48 % radiator-package share the corner's 2-min figure is
+  @R20ALT2MIN@ kW against R20's @R20DESIGN@ kW design point, so
+  **R20/ESC-4 survives** (@R20SURVIVES@) — but the r1 ledger gave WS6
+  only the cycle mean, which could not have shown that either way
+  (§4-KX.7, adjudication m7).
+- **F-11** *(new, KX r2 — for WS5/R22b)* The load-following companion
+  (b′) is inside R8's bus-side envelope in both directions
+  (@BPDISPK@ / @BPCHGPK@ kW vs 125/110), inside WS3's R16 acceptance
+  read on the pack (0.0 s), and inside the engine's own continuous
+  flat-rating (0.0 s, peak @BPENGPK@ kW) on **every seed of every
+  ordered case**, where the pinned mode of record is outside all three.
+  Fuel delta @BPPENN@ / @BPPENC@ / @BPPENA@ % on the paired per-case
+  median (§4-KX.6, ESC-9, adjudication B2). Reported, not recommended.
+- **F-9** *(new, KX/R23-F2; restated KX r2)* The map-boundary
+  convention's exposure is @BEXN@ s/cycle at nominal (of which only
+  @BEXNL@ s locked) and @BEXC@ s/cycle at CdA 5.4 (of which @BEXCL@ s
+  locked, up to @BEXCV@ km/h) on the **stencil** criterion — one-sided
+  in mode (b)'s favour at CdA 5.4 by at most @BEXPPC2@ pp. On the
+  **strict** criterion with the map's degenerate rpm = 0
+  column excluded it is @D5NODEGN@ s at nominal and @D5NODEGC@ s at
+  CdA 5.4; on the r3 adjudicator's interpolated-envelope criterion,
+  @D5LINN@ s and @D5LINC@ s. All three are printed because roughly four
+  fifths of the r1 strict count was that one column (D5, now closed —
+  adjudication m2). Immaterial to the archived verdict under every
+  criterion; the r3 mode-neutrality wording is withdrawn (§4.1).
 
 ## 9. Development disclosures (in the spirit of WS1 §9)
 
@@ -1468,20 +2283,27 @@ correction moved the r2 verdict; the Willans light-load recalibration).
   bilinear midpoints between cells, and its wheel-to-bus direction
   reproduces WS2's independently exported regen-to-bus (3.73 kWh over
   VOLT-REG) to the exported precision.
-- **D5 (KX) — WS4's F2 exposure count does not equal the r3
-  adjudicator's, and the difference is definitional.** The adjudicator
-  measured 3.6–7.6 s/cycle at nominal against the map's feasibility
-  boundary; WS4's counter reports @BEXN@ s/cycle on the stencil
-  criterion (a bilinear stencil touching any originally-infeasible
-  cell) and @BEXNS@ s on the stricter torque-outside-the-envelope test,
-  which is still larger. The two criteria are not the same test and WS4
-  has not reproduced the adjudicator's implementation. WS4's is the
-  more inclusive count, so the pp bound derived from it is the
-  conservative one, and the *shape* of the finding — mode-neutral at
-  the reference seed, one-sided on locked cruise samples at CdA 5.4,
-  immaterial in magnitude — is identical under both. Flagged rather
-  than reconciled: reconciling would require re-deriving the
-  adjudicator's counter, which is not this round's scope.
+- **D5 (KX) — CLOSED in KX r2 (adjudication m2).** *r1 text: "WS4's F2
+  exposure count does not equal the r3 adjudicator's, and the
+  difference is definitional… flagged rather than reconciled."* It is
+  now reconciled, and the reconciliation is arithmetic. WS4's strict
+  counter evaluated the feasible-torque envelope at the **nearest** rpm
+  column; the r3 adjudicator **interpolated linearly** between
+  bracketing columns. WS2's 662 V map grid begins at
+  rpm = @D5RPM0COLS@ — the map's only degenerate column, carrying
+  exactly one feasible cell, at T = 0, hence a zero-width envelope — so
+  under the nearest-column rule every motoring sample below 50 rpm
+  (< @D5VCEIL@ km/h) is tested against nothing and flagged.
+  Switching to the interpolated envelope reproduces the adjudicator's
+  published figures exactly: @D5LINN@ s/cycle at nominal and @D5LINC@ s
+  at CdA 5.4. Excluding the degenerate column from the nearest-column
+  test gives @D5NODEGN@ s and @D5NODEGC@ s. **No exported number
+  moves** — those samples book zero unbooked loss, so every pp bound is
+  unchanged — but §4.1, §8 F-9 and this entry now print the artefact
+  separately instead of carrying it inside "the measured exposure".
+  Both counters ship (`ws4_chain.boundary_exposure_strict` and
+  `boundary_exposure_strict_linear`); the reconciliation table is
+  `results_ws4.json → chain_boundary_exposure → d5_reconciliation`.
 - **D6 (KX) — two brackets in §4-KX were NOT ordered.** The KX
   directive's scope is exhaustive and does not ask for them: the R8
   power-envelope bracket (§4-KX.3) and the SOC-window check against
@@ -1562,6 +2384,24 @@ correction moved the r2 verdict; the Willans light-load recalibration).
 Injected byte-identically from `results_ws4.json → interface_ws4`
 (asserted by `verify_ws4.py`):
 
+**Consumers, read this first.** `interface_ws4 → series_duty_v2` is the
+live design-input block (`_status: live_design_input`);
+`interface_ws4 → gate_g1` is an **archived record** of an executed
+decision and no field of it may be consumed as a live requirement. The
+live block now resolves its own chain of record — map path, voltage,
+reduction, WS2 round, SHA-256 — at `series_duty_v2 → _inputs →
+chain_of_record`, without reading the archived block (KX r2,
+adjudication M2). Three fields answer questions that look alike and are
+not: `r16_binding_analysis → regen_leg_bound_any_sample` (@R16LEGBOUND@)
+is about the **regen leg** the run enforces, `pack_charge_bound_by_r16_
+any_sample` (@R16PACKBOUND@) is about the **pack's total charge power**
+and is the constraint ESC-8 is about, and
+`fuel_energy_kWh_per_payload_tonne_km` is a companion carrying its own
+`_inputs → payload_metric_basis → _caveat` and is **not** the R32
+metric. `hysteresis_sensitivity` was named `hysteresis_sensitivity_ref_
+seed` in KX r1; the r1 rows are preserved at `cases → <case> →
+ref_seed`. §0-KX2 carries the full member-level delta.
+
 ```json
 @IFACE@
 ```
@@ -1638,19 +2478,71 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   either ratify a Vehicle Zero payload basis or hold R32 open; WS4 will
   not describe any Vehicle Zero result as an efficiency advantage on
   the per-km number.
-- **ESC-8 (new — cites R16, R15, R2; for WS3/WS5/WS6) — THE R16 CURVE'S
-  HOT END CROSSES THE PACK-LOOP SIZING LINE.** R16's curve is consumed
-  as ordered and is not binding at any ordered case (§4-KX.4). But the
-  same curve gives @R1655@ kW of charge acceptance at 55 °C cells, and
-  WS3's pack-loop sizing line is precisely "hold cells ≤ 55 °C at
-  +45 °C ambient" — so at the loop's *design ceiling* the pack accepts
-  less than this run's peak regen (@R16PK@ kW bus), and a corner
-  descent would push regen into the R15 blend order's resistor and
-  friction columns. WS4 cannot resolve this: the cell-temperature
-  trajectory is WS3/WS6's and the blend order is WS5's. Requested
-  disposition: either a ruled maximum cell temperature for dispatch at
-  full regen, or an explicit acceptance that hot-corner descents run on
-  the resistor.
+  **RESTATED, KX r2 (adjudication M3).** Two corrections. (i) *Which
+  curb the 2.9 t belongs to:* it is WS1's **pre-conversion** operating
+  curb — @PAYKG@ kg of payload at GVW behind a 3,700 kg
+  [WS1-ASSUMPTION] "NPR-HD chassis-cab + 16 ft dry-freight body + driver
+  + full fuel/DEF". The **series conversion's** mass (WS3's pack, WS4's
+  genset + generator, WS2's spine, less the deleted engine and gearbox)
+  is not charged against it. A denominator that does not charge
+  conversion mass cannot discharge R32, whose whole purpose — per
+  D13/R36, "won 6–10 % per km and gave 6–8 % back in freight" — is to
+  charge exactly that. (ii) *The prose now travels with the JSON:* the
+  r1 round exported `fuel_energy_kWh_per_payload_tonne_km` with full
+  R14 labels and **no** `payload_t`, basis or caveat anywhere in
+  `interface_ws4`, so a machine consumer saw a payload-denominated
+  metric with no denominator. `_inputs → payload_metric_basis` now
+  carries the tonnage, its WS1 source, the fact that it is identical in
+  all three cases, and an explicit caveat that the field is the per-km
+  field ÷ @PAYT@ and is not the R32 metric. WS4 keeps the field rather
+  than withdrawing it (withdrawal would silently remove an exported
+  member two live consumers are reading), and denominates nothing on it.
+- **ESC-8 (cites R16, R15, R2; for WS3/WS5/WS6) — RESTATED IN KX r2 ON
+  THE PACK QUANTITY, AND WIDENED TO THE READING ITSELF.** *r1 form: the
+  curve's hot end crosses WS3's pack-loop sizing line, stated on peak
+  **regen** (@R16PK@ kW bus vs @R1655@ kW accepted at 55 °C cells).*
+  That form understated its own case by roughly a factor of two, and it
+  rested on a choice WS4 had made without recording that a choice
+  existed (adjudication B1). Restated:
+
+  **(a) Which quantity the curve limits.** WS3's file header says *"pack
+  regen-acceptance"* and the column is `V2pack_chg_cont_kW_bus` — a
+  **pack** limit; WS3's REPORT_WS3 §4.2 presents the same curve to WS5
+  as a **regen-blend** rule. The r1 simulator implemented the blend
+  reading, capping the regen leg only, and added the genset's output to
+  the pack afterwards without testing it. On the pack quantity the
+  constraint is **active on every ordered case**: @R16ABOVEN@ /
+  @R16ABOVEC@ / @R16ABOVEA@ s per cycle above continuous acceptance,
+  longest single excursion @R16LONGEST@ s — longer than the 10-s pulse
+  window that would excuse it — peak pack charge **@R16PACKPK@ kW bus**
+  against @R16NOM@ / @R16ALT@ kW accepted. A pack cannot tell where its
+  charge current comes from, and the genset is on for a fraction
+  @SDNOMONFRAC@ of cycle time, so this is structural to the dispatch of
+  record, not incidental.
+
+  **(b) The hot end, on the pack quantity.** At the 45 °C declared cells
+  the ordered run already charges at @R16PACKPKA@ kW against @R16ALT@ kW
+  continuous. At 50 °C the continuous curve falls to **@R1650@ kW**. At
+  WS3's 55 °C loop ceiling the continuous rating is **@R1655@ kW** and
+  even the **10-s pulse** rating is **@R16PULSE55@ kW** — still below
+  this run's peak charge.
+
+  **(c) What enforcing the pack reading costs**, measured, not asserted:
+  worst shed **@R16BSHED@ kWh** at @R16BSHEDGOV@, up to @R16BCLIP@ s of
+  clipping, fuel penalty at most **@R16BFUEL@ %**, and unserved bus
+  energy stays **@R16BUNS@ kWh** (§4-KX.4). The §4-KX.2 headline is
+  invariant under either reading.
+
+  WS4 cannot resolve this and does not: the semantics of WS3's interface
+  are WS3's, the cell-temperature trajectory is WS3/WS6's, and the blend
+  order is WS5's. **Requested disposition, three parts:** (1) rule which
+  quantity R16's continuous column limits — the regen leg or the pack —
+  and, if the pack, whether WS5's supervisor must trim the genset or shed
+  to the resistor; (2) a ruled maximum cell temperature for dispatch at
+  full charge, or an explicit acceptance that hot-corner descents run on
+  the resistor; (3) note that WS4's own load-following companion (b′)
+  stays inside the acceptance on every seed of every ordered case
+  (§4-KX.6) — reported, not recommended.
 - **ESC-9 (new — cites R8 as restated by R12/ES-4, R4/E24; for
   WS5/WS3) — THE DELIVERED PACK HAS THE ENERGY, NOT THE POWER.** The
   ordered R22a run completes every case with @SDUNSERVED@ kWh unserved
@@ -1668,12 +2560,81 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   pack off the peak, or WS3 must restate the interface rating), or
   whether short excursions of this duration are accepted — and note
   that the archived gate's mode (a) never posed this question, because
-  the engine carried the peaks mechanically. This is R4/E24's "spine
-  not sized for forced series" record extended from the R3 motor rating
-  to the pack.
+  the engine carried the peaks mechanically **on the pack axis** (in
+  mode (b) the engine carries peaks too, above its own rating — see
+  ESC-10; the r1 closing sentence was incomplete and is corrected here).
+  This is R4/E24's "spine not sized for forced series" record extended
+  from the R3 motor rating to the pack.
+  **ADDED IN KX r2 (adjudication B2), without recommendation:** the
+  load-following companion (b′) that this block already carried for
+  R22b **satisfies R8's bus-side envelope in both directions, WS3's R16
+  acceptance read on the pack, and the engine's own continuous
+  flat-rating — on every seed of every ordered case** (pack discharge
+  peak @BPDISPK@ kW vs 125; charge peak @BPCHGPK@ kW vs 110; 0.0 s above
+  R16 acceptance; 0.0 s above the continuous rating), at a fuel delta of
+  @BPPENN@ % / @BPPENC@ % / @BPPENA@ % on the paired per-case median
+  (§4-KX.6). The r1 round named "run the genset earlier so the pack
+  never has to cover the peak alone" as an abstract remedy and did not
+  report that its own companion demonstrates it. WS4 still does not
+  choose the dispatch — that is R22b's, and the table does not price
+  start transients, aftertreatment temperature or part-load engine duty
+  — but the lead should not be asked to rule on this without the
+  measurement.
+
+- **ESC-10 (new, KX r2 — cites R18 and ESC-1; for the lead/WS6) — THE
+  GENSET RUNS ABOVE ITS OWN CONTINUOUS FLAT-RATING.** In the emergency
+  band the simulator caps the engine at the **automotive** full-load
+  curve (@M1AUTO@ kW × derate — the 4HK1-TC hardware figure §2.1 itself
+  identifies as automotive), not at the **@M1CONTN@ kW continuous
+  flat-rating** WS4 specifies. Measured over the ordered run: @M1SN@ /
+  @M1SC@ / @M1SA@ s per cycle above the rating, worst @M1WORSTS@ s
+  (@M1WORSTGOV@), peak shaft **@M1PEAK@ kW = @M1PEAKPCT@ %** of the
+  continuous rating, and the generator exposed on the same samples
+  against its @M1GENCONT@ kW continuous shaft input (§4-KX.3).
+  Why it matters to the lead specifically: the 132 kW flat-rating is a
+  **blocking** R18 datasheet figure and a WS6 release blocker, specified
+  as an unlimited-hours prime/COP-class rating with **+0.82 kW** of
+  margin at the R6 corner (ESC-1, PROVISIONAL) — and @M1PEAKPCT@ % for
+  ~3 minutes also exceeds the 10 %/1 h overload an ISO 8528-1 prime
+  rating allows. **This does not touch the §4-KX.2 headline:** WS4 ran
+  the bracket, and with the engine held to its own continuous rating in
+  the emergency band the run still completes every ordered case with
+  **@M1BUNS@ kWh** unserved on every seed. What the over-rating buys is
+  SOC margin, not feasibility: the CdA 5.4 SOC minimum deepens from
+  @SDCDASOCMINMIN@ to @M1BSOC@ of usable, and fuel does not rise at all
+  (the worst case is @M1BFUEL@ %, i.e. every ordered case burns slightly
+  *less*, because the capped engine stays nearer its island).
+  `engine_continuous_rating_bracket`. Requested disposition: either
+  rule that short excursions to the automotive curve are accepted for a
+  genset installation — in which case R18's datasheet task should
+  confirm the *automotive* curve too, not only the flat-rating — or rule
+  that the supervisor must hold the engine to its continuous rating, in
+  which case the emergency band's ceiling is a WS5 constraint and the
+  bracket above is the cost. WS4 does not choose.
+
+- **ESC-11 (new, KX r2 — cites R34; a clarification request, for the
+  lead) — WHAT "ONE TRACE PER RUN" MEANS.** R34 reads "every pipeline
+  exports a 10 Hz trace file per run". This pipeline executes
+  @R34ORD@ ordered mode-(b) runs plus their (b′) companions plus the
+  brackets and sensitivities; the per-**simulated**-run reading would be
+  ~132 MB of committed artefact for the ordered set alone, and the
+  per-**pipeline**-run reading is satisfied by a single file. The r1
+  round emitted one trace and asserted "one per run" without saying
+  which reading it meant (adjudication m4). WS4 now **declares** the
+  per-pipeline-run reading and, rather than sit on the ambiguity, emits
+  @R34N@ traces — one per **ordered case** at the reference seed — so
+  R34's stated consumer (the WS10 exhibit/simulator) has a full-rate
+  witness of each ordered case, with all @R34SOCRUNS@ ordered runs
+  covered at 5 s in `@SOCFILE@`. Requested disposition: confirm the
+  reading. If the per-simulated-run reading is intended,
+  `run_ws4.py`'s `R34_TRACE_ALL_ORDERED_RUNS` constant emits all
+  @R34ORD@ with no other change, and the lead should say whether ~132 MB
+  of trace belongs in the repository.
 
 ## 13. Artefacts in this folder
 
+- `FINDINGS_KX_r1.md` — the adjudication this round reworks against
+  (input, not a WS4 product; not modified)
 - `REPORT_WS4.md` (this file, generated by `make_report_ws4.py`),
   `results_ws4.json` (every number, machine-readable; `interface_ws4`
   is the block downstream parses)
@@ -1688,11 +2649,13 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   constructed)
 - `data/gen_eff_map_V2.csv`, `data/gen_eff_map_V1.csv` — generator
   maps (headers carry the R10/1200 V SiC restatement)
-- `@TRACEFILE@` — **R34 10 Hz trace** (@TRACEROWS@ rows), one per run:
-  the R22a nominal reference-seed run of mode (b), every bus-side and
-  engine-side channel plus SOC
-- `@SOCFILE@` — R22a SOC trajectories, all 8 seeds × 3 cases, 5 s
-  decimation
+- **R34 10 Hz traces**, @R34N@ files — one per ordered case at the
+  reference seed, @TRACEROWS@ rows each, every bus-side and engine-side
+  channel plus SOC: @R34FILES@. The reading of R34 these satisfy is
+  declared in `series_duty_v2 → _trace_files → r34_interpretation` and
+  put to the lead as ESC-11.
+- `@SOCFILE@` — R22a SOC trajectories, all 8 seeds × 3 cases
+  (@R34SOCRUNS@ ordered runs), 5 s decimation
 - `figs/fig01_bsfc_v2.png`, `figs/fig02_g1_fuel.png` (archived-gate
   fuel by seed), `figs/fig03_v1_starts.png`,
   `figs/fig04_series_duty_soc.png` (R22a SOC trajectories)

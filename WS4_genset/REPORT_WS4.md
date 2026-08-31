@@ -6,9 +6,22 @@ Project Volt · workstream 4 · against **BASELINE_v3.md** (ratified
 were computed against BASELINE_v2.md and are **archived, not
 recomputed**.
 Author: WS4 (engine & generator). Status: **for adjudication — KX
-round** per the lead directive `KX_DIRECTIVE.md` (rulings R22, R23).
-KX changelog in §0-KX; the G1-R changelog (§0-R) and the round-2
-changelog (§0) are retained as history.
+round 2 (rework)** against `FINDINGS_KX_r1.md` (2 blocking, 3 material,
+8 minor — all addressed), executing the lead directive
+`KX_DIRECTIVE.md` (rulings R22, R23). Rework changelog in **§0-KX2**,
+including the exported-member delta for the two workstreams consuming
+`series_duty_v2` live; the KX r1 changelog (§0-KX), the G1-R changelog
+(§0-R) and the round-2 changelog (§0) are retained as history.
+
+> **KX r2 in one line: no ordered number moved, and the block now says
+> what it does.** The two blocking findings were interface-correctness
+> defects on a live design-input block — a field asserting a constraint
+> was inactive while the pack was charged above it (B1), and a companion
+> run that omitted the very axes the escalation it feeds turns on (B2).
+> Both are fixed at source and both are now measured, bracketed and
+> escalated rather than decided by WS4. Every `series_duty_v2` fuel,
+> unserved-energy, above-pin, SOC, starts and pack-peak value is
+> byte-identical to the r1 vintage; §0-KX2 lists the member-level delta.
 
 **The clutch is dead.** BASELINE_v3 executed Gate G1's kill clause on
 the numbers this report carries. Nothing in this round re-runs or
@@ -21,15 +34,15 @@ requirements. The live V2 design input is the new §4-KX block,
 
 Everything below is produced by runnable code in this folder.
 `./.venv/bin/python run_ws4.py` regenerates every number, map, table,
-trace and figure in ~3 min (`pip install -r requirements.txt` into any
+trace and figure in ~4 min (`pip install -r requirements.txt` into any
 Python ≥3.12 venv first); `results_ws4.json` is the machine-readable
 form; `make_report_ws4.py` generates this report with the Interfaces
 block and every headline injected from that JSON; and `verify_ws4.py`
 asserts that every headline number here matches `results_ws4.json`
 verbatim — no *current* number is transcribed by hand, and the R23
-errata carry their own checker pins (including an occurrence count, so
-a corrected phrase cannot be corrected in only three of four places
-again). (Historical values quoted in the changelogs — the r2 record and
+errata carry their own checker pins (including, from KX r2, a
+**per-section** placement pin, so a corrected phrase cannot be corrected
+in only three of four *places* again — a count is not a place check). (Historical values quoted in the changelogs — the r2 record and
 the unreproducible r3-interim run — are quotations of the prior record;
 the r3-interim margins are carried as a literal historical block in
 `results_ws4.json` and rendered from it.) All stochastic inputs are
@@ -53,8 +66,16 @@ kx_input_provenance → input_sha256` (and, for the archived gate,
 > 192.5 kW against R8's 125 kW, and enforcing the envelope costs
 > 0.613 kWh of unserved energy at the corner (§4-KX, ESC-9) — and
 > the R3 motor rating is still exceeded, unchanged from the gate
-> record. R16's cold curves are consumed and are **not binding** at any
-> ordered (warm) case; the hot end is escalated (ESC-8). Fuel energy
+> record. R16's curve is consumed and is **not binding on the regen
+> leg** at any ordered (warm) case — but read as the **pack** charge
+> limit its own header names, the same curve is **exceeded on every
+> ordered case** (39.1–47.0 / 41.4–58.6 / 13.6–23.8 s per cycle,
+> peak pack charge 147.6 kW bus), because regen and the genset
+> charge the pack at the same time; both readings and the cost of
+> enforcing the pack one are now exported, and the choice between them
+> is escalated (ESC-8). The genset also runs above its own
+> 132.0 kW continuous flat-rating for up to 250.0 s per cycle
+> (ESC-10). Fuel energy
 > per km, above-pin duty, SOC trajectories, genset cycling and the
 > per-seed tables are exported for WS5's R22b dispatch question.
 >
@@ -85,6 +106,168 @@ kx_input_provenance → input_sha256` (and, for the archived gate,
 > to map voltage across WS2's full exported window (§6). The kill
 > clause was armed at ≥5% on these numbers (BASELINE_v2); BASELINE_v3
 > executed it. WS4 reported the number; the lead executed.**
+
+---
+
+## 0-KX2. KX rework changelog (response to `FINDINGS_KX_r1.md`)
+
+KX round 1 was adjudicated **NOT CLEAN: 2 blocking, 3 material, 8
+minor.** Every finding is addressed below at root cause, with what
+changed and where. **No ordered number in `series_duty_v2` moved** —
+the block's fuel, unserved-energy, above-pin, SOC, starts and pack-peak
+values are byte-for-byte the r1 values, which is the correct outcome
+because none of the findings said an ordered number was wrong. What
+changed is what the block *says about itself*: three exported member
+sets are new, two members are renamed, and the WS6 ledger rows are
+recomputed. The member-level delta is listed at the end of this section
+for the two workstreams (WS11, WS5) consuming this block live.
+
+### Blocking
+
+- **KX-B1 — R16's cap applied to the regen leg only; `bound_any_sample:
+  false` exported while the pack is charged above its own acceptance
+  curve.** *Root cause:* `ws4_sim.run_g1_mode` applied
+  `chg_accept_bus_kw` inside the `pw < 0.0` regen branch, and
+  `p_batt_bus = p_gen_elec - p_bus_load` was formed afterwards and never
+  tested. *Fixed at source:* the pack-side exceedance of the same curve
+  is now measured on every run
+  (`pack_chg_above_r16_accept_s`/`_kWh`/`_longest_s`, per seed, R14
+  envelopes, both (b) and (b′)); the misleading field is **renamed**
+  `bound_any_sample` → `regen_leg_bound_any_sample` and joined by
+  `pack_charge_bound_by_r16_any_sample`; both readings of WS3's
+  interface are stated in `r16_binding_analysis → _two_readings`; WS3's
+  10-s **pulse** column — never consulted in r1 — is loaded and shown not
+  to cover the excursions; and a new bracket
+  (`r16_pack_acceptance_bracket`) enforces the pack reading and prices
+  it. Measured: 39.1–47.0 / 41.4–58.6 / 13.6–23.8 s per cycle above
+  acceptance, longest 15.4 s, peak pack charge 147.6 kW
+  bus. **WS4 does not choose the reading** — that is WS3's interface
+  semantics and WS5's blend order — and ESC-8 is restated on the pack
+  quantity with the 50 °C and 55 °C continuous *and* pulse values, as
+  the adjudicator's remedy (ii) requires. §4-KX.4 rewritten. The
+  headline is invariant: enforcing the pack reading leaves unserved
+  energy at 0.0000 kWh.
+- **KX-B2 — the (b′) companion exported only fuel and starts, omitting
+  every axis R22b turns on.** *Root cause:* the interface projected
+  `companion_bp` through `IFACE_R8_KEYS` (six fields). *Fixed at
+  source:* a dedicated `IFACE_BP_KEYS` gives the companion the **same**
+  capability export set as the block of record — pack discharge/charge
+  peaks, both R8 exceedance counters, the new R16 pack counter, the new
+  engine over-rating counters, emergency-band time, SOC envelope and the
+  heat rows — and a new
+  `companion_bp_capability_comparison` block states each axis as an
+  explicit (b) vs (b′) verdict with R14 governing cases. §4-KX.6 carries
+  the rows; ESC-9 now records, **without recommending**, that the
+  load-following endpoint satisfies R8, R16-on-the-pack and the engine's
+  continuous rating on every ordered seed at the fuel deltas already
+  printed.
+
+### Material
+
+- **KX-M1 — the genset runs above its own 132 kW continuous
+  flat-rating; no counter, no prose, and §4-KX.3's exceedance list
+  omitted the component this workstream owns.** *Root cause:* the
+  emergency band capped on `p_peak_kw` = the **automotive** peak.
+  *Fixed:* the ceiling is now a named quantity in the simulator
+  (`emerg_ceiling_kw`) and stated in §4-KX.1;
+  `engine_over_continuous_rating_s`/`_kWh`/`_longest_s`,
+  `engine_shaft_peak_kW` and `generator_over_continuous_input_s` are
+  exported per seed with R14 envelopes for **both** (b) and (b′);
+  §4-KX.3 carries the row alongside the motor and pack rows; a bracket
+  (`engine_continuous_rating_bracket`) caps the engine at its own rating
+  and confirms the headline does not rest on the over-rating; and it is
+  raised as its own escalation, **ESC-10**, against R18/ESC-1.
+- **KX-M2 — the live block could not resolve its own chain of record.**
+  *Root cause:* the F4 fix landed inside `gate_g1`, whose archival
+  notice forbids consumption, and `series_duty_v2` carried only prose
+  plus a hash-table label. *Fixed:* `series_duty_v2 → _inputs →
+  chain_of_record` now carries the WS4-relative map path, voltage,
+  reduction, WS2 round, feasible-cell count and the map's SHA-256, and
+  `_inputs → boundary_convention_exposure` carries the convention's
+  measured exposure for all three ordered cases. `verify_ws4.py` asserts
+  the live block resolves **without reading `gate_g1`**.
+- **KX-M3 — the payload-denominated metric carried no denominator,
+  basis or caveat into the interface.** *Fixed:* `_inputs →
+  payload_metric_basis` carries the tonnage, WS1 source, the fact that
+  it is identical in all three cases, and an explicit caveat that the
+  field equals per-km ÷ 2.9 and is **not** the R32 metric. ESC-7
+  restated to say which curb the 2.9 t belongs to (WS1's
+  **pre-conversion** operating curb) and that it does not charge the
+  series powertrain's mass. The field is kept rather than withdrawn, so
+  no exported member disappears under live consumers.
+
+### Minor
+
+- **m1** — the hard-coded "*i.e. they are launch samples*" clause in
+  `make_report_ws4.py` was refuted by its own rendered 98.4 km/h.
+  Clause deleted; the claim that survives is rendered from data (the
+  rpm = 0-column share, §4.1).
+- **m2 — D5 CLOSED.** The whole gap between WS4's strict count and the
+  r3 adjudicator's is WS2's degenerate rpm = 0 map column.
+  `ws4_chain.boundary_exposure_strict_linear` (the adjudicator's
+  interpolated-envelope criterion) and `nearest_col_is_degenerate` now
+  ship; both counts and the artefact share are exported
+  (`chain_boundary_exposure → d5_reconciliation`) and printed in §4.1,
+  §8 F-9 and §9 D5. Reproduces the adjudicator's published figures
+  exactly: 3.6–7.6 s nominal, 7.4–20.6 s at CdA 5.4. No pp figure moves.
+- **m3** — R14 governing-case labels added to the eight fields whose
+  siblings had them: `gate_g1/boundary_convention_exposure/
+  nominal_one_sided_pp_max`, `chain_weighting_convention/
+  series_duty_weighted/eta_bus_to_wheel_max`, the three
+  `r22d_coast_spin_member` maxima (which appear twice, and are labelled
+  in both places because they are the same object),
+  `gate_g1/verdict/margin_pct_ensemble_max`, and the three
+  `attribution_rows/*/delta_pp_min`.
+- **m4** — R34's interpretation is **declared**
+  (`_trace_files → r34_interpretation`), the trace header no longer
+  asserts an unqualified "one per run", 3 traces are emitted (one
+  per ordered case, up from one), and the ambiguity is flagged to the
+  lead as **ESC-11** rather than self-resolved.
+- **m5** — §0-R's list of the four F1 locations named ESC-6, which
+  carries no seed count; the fourth occurrence is §0-R itself. Sentence
+  reconciled with §0-KX's (which was correct), and `verify_ws4.py` now
+  pins the phrase **per section slice** — headline, §0-R, §6, ESC-2 —
+  instead of counting total occurrences.
+- **m6** — the WS6 ledger rows divided the 8-seed maximum energy by the
+  reference seed's duration. Each row is now the max of the **per-seed
+  cycle averages**, and each component carries **its own** governing
+  seed. Engine rejection: 72.5516 → **73.0408**, 86.2949 →
+  **86.8728**, 59.7385 → **59.9516** kW (the r1 rows are retained
+  as a literal at `heat_ledger_ws6 →
+  series_duty_v2_cycle_average_kx_r1_superseded`).
+- **m7** — peak and rolling **2-min / 10-min** maximum engine rejection
+  are exported per case with R14 labels, plus the implied radiator-
+  package rows and an explicit comparison against R20's 95.0 kW
+  design point (§4-KX.7). R20/ESC-4 survives on the 2-min window at the
+  corner (86.3 kW): True.
+- **m8** — the hysteresis sensitivity now runs both bands over the
+  **8-seed** ensemble (R9). The block is renamed
+  `hysteresis_sensitivity_ref_seed` → `hysteresis_sensitivity`; the r1
+  reference-seed rows are retained unchanged under `cases → <case> →
+  ref_seed` and are still printed in §4-KX.6.
+
+### Exported-member delta (for live consumers of `series_duty_v2`)
+
+Two workstreams are consuming this block as a live design input while it
+was ungated (WS11's Vehicle Zero ruler trial and WS5's R22b dispatch
+question). **No value inside `series_duty_v2` changed. Exactly nine
+numbers changed anywhere in `results_ws4.json`, and all nine are the
+WS6 ledger rows corrected under m6** (engine / generator / chain cycle
+averages, three cases). The changes a consumer must hot-swap for are:
+
+| Kind | Member | Note |
+|---|---|---|
+| **renamed** | `r16_binding_analysis → bound_any_sample` → `regen_leg_bound_any_sample` | value unchanged (False); joined by `pack_charge_bound_by_r16_any_sample` = True |
+| **renamed** | `hysteresis_sensitivity_ref_seed` → `hysteresis_sensitivity` | now 8-seed; r1 rows preserved at `cases → <case> → ref_seed`, values identical |
+| **recomputed** | `heat_ledger_ws6 → series_duty_v2_*_cycle_average` (engine / generator / chain rows) | +0.4–0.7 %, m6; `governing_case` is now a pointer to per-component labels |
+| **added** | `_inputs → chain_of_record`, `_inputs → boundary_convention_exposure`, `_inputs → payload_metric_basis` | M2, M3 |
+| **added** | pack-R16, engine-rating and transient-heat fields in every `cases[*].ensemble` and in `companion_bp_ensemble` | B1, B2, M1, m7 |
+| **added** | `r16_pack_acceptance_bracket`, `engine_continuous_rating_bracket`, `companion_bp_capability_comparison` | B1, M1, B2 |
+| **added** | two further 10 Hz traces | m4 |
+
+Everything else in `series_duty_v2` — every case ensemble value, every
+per-seed ordered export, the unserved-energy verdict, the SOC-window
+check and the R8 bracket — is byte-identical to the r1 vintage.
 
 ---
 
@@ -178,6 +361,13 @@ R22b; WS4 does not choose the dispatch.
 ESC-5's energy half is closed by this round; ESC-1 through ESC-6 are
 otherwise unchanged or disposed by BASELINE_v3.
 
+*(KX r2 adds two more and restates three: **ESC-10** (R18/ESC-1 — the
+genset above its own continuous flat-rating) and **ESC-11** (R34 — the
+"one trace per run" reading); ESC-7 restated on which curb the payload
+denominator belongs to, ESC-8 restated on the pack quantity and widened
+to the choice of reading, ESC-9 extended with the (b′) measurement. See
+§0-KX2 and §12.)*
+
 ### Interface restatement (directive item 3)
 
 `interface_ws4 → gate_g1` carries `status: executed_kill_2026-08-30`, an explicit
@@ -197,6 +387,9 @@ exposure, and an explicit double-count warning.
 Complied with from this artefact: `data/trace_series_duty_v2_nominal_seed23_10Hz.csv` (66,143 rows at
 10 Hz — WS1's builders integrate at 0.1 s, so the trace is native, not
 resampled) plus `data/series_duty_v2_soc_trajectories.csv` for the per-seed SOC trajectories.
+*(Superseded by KX r2: 3 traces are now emitted, one per ordered
+case, and R34's interpretation is declared rather than assumed —
+§0-KX2 m4 and ESC-11.)*
 
 ---
 
@@ -292,8 +485,13 @@ code drift.
   "sign reversed everywhere" language overstated the CdA 5.4 ensemble,
   which is break-even. *KX/R23-F1 corrects that replacement claim in
   turn: the r3 round printed "two" where the data has 4 of 8
-  seeds marginally positive (seeds 4, 7, 8, 9) — corrected in the
-  headline, §6, ESC-2 and ESC-6.* Additionally the sign's
+  seeds marginally positive (seeds 4, 7, 8, 9) — corrected in all
+  four places the phrase occurs: the headline, this §0-R entry, the §6
+  table and ESC-2. (KX r2, adjudication m5: the r1 wording of this
+  sentence said "the headline, §6, ESC-2 and ESC-6"; ESC-6 carries no
+  seed count and the fourth occurrence is this sentence. §0-KX's list
+  was the correct one, and `verify_ws4.py` now pins the phrase **per
+  section**, not by total count.)* Additionally the sign's
   dependence on the declared rectifier member is now bracketed
   in-pipeline (§6): the kill outcome is invariant.
 - **Directive 4 (R18 datasheet confirmation task): DONE.** §2.1 states
@@ -513,8 +711,13 @@ negligible") is withdrawn. Measured, per condition, by a counter in
 lookup queries: at **nominal**, exposure is 22.7–31.3 s/cycle
 (18.9–24.5 s on the stricter outside-the-envelope test), of which
 22.2–28.2 s are *unlocked* samples both modes drive identically and only
-0.0–6.0 s are locked; the exposed samples top out at 98.4 km/h,
-i.e. they are launch samples. At **CdA 5.4** exposure rises to 27.8–46.4
+0.0–6.0 s are locked; the exposed samples reach 98.4 km/h. **KX r2
+(adjudication m1/m2):** the r1 wording added "i.e. they are launch
+samples" to that sentence — a hand-written claim its own rendered
+98.4 km/h refutes — and it is withdrawn. What *is* true, and is now
+measured rather than asserted, is that the bulk of the **strict** count
+sits on the map's degenerate rpm = 0 column, i.e. below
+0.70 km/h. See D5 below, now closed. At **CdA 5.4** exposure rises to 27.8–46.4
 s/cycle (24.0–39.3 s strict) with 4.8–23.1 s of it on *locked* ~94–98
 km/h cruise samples reaching 98.5 km/h — samples mode (a) serves on
 the engine and mode (b) serves through the clamped chain, so the
@@ -524,10 +727,34 @@ cycle fuel (0.0158 pp on a hostile 2× loss gradient) at CdA 5.4 and
 0.0013 pp at nominal — an order of magnitude below the ~0.05 pp the
 directive characterised it as, itself two orders below the 7.58-point
 shortfall, and pointing the way the r3 conclusion already pointed.
-Full tables: `results_ws4.json → chain_boundary_exposure`. WS4's count
-is larger than the r3 adjudicator's independently measured 3.6–7.6
-s/cycle at nominal; the two use different boundary criteria and WS4's
-is the more inclusive, so its pp bound is the conservative one (D5).
+Full tables: `results_ws4.json → chain_boundary_exposure`. **D5 is
+closed (KX r2, adjudication m2):** WS4's count was larger than the r3
+adjudicator's independently measured 3.6–7.6 s/cycle at nominal, and
+the whole gap is **one map column**. Evaluating the feasible-torque
+envelope by *linear interpolation between bracketing rpm columns* — the
+r3 adjudicator's implementation — gives 3.6–7.6 s at nominal and
+7.4–20.6 s at CdA 5.4, reproducing that adjudicator's two published
+figures. WS4's strict counter instead snapped to the *nearest* rpm
+column, and WS2's map grid begins at rpm = 0 — the map's
+only degenerate column, carrying exactly one feasible cell, at T = 0,
+hence a **zero-width envelope**. Every motoring sample below 50 rpm (road speed under
+0.70 km/h, the instant of a standing start) was therefore tested
+against it and flagged: 18.4–23.6 s/cycle at nominal, i.e. about four
+fifths of the strict count. Excluding that column the nearest-column
+count falls to 0.0–3.4 s at nominal and 3.8–18.6 s at CdA 5.4.
+
+| Boundary-exposure criterion (motoring, s/cycle, 8-seed) | Nominal | CdA 5.4 |
+|---|---|---|
+| Stencil criterion (WS4 headline) | 22.7–31.3 | 27.8–46.4 |
+| Strict, nearest rpm column (WS4 r1) | 18.9–24.5 | 24.0–39.3 |
+| **Strict, linear envelope (r3 adjudicator)** | 3.6–7.6 | 7.4–20.6 |
+| Strict, nearest column excl. the rpm = 0 column | 0.0–3.4 | 3.8–18.6 |
+|  of which: attributable to the rpm = 0 column | 18.4–23.6 | 18.4–23.6 |
+
+Nothing moves: those samples book **zero** unbooked loss
+(`unbooked_bus_kWh_linear` equals `..._locked_only`), so every pp bound
+below is unchanged; what changes is that the printed *seconds* now carry
+the artefact separated out.
 Separately, the R3
 over-*rating* counter (>150 kW motor shaft) fires 42.1–71.5 s
 per cycle in mode (b) (mode (a): 0.0 s) — those samples lie
@@ -680,6 +907,32 @@ there on hard seeds. The directive orders the verification at the
   Mode (b′) — the same genset load-following its best-BSFC locus — is
   carried as a **companion** so R22b has both endpoints; **WS4 does
   not choose the dispatch, R22b assigns that to WS5.**
+- **Emergency-band ceiling [stated explicitly, KX r2 / adjudication
+  M1]:** in the emergency band the engine is capped at the
+  **automotive full-load curve** (`engine.peak_power_kw() × derate ×
+  0.97` = 153.3 kW × derate), **not** at the 132.0 kW continuous
+  flat-rating this workstream specifies. The r1 round did not say so
+  anywhere. What that permits is measured in §4-KX.3 and bracketed;
+  the escalation is ESC-10.
+- **Traction chain of record [KX r2 / adjudication M2]:** the live block
+  now carries its own resolvable chain — `../WS2_traction_motor/data/effmap_motor_inverter_662V.csv`, 662 V, WS2
+  round 4, × the flat 0.97 reduction, with the map's
+  SHA-256 — under `series_duty_v2 → _inputs → chain_of_record`. The r1
+  round carried it only inside the **archived** `gate_g1` block, whose
+  own notice forbids consuming any of its fields, so a consumer obeying
+  that notice could not resolve the chain the live numbers were made
+  with. The map-boundary convention's exposure travels with the live
+  block too (`_inputs → boundary_convention_exposure`); on the whole
+  unbooked bound it is at most 0.0013 / 0.0079 / 0.0002 pp
+  of cycle fuel across the three ordered cases.
+- **Payload denominator [KX r2 / adjudication M3]:** the payload
+  companion is denominated on **2.9 t** (2,900 kg = WS1's
+  m_gvw − m_curb_operating), and that basis, its source and its
+  caveat now travel in the JSON at `_inputs → payload_metric_basis`,
+  not only in ESC-7's prose. It is the **pre-conversion** curb: it does
+  not charge the series powertrain's mass, it is identical in all three
+  cases, and the exported field is therefore exactly the per-km field
+  ÷ 2.9. **It is not the R32 metric** — see ESC-7.
 - **Cases (3):** nominal; CdA 5.4 (E13); and the 2,000 m/+45 °C corner
   — the *identical* case definition the archived gate used
   (ρ 0.8706 kg/m³, derate 0.9312, GVW, CdA 4.2, 2 kW aux). It is **not**
@@ -735,7 +988,7 @@ there on hard seeds. The directive orders the verification at the
 | Peak regen to pack [kW bus] | 68.9–69.0 | 68.9–69.0 | 69.1–69.1 |
 | Regen shed by the R16 curve [kWh] | 0.0000–0.0000 | 0.0000–0.0000 | 0.0000–0.0000 |
 | Motor over-rating exposure [s] | 42.1–71.5 | 110.4–137.5 | 12.0–22.7 |
-| Fuel energy per payload t·km (R32 flag) | 0.5866–0.5959 | 0.6962–0.7027 | 0.4873–0.4917 |
+| Fuel energy per payload t·km — **companion, not the R32 metric** (§4-KX.1, ESC-7) | 0.5866–0.5959 | 0.6962–0.7027 | 0.4873–0.4917 |
 
 Reading, case by case:
 
@@ -755,9 +1008,13 @@ Reading, case by case:
   as it derates the engine: fuel energy is the lowest of the three.
   What it does not help is pack power — see below.
 
-SOC trajectories for all 24 runs: `figs/fig04_series_duty_soc.png`,
-`data/series_duty_v2_soc_trajectories.csv` (5 s decimation, every seed and case), and the full-rate
-reference trajectory inside `data/trace_series_duty_v2_nominal_seed23_10Hz.csv`.
+SOC trajectories for all 24 ordered runs:
+`figs/fig04_series_duty_soc.png` and `data/series_duty_v2_soc_trajectories.csv` (5 s decimation, every
+seed and case). Full-rate **10 Hz R34 traces, one per ordered case** at
+the reference seed (KX r2, adjudication m4 — r1 emitted one, for
+nominal): `data/trace_series_duty_v2_alt2000m_45C_seed23_10Hz.csv`, `data/trace_series_duty_v2_cda_5.4_seed23_10Hz.csv`, `data/trace_series_duty_v2_nominal_seed23_10Hz.csv`. The R34 interpretation WS4 is working to is
+declared in `series_duty_v2 → _trace_files → r34_interpretation` and
+flagged to the lead as **ESC-11**.
 
 ### 4-KX.3 What the run does NOT establish — the pack POWER envelope (ESC-9)
 
@@ -800,6 +1057,47 @@ if anything understated.
 | Charge shed [kWh/cycle] | 0.376–0.472 | 0.492–0.672 | 0.202–0.347 |
 | Fuel per cycle [kg] | 18.98–19.16 | 22.51–22.75 | 15.75–15.89 |
 
+**The third exceedance, and it is this workstream's own component
+(KX r2, adjudication M1).** The r1 §4-KX.3 enumerated the R3 motor
+rating and the R8 pack envelope and read as a complete list. It was not.
+In the emergency band the simulator caps the engine at the **automotive
+full-load curve** (`p_peak_kw × derate × 0.97`, where `p_peak_kw` =
+153.3 kW is the 4HK1-TC's automotive peak, which §2.1 itself
+identifies as automotive and *not* the continuous rating) — not at the
+132.0 kW continuous flat-rating WS4 specifies and R18 blocks WS6's
+release on:
+
+| Genset vs its own rating (mode (b), 8-seed) | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
+|---|---|---|---|
+| Continuous flat-rating x case derate [kW shaft] | 132.0 | 132.0 | 122.9 |
+| **Seconds above it [s/cycle]** | 0.0–146.5 | 161.8–250.0 | 55.0–66.1 |
+| Longest continuous excursion [s] | 139.9 | 188.5 | 64.1 |
+| Energy delivered above the rating [kWh] | 0.62 | 1.00 | 0.19 |
+| Peak engine shaft [kW] | 147.9 | 147.9 | 133.6 |
+| Generator above its 135 kW continuous shaft input [s] | 143.6 | 241.8 | 0.0 |
+
+Worst **250.0 s** per cycle above the rating (case cda_5.4 of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]), peak shaft
+**147.9 kW** — 112 % of the continuous rating. That also
+exceeds the 10 %/1 h overload an ISO 8528-1 prime rating allows, and the
+generator is exposed on the same samples against its 135.0 kW
+continuous shaft input. `above_pin_engine_s` counts time above the
+**pin** (84.7 kW), not above the **rating**, and no r1 field
+distinguished them. The counters
+`engine_over_continuous_rating_s`/`_kWh`/`_longest_s`,
+`engine_shaft_peak_kW` and `generator_over_continuous_input_s` are now
+exported per seed with R14 envelopes, for **both** (b) and (b′).
+
+This does **not** touch the zero-unserved headline: capping the engine
+at its continuous rating in the emergency band leaves unserved energy at
+zero on every seed of every ordered case — WS4 ran that bracket itself:
+worst unserved **0.0000 kWh**, at the cost of a deeper SOC minimum
+(CdA 5.4: 0.183 → **0.125** of usable, cda_5.4) and no
+fuel cost at all (worst case -0.06 %)
+(`engine_continuous_rating_bracket`; ESC-10). It
+is an unexported capability exposure on the component this workstream
+owns, and it is escalated as **ESC-10** against R18/ESC-1, whose
++0.82 kW corner margin is a *continuous*-rating figure.
+
 **Worst case 0.613 kWh unserved, at alt2000m_45C.** That is the
 finding, and it is a finding, not a tuning knob: R4/E24's record — "the
 spine is not sized for forced series" — extends past the R3 motor
@@ -812,25 +1110,100 @@ a WS5/WS3 question. Escalated as **ESC-9**. The R3 motor-rating exposure
 (42.1–71.5 s/cycle at nominal, 110.4–137.5 s at CdA 5.4) is the same
 record as the archived gate's and is unchanged by the larger pack.
 
-### 4-KX.4 R16 cold curves: consumed, and NOT binding here
+### 4-KX.4 R16: the curve binds nothing on the regen leg and is exceeded on the pack — both readings, measured
 
-The R16 curve is wired into the regen path as the bus-side charge
-acceptance at the declared cell temperature: 130.8 kW at 25 °C cells
-(nominal, CdA 5.4) and 129.1 kW at 45 °C cells (corner). Peak
-regen-to-pack over the whole run is **69.1 kW bus**, so the curve
-sheds nothing: `regen_shed_by_r16_kWh` is 0.0000 kWh on every seed
-(curve bound any sample: False). That is the honest result of
-consuming a cold-operation curve at three warm conditions, and it is
-stated rather than dressed up.
+**KX r2 (adjudication B1). The r1 round exported one field,
+`bound_any_sample: false`, that answered one of two questions and was
+read as answering both. Both are now measured, each under a name that
+says which it is.**
 
-Where it *would* bind, from the same curve and this run's peak regen:
-below **-9.4 °C** cells on the cold side, and above **53.9 °C**
-cells on the hot side. The hot side is not hypothetical — WS3's
-pack-loop **sizing line** holds cells at or below **55 °C** at +45 °C
-ambient, and acceptance at 55 °C is **62.2 kW**, *below* this run's
-peak regen. A corner descent on a pack sitting at its loop's design
-ceiling would shed regen to the resistor/friction column. Escalated as
-**ESC-8**; not resolved here, because the cell-temperature trajectory
+WS3's `regen_acceptance.csv` admits two readings, and on this duty they
+differ *measurably*:
+
+1. **Regen-leg rule.** WS3's REPORT_WS3 §4.2 presents the curve to WS5
+   as a regen-blend rule ("regen follows the acceptance curve at all
+   temperatures with the resistor as overflow"; "WS5 should drive the
+   blend from it directly"). This is the reading the ordered run
+   enforces.
+2. **Pack rule.** The file's own header line is *"pack regen-acceptance
+   vs cell temperature"* and the column is `V2pack_chg_cont_kW_bus` — a
+   **pack** charge limit, bus-side. A pack cannot tell whether its
+   charge current comes from regen or from the genset.
+
+**On reading (1) nothing binds.** The curve is wired into the regen path
+as the bus-side charge acceptance at the declared cell temperature:
+130.8 kW at 25 °C cells (nominal, CdA 5.4) and 129.1 kW at 45 °C
+cells (corner). Peak regen-to-pack over the whole run is
+**69.1 kW bus**, so the regen leg sheds nothing: `regen_shed_by_r16_kWh` is
+0.0000 kWh on every seed (`regen_leg_bound_any_sample`:
+False).
+
+**On reading (2) it is exceeded on every ordered case.** The r1
+simulator applies the cap inside the regen branch, as a cap on the
+regen leg only; the genset's output is added afterwards, at
+`p_batt_bus = p_gen_elec - p_bus_load`, and was never tested against the
+curve. The genset is on for a fraction 0.582–0.601 of cycle time at
+nominal, so regen-while-charging is **structural** to the dispatch of
+record, not incidental (across the three ordered cases the on-fraction
+spans 0.482–0.685). Measured against the pack's own total charge
+power (`pack_charge_bound_by_r16_any_sample`: True):
+
+| R16 read as a PACK charge limit (measured, NOT enforced) | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
+|---|---|---|---|
+| R16 continuous acceptance at declared cells [kW bus] | 130.752 | 130.752 | 129.144 |
+| **Pack charge above acceptance [s/cycle]** | 39.1–47.0 | 41.4–58.6 | 13.6–23.8 |
+| Longest single excursion [s] | 15.4 | 15.0 | 11.6 |
+| Excess energy, worst seed [kWh] | 0.181 | 0.238 | 0.098 |
+| Pack charge peak [kW bus] | 147.6 | 147.6 | 147.5 |
+| WS3 10-s **pulse** rating at declared cells [kW bus] | 204.173 | 204.173 | 200.553 |
+
+Peak pack charge is **147.6 kW bus** (nominal) against
+130.8 / 129.1 kW of continuous acceptance. **The 10-s pulse column
+does not excuse these.** WS3 rates 204.2 kW at 25 °C and
+200.6 kW at 45 °C for 10 s — above the peak — but the longest
+single excursion above the *continuous* acceptance is **15.4 s**
+(case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal]), longer than the window that column rates
+(`pulse10s_covers_the_excursions`: False). The r1 round never
+consulted this column; it is consulted here.
+
+**What enforcing the pack reading costs.** WS4 ran the bracket rather
+than argue the point — pack charge above the acceptance is shed:
+
+| R16 acceptance ENFORCED on the pack | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
+|---|---|---|---|
+| Charge shed [kWh/cycle] | 0.119–0.181 | 0.156–0.240 | 0.054–0.103 |
+| Charge clipped [s/cycle] | 32.6–47.0 | 41.7–59.7 | 13.7–25.1 |
+| **Unserved bus energy [kWh]** | 0.0000–0.0000 | 0.0000–0.0000 | 0.0000–0.0000 |
+| Fuel per cycle [kg] | 18.91–19.18 | 22.44–22.66 | 15.70–15.84 |
+
+Worst shed **0.240 kWh** at cda_5.4, up to 59.7 s of
+clipping, fuel penalty at most **+0.20 %** (cda_5.4), and
+**unserved bus energy stays 0.0000 kWh**. So the §4-KX.2 headline
+does not depend on which reading the lead rules for. Note the shed
+formulation is the crudest remedy available — it discards surplus rather
+than not generating it; the supervisor that instead backs the genset off
+is the load-following companion (b′), which stays inside the acceptance
+on every seed of every ordered case (§4-KX.6).
+
+**WS4 does not choose the reading.** The physical quantity the curve
+names is the pack's and the conservative reading is the pack one, but
+the semantics of WS3's interface are WS3's and the blend order is WS5's.
+The r1 round chose the permissive reading without recording that a
+choice existed; that is the defect, and the choice goes to the lead.
+
+**Where the curve would bind on temperature**, from the same curve and
+this run's peak regen: below **-9.4 °C** cells on the cold side, and
+above **53.9 °C** cells on the hot side. The hot side is not
+hypothetical — WS3's pack-loop **sizing line** holds cells at or below
+**55 °C** at +45 °C ambient, and acceptance at 55 °C is **62.2 kW**,
+*below* this run's peak regen. On the **pack** quantity the hot end is
+worse by roughly a factor of two: at the 45 °C declared cells (the corner
+case) the ordered run already charges at 147.5 kW against
+129.1 kW continuous; at
+50 °C the continuous curve falls to **95.0 kW**; and at the 55 °C loop
+ceiling even the **10-s pulse** rating is **128.8 kW**, still
+below the run's peak. Escalated as **ESC-8**, now stated on the pack
+quantity; not resolved here, because the cell-temperature trajectory
 belongs to WS3/WS6 and the blend order to WS5.
 
 ### 4-KX.5 R22d true-coast spin member — measured, reported, not charged
@@ -862,7 +1235,20 @@ double-charging driving samples.
 sensitive to a supervisor constant, so the constant is not left
 implicit. The ratified simulator's band is 0.35–0.75 of usable =
 4.43 kWh; WS3's own allocation for V2 is 3.5 kWh of genset
-hysteresis about the 0.55 target. Reference seed, both bands:
+hysteresis about the 0.55 target. **KX r2 (adjudication m8): both bands
+are now run over the full 8-seed ensemble**, because genset starts are a
+stochastic output and R9 requires an envelope, not one draw:
+
+| 8-seed envelope | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
+|---|---|---|---|
+| Genset starts — simulator band | 5–6 | 4–4 | 6–6 |
+| Genset starts — WS3 allocated band | 6–6 | 6–6 | 9–9 |
+| kWh/km — simulator band | 1.701–1.728 | 2.019–2.038 | 1.413–1.426 |
+| kWh/km — WS3 allocated band | 1.705–1.721 | 2.026–2.048 | 1.421–1.434 |
+| Unserved bus energy [kWh] — WS3 band | 0.0000–0.0000 | 0.0000–0.0000 | 0.0000–0.0000 |
+
+The r1 reference-seed rows are retained (`hysteresis_sensitivity →
+cases → <case> → ref_seed`) and reproduce unchanged:
 
 | Reference seed 23 | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
 |---|---|---|---|
@@ -871,21 +1257,56 @@ hysteresis about the 0.55 target. Reference seed, both bands:
 | kWh/km — simulator band | 1.701 | 2.019 | 1.413 |
 | kWh/km — WS3 allocated band | 1.705 | 2.026 | 1.421 |
 
-The tighter WS3 band cycles the genset more and costs a little fuel;
-neither band changes any conclusion above. WS5 owns the choice.
+Over the ensemble the picture is the r1 picture: the tighter WS3 band
+cycles the genset more and costs a little fuel; unserved energy stays
+zero on both bands at every case; neither band changes any conclusion
+above. WS5 owns the choice. What the r1 round could not say, and now
+can, is that this holds across the ensemble rather than on seed 23.
 
 **Load-following companion (b′), for R22b.**
 
-| Companion (b′) load-following | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
+**KX r2 (adjudication B2). The r1 round compared (b) and (b′) on fuel,
+starts and unserved energy only — none of the three capability axes on
+which R22b and ESC-9 are actually decided, and two of which are the whole
+substance of ESC-9.** The companion now carries the same capability
+export set as the block of record:
+
+| Companion (b′) load-following, 8-seed | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
 |---|---|---|---|
 | Fuel energy kWh/km | 1.706–1.722 | 2.018–2.038 | 1.438–1.451 |
 | Genset starts per cycle | 1–1 | 1–1 | 2–2 |
 | Unserved bus energy [kWh] | 0.0000–0.0000 | 0.0000–0.0000 | 0.0000–0.0000 |
+| **Pack discharge peak [kW bus]** (R8 125) | 74.5–92.1 | 75.7–96.9 | 102.0–115.6 |
+| **Pack charge peak [kW bus]** (R8 110) | 91.4–100.2 | 96.3–99.3 | 91.6–91.6 |
+| **Pack charge above R16 acceptance [s]** | 0.0–0.0 | 0.0–0.0 | 0.0–0.0 |
+| **Engine above its continuous rating [s]** | 0.0–0.0 | 0.0–0.0 | 0.0–0.0 |
+| Peak engine shaft [kW] | 131.1–131.1 | 131.1–131.1 | 121.9–121.9 |
+| Emergency-band time [s/cycle] | 0.0–0.0 | 0.0–0.0 | 0.0–0.0 |
 
-At nominal and CdA 5.4 the pinned and load-following dispatches are
-within a fraction of a percent of each other; at the corner the pin is
-better, because load-following drags the derated engine off its island.
-That is a data point for R22b, not a verdict.
+**Measured, mode (b′) is inside every envelope that mode (b) is outside
+of, on every seed of every ordered case:**
+
+| Capability axis | limit | mode (b), block of record | mode (b′), companion |
+|---|---|---|---|
+| Pack discharge peak [kW bus] | R8 125 | **192.5 — outside** | 115.6 — inside: True |
+| Pack charge peak [kW bus] | R8 110 | **147.6 — outside** | 100.2 — inside: True |
+| Pack charge above R16 acceptance [s] | 0 | **39.1–47.0 / 41.4–58.6 / 13.6–23.8 — outside** | 0.0 on every seed: True |
+| Engine above its continuous rating [s] | 0 | **0.0–146.5 / 161.8–250.0 / 55.0–66.1 — outside** | 0.0 on every seed: True |
+| Peak engine shaft [kW] | 132.0 / 122.9 by case | **147.9** | 131.1 |
+
+The fuel cost of that, on the paired per-case median: +0.06 % at
+nominal, -0.04 % at CdA 5.4, +1.80 % at the corner — inside the
+ensemble spread at nominal and CdA 5.4, and a real penalty only at the
+corner, where load-following drags the derated engine off its island.
+
+**This is a measurement, not a recommendation.** WS4 does not choose the
+dispatch; R22b assigns that to WS5, and this table does not price the
+axes R22b must also weigh — start transients, aftertreatment
+temperature, engine duty at part load — none of which this run models.
+But ESC-9 asks the lead to rule between remedies, one of which is "run
+the genset earlier so the pack never has to cover the peak alone", and
+WS4's own companion demonstrates that remedy on the same trace. Saying
+so is the difference between an escalation and a leading question.
 
 ### 4-KX.7 Heat to the WS6 ledger (program rule 7)
 
@@ -895,14 +1316,52 @@ Vehicle Zero V2 rows WS6 should size against:
 
 | Case (VOLT-REG cycle average, 8-seed max) | Engine rejection [kW] | Generator+rectifier [kW] | Electric chain [kW] | Friction brake [kWh/cycle] |
 |---|---|---|---|---|
-| Nominal (CdA 4.2, 2 kW aux, SL, GVW) | 72.6 | 2.44 | 4.22 | 0.62 |
-| CdA 5.4 (E13) | 86.3 | 2.84 | 4.72 | 0.57 |
-| 2,000 m / +45 °C corner | 59.7 | 2.01 | 3.79 | 0.67 |
+| Nominal (CdA 4.2, 2 kW aux, SL, GVW) | 73.0 | 2.45 | 4.25 | 0.62 |
+| CdA 5.4 (E13) | 86.9 | 2.86 | 4.76 | 0.57 |
+| 2,000 m / +45 °C corner | 60.0 | 2.01 | 3.82 | 0.67 |
+
+**KX r2 (adjudication m6): the construction of these rows is corrected.**
+The r1 rows divided the 8-seed maximum *energy* by the **reference
+seed's** duration, which is not the maximum of the quantity. Each row is
+now the maximum of the **per-seed cycle averages** (each seed's own
+energy over its own duration), and each component carries **its own**
+governing seed rather than borrowing the engine-rejection seed's. Engine
+rejection moves 72.5516 → **73.0408** kW at nominal, 86.2949 →
+**86.8728** at CdA 5.4 and 59.7385 → **59.9516** at the corner:
+the r1 rows understated the true 8-seed maximum by +0.67 % to
++0.36 %. Generator and chain rows move by the same construction.
+The superseded rows are retained as a literal historical block
+(`heat_ledger_ws6 → series_duty_v2_cycle_average_kx_r1_superseded`), so
+this before/after is a rendering and not a transcription.
+
+**KX r2 (adjudication m7): a cycle mean is not the case.** Program rule 7
+asks for heat by component *and case*, and the r1 §4-KX.7 gave WS6 a
+59.7385 kW cycle mean for a case that carries a >200 kW transient. The
+windows a cooling package is actually sized against are now exported:
+
+| Engine rejection, mode (b), 8-seed max [kW] | Nominal (CdA 4.2, 2 kW aux, SL, GVW) | CdA 5.4 (E13) | 2,000 m / +45 °C corner |
+|---|---|---|---|
+| Cycle average | 73.0 | 86.9 | 60.0 |
+| 10-min rolling maximum | 153.9 | 175.3 | 133.0 |
+| 2-min rolling maximum | 239.8 | 239.8 | 179.9 |
+| **Peak (0.1 s)** | 239.8 | 239.8 | 215.7 |
+| Implied radiator package, 2-min max [kW] | 115.1 | 115.1 | 86.3 |
+| Implied radiator package, peak [kW] | 115.1 | 115.1 | 103.5 |
+
+Read against **R20/ESC-4's declared radiator design point of
+95.0 kW** of HT-package duty in +45 °C air: the instantaneous
+radiator-package peak exceeds it at every case, and at `alt2000m_45C` —
+the only ordered case in R20's own +45 °C ambient — it reaches
+**103.5 kW**. The **2-minute** rolling average there is
+**86.3 kW**, which stays *under* the design point, so
+**R20/ESC-4's "radiator design case = the R6 corner" survives**
+(`r20_survives_on_the_2min_window`: True) — the finding is that
+the rows WS6 was pointed at could not have shown this either way.
 
 Splits follow §7's declared 49/38/10/3 exhaust/coolant+oil/CAC/radiation
-balance; the R22d coast-spin members (≤0.0002 kWh/cycle) land in the
-traction machine on WS2's LT-loop line and are exported per case in
-`heat_ledger_ws6`.
+balance (radiator package = 48 %); the R22d coast-spin members
+(≤0.0002 kWh/cycle) land in the traction machine on WS2's LT-loop line
+and are exported per case in `heat_ledger_ws6`.
 
 ## 5. Start-stop analysis (V1)
 
@@ -1021,9 +1480,9 @@ archived mode-(a) row above. Full tables in §4-KX.7 and
 
 | Case (VOLT-REG cycle average, 8-seed max) | Engine rejection [kW] | Generator+rectifier [kW] | Electric chain [kW] | Friction brake [kWh/cycle] |
 |---|---|---|---|---|
-| Nominal (CdA 4.2, 2 kW aux, SL, GVW) | 72.6 | 2.44 | 4.22 | 0.62 |
-| CdA 5.4 (E13) | 86.3 | 2.84 | 4.72 | 0.57 |
-| 2,000 m / +45 °C corner | 59.7 | 2.01 | 3.79 | 0.67 |
+| Nominal (CdA 4.2, 2 kW aux, SL, GVW) | 73.0 | 2.45 | 4.25 | 0.62 |
+| CdA 5.4 (E13) | 86.9 | 2.86 | 4.76 | 0.57 |
+| 2,000 m / +45 °C corner | 60.0 | 2.01 | 3.82 | 0.67 |
 
 ## 8. Findings register (non-escalated)
 
@@ -1053,17 +1512,51 @@ archived mode-(a) row above. Full tables in §4-KX.7 and
   discharge / 147.6 kW charge against R8's 125/110 kW envelope, and
   enforcing that envelope costs up to 0.613 kWh of unserved energy
   at alt2000m_45C (§4-KX.3, ESC-9).
-- **F-8** *(new, KX/R16)* The R16 charge-acceptance curve is consumed
-  and binds nothing at any ordered case (peak regen 69.1 kW bus vs
-  130.8 kW accepted at 25 °C cells); it would bind below -9.4 °C
-  and above 53.9 °C cells — and WS3's pack-loop sizing ceiling of
-  55 °C accepts only 62.2 kW (§4-KX.4, ESC-8).
-- **F-9** *(new, KX/R23-F2)* The map-boundary convention's exposure is
-  22.7–31.3 s/cycle at nominal (of which only 0.0–6.0 s locked) and
-  27.8–46.4 s/cycle at CdA 5.4 (of which 4.8–23.1 s locked, up to
-  98.5 km/h) — one-sided in mode (b)'s favour at CdA 5.4 by at most
-  0.0158 pp. Immaterial to the archived verdict; the r3
-  mode-neutrality wording is withdrawn (§4.1).
+- **F-8** *(new, KX/R16; RESTATED KX r2, adjudication B1)* The R16
+  charge-acceptance curve binds nothing **on the regen leg** — the leg
+  the ordered run enforces (peak regen 69.1 kW bus vs 130.8 kW
+  accepted at 25 °C cells). Read as the **pack** charge limit its own
+  header names, the same curve is **exceeded on every ordered case**:
+  39.1–47.0 / 41.4–58.6 / 13.6–23.8 s per cycle above continuous
+  acceptance, longest single excursion 15.4 s — longer than
+  WS3's 10-s pulse window — peak pack charge 147.6 kW bus, because
+  regen and the genset charge the pack simultaneously. Enforcing the
+  pack reading sheds at most 0.240 kWh and leaves unserved energy
+  at 0.0000 kWh. On temperature the curve would bind below
+  -9.4 °C and above 53.9 °C cells, and WS3's pack-loop sizing
+  ceiling of 55 °C accepts only 62.2 kW continuous / 128.8 kW
+  for 10 s (§4-KX.4, ESC-8). *The r1 wording — "consumed and binds
+  nothing at any ordered case" — is withdrawn: it was true of the
+  regen leg and false of the pack.*
+- **F-10** *(new, KX r2 — for WS6/R20)* The pure-series duty's engine
+  rejection is 73.0408 / 86.8728 / 59.9516 kW as a **cycle mean**
+  but 239.8 / 239.8 / 215.7 kW at the **peak**, with 2-min
+  rolling maxima of 239.8 / 239.8 / 179.9 kW. Through the
+  declared 48 % radiator-package share the corner's 2-min figure is
+  86.3 kW against R20's 95.0 kW design point, so
+  **R20/ESC-4 survives** (True) — but the r1 ledger gave WS6
+  only the cycle mean, which could not have shown that either way
+  (§4-KX.7, adjudication m7).
+- **F-11** *(new, KX r2 — for WS5/R22b)* The load-following companion
+  (b′) is inside R8's bus-side envelope in both directions
+  (115.6 / 100.2 kW vs 125/110), inside WS3's R16 acceptance
+  read on the pack (0.0 s), and inside the engine's own continuous
+  flat-rating (0.0 s, peak 131.1 kW) on **every seed of every
+  ordered case**, where the pinned mode of record is outside all three.
+  Fuel delta +0.06 / -0.04 / +1.80 % on the paired per-case
+  median (§4-KX.6, ESC-9, adjudication B2). Reported, not recommended.
+- **F-9** *(new, KX/R23-F2; restated KX r2)* The map-boundary
+  convention's exposure is 22.7–31.3 s/cycle at nominal (of which only
+  0.0–6.0 s locked) and 27.8–46.4 s/cycle at CdA 5.4 (of which 4.8–23.1 s
+  locked, up to 98.5 km/h) on the **stencil** criterion — one-sided
+  in mode (b)'s favour at CdA 5.4 by at most 0.0158 pp. On the
+  **strict** criterion with the map's degenerate rpm = 0
+  column excluded it is 0.0–3.4 s at nominal and 3.8–18.6 s at
+  CdA 5.4; on the r3 adjudicator's interpolated-envelope criterion,
+  3.6–7.6 s and 7.4–20.6 s. All three are printed because roughly four
+  fifths of the r1 strict count was that one column (D5, now closed —
+  adjudication m2). Immaterial to the archived verdict under every
+  criterion; the r3 mode-neutrality wording is withdrawn (§4.1).
 
 ## 9. Development disclosures (in the spirit of WS1 §9)
 
@@ -1091,20 +1584,27 @@ correction moved the r2 verdict; the Willans light-load recalibration).
   bilinear midpoints between cells, and its wheel-to-bus direction
   reproduces WS2's independently exported regen-to-bus (3.73 kWh over
   VOLT-REG) to the exported precision.
-- **D5 (KX) — WS4's F2 exposure count does not equal the r3
-  adjudicator's, and the difference is definitional.** The adjudicator
-  measured 3.6–7.6 s/cycle at nominal against the map's feasibility
-  boundary; WS4's counter reports 22.7–31.3 s/cycle on the stencil
-  criterion (a bilinear stencil touching any originally-infeasible
-  cell) and 18.9–24.5 s on the stricter torque-outside-the-envelope test,
-  which is still larger. The two criteria are not the same test and WS4
-  has not reproduced the adjudicator's implementation. WS4's is the
-  more inclusive count, so the pp bound derived from it is the
-  conservative one, and the *shape* of the finding — mode-neutral at
-  the reference seed, one-sided on locked cruise samples at CdA 5.4,
-  immaterial in magnitude — is identical under both. Flagged rather
-  than reconciled: reconciling would require re-deriving the
-  adjudicator's counter, which is not this round's scope.
+- **D5 (KX) — CLOSED in KX r2 (adjudication m2).** *r1 text: "WS4's F2
+  exposure count does not equal the r3 adjudicator's, and the
+  difference is definitional… flagged rather than reconciled."* It is
+  now reconciled, and the reconciliation is arithmetic. WS4's strict
+  counter evaluated the feasible-torque envelope at the **nearest** rpm
+  column; the r3 adjudicator **interpolated linearly** between
+  bracketing columns. WS2's 662 V map grid begins at
+  rpm = 0 — the map's only degenerate column, carrying
+  exactly one feasible cell, at T = 0, hence a zero-width envelope — so
+  under the nearest-column rule every motoring sample below 50 rpm
+  (< 0.70 km/h) is tested against nothing and flagged.
+  Switching to the interpolated envelope reproduces the adjudicator's
+  published figures exactly: 3.6–7.6 s/cycle at nominal and 7.4–20.6 s
+  at CdA 5.4. Excluding the degenerate column from the nearest-column
+  test gives 0.0–3.4 s and 3.8–18.6 s. **No exported number
+  moves** — those samples book zero unbooked loss, so every pp bound is
+  unchanged — but §4.1, §8 F-9 and this entry now print the artefact
+  separately instead of carrying it inside "the measured exposure".
+  Both counters ship (`ws4_chain.boundary_exposure_strict` and
+  `boundary_exposure_strict_linear`); the reconciliation table is
+  `results_ws4.json → chain_boundary_exposure → d5_reconciliation`.
 - **D6 (KX) — two brackets in §4-KX were NOT ordered.** The KX
   directive's scope is exhaustive and does not ask for them: the R8
   power-envelope bracket (§4-KX.3) and the SOC-window check against
@@ -1184,6 +1684,24 @@ correction moved the r2 verdict; the Willans light-load recalibration).
 
 Injected byte-identically from `results_ws4.json → interface_ws4`
 (asserted by `verify_ws4.py`):
+
+**Consumers, read this first.** `interface_ws4 → series_duty_v2` is the
+live design-input block (`_status: live_design_input`);
+`interface_ws4 → gate_g1` is an **archived record** of an executed
+decision and no field of it may be consumed as a live requirement. The
+live block now resolves its own chain of record — map path, voltage,
+reduction, WS2 round, SHA-256 — at `series_duty_v2 → _inputs →
+chain_of_record`, without reading the archived block (KX r2,
+adjudication M2). Three fields answer questions that look alike and are
+not: `r16_binding_analysis → regen_leg_bound_any_sample` (False)
+is about the **regen leg** the run enforces, `pack_charge_bound_by_r16_
+any_sample` (True) is about the **pack's total charge power**
+and is the constraint ESC-8 is about, and
+`fuel_energy_kWh_per_payload_tonne_km` is a companion carrying its own
+`_inputs → payload_metric_basis → _caveat` and is **not** the R32
+metric. `hysteresis_sensitivity` was named `hysteresis_sensitivity_ref_
+seed` in KX r1; the r1 rows are preserved at `cases → <case> →
+ref_seed`. §0-KX2 carries the full member-level delta.
 
 ```json
 {
@@ -1322,6 +1840,7 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
    "margin_pct_ensemble_min_governing_case": "seed 4 of 8-seed VOLT-REG ensemble [nominal]",
    "margin_pct_ensemble_median": -2.5036598384800866,
    "margin_pct_ensemble_max": -2.3727109656800724,
+   "margin_pct_ensemble_max_governing_case": "seed 7 of 8-seed VOLT-REG ensemble [nominal]",
    "kill_criterion_pct": 5.0,
    "passes": false,
    "missed_by_pp": 7.581644717955561,
@@ -1363,6 +1882,7 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
     "median": 4.679136782287627,
     "max": 4.975566042953862,
     "delta_pp_min": -1.7681550624315525,
+    "delta_pp_min_governing_case": "difference of ensemble minima over the enumerated 8-seed VOLT-REG set: row min at seed 5 of 8-seed VOLT-REG ensemble [spin-only] minus prior-convention min at seed 5 of 8-seed VOLT-REG ensemble [prior-nominal]",
     "delta_pp_median": -1.766040471493878
    },
    "map_vs_scalar_alone": {
@@ -1370,6 +1890,7 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
     "median": -0.6374822551781031,
     "max": -0.4909101286925496,
     "delta_pp_min": -7.013618051692167,
+    "delta_pp_min_governing_case": "difference of ensemble minima over the enumerated 8-seed VOLT-REG set: row min at seed 4 of 8-seed VOLT-REG ensemble [maps-only] minus prior-convention min at seed 5 of 8-seed VOLT-REG ensemble [prior-nominal]",
     "delta_pp_median": -7.082659508959608
    },
    "both_g1r": {
@@ -1377,6 +1898,7 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
     "median": -2.5036598384800866,
     "max": -2.3727109656800724,
     "delta_pp_min": -8.842990661729281,
+    "delta_pp_min_governing_case": "difference of ensemble minima over the enumerated 8-seed VOLT-REG set: row min at seed 4 of 8-seed VOLT-REG ensemble [nominal] minus prior-convention min at seed 5 of 8-seed VOLT-REG ensemble [prior-nominal]",
     "delta_pp_median": -8.948837092261591
    }
   },
@@ -1469,6 +1991,7 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   "boundary_convention_exposure": {
    "_note": "R23/F4-F2: the map-boundary convention's measured exposure and its one-sided magnitude, per condition; full tables in results_ws4.json -> chain_boundary_exposure",
    "nominal_one_sided_pp_max": 0.0013047116643520745,
+   "nominal_one_sided_pp_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
    "cda_5.4_one_sided_pp_max": 0.007916502468502453,
    "cda_5.4_one_sided_pp_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]"
   },
@@ -1484,6 +2007,7 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
     "eta_bus_to_wheel_min": 0.9160217854635886,
     "eta_bus_to_wheel_max": 0.9165456584568018,
     "eta_bus_to_wheel_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+    "eta_bus_to_wheel_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
     "series_fuel_to_wheel_g_per_kWh_ref_seed": 233.5497813801241,
     "per_seed": {
      "23": {
@@ -1541,6 +2065,53 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
    "superseded_floor_kWh": 3.5,
    "superseded_floor_note": "the archived gate ran on the R8 3.5 kWh floor, which ESC-5/R22a identify as an i-MMD-era sizing; this run is at the delivered pack",
    "traction_chain": "R12: WS2 r4 measured inverter+motor map x 0.97 reduction, both directions, no scalar PE member",
+   "chain_of_record": {
+    "map_file": "../WS2_traction_motor/data/effmap_motor_inverter_662V.csv",
+    "map_file_owner": "WS2_traction_motor",
+    "map_file_as_exported_by_owner": "data/effmap_motor_inverter_662V.csv",
+    "map_voltage_V": 662.0,
+    "map_feasible_points": 4203,
+    "reduction_flat": 0.97,
+    "vintage": "WS2 round-4 maps on the R10 662.4 V bus (chain of record)",
+    "ws2_rework_round": 4,
+    "ws2_bus_nominal_V": 662.4,
+    "map_file_sha256": "e0f617eafbcead33a8bb5edc07b95174826bd300be3b43b78b1593aa93c8ba4c",
+    "_note": "resolvable from THIS block. Duplicated from results_ws4.json -> ws2_chain_of_record so that series_duty_v2 does not depend on the ARCHIVED gate_g1 block for its own chain (adjudication KX-M2). Same map, same run, same numbers."
+   },
+   "boundary_convention_exposure": {
+    "_note": "the map-boundary convention described in the archived gate's block is ACTIVE in this live run - same map, same chain, same _interp_loss clamping - so its measured exposure travels with the live block too (adjudication KX-M2). Full tables in results_ws4.json -> chain_boundary_exposure. The linear-interpolation and rpm=0-excluded counts that close D5 are there as well (adjudication KX-m2).",
+    "definition": "a sample is EXPOSED when the bilinear stencil the loss lookup uses touches an originally-infeasible map cell, or when its (rpm, torque) coordinate is clamped to the grid - i.e. it is served at a boundary loss rather than a measured one. Counted on WS2's 662 V map with the identical (rpm, signed torque) coordinates the chain queries.",
+    "cases": {
+     "nominal": {
+      "exposure_s_motoring_min": 22.699999999979354,
+      "exposure_s_motoring_max": 31.299999999971533,
+      "exposure_s_motoring_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "one_sided_pp_locked_linear_max": 0.0013047116643520745,
+      "one_sided_pp_locked_linear_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "total_pp_linear_max": 0.0013047116643520745,
+      "total_pp_linear_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]"
+     },
+     "cda_5.4": {
+      "exposure_s_motoring_min": 27.799999999974716,
+      "exposure_s_motoring_max": 46.3999999999578,
+      "exposure_s_motoring_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "one_sided_pp_locked_linear_max": 0.007916502468502453,
+      "one_sided_pp_locked_linear_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "total_pp_linear_max": 0.007916502468502453,
+      "total_pp_linear_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]"
+     },
+     "alt2000m_45C": {
+      "exposure_s_motoring_min": 22.19999999997981,
+      "exposure_s_motoring_max": 28.199999999974352,
+      "exposure_s_motoring_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "one_sided_pp_locked_linear_max": 0.00016942420592971433,
+      "one_sided_pp_locked_linear_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "total_pp_linear_max": 0.00016942420592971433,
+      "total_pp_linear_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]"
+     }
+    },
+    "one_sided_note": "the one-sided pp figure prices the LOCKED share, which exists only in the archived mode (a). In this pure-series block no sample is locked, so the relevant figure for series_duty_v2 is total_pp_linear_max - the whole unbooked bound, which is what a pure-series fuel number is exposed to."
+   },
    "r10_window": {
     "ruling": "R10 (BASELINE_v2)",
     "bus_class": "650 V class, pack-native",
@@ -1568,6 +2139,14 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
    },
    "r16_declaration_basis": "cell temperature declared equal to ambient for each case; WS3's pack-loop sizing line holds cells at or below 55 C at +45 C ambient, so 45 C is the tracking value and 55 C the loop's design ceiling - see r16_binding_analysis",
    "supervisor": "unchanged from the ratified simulator: SOC target 0.55, series hysteresis 0.35-0.75 of usable, emergency load-follow band 0.25-0.40. Nothing was tuned for this run; the hysteresis sensitivity below runs WS3's own allocated genset band instead.",
+   "payload_metric_basis": {
+    "payload_basis_t": 2.9,
+    "payload_basis_kg": 2900.0,
+    "payload_basis_source": "WS1 volt_params.Vehicle: m_gvw 6,600 kg minus m_curb_operating 3,700 kg [WS1-ASSUMPTION: 'NPR-HD chassis-cab + 16 ft dry-freight body + driver + full fuel/DEF']",
+    "payload_basis_is_preconversion": true,
+    "identical_in_all_ordered_cases": true,
+    "_caveat": "PRE-CONVERSION WS1 CURB. This denominator is the CONVENTIONAL truck's payload at GVW. It does NOT charge the series powertrain's mass (WS3 pack, WS4 genset + generator, WS2 spine, less the deleted engine and gearbox), and it is the same constant in all three ordered cases - so fuel_energy_kWh_per_payload_tonne_km is EXACTLY the per-km value divided by 2.9 and carries no information the per-km field does not. It is NOT the R32 metric: R32's payload denomination exists precisely to charge conversion mass (D13/R36: 'won 6-10% per km and gave 6-8% back in freight'), and a denominator that does not charge it cannot discharge R32. Do not denominate any candidate comparison on this field. ESC-7 asks the lead to ratify a Vehicle Zero payload basis or hold R32 open; WS4 does not invent one."
+   },
    "spin_member": "none charged: modes (b)/(b') never lock, and loaded series machine losses are inside WS2's maps (R22d). The true-COAST member R22d names is measured and reported separately, and is NOT charged to fuel.",
    "seeds": [
     23,
@@ -1593,9 +2172,25 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   },
   "trace_files": {
    "ruling": "R34 (BASELINE_v5 program hygiene)",
+   "r34_interpretation": "[WS4-DECLARED] R34 reads 'every pipeline exports a 10 Hz trace file per run'. WS4 takes 'run' to mean a PIPELINE run, not each simulated realisation: this pipeline executes 24 ordered mode-(b) runs plus 24 companion (b') runs plus the brackets and sensitivities (168 simulated runs in the KX section alone), and emitting all of them at 10 Hz would be ~132 MB of committed artefact for the ordered set alone. Under that reading one trace would suffice; WS4 emits one per ORDERED CASE at the reference seed instead, so R34's stated consumer (the WS10 exhibit / simulator) has a full-rate witness of each ordered CASE, and the 5 s SOC trajectories cover all 24 ordered runs. If the lead rules for the per-simulated-run reading, run_ws4.py's R34_TRACE_ALL_ORDERED_RUNS constant emits all 24 with no other change. Flagged to the lead in s12 as a clarification request, not self-resolved.",
+   "r34_all_ordered_runs_emitted": false,
+   "ordered_mode_b_runs": 24,
+   "traces_emitted_n": 3,
+   "traces_by_case": {
+    "alt2000m_45C_seed23": "data/trace_series_duty_v2_alt2000m_45C_seed23_10Hz.csv",
+    "cda_5.4_seed23": "data/trace_series_duty_v2_cda_5.4_seed23_10Hz.csv",
+    "nominal_seed23": "data/trace_series_duty_v2_nominal_seed23_10Hz.csv"
+   },
+   "trace_rows_by_case": {
+    "alt2000m_45C_seed23": 66143,
+    "cda_5.4_seed23": 66143,
+    "nominal_seed23": 66143
+   },
    "trace_10Hz": "data/trace_series_duty_v2_nominal_seed23_10Hz.csv",
    "trace_10Hz_rows": 66143,
+   "trace_10Hz_note": "the nominal reference-seed trace, retained under its KX name so consumers pinned to it do not break",
    "soc_trajectories": "data/series_duty_v2_soc_trajectories.csv",
+   "soc_trajectories_covers_runs": 24,
    "soc_decimation_s": 5.0
   },
   "unserved_energy_verdict": {
@@ -1618,18 +2213,95 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   },
   "r16_binding_analysis": {
    "ruling": "R16 (regen_acceptance.csv is the interface of record)",
+   "_two_readings": "WS3's regen_acceptance.csv admits two readings and they differ MEASURABLY on this duty. (1) REGEN-LEG rule: WS3's REPORT_WS3 s4.2 presents the curve to WS5 as a regen-blend rule ('regen follows the acceptance curve at all temperatures with the resistor as overflow'; 'WS5 should drive the blend from it directly'). Under that reading the simulator's regen-leg cap is correct and nothing binds. (2) PACK rule: the file's own header is 'pack regen-acceptance vs cell temperature' and the column is V2pack_chg_cont_kW_bus - a PACK charge limit, bus-side. A pack cannot tell whether its charge current comes from regen or from the genset. Under that reading the constraint is ACTIVE on every ordered case, because the genset is on for 0.482-0.685 of cycle time across the ordered cases and its p_gen_elec is added to the pack AFTER the regen cap (ws4_sim.run_g1_mode: the cap sits inside the pw < 0 regen branch; p_batt_bus = p_gen_elec - p_bus_load is formed afterwards). The KX round chose reading (1) without recording that a choice existed. WS4 does not choose between them now either - the physical quantity the curve names is the pack's and the conservative reading is the pack one, but the semantics of WS3's interface are WS3's and the blend order is WS5's. Both are measured below and the enforcement cost is bracketed; ESC-8 puts the choice to the lead.",
+   "regen_leg_bound_any_sample": false,
+   "regen_leg_enforced_in_ordered_run": true,
    "peak_regen_to_pack_kW_bus": 69.1037568252313,
    "peak_regen_governing_case": "alt2000m_45C",
+   "pack_charge_bound_by_r16_any_sample": true,
+   "pack_charge_enforced_in_ordered_run": false,
+   "peak_pack_charge_kW_bus": 147.58458351650407,
+   "peak_pack_charge_governing_case": "nominal",
+   "pack_charge_above_r16_accept_s": {
+    "per_case_min": {
+     "nominal": 39.09999999996444,
+     "cda_5.4": 41.39999999996235,
+     "alt2000m_45C": 13.59999999998763
+    },
+    "per_case_max": {
+     "nominal": 46.999999999957254,
+     "cda_5.4": 58.599999999946704,
+     "alt2000m_45C": 23.799999999978354
+    },
+    "per_case_max_governing_case": {
+     "nominal": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "cda_5.4": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "alt2000m_45C": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]"
+    },
+    "worst_case_max": 58.599999999946704,
+    "worst_case_max_governing_case": "case cda_5.4 of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]"
+   },
+   "pack_charge_above_r16_accept_kWh": {
+    "per_case_min": {
+     "nominal": 0.1517201946482203,
+     "cda_5.4": 0.15441299152589066,
+     "alt2000m_45C": 0.053100715644019074
+    },
+    "per_case_max": {
+     "nominal": 0.18123851290721116,
+     "cda_5.4": 0.2383758177679772,
+     "alt2000m_45C": 0.09834404837851865
+    },
+    "per_case_max_governing_case": {
+     "nominal": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "cda_5.4": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "alt2000m_45C": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]"
+    },
+    "worst_case_max": 0.2383758177679772,
+    "worst_case_max_governing_case": "case cda_5.4 of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]"
+   },
+   "pack_charge_above_r16_accept_longest_s": {
+    "per_case_min": {
+     "nominal": 11.799999999989268,
+     "cda_5.4": 11.699999999989359,
+     "alt2000m_45C": 9.299999999991542
+    },
+    "per_case_max": {
+     "nominal": 15.399999999985994,
+     "cda_5.4": 14.999999999986358,
+     "alt2000m_45C": 11.59999999998945
+    },
+    "per_case_max_governing_case": {
+     "nominal": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "cda_5.4": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "alt2000m_45C": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]"
+    },
+    "worst_case_max": 15.399999999985994,
+    "worst_case_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal]"
+   },
    "accept_kW_bus_at_declared_cells": {
     "nominal": 130.752,
     "cda_5.4": 130.752,
     "alt2000m_45C": 129.144
    },
-   "bound_any_sample": false,
+   "pulse10s_column": "V2pack_chg_pulse10s_kW_bus",
+   "pulse10s_kW_bus_at_declared_cells": {
+    "nominal": 204.173,
+    "cda_5.4": 204.173,
+    "alt2000m_45C": 200.553
+   },
+   "pulse10s_window_s": 10.0,
+   "pulse10s_covers_the_excursions": false,
+   "pulse10s_note": "WS3's 10-s pulse column rates 204.173 kW at 25 C and 200.553 kW at 45 C cells, both above this run's 147.6 kW pack-charge peak - but EVERY measured excursion above the CONTINUOUS acceptance is longer than the 10 s window that column rates (longest single excursions above), so the pulse rating does not cover them. Stated because the previous round never consulted this column.",
    "cold_side_binding_cell_C": -9.39321930659508,
    "hot_side_binding_cell_C": 53.9494966014262,
+   "cold_side_binding_cell_C_pack_quantity": 10.0,
    "accept_at_ws3_loop_ceiling_55C_kW": 62.203,
-   "note": "all three ordered cases are warm, so R16's curve is NOT binding in this run: peak regen-to-pack is far below the acceptance at the declared cell temperatures and regen_shed_by_r16_kWh is zero on every seed. The curve binds below the cold-side temperature above, and again above the hot-side one - and WS3's pack-loop SIZING LINE permits cells to 55 C at +45 C ambient, where acceptance falls to the value above. That hot-end crossing is escalated (ESC-8), not resolved here."
+   "accept_at_50C_kW": 95.048,
+   "pulse10s_at_ws3_loop_ceiling_55C_kW": 128.786,
+   "pulse10s_at_50C_kW": 200.151,
+   "esc8_scope_note": "ESC-8 was raised in the KX round on the peak REGEN quantity (69.1 kW bus vs 62.2 kW continuous acceptance at 55 C cells). On the PACK quantity the hot end is far worse and the case is roughly twice as large: at the 45 C declared cells the ordered run already charges at 147.5 kW against 129.1 kW continuous; at 50 C the continuous curve falls to 95.0 kW; and at WS3's 55 C loop ceiling even the 10-s PULSE rating (128.8 kW) sits below the run's 147.6 kW peak. ESC-8 is restated on the pack quantity in s12.",
+   "note": "READ BOTH FIELDS. On the REGEN LEG - the leg the ordered run enforces - R16's curve is not binding: peak regen-to-pack is far below acceptance at the declared cell temperatures and regen_shed_by_r16_kWh is zero on every seed. On the PACK - the quantity the file's own header names - the SAME curve is exceeded on every ordered case, for the seconds and energies above, because regen and the genset charge the pack simultaneously. The r16_pack_acceptance_bracket below prices enforcing the pack reading. The hot-end crossing and the choice of reading are escalated (ESC-8), not resolved here."
   },
   "soc_window_check": {
    "ruling": "WS3 interface_WS3.bus_voltage_window.soc15_note / r8_compliance",
@@ -1775,8 +2447,319 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
     "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R8-envelope]"
    }
   },
-  "hysteresis_sensitivity_ref_seed": {
-   "ruling": "R19 precedent / WS3 soc_strategy.allocation.V2",
+  "r16_pack_acceptance_bracket": {
+   "ruling": "R16 read as a PACK charge limit (adjudication KX-B1)",
+   "_status": "WS4 bracket in response to adjudication KX-B1, NOT an ordered case and NOT a WS4 choice of reading. The ordered series_duty_v2 numbers above stand as run, with the regen-leg reading; this bracket prices the pack reading so ESC-8 is decided on measured cost rather than on assertion.",
+   "cap_kW_bus_at_declared_cells": {
+    "nominal": 130.752,
+    "cda_5.4": 130.752,
+    "alt2000m_45C": 129.144
+   },
+   "enforcement": "pack charge above the acceptance is SHED (booked as r16_pack_cap_shed_kWh / r16_pack_cap_clip_s). This is the crudest of the available remedies: it discards surplus rather than not generating it. A supervisor that instead backs the genset off is exactly the load-following companion (b'), which stays inside the acceptance on every seed of every ordered case with no shed energy at all - see companion_bp and s4-KX.6.",
+   "worst_shed_kWh": 0.24018683696219192,
+   "worst_shed_governing_case": "cda_5.4",
+   "worst_clip_s": 59.6999999999457,
+   "worst_clip_governing_case": "cda_5.4",
+   "worst_unserved_kWh": 0.0,
+   "worst_unserved_governing_case": "nominal",
+   "fuel_penalty_pct_vs_ordered": {
+    "nominal": -0.0017575523965152099,
+    "cda_5.4": 0.2041717020260965,
+    "alt2000m_45C": 0.09620595002373979
+   },
+   "fuel_penalty_pct_max": 0.2041717020260965,
+   "fuel_penalty_pct_max_governing_case": "cda_5.4",
+   "reading": "enforcing WS3's acceptance curve on the PACK costs the shed energy and fuel above and does NOT reopen the zero-unserved headline. The headline therefore does not depend on which reading of R16 the lead rules for."
+  },
+  "r16_pack_acceptance_bracket_ensembles": {
+   "nominal": {
+    "unserved_bus_kWh_min": 0.0,
+    "unserved_bus_kWh_max": 0.0,
+    "unserved_bus_kWh_median": 0.0,
+    "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "r16_pack_cap_shed_kWh_min": 0.11879893229273267,
+    "r16_pack_cap_shed_kWh_max": 0.18123851290721116,
+    "r16_pack_cap_shed_kWh_median": 0.1547786027282762,
+    "r16_pack_cap_shed_kWh_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "r16_pack_cap_shed_kWh_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "r16_pack_cap_clip_s_min": 32.59999999997035,
+    "r16_pack_cap_clip_s_max": 46.999999999957254,
+    "r16_pack_cap_clip_s_median": 40.79999999996289,
+    "r16_pack_cap_clip_s_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "r16_pack_cap_clip_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "fuel_kg_min": 18.91333919590161,
+    "fuel_kg_max": 19.1801497963565,
+    "fuel_kg_median": 19.049670891250777,
+    "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "fuel_kg_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "fuel_energy_kWh_per_km_min": 1.7040077139103778,
+    "fuel_energy_kWh_per_km_max": 1.7280688484996476,
+    "fuel_energy_kWh_per_km_median": 1.7162754709748285,
+    "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "fuel_energy_kWh_per_km_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "genset_starts_min": 5,
+    "genset_starts_max": 6,
+    "genset_starts_median": 5.0,
+    "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "genset_starts_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "pack_chg_peak_kW_min": 147.4733262512869,
+    "pack_chg_peak_kW_max": 147.58458351650407,
+    "pack_chg_peak_kW_median": 147.5324420842902,
+    "pack_chg_peak_kW_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]",
+    "pack_chg_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/R16-pack]"
+   },
+   "cda_5.4": {
+    "unserved_bus_kWh_min": 0.0,
+    "unserved_bus_kWh_max": 0.0,
+    "unserved_bus_kWh_median": 0.0,
+    "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "r16_pack_cap_shed_kWh_min": 0.15580533265063573,
+    "r16_pack_cap_shed_kWh_max": 0.24018683696219192,
+    "r16_pack_cap_shed_kWh_median": 0.21239207864253604,
+    "r16_pack_cap_shed_kWh_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "r16_pack_cap_shed_kWh_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "r16_pack_cap_clip_s_min": 41.699999999962074,
+    "r16_pack_cap_clip_s_max": 59.6999999999457,
+    "r16_pack_cap_clip_s_median": 51.14999999995348,
+    "r16_pack_cap_clip_s_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "r16_pack_cap_clip_s_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "fuel_kg_min": 22.44332923427506,
+    "fuel_kg_max": 22.664157735981252,
+    "fuel_kg_median": 22.59624254484664,
+    "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "fuel_energy_kWh_per_km_min": 2.022044111032604,
+    "fuel_energy_kWh_per_km_max": 2.041967071742147,
+    "fuel_energy_kWh_per_km_median": 2.035803052074213,
+    "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "genset_starts_min": 4,
+    "genset_starts_max": 4,
+    "genset_starts_median": 4.0,
+    "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "pack_chg_peak_kW_min": 147.50564858624014,
+    "pack_chg_peak_kW_max": 147.58458351650407,
+    "pack_chg_peak_kW_median": 147.5324420842902,
+    "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]",
+    "pack_chg_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/R16-pack]"
+   },
+   "alt2000m_45C": {
+    "unserved_bus_kWh_min": 0.0,
+    "unserved_bus_kWh_max": 0.0,
+    "unserved_bus_kWh_median": 0.0,
+    "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "r16_pack_cap_shed_kWh_min": 0.05360982510104704,
+    "r16_pack_cap_shed_kWh_max": 0.10277591001421343,
+    "r16_pack_cap_shed_kWh_median": 0.07515693278175044,
+    "r16_pack_cap_shed_kWh_min_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "r16_pack_cap_shed_kWh_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "r16_pack_cap_clip_s_min": 13.69999999998754,
+    "r16_pack_cap_clip_s_max": 25.09999999997717,
+    "r16_pack_cap_clip_s_median": 17.599999999983993,
+    "r16_pack_cap_clip_s_min_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "r16_pack_cap_clip_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "fuel_kg_min": 15.70301309842618,
+    "fuel_kg_max": 15.84347216267762,
+    "fuel_kg_median": 15.796690900500025,
+    "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "fuel_energy_kWh_per_km_min": 1.4147716156411023,
+    "fuel_energy_kWh_per_km_max": 1.4274454332308923,
+    "fuel_energy_kWh_per_km_median": 1.4231918938168073,
+    "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "genset_starts_min": 6,
+    "genset_starts_max": 6,
+    "genset_starts_median": 6.0,
+    "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "pack_chg_peak_kW_min": 147.4733249946928,
+    "pack_chg_peak_kW_max": 147.71764794186953,
+    "pack_chg_peak_kW_median": 147.47334269994232,
+    "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]",
+    "pack_chg_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R16-pack]"
+   }
+  },
+  "engine_continuous_rating_bracket": {
+   "ruling": "R18 / ESC-1 (the 132 kW continuous flat-rating); KX-M1",
+   "_status": "WS4 bracket in response to adjudication KX-M1, NOT an ordered case. The ordered series_duty_v2 numbers above stand as run, with the emergency band's automotive full-load ceiling; this bracket prices the genset's own rating.",
+   "ordered_emergency_ceiling": "engine.peak_power_kw() x derate x 0.97 = the 4HK1-TC AUTOMOTIVE full-load curve",
+   "bracket_emergency_ceiling": "engine.rated_cont_kw x derate = the WS4-specified continuous flat-rating",
+   "engine_automotive_peak_kW": 153.30046750225958,
+   "engine_continuous_rating_kW_by_case": {
+    "nominal": 132.0,
+    "cda_5.4": 132.0,
+    "alt2000m_45C": 122.91839999999999
+   },
+   "worst_unserved_kWh": 0.0,
+   "worst_unserved_governing_case": "nominal",
+   "unserved_stays_zero": true,
+   "soc_min_by_case": {
+    "nominal": 0.18527048665699752,
+    "cda_5.4": 0.12544223367825952,
+    "alt2000m_45C": 0.2356988144379132
+   },
+   "soc_min_worst": 0.12544223367825952,
+   "soc_min_worst_governing_case": "cda_5.4",
+   "fuel_penalty_pct_vs_ordered": {
+    "nominal": -0.1698820847277866,
+    "cda_5.4": -0.12663685936664898,
+    "alt2000m_45C": -0.05660754578494485
+   },
+   "fuel_penalty_pct_max": -0.05660754578494485,
+   "fuel_penalty_pct_max_governing_case": "alt2000m_45C",
+   "reading": "the zero-unserved headline does NOT rest on the emergency band's automotive ceiling: with the engine held to its own continuous flat-rating the run still completes every ordered case with zero unserved bus energy, at a deeper SOC minimum and the fuel delta above. What the over-rating buys is SOC margin, not feasibility. Escalated as ESC-10 against R18/ESC-1, whose +0.82 kW corner margin is a CONTINUOUS-rating figure."
+  },
+  "engine_continuous_rating_bracket_ensembles": {
+   "nominal": {
+    "unserved_bus_kWh_min": 0.0,
+    "unserved_bus_kWh_max": 0.0,
+    "unserved_bus_kWh_median": 0.0,
+    "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "fuel_kg_min": 18.880049107175545,
+    "fuel_kg_max": 19.14790269245119,
+    "fuel_kg_median": 19.026484635954482,
+    "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "fuel_kg_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "fuel_energy_kWh_per_km_min": 1.7010084250276258,
+    "fuel_energy_kWh_per_km_max": 1.7251634897665433,
+    "fuel_energy_kWh_per_km_median": 1.714177763263605,
+    "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "fuel_energy_kWh_per_km_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "soc_min_min": 0.18527048665699752,
+    "soc_min_max": 0.2620142706113847,
+    "soc_min_median": 0.24959835827210364,
+    "soc_min_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "soc_min_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "emergency_band_s_min": 0.0,
+    "emergency_band_s_max": 439.4999999996003,
+    "emergency_band_s_median": 281.54999999974393,
+    "emergency_band_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "emergency_band_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "genset_starts_min": 5,
+    "genset_starts_max": 6,
+    "genset_starts_median": 5.0,
+    "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "genset_starts_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "engine_over_continuous_rating_s_min": 0.0,
+    "engine_over_continuous_rating_s_max": 0.0,
+    "engine_over_continuous_rating_s_median": 0.0,
+    "engine_over_continuous_rating_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "engine_over_continuous_rating_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "engine_shaft_peak_kW_min": 84.69969589648574,
+    "engine_shaft_peak_kW_max": 131.1465762318337,
+    "engine_shaft_peak_kW_median": 131.1465762318337,
+    "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "engine_shaft_peak_kW_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "pack_dis_peak_kW_min": 115.06812614236642,
+    "pack_dis_peak_kW_max": 184.51958532945014,
+    "pack_dis_peak_kW_median": 124.10837889026426,
+    "pack_dis_peak_kW_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]",
+    "pack_dis_peak_kW_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/cont-rating]"
+   },
+   "cda_5.4": {
+    "unserved_bus_kWh_min": 0.0,
+    "unserved_bus_kWh_max": 0.0,
+    "unserved_bus_kWh_median": 0.0,
+    "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "fuel_kg_min": 22.37140525691365,
+    "fuel_kg_max": 22.589335527599417,
+    "fuel_kg_median": 22.52345314936329,
+    "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "fuel_energy_kWh_per_km_min": 2.015564080670461,
+    "fuel_energy_kWh_per_km_max": 2.0352258335487603,
+    "fuel_energy_kWh_per_km_median": 2.0292451144924852,
+    "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "soc_min_min": 0.12544223367825952,
+    "soc_min_max": 0.18174779075876568,
+    "soc_min_median": 0.16670649190235948,
+    "soc_min_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "soc_min_max_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "emergency_band_s_min": 594.799999999459,
+    "emergency_band_s_max": 688.6999999993736,
+    "emergency_band_s_median": 610.5499999994447,
+    "emergency_band_s_min_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "emergency_band_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "genset_starts_min": 4,
+    "genset_starts_max": 4,
+    "genset_starts_median": 4.0,
+    "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "engine_over_continuous_rating_s_min": 0.0,
+    "engine_over_continuous_rating_s_max": 0.0,
+    "engine_over_continuous_rating_s_median": 0.0,
+    "engine_over_continuous_rating_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "engine_over_continuous_rating_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "engine_shaft_peak_kW_min": 131.1465762318337,
+    "engine_shaft_peak_kW_max": 131.1465762318337,
+    "engine_shaft_peak_kW_median": 131.1465762318337,
+    "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "engine_shaft_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "pack_dis_peak_kW_min": 125.96166476162736,
+    "pack_dis_peak_kW_max": 142.22844638407688,
+    "pack_dis_peak_kW_median": 130.01147495956496,
+    "pack_dis_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]",
+    "pack_dis_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/cont-rating]"
+   },
+   "alt2000m_45C": {
+    "unserved_bus_kWh_min": 0.0,
+    "unserved_bus_kWh_max": 0.0,
+    "unserved_bus_kWh_median": 0.0,
+    "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "fuel_kg_min": 15.67612682743094,
+    "fuel_kg_max": 15.819284469008839,
+    "fuel_kg_median": 15.771317946769406,
+    "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "fuel_energy_kWh_per_km_min": 1.41234928224457,
+    "fuel_energy_kWh_per_km_max": 1.425266200515148,
+    "fuel_energy_kWh_per_km_median": 1.4209059513100804,
+    "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "soc_min_min": 0.2356988144379132,
+    "soc_min_max": 0.24769266992664654,
+    "soc_min_median": 0.23956783822709166,
+    "soc_min_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "soc_min_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "emergency_band_s_min": 208.09999999981073,
+    "emergency_band_s_max": 245.59999999977663,
+    "emergency_band_s_median": 226.5999999997939,
+    "emergency_band_s_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "emergency_band_s_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "genset_starts_min": 6,
+    "genset_starts_max": 6,
+    "genset_starts_median": 6.0,
+    "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "engine_over_continuous_rating_s_min": 0.0,
+    "engine_over_continuous_rating_s_max": 0.0,
+    "engine_over_continuous_rating_s_median": 0.0,
+    "engine_over_continuous_rating_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "engine_over_continuous_rating_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "engine_shaft_peak_kW_min": 121.92769711330514,
+    "engine_shaft_peak_kW_max": 121.92769711330514,
+    "engine_shaft_peak_kW_median": 121.92769711330514,
+    "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "engine_shaft_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "pack_dis_peak_kW_min": 166.23803527878812,
+    "pack_dis_peak_kW_max": 192.4662473109739,
+    "pack_dis_peak_kW_median": 180.2309375895033,
+    "pack_dis_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]",
+    "pack_dis_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/cont-rating]"
+   }
+  },
+  "hysteresis_sensitivity": {
+   "ruling": "R19 precedent / WS3 soc_strategy.allocation.V2; R9 (8-seed)",
+   "_basis": "the cycling rate is the export most sensitive to a supervisor constant, and starts are stochastic - so both bands are run over the SAME enumerated 8-seed VOLT-REG ensemble as the ordered block (R9/R14), not on one draw. The KX round ran this on the reference seed only (adjudication KX-m8); those rows are retained under ref_seed.",
    "ws3_allocated_genset_hysteresis_kWh": 3.5,
    "ws3_soc_target": 0.55,
    "band_soc_fraction": [
@@ -1788,95 +2771,444 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
     0.75
    ],
    "simulator_band_kWh": 4.433443199999999,
+   "_renamed_from": "series_duty_v2 -> hysteresis_sensitivity_ref_seed (KX r1). Same sensitivity, now over the enumerated 8-seed ensemble per R9; the r1 reference-seed rows are under cases -> <case> -> ref_seed.",
    "cases": {
     "nominal": {
-     "ws3_band": {
-      "fuel_energy_kWh_per_km": 1.7047603676778533,
-      "unserved_bus_kWh": 0.0,
-      "above_pin_demand_s": 1214.6999999988952,
-      "above_pin_demand_kWh": 8.10222289879555,
-      "above_pin_engine_s": 121.19999999988977,
-      "above_pin_transitions_per_h": 30.479876629070784,
-      "genset_starts": 6,
-      "genset_starts_per_h": 3.265701067400441,
-      "genset_on_frac": 0.5760333827214984,
-      "soc_min": 0.2483605013430112,
-      "soc_max": 0.7257439099280615,
-      "soc_end": 0.41696328492976426
+     "ws3_band_ensemble": {
+      "genset_starts_min": 6,
+      "genset_starts_max": 6,
+      "genset_starts_median": 6.0,
+      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "genset_starts_per_h_min": 3.265701067400441,
+      "genset_starts_per_h_max": 3.287721274296412,
+      "genset_starts_per_h_median": 3.2841479499502997,
+      "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "genset_on_frac_min": 0.5760333827214984,
+      "genset_on_frac_max": 0.5840157072838741,
+      "genset_on_frac_median": 0.5812780798465522,
+      "genset_on_frac_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "genset_on_frac_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "fuel_energy_kWh_per_km_min": 1.7047603676778533,
+      "fuel_energy_kWh_per_km_max": 1.7214464915325844,
+      "fuel_energy_kWh_per_km_median": 1.7163908494387612,
+      "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "fuel_kg_min": 18.921693146347458,
+      "fuel_kg_max": 19.106642490987593,
+      "fuel_kg_median": 19.05104692542053,
+      "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "unserved_bus_kWh_min": 0.0,
+      "unserved_bus_kWh_max": 0.0,
+      "unserved_bus_kWh_median": 0.0,
+      "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "soc_min_min": 0.2466240055984062,
+      "soc_min_max": 0.24990817113935324,
+      "soc_min_median": 0.2489807885727035,
+      "soc_min_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "soc_min_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "soc_max_min": 0.718694551506608,
+      "soc_max_max": 0.7267547756883298,
+      "soc_max_median": 0.7241073234084219,
+      "soc_max_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "soc_max_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "emergency_band_s_min": 249.6999999997729,
+      "emergency_band_s_max": 321.19999999970787,
+      "emergency_band_s_median": 267.5999999997566,
+      "emergency_band_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "emergency_band_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "pack_dis_peak_kW_min": 115.06812614236642,
+      "pack_dis_peak_kW_max": 134.2337520972616,
+      "pack_dis_peak_kW_median": 122.88044779505897,
+      "pack_dis_peak_kW_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "pack_dis_peak_kW_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "pack_chg_peak_kW_min": 147.50564858624014,
+      "pack_chg_peak_kW_max": 147.58458351650407,
+      "pack_chg_peak_kW_median": 147.5324420842902,
+      "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]",
+      "pack_chg_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/WS3-band]"
      },
-     "simulator_band": {
-      "fuel_energy_kWh_per_km": 1.7010084250276258,
-      "unserved_bus_kWh": 0.0,
-      "above_pin_demand_s": 1214.6999999988952,
-      "above_pin_demand_kWh": 8.10222289879555,
-      "above_pin_engine_s": 0.0,
-      "above_pin_transitions_per_h": 0.0,
-      "genset_starts": 5,
-      "genset_starts_per_h": 2.7214175561670344,
-      "genset_on_frac": 0.5919687944114842,
-      "soc_min": 0.2571874614998088,
-      "soc_max": 0.7548732761748025,
-      "soc_end": 0.524303617571101
+     "simulator_band_ensemble": {
+      "genset_starts_min": 5,
+      "genset_starts_max": 6,
+      "genset_starts_median": 5.0,
+      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "genset_starts_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "genset_starts_per_h_min": 2.7214175561670344,
+      "genset_starts_per_h_max": 3.287721274296412,
+      "genset_starts_per_h_median": 2.7381631490460276,
+      "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "genset_on_frac_min": 0.581515700390649,
+      "genset_on_frac_max": 0.6008340689775667,
+      "genset_on_frac_median": 0.5930244293381869,
+      "genset_on_frac_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "genset_on_frac_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "fuel_energy_kWh_per_km_min": 1.7010084250276258,
+      "fuel_energy_kWh_per_km_max": 1.728099220748916,
+      "fuel_energy_kWh_per_km_median": 1.7153581462494394,
+      "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "fuel_energy_kWh_per_km_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "fuel_kg_min": 18.880049107175545,
+      "fuel_kg_max": 19.180486903463734,
+      "fuel_kg_median": 19.039339234821135,
+      "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "fuel_kg_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "unserved_bus_kWh_min": 0.0,
+      "unserved_bus_kWh_max": 0.0,
+      "unserved_bus_kWh_median": 0.0,
+      "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "soc_min_min": 0.22837639156920697,
+      "soc_min_max": 0.2620142706113847,
+      "soc_min_median": 0.24992161448643135,
+      "soc_min_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "soc_min_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "soc_max_min": 0.7505793516234933,
+      "soc_max_max": 0.7552478645863544,
+      "soc_max_median": 0.7542013971094425,
+      "soc_max_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "soc_max_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "emergency_band_s_min": 0.0,
+      "emergency_band_s_max": 404.99999999963165,
+      "emergency_band_s_median": 257.64999999976567,
+      "emergency_band_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "emergency_band_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "pack_dis_peak_kW_min": 115.06812614236642,
+      "pack_dis_peak_kW_max": 184.51958532945014,
+      "pack_dis_peak_kW_median": 124.10837889026426,
+      "pack_dis_peak_kW_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "pack_dis_peak_kW_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "pack_chg_peak_kW_min": 147.50564858624014,
+      "pack_chg_peak_kW_max": 147.58458351650407,
+      "pack_chg_peak_kW_median": 147.5324420842902,
+      "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "pack_chg_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal]"
+     },
+     "ref_seed": {
+      "ws3_band": {
+       "fuel_energy_kWh_per_km": 1.7047603676778533,
+       "unserved_bus_kWh": 0.0,
+       "above_pin_demand_s": 1214.6999999988952,
+       "above_pin_demand_kWh": 8.10222289879555,
+       "above_pin_engine_s": 121.19999999988977,
+       "above_pin_transitions_per_h": 30.479876629070784,
+       "genset_starts": 6,
+       "genset_starts_per_h": 3.265701067400441,
+       "genset_on_frac": 0.5760333827214984,
+       "soc_min": 0.2483605013430112,
+       "soc_max": 0.7257439099280615,
+       "soc_end": 0.41696328492976426
+      },
+      "simulator_band": {
+       "fuel_energy_kWh_per_km": 1.7010084250276258,
+       "unserved_bus_kWh": 0.0,
+       "above_pin_demand_s": 1214.6999999988952,
+       "above_pin_demand_kWh": 8.10222289879555,
+       "above_pin_engine_s": 0.0,
+       "above_pin_transitions_per_h": 0.0,
+       "genset_starts": 5,
+       "genset_starts_per_h": 2.7214175561670344,
+       "genset_on_frac": 0.5919687944114842,
+       "soc_min": 0.2571874614998088,
+       "soc_max": 0.7548732761748025,
+       "soc_end": 0.524303617571101
+      }
      }
     },
     "cda_5.4": {
-     "ws3_band": {
-      "fuel_energy_kWh_per_km": 2.0256847779590705,
-      "unserved_bus_kWh": 0.0,
-      "above_pin_demand_s": 1846.9999999983202,
-      "above_pin_demand_kWh": 13.927364366523825,
-      "above_pin_engine_s": 493.29999999955135,
-      "above_pin_transitions_per_h": 17.417072359469017,
-      "genset_starts": 6,
-      "genset_starts_per_h": 3.265701067400441,
-      "genset_on_frac": 0.6749569108883333,
-      "soc_min": 0.16505111557726426,
-      "soc_max": 0.7080680940889869,
-      "soc_end": 0.7074777284814147
+     "ws3_band_ensemble": {
+      "genset_starts_min": 6,
+      "genset_starts_max": 6,
+      "genset_starts_median": 6.0,
+      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "genset_starts_per_h_min": 3.265701067400441,
+      "genset_starts_per_h_max": 3.287721274296412,
+      "genset_starts_per_h_median": 3.2841479499502997,
+      "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "genset_on_frac_min": 0.6749569108883333,
+      "genset_on_frac_max": 0.6833893970985414,
+      "genset_on_frac_median": 0.6820288963330003,
+      "genset_on_frac_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "genset_on_frac_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "fuel_energy_kWh_per_km_min": 2.0256847779590705,
+      "fuel_energy_kWh_per_km_max": 2.0476334039253676,
+      "fuel_energy_kWh_per_km_median": 2.0407011753118853,
+      "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "fuel_kg_min": 22.4837381877777,
+      "fuel_kg_max": 22.727049370308844,
+      "fuel_kg_median": 22.650609364557475,
+      "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "unserved_bus_kWh_min": 0.0,
+      "unserved_bus_kWh_max": 0.0,
+      "unserved_bus_kWh_median": 0.0,
+      "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "soc_min_min": 0.15426396810314083,
+      "soc_min_max": 0.17625628559480783,
+      "soc_min_median": 0.16624003409522434,
+      "soc_min_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "soc_min_max_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "soc_max_min": 0.707996570399819,
+      "soc_max_max": 0.7082419094823785,
+      "soc_max_median": 0.7080617919311785,
+      "soc_max_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "soc_max_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "emergency_band_s_min": 630.9999999994261,
+      "emergency_band_s_max": 672.5999999993883,
+      "emergency_band_s_median": 649.3499999994094,
+      "emergency_band_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "emergency_band_s_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "pack_dis_peak_kW_min": 119.000810736532,
+      "pack_dis_peak_kW_max": 142.22844638407688,
+      "pack_dis_peak_kW_median": 129.78028434887722,
+      "pack_dis_peak_kW_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "pack_dis_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "pack_chg_peak_kW_min": 147.50564858624014,
+      "pack_chg_peak_kW_max": 147.58458351650407,
+      "pack_chg_peak_kW_median": 147.5324420842902,
+      "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]",
+      "pack_chg_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/WS3-band]"
      },
-     "simulator_band": {
-      "fuel_energy_kWh_per_km": 2.018848800489633,
-      "unserved_bus_kWh": 0.0,
-      "above_pin_demand_s": 1846.9999999983202,
-      "above_pin_demand_kWh": 13.927364366523825,
-      "above_pin_engine_s": 468.09999999957427,
-      "above_pin_transitions_per_h": 14.151371292068578,
-      "genset_starts": 4,
-      "genset_starts_per_h": 2.177134044933627,
-      "genset_on_frac": 0.6678056303101573,
-      "soc_min": 0.18334485346337365,
-      "soc_max": 0.7681056509960934,
-      "soc_end": 0.572763611256311
+     "simulator_band_ensemble": {
+      "genset_starts_min": 4,
+      "genset_starts_max": 4,
+      "genset_starts_median": 4.0,
+      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "genset_starts_per_h_min": 2.177134044933627,
+      "genset_starts_per_h_max": 2.1918141828642748,
+      "genset_starts_per_h_median": 2.189431966633533,
+      "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "genset_on_frac_min": 0.6678056303101573,
+      "genset_on_frac_max": 0.6852505400221731,
+      "genset_on_frac_median": 0.6811524415087578,
+      "genset_on_frac_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "genset_on_frac_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "fuel_energy_kWh_per_km_min": 2.018848800489633,
+      "fuel_energy_kWh_per_km_max": 2.0378064476340145,
+      "fuel_energy_kWh_per_km_median": 2.0320008359694812,
+      "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "fuel_kg_min": 22.407863437000717,
+      "fuel_kg_max": 22.617978224875632,
+      "fuel_kg_median": 22.5540397700572,
+      "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "unserved_bus_kWh_min": 0.0,
+      "unserved_bus_kWh_max": 0.0,
+      "unserved_bus_kWh_median": 0.0,
+      "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "soc_min_min": 0.18334485346337365,
+      "soc_min_max": 0.2222417487425971,
+      "soc_min_median": 0.20856748788529494,
+      "soc_min_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "soc_min_max_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "soc_max_min": 0.7563731184232202,
+      "soc_max_max": 0.7699315197221807,
+      "soc_max_median": 0.7664290169609327,
+      "soc_max_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "soc_max_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "emergency_band_s_min": 467.4999999995748,
+      "emergency_band_s_max": 644.8999999994135,
+      "emergency_band_s_median": 580.4499999994721,
+      "emergency_band_s_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "emergency_band_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "pack_dis_peak_kW_min": 125.96166476162736,
+      "pack_dis_peak_kW_max": 142.22844638407688,
+      "pack_dis_peak_kW_median": 130.01147495956496,
+      "pack_dis_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "pack_dis_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "pack_chg_peak_kW_min": 147.50564858624014,
+      "pack_chg_peak_kW_max": 147.58458351650407,
+      "pack_chg_peak_kW_median": 147.5324420842902,
+      "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "pack_chg_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]"
+     },
+     "ref_seed": {
+      "ws3_band": {
+       "fuel_energy_kWh_per_km": 2.0256847779590705,
+       "unserved_bus_kWh": 0.0,
+       "above_pin_demand_s": 1846.9999999983202,
+       "above_pin_demand_kWh": 13.927364366523825,
+       "above_pin_engine_s": 493.29999999955135,
+       "above_pin_transitions_per_h": 17.417072359469017,
+       "genset_starts": 6,
+       "genset_starts_per_h": 3.265701067400441,
+       "genset_on_frac": 0.6749569108883333,
+       "soc_min": 0.16505111557726426,
+       "soc_max": 0.7080680940889869,
+       "soc_end": 0.7074777284814147
+      },
+      "simulator_band": {
+       "fuel_energy_kWh_per_km": 2.018848800489633,
+       "unserved_bus_kWh": 0.0,
+       "above_pin_demand_s": 1846.9999999983202,
+       "above_pin_demand_kWh": 13.927364366523825,
+       "above_pin_engine_s": 468.09999999957427,
+       "above_pin_transitions_per_h": 14.151371292068578,
+       "genset_starts": 4,
+       "genset_starts_per_h": 2.177134044933627,
+       "genset_on_frac": 0.6678056303101573,
+       "soc_min": 0.18334485346337365,
+       "soc_max": 0.7681056509960934,
+       "soc_end": 0.572763611256311
+      }
      }
     },
     "alt2000m_45C": {
-     "ws3_band": {
-      "fuel_energy_kWh_per_km": 1.4213951699960017,
-      "unserved_bus_kWh": 0.0,
-      "above_pin_demand_s": 701.3999999993621,
-      "above_pin_demand_kWh": 4.55030999200612,
-      "above_pin_engine_s": 87.39999999992051,
-      "above_pin_transitions_per_h": 8.708536179734509,
-      "genset_starts": 9,
-      "genset_starts_per_h": 4.898551601100662,
-      "genset_on_frac": 0.49674941791857086,
-      "soc_min": 0.24740871909053874,
-      "soc_max": 0.7901808001721989,
-      "soc_end": 0.6868681447623254
+     "ws3_band_ensemble": {
+      "genset_starts_min": 9,
+      "genset_starts_max": 9,
+      "genset_starts_median": 9.0,
+      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "genset_starts_per_h_min": 4.898551601100662,
+      "genset_starts_per_h_max": 4.931581911444618,
+      "genset_starts_per_h_median": 4.92622192492545,
+      "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "genset_on_frac_min": 0.49674941791857086,
+      "genset_on_frac_max": 0.5061033149671206,
+      "genset_on_frac_median": 0.5036001990195004,
+      "genset_on_frac_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "genset_on_frac_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "fuel_energy_kWh_per_km_min": 1.4213951699960017,
+      "fuel_energy_kWh_per_km_max": 1.4341276212497536,
+      "fuel_energy_kWh_per_km_median": 1.4300747617843157,
+      "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "fuel_kg_min": 15.776530095546589,
+      "fuel_kg_max": 15.917638962611248,
+      "fuel_kg_median": 15.87308695530247,
+      "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "unserved_bus_kWh_min": 0.0,
+      "unserved_bus_kWh_max": 0.0,
+      "unserved_bus_kWh_median": 0.0,
+      "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "soc_min_min": 0.24740871909053874,
+      "soc_min_max": 0.24999262452295487,
+      "soc_min_median": 0.249185590795056,
+      "soc_min_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "soc_min_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "soc_max_min": 0.7759711507248384,
+      "soc_max_max": 0.7901808001721989,
+      "soc_max_median": 0.7848323623881139,
+      "soc_max_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "soc_max_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "emergency_band_s_min": 186.89999999983002,
+      "emergency_band_s_max": 210.9999999998081,
+      "emergency_band_s_median": 198.54999999981942,
+      "emergency_band_s_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "emergency_band_s_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "pack_dis_peak_kW_min": 166.23803527878812,
+      "pack_dis_peak_kW_max": 192.4662473109739,
+      "pack_dis_peak_kW_median": 180.2309375895033,
+      "pack_dis_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "pack_dis_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "pack_chg_peak_kW_min": 147.50564858624014,
+      "pack_chg_peak_kW_max": 147.58458351650407,
+      "pack_chg_peak_kW_median": 147.53525099465662,
+      "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]",
+      "pack_chg_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/WS3-band]"
      },
-     "simulator_band": {
-      "fuel_energy_kWh_per_km": 1.4131393969351607,
-      "unserved_bus_kWh": 0.0,
-      "above_pin_demand_s": 701.3999999993621,
-      "above_pin_demand_kWh": 4.55030999200612,
-      "above_pin_engine_s": 91.99999999991633,
-      "above_pin_transitions_per_h": 8.708536179734509,
-      "genset_starts": 6,
-      "genset_starts_per_h": 3.265701067400441,
-      "genset_on_frac": 0.48150947960404933,
-      "soc_min": 0.24700156614166152,
-      "soc_max": 0.8031287374028468,
-      "soc_end": 0.5101868726716788
+     "simulator_band_ensemble": {
+      "genset_starts_min": 6,
+      "genset_starts_max": 6,
+      "genset_starts_median": 6.0,
+      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "genset_starts_per_h_min": 3.265701067400441,
+      "genset_starts_per_h_max": 3.287721274296412,
+      "genset_starts_per_h_median": 3.2841479499502997,
+      "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "genset_on_frac_min": 0.48150947960404933,
+      "genset_on_frac_max": 0.48981140091296277,
+      "genset_on_frac_median": 0.48827726992177967,
+      "genset_on_frac_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "genset_on_frac_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "fuel_energy_kWh_per_km_min": 1.4131393969351607,
+      "fuel_energy_kWh_per_km_max": 1.4260734657051741,
+      "fuel_energy_kWh_per_km_median": 1.4217595332112802,
+      "fuel_energy_kWh_per_km_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "fuel_energy_kWh_per_km_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "fuel_kg_min": 15.684896568920262,
+      "fuel_kg_max": 15.828244449732674,
+      "fuel_kg_median": 15.78079225863235,
+      "fuel_kg_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "fuel_kg_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "unserved_bus_kWh_min": 0.0,
+      "unserved_bus_kWh_max": 0.0,
+      "unserved_bus_kWh_median": 0.0,
+      "unserved_bus_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "unserved_bus_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "soc_min_min": 0.24589061524785094,
+      "soc_min_max": 0.2499675876076418,
+      "soc_min_median": 0.24795810873462198,
+      "soc_min_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "soc_min_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "soc_max_min": 0.797535825889751,
+      "soc_max_max": 0.8085924684419679,
+      "soc_max_median": 0.8027119447979026,
+      "soc_max_min_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "soc_max_max_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "emergency_band_s_min": 187.39999999982956,
+      "emergency_band_s_max": 221.89999999979818,
+      "emergency_band_s_median": 204.499999999814,
+      "emergency_band_s_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "emergency_band_s_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "pack_dis_peak_kW_min": 166.23803527878812,
+      "pack_dis_peak_kW_max": 192.4662473109739,
+      "pack_dis_peak_kW_median": 180.2309375895033,
+      "pack_dis_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "pack_dis_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "pack_chg_peak_kW_min": 147.4733249946928,
+      "pack_chg_peak_kW_max": 147.47335735552923,
+      "pack_chg_peak_kW_median": 147.47334269994232,
+      "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "pack_chg_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]"
+     },
+     "ref_seed": {
+      "ws3_band": {
+       "fuel_energy_kWh_per_km": 1.4213951699960017,
+       "unserved_bus_kWh": 0.0,
+       "above_pin_demand_s": 701.3999999993621,
+       "above_pin_demand_kWh": 4.55030999200612,
+       "above_pin_engine_s": 87.39999999992051,
+       "above_pin_transitions_per_h": 8.708536179734509,
+       "genset_starts": 9,
+       "genset_starts_per_h": 4.898551601100662,
+       "genset_on_frac": 0.49674941791857086,
+       "soc_min": 0.24740871909053874,
+       "soc_max": 0.7901808001721989,
+       "soc_end": 0.6868681447623254
+      },
+      "simulator_band": {
+       "fuel_energy_kWh_per_km": 1.4131393969351607,
+       "unserved_bus_kWh": 0.0,
+       "above_pin_demand_s": 701.3999999993621,
+       "above_pin_demand_kWh": 4.55030999200612,
+       "above_pin_engine_s": 91.99999999991633,
+       "above_pin_transitions_per_h": 8.708536179734509,
+       "genset_starts": 6,
+       "genset_starts_per_h": 3.265701067400441,
+       "genset_on_frac": 0.48150947960404933,
+       "soc_min": 0.24700156614166152,
+       "soc_max": 0.8031287374028468,
+       "soc_end": 0.5101868726716788
+      }
      }
     }
    }
@@ -1889,8 +3221,11 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
    },
    "scaling": "[WS4-DECLARED] linear in road speed from WS2's 85 km/h point",
    "coast_no_regen_s_max": 26.099999999976262,
+   "coast_no_regen_s_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
    "coast_spin_shaft_kWh_max": 0.00017454623149206134,
+   "coast_spin_shaft_kWh_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
    "coast_spin_bus_kWh_max": 5.839193136479234e-05,
+   "coast_spin_bus_kWh_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
    "unbooked_pp_of_cycle_fuel": {
     "nominal": 0.0002776645392806949,
     "cda_5.4": 0.00023546494767478026,
@@ -2035,7 +3370,72 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
      "engine_reject_kWh_max": 133.29739780475987,
      "engine_reject_kWh_median": 131.9582558483683,
      "engine_reject_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
-     "engine_reject_kWh_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]"
+     "engine_reject_kWh_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "pack_chg_above_r16_accept_s_min": 39.09999999996444,
+     "pack_chg_above_r16_accept_s_max": 46.999999999957254,
+     "pack_chg_above_r16_accept_s_median": 41.74999999996203,
+     "pack_chg_above_r16_accept_s_min_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "pack_chg_above_r16_accept_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "pack_chg_above_r16_accept_kWh_min": 0.1517201946482203,
+     "pack_chg_above_r16_accept_kWh_max": 0.18123851290721116,
+     "pack_chg_above_r16_accept_kWh_median": 0.1575554584680976,
+     "pack_chg_above_r16_accept_kWh_min_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "pack_chg_above_r16_accept_kWh_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "pack_chg_above_r16_accept_longest_s_min": 11.799999999989268,
+     "pack_chg_above_r16_accept_longest_s_max": 15.399999999985994,
+     "pack_chg_above_r16_accept_longest_s_median": 12.849999999988313,
+     "pack_chg_above_r16_accept_longest_s_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "pack_chg_above_r16_accept_longest_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_over_continuous_rating_s_min": 0.0,
+     "engine_over_continuous_rating_s_max": 146.49999999986676,
+     "engine_over_continuous_rating_s_median": 22.54999999997949,
+     "engine_over_continuous_rating_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_over_continuous_rating_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_over_continuous_rating_kWh_min": 0.0,
+     "engine_over_continuous_rating_kWh_max": 0.6242162818706969,
+     "engine_over_continuous_rating_kWh_median": 0.08003845264092971,
+     "engine_over_continuous_rating_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_over_continuous_rating_kWh_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_over_continuous_rating_longest_s_min": 0.0,
+     "engine_over_continuous_rating_longest_s_max": 139.89999999987276,
+     "engine_over_continuous_rating_longest_s_median": 17.649999999983947,
+     "engine_over_continuous_rating_longest_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_over_continuous_rating_longest_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_shaft_peak_kW_min": 84.69969589648574,
+     "engine_shaft_peak_kW_max": 147.88445330896414,
+     "engine_shaft_peak_kW_median": 147.88445330896414,
+     "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_shaft_peak_kW_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "generator_over_continuous_input_s_min": 0.0,
+     "generator_over_continuous_input_s_max": 143.5999999998694,
+     "generator_over_continuous_input_s_median": 20.499999999981355,
+     "generator_over_continuous_input_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "generator_over_continuous_input_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "generator_shaft_input_peak_kW_min": 84.69969589648574,
+     "generator_shaft_input_peak_kW_max": 147.88445330896414,
+     "generator_shaft_input_peak_kW_median": 147.88445330896414,
+     "generator_shaft_input_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "generator_shaft_input_peak_kW_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_peak_kW_min": 120.33927822481891,
+     "engine_reject_peak_kW_max": 239.83184600315272,
+     "engine_reject_peak_kW_median": 239.83184600315272,
+     "engine_reject_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_peak_kW_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_2min_max_kW_min": 120.33927822481891,
+     "engine_reject_2min_max_kW_max": 239.83184600314863,
+     "engine_reject_2min_max_kW_median": 152.21076196345763,
+     "engine_reject_2min_max_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_2min_max_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_10min_max_kW_min": 120.33927822481891,
+     "engine_reject_10min_max_kW_max": 153.86434872836605,
+     "engine_reject_10min_max_kW_median": 128.9562037059979,
+     "engine_reject_10min_max_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_10min_max_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_avg_kW_min": 71.23709745105013,
+     "engine_reject_avg_kW_max": 73.04078176184348,
+     "engine_reject_avg_kW_median": 72.25591517220774,
+     "engine_reject_avg_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+     "engine_reject_avg_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal]"
     },
     "per_seed_ordered_exports": {
      "23": {
@@ -2182,8 +3582,119 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
      "genset_starts_max": 1,
      "genset_starts_median": 1.0,
      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
-     "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]"
-    }
+     "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_dis_peak_kW_min": 74.49118258693781,
+     "pack_dis_peak_kW_max": 92.1281939813538,
+     "pack_dis_peak_kW_median": 84.84587360924576,
+     "pack_dis_peak_kW_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_dis_peak_kW_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_peak_kW_min": 91.36734808070074,
+     "pack_chg_peak_kW_max": 100.20197066183997,
+     "pack_chg_peak_kW_median": 91.42046816709822,
+     "pack_chg_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_peak_kW_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_dis_over_r8_125kW_s_min": 0.0,
+     "pack_dis_over_r8_125kW_s_max": 0.0,
+     "pack_dis_over_r8_125kW_s_median": 0.0,
+     "pack_dis_over_r8_125kW_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_dis_over_r8_125kW_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_over_r8_110kW_s_min": 0.0,
+     "pack_chg_over_r8_110kW_s_max": 0.0,
+     "pack_chg_over_r8_110kW_s_median": 0.0,
+     "pack_chg_over_r8_110kW_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_over_r8_110kW_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_above_r16_accept_s_min": 0.0,
+     "pack_chg_above_r16_accept_s_max": 0.0,
+     "pack_chg_above_r16_accept_s_median": 0.0,
+     "pack_chg_above_r16_accept_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_above_r16_accept_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_above_r16_accept_kWh_min": 0.0,
+     "pack_chg_above_r16_accept_kWh_max": 0.0,
+     "pack_chg_above_r16_accept_kWh_median": 0.0,
+     "pack_chg_above_r16_accept_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "pack_chg_above_r16_accept_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_over_continuous_rating_s_min": 0.0,
+     "engine_over_continuous_rating_s_max": 0.0,
+     "engine_over_continuous_rating_s_median": 0.0,
+     "engine_over_continuous_rating_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_over_continuous_rating_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_over_continuous_rating_kWh_min": 0.0,
+     "engine_over_continuous_rating_kWh_max": 0.0,
+     "engine_over_continuous_rating_kWh_median": 0.0,
+     "engine_over_continuous_rating_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_over_continuous_rating_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_shaft_peak_kW_min": 131.1465762318337,
+     "engine_shaft_peak_kW_max": 131.1465762318337,
+     "engine_shaft_peak_kW_median": 131.1465762318337,
+     "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_shaft_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "generator_over_continuous_input_s_min": 0.0,
+     "generator_over_continuous_input_s_max": 0.0,
+     "generator_over_continuous_input_s_median": 0.0,
+     "generator_over_continuous_input_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "generator_over_continuous_input_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "emergency_band_s_min": 0.0,
+     "emergency_band_s_max": 0.0,
+     "emergency_band_s_median": 0.0,
+     "emergency_band_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "emergency_band_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "genset_starts_per_h_min": 0.5442835112334068,
+     "genset_starts_per_h_max": 0.5479535457160687,
+     "genset_starts_per_h_median": 0.5473579916583833,
+     "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "genset_on_frac_min": 0.8514641177365786,
+     "genset_on_frac_max": 0.86066759007016,
+     "genset_on_frac_median": 0.8544926702690961,
+     "genset_on_frac_min_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "genset_on_frac_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "soc_min_min": 0.34977647025391534,
+     "soc_min_max": 0.34999978742607085,
+     "soc_min_median": 0.34993188051601903,
+     "soc_min_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "soc_min_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "soc_max_min": 0.750002995831675,
+     "soc_max_max": 0.7500516511303884,
+     "soc_max_median": 0.7500224396047849,
+     "soc_max_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "soc_max_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "above_pin_engine_s_min": 1203.0999999989058,
+     "above_pin_engine_s_max": 1239.2999999988729,
+     "above_pin_engine_s_median": 1226.0999999988849,
+     "above_pin_engine_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "above_pin_engine_s_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "motor_over_rating_s_min": 42.09999999996171,
+     "motor_over_rating_s_max": 71.49999999993497,
+     "motor_over_rating_s_median": 60.89999999994461,
+     "motor_over_rating_s_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "motor_over_rating_s_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "regen_bus_peak_kW_min": 68.89175746752028,
+     "regen_bus_peak_kW_max": 68.9706923977842,
+     "regen_bus_peak_kW_median": 68.91855096557035,
+     "regen_bus_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "regen_bus_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_avg_kW_min": 73.61835429277397,
+     "engine_reject_avg_kW_max": 74.78567286893247,
+     "engine_reject_avg_kW_median": 74.46136634590519,
+     "engine_reject_avg_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_avg_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_peak_kW_min": 201.76143471959818,
+     "engine_reject_peak_kW_max": 201.76143471959818,
+     "engine_reject_peak_kW_median": 201.76143471959818,
+     "engine_reject_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_2min_max_kW_min": 201.7332486837995,
+     "engine_reject_2min_max_kW_max": 201.76143471959818,
+     "engine_reject_2min_max_kW_median": 201.76143471959818,
+     "engine_reject_2min_max_kW_min_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_2min_max_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_10min_max_kW_min": 146.1816733670729,
+     "engine_reject_10min_max_kW_max": 147.98637032082587,
+     "engine_reject_10min_max_kW_median": 147.10557016219278,
+     "engine_reject_10min_max_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+     "engine_reject_10min_max_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]"
+    },
+    "companion_bp_note": "load-following companion for R22b - NOT the block of record; WS5 owns the dispatch choice"
    },
    "cda_5.4": {
     "condition": "E13 high-drag body, CdA 5.4 m^2, otherwise nominal",
@@ -2318,7 +3829,72 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
      "engine_reject_kWh_max": 158.54764795738947,
      "engine_reject_kWh_median": 158.01311683069966,
      "engine_reject_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
-     "engine_reject_kWh_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]"
+     "engine_reject_kWh_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "pack_chg_above_r16_accept_s_min": 41.39999999996235,
+     "pack_chg_above_r16_accept_s_max": 58.599999999946704,
+     "pack_chg_above_r16_accept_s_median": 50.04999999995448,
+     "pack_chg_above_r16_accept_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "pack_chg_above_r16_accept_s_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "pack_chg_above_r16_accept_kWh_min": 0.15441299152589066,
+     "pack_chg_above_r16_accept_kWh_max": 0.2383758177679772,
+     "pack_chg_above_r16_accept_kWh_median": 0.2074545648550118,
+     "pack_chg_above_r16_accept_kWh_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "pack_chg_above_r16_accept_kWh_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "pack_chg_above_r16_accept_longest_s_min": 11.699999999989359,
+     "pack_chg_above_r16_accept_longest_s_max": 14.999999999986358,
+     "pack_chg_above_r16_accept_longest_s_median": 12.749999999988404,
+     "pack_chg_above_r16_accept_longest_s_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "pack_chg_above_r16_accept_longest_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_over_continuous_rating_s_min": 161.79999999985284,
+     "engine_over_continuous_rating_s_max": 249.99999999977263,
+     "engine_over_continuous_rating_s_median": 182.7499999998338,
+     "engine_over_continuous_rating_s_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_over_continuous_rating_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_over_continuous_rating_kWh_min": 0.6396134857708504,
+     "engine_over_continuous_rating_kWh_max": 1.0010827818881147,
+     "engine_over_continuous_rating_kWh_median": 0.7127344655190616,
+     "engine_over_continuous_rating_kWh_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_over_continuous_rating_kWh_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_over_continuous_rating_longest_s_min": 113.19999999989705,
+     "engine_over_continuous_rating_longest_s_max": 188.49999999982856,
+     "engine_over_continuous_rating_longest_s_median": 129.59999999988213,
+     "engine_over_continuous_rating_longest_s_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_over_continuous_rating_longest_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_shaft_peak_kW_min": 147.88445330896414,
+     "engine_shaft_peak_kW_max": 147.88445330896414,
+     "engine_shaft_peak_kW_median": 147.88445330896414,
+     "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_shaft_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "generator_over_continuous_input_s_min": 154.6999999998593,
+     "generator_over_continuous_input_s_max": 241.79999999978008,
+     "generator_over_continuous_input_s_median": 175.94999999983997,
+     "generator_over_continuous_input_s_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "generator_over_continuous_input_s_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "generator_shaft_input_peak_kW_min": 147.88445330896414,
+     "generator_shaft_input_peak_kW_max": 147.88445330896414,
+     "generator_shaft_input_peak_kW_median": 147.88445330896414,
+     "generator_shaft_input_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "generator_shaft_input_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_peak_kW_min": 239.83184600315272,
+     "engine_reject_peak_kW_max": 239.83184600315272,
+     "engine_reject_peak_kW_median": 239.83184600315272,
+     "engine_reject_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_2min_max_kW_min": 235.8969523867051,
+     "engine_reject_2min_max_kW_max": 239.83184600315272,
+     "engine_reject_2min_max_kW_median": 239.78619487358145,
+     "engine_reject_2min_max_kW_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_2min_max_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_10min_max_kW_min": 157.31416937826106,
+     "engine_reject_10min_max_kW_max": 175.29914804927307,
+     "engine_reject_10min_max_kW_median": 160.64464399537275,
+     "engine_reject_10min_max_kW_min_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_10min_max_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_avg_kW_min": 85.5821081755078,
+     "engine_reject_avg_kW_max": 86.87277900925422,
+     "engine_reject_avg_kW_median": 86.5508848495421,
+     "engine_reject_avg_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+     "engine_reject_avg_kW_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]"
     },
     "per_seed_ordered_exports": {
      "23": {
@@ -2465,8 +4041,119 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
      "genset_starts_max": 1,
      "genset_starts_median": 1.0,
      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
-     "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]"
-    }
+     "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_dis_peak_kW_min": 75.71421620819964,
+     "pack_dis_peak_kW_max": 96.924350649353,
+     "pack_dis_peak_kW_median": 85.99704597579242,
+     "pack_dis_peak_kW_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_dis_peak_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_peak_kW_min": 96.31404773008725,
+     "pack_chg_peak_kW_max": 99.2993552979512,
+     "pack_chg_peak_kW_median": 98.0151652183307,
+     "pack_chg_peak_kW_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_peak_kW_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_dis_over_r8_125kW_s_min": 0.0,
+     "pack_dis_over_r8_125kW_s_max": 0.0,
+     "pack_dis_over_r8_125kW_s_median": 0.0,
+     "pack_dis_over_r8_125kW_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_dis_over_r8_125kW_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_over_r8_110kW_s_min": 0.0,
+     "pack_chg_over_r8_110kW_s_max": 0.0,
+     "pack_chg_over_r8_110kW_s_median": 0.0,
+     "pack_chg_over_r8_110kW_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_over_r8_110kW_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_above_r16_accept_s_min": 0.0,
+     "pack_chg_above_r16_accept_s_max": 0.0,
+     "pack_chg_above_r16_accept_s_median": 0.0,
+     "pack_chg_above_r16_accept_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_above_r16_accept_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_above_r16_accept_kWh_min": 0.0,
+     "pack_chg_above_r16_accept_kWh_max": 0.0,
+     "pack_chg_above_r16_accept_kWh_median": 0.0,
+     "pack_chg_above_r16_accept_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "pack_chg_above_r16_accept_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_over_continuous_rating_s_min": 0.0,
+     "engine_over_continuous_rating_s_max": 0.0,
+     "engine_over_continuous_rating_s_median": 0.0,
+     "engine_over_continuous_rating_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_over_continuous_rating_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_over_continuous_rating_kWh_min": 0.0,
+     "engine_over_continuous_rating_kWh_max": 0.0,
+     "engine_over_continuous_rating_kWh_median": 0.0,
+     "engine_over_continuous_rating_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_over_continuous_rating_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_shaft_peak_kW_min": 131.1465762318337,
+     "engine_shaft_peak_kW_max": 131.1465762318337,
+     "engine_shaft_peak_kW_median": 131.1465762318337,
+     "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_shaft_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "generator_over_continuous_input_s_min": 0.0,
+     "generator_over_continuous_input_s_max": 0.0,
+     "generator_over_continuous_input_s_median": 0.0,
+     "generator_over_continuous_input_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "generator_over_continuous_input_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "emergency_band_s_min": 0.0,
+     "emergency_band_s_max": 0.0,
+     "emergency_band_s_median": 0.0,
+     "emergency_band_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "emergency_band_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "genset_starts_per_h_min": 0.5442835112334068,
+     "genset_starts_per_h_max": 0.5479535457160687,
+     "genset_starts_per_h_median": 0.5473579916583833,
+     "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "genset_on_frac_min": 0.8702110549717387,
+     "genset_on_frac_max": 0.8807386899513884,
+     "genset_on_frac_median": 0.8794037946958508,
+     "genset_on_frac_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "genset_on_frac_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "soc_min_min": 0.34013310236615435,
+     "soc_min_max": 0.3499926503172117,
+     "soc_min_median": 0.34802026267408026,
+     "soc_min_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "soc_min_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "soc_max_min": 0.7500019182567457,
+     "soc_max_max": 0.7549487562845313,
+     "soc_max_median": 0.7534067974523575,
+     "soc_max_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "soc_max_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "above_pin_engine_s_min": 1889.7999999982812,
+     "above_pin_engine_s_max": 2015.6999999981667,
+     "above_pin_engine_s_median": 1994.499999998186,
+     "above_pin_engine_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "above_pin_engine_s_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "motor_over_rating_s_min": 110.39999999989959,
+     "motor_over_rating_s_max": 137.49999999987494,
+     "motor_over_rating_s_median": 122.5999999998885,
+     "motor_over_rating_s_min_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "motor_over_rating_s_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "regen_bus_peak_kW_min": 68.89175746752028,
+     "regen_bus_peak_kW_max": 68.9706923977842,
+     "regen_bus_peak_kW_median": 68.91855096557035,
+     "regen_bus_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "regen_bus_peak_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_avg_kW_min": 87.34356935084296,
+     "engine_reject_avg_kW_max": 88.72720824164473,
+     "engine_reject_avg_kW_median": 88.32277668134533,
+     "engine_reject_avg_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_avg_kW_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_peak_kW_min": 201.76143471959818,
+     "engine_reject_peak_kW_max": 201.76143471959818,
+     "engine_reject_peak_kW_median": 201.76143471959818,
+     "engine_reject_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_2min_max_kW_min": 201.76143471959006,
+     "engine_reject_2min_max_kW_max": 201.76143471959818,
+     "engine_reject_2min_max_kW_median": 201.76143471959568,
+     "engine_reject_2min_max_kW_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_2min_max_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_10min_max_kW_min": 163.8332069598629,
+     "engine_reject_10min_max_kW_max": 166.17452630755554,
+     "engine_reject_10min_max_kW_median": 165.13916328234916,
+     "engine_reject_10min_max_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]",
+     "engine_reject_10min_max_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4/bp]"
+    },
+    "companion_bp_note": "load-following companion for R22b - NOT the block of record; WS5 owns the dispatch choice"
    },
    "alt2000m_45C": {
     "condition": "2,000 m / +45 C: rho 0.8706 kg/m^3 and engine derate 0.9312. IDENTICAL to the archived gate's alt2000m_45C case (GVW, CdA 4.2, 2 kW aux) - NOT the stricter R6 RATING corner, which additionally carries +20% payload, CdA 5.4 and 4 kW aux and is used to size the engine, not to run the duty",
@@ -2601,7 +4288,72 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
      "engine_reject_kWh_max": 109.75630859221401,
      "engine_reject_kWh_median": 109.32660520835277,
      "engine_reject_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
-     "engine_reject_kWh_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]"
+     "engine_reject_kWh_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "pack_chg_above_r16_accept_s_min": 13.59999999998763,
+     "pack_chg_above_r16_accept_s_max": 23.799999999978354,
+     "pack_chg_above_r16_accept_s_median": 17.049999999984493,
+     "pack_chg_above_r16_accept_s_min_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "pack_chg_above_r16_accept_s_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "pack_chg_above_r16_accept_kWh_min": 0.053100715644019074,
+     "pack_chg_above_r16_accept_kWh_max": 0.09834404837851865,
+     "pack_chg_above_r16_accept_kWh_median": 0.07220408737419864,
+     "pack_chg_above_r16_accept_kWh_min_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "pack_chg_above_r16_accept_kWh_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "pack_chg_above_r16_accept_longest_s_min": 9.299999999991542,
+     "pack_chg_above_r16_accept_longest_s_max": 11.59999999998945,
+     "pack_chg_above_r16_accept_longest_s_median": 11.04999999998995,
+     "pack_chg_above_r16_accept_longest_s_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "pack_chg_above_r16_accept_longest_s_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_over_continuous_rating_s_min": 54.99999999994998,
+     "engine_over_continuous_rating_s_max": 66.09999999993988,
+     "engine_over_continuous_rating_s_median": 63.34999999994238,
+     "engine_over_continuous_rating_s_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_over_continuous_rating_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_over_continuous_rating_kWh_min": 0.15738915479713483,
+     "engine_over_continuous_rating_kWh_max": 0.1893827056696963,
+     "engine_over_continuous_rating_kWh_median": 0.18371013669520275,
+     "engine_over_continuous_rating_kWh_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_over_continuous_rating_kWh_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_over_continuous_rating_longest_s_min": 49.29999999995516,
+     "engine_over_continuous_rating_longest_s_max": 64.0999999999417,
+     "engine_over_continuous_rating_longest_s_median": 61.94999999994366,
+     "engine_over_continuous_rating_longest_s_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_over_continuous_rating_longest_s_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_shaft_peak_kW_min": 133.59559927537524,
+     "engine_shaft_peak_kW_max": 133.59559927537524,
+     "engine_shaft_peak_kW_median": 133.59559927537524,
+     "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_shaft_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "generator_over_continuous_input_s_min": 0.0,
+     "generator_over_continuous_input_s_max": 0.0,
+     "generator_over_continuous_input_s_median": 0.0,
+     "generator_over_continuous_input_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "generator_over_continuous_input_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "generator_shaft_input_peak_kW_min": 133.59559927537524,
+     "generator_shaft_input_peak_kW_max": 133.59559927537524,
+     "generator_shaft_input_peak_kW_median": 133.59559927537524,
+     "generator_shaft_input_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "generator_shaft_input_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_peak_kW_min": 215.67009662126068,
+     "engine_reject_peak_kW_max": 215.67009662126068,
+     "engine_reject_peak_kW_median": 215.67009662126068,
+     "engine_reject_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_2min_max_kW_min": 171.30358360463316,
+     "engine_reject_2min_max_kW_max": 179.8894524724762,
+     "engine_reject_2min_max_kW_median": 177.31787666048405,
+     "engine_reject_2min_max_kW_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_2min_max_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_10min_max_kW_min": 131.04920479291783,
+     "engine_reject_10min_max_kW_max": 133.0207207332441,
+     "engine_reject_10min_max_kW_median": 132.42500177293982,
+     "engine_reject_10min_max_kW_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_10min_max_kW_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_avg_kW_min": 59.075190306422435,
+     "engine_reject_avg_kW_max": 59.951554604514,
+     "engine_reject_avg_kW_median": 59.835403744811146,
+     "engine_reject_avg_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+     "engine_reject_avg_kW_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]"
     },
     "per_seed_ordered_exports": {
      "23": {
@@ -2748,9 +4500,326 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
      "genset_starts_max": 2,
      "genset_starts_median": 2.0,
      "genset_starts_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
-     "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]"
-    }
+     "genset_starts_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_dis_peak_kW_min": 101.98516213571875,
+     "pack_dis_peak_kW_max": 115.6479591046265,
+     "pack_dis_peak_kW_median": 107.48576378278705,
+     "pack_dis_peak_kW_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_dis_peak_kW_max_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_peak_kW_min": 91.56735897886259,
+     "pack_chg_peak_kW_max": 91.57934743841176,
+     "pack_chg_peak_kW_median": 91.57858400638165,
+     "pack_chg_peak_kW_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_peak_kW_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_dis_over_r8_125kW_s_min": 0.0,
+     "pack_dis_over_r8_125kW_s_max": 0.0,
+     "pack_dis_over_r8_125kW_s_median": 0.0,
+     "pack_dis_over_r8_125kW_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_dis_over_r8_125kW_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_over_r8_110kW_s_min": 0.0,
+     "pack_chg_over_r8_110kW_s_max": 0.0,
+     "pack_chg_over_r8_110kW_s_median": 0.0,
+     "pack_chg_over_r8_110kW_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_over_r8_110kW_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_above_r16_accept_s_min": 0.0,
+     "pack_chg_above_r16_accept_s_max": 0.0,
+     "pack_chg_above_r16_accept_s_median": 0.0,
+     "pack_chg_above_r16_accept_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_above_r16_accept_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_above_r16_accept_kWh_min": 0.0,
+     "pack_chg_above_r16_accept_kWh_max": 0.0,
+     "pack_chg_above_r16_accept_kWh_median": 0.0,
+     "pack_chg_above_r16_accept_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "pack_chg_above_r16_accept_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_over_continuous_rating_s_min": 0.0,
+     "engine_over_continuous_rating_s_max": 0.0,
+     "engine_over_continuous_rating_s_median": 0.0,
+     "engine_over_continuous_rating_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_over_continuous_rating_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_over_continuous_rating_kWh_min": 0.0,
+     "engine_over_continuous_rating_kWh_max": 0.0,
+     "engine_over_continuous_rating_kWh_median": 0.0,
+     "engine_over_continuous_rating_kWh_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_over_continuous_rating_kWh_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_shaft_peak_kW_min": 121.92769711330514,
+     "engine_shaft_peak_kW_max": 121.92769711330514,
+     "engine_shaft_peak_kW_median": 121.92769711330514,
+     "engine_shaft_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_shaft_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "generator_over_continuous_input_s_min": 0.0,
+     "generator_over_continuous_input_s_max": 0.0,
+     "generator_over_continuous_input_s_median": 0.0,
+     "generator_over_continuous_input_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "generator_over_continuous_input_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "emergency_band_s_min": 0.0,
+     "emergency_band_s_max": 0.0,
+     "emergency_band_s_median": 0.0,
+     "emergency_band_s_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "emergency_band_s_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "genset_starts_per_h_min": 1.0885670224668136,
+     "genset_starts_per_h_max": 1.0959070914321374,
+     "genset_starts_per_h_median": 1.0947159833167666,
+     "genset_starts_per_h_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "genset_starts_per_h_max_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "genset_on_frac_min": 0.7826796891536703,
+     "genset_on_frac_max": 0.7914827554717194,
+     "genset_on_frac_median": 0.7881767645547129,
+     "genset_on_frac_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "genset_on_frac_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "soc_min_min": 0.34976019546311676,
+     "soc_min_max": 0.34995986426913217,
+     "soc_min_median": 0.3498241410218085,
+     "soc_min_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "soc_min_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "soc_max_min": 0.7542122938434602,
+     "soc_max_max": 0.7599162523422768,
+     "soc_max_median": 0.7569180060395942,
+     "soc_max_min_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "soc_max_max_governing_case": "seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "above_pin_engine_s_min": 710.9999999993533,
+     "above_pin_engine_s_max": 765.7999999993035,
+     "above_pin_engine_s_median": 744.7999999993226,
+     "above_pin_engine_s_min_governing_case": "seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "above_pin_engine_s_max_governing_case": "seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "motor_over_rating_s_min": 11.999999999989086,
+     "motor_over_rating_s_max": 22.699999999979354,
+     "motor_over_rating_s_median": 15.24999999998613,
+     "motor_over_rating_s_min_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "motor_over_rating_s_max_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "regen_bus_peak_kW_min": 69.09176836568213,
+     "regen_bus_peak_kW_max": 69.1037568252313,
+     "regen_bus_peak_kW_median": 69.10299339320119,
+     "regen_bus_peak_kW_min_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "regen_bus_peak_kW_max_governing_case": "seed 9 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_avg_kW_min": 62.83258972379745,
+     "engine_reject_avg_kW_max": 63.99860654677968,
+     "engine_reject_avg_kW_median": 63.72687888418305,
+     "engine_reject_avg_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_avg_kW_max_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_peak_kW_min": 189.83813909639906,
+     "engine_reject_peak_kW_max": 189.83813909639906,
+     "engine_reject_peak_kW_median": 189.83813909639906,
+     "engine_reject_peak_kW_min_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_peak_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_2min_max_kW_min": 189.66592742188976,
+     "engine_reject_2min_max_kW_max": 189.83813909639906,
+     "engine_reject_2min_max_kW_median": 189.83813909639858,
+     "engine_reject_2min_max_kW_min_governing_case": "seed 3 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_2min_max_kW_max_governing_case": "seed 23 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_10min_max_kW_min": 128.9266368678613,
+     "engine_reject_10min_max_kW_max": 130.32995837991558,
+     "engine_reject_10min_max_kW_median": 129.50334414337152,
+     "engine_reject_10min_max_kW_min_governing_case": "seed 4 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+     "engine_reject_10min_max_kW_max_governing_case": "seed 8 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]"
+    },
+    "companion_bp_note": "load-following companion for R22b - NOT the block of record; WS5 owns the dispatch choice"
    }
+  },
+  "companion_bp_capability_comparison": {
+   "ruling": "R22b (WS5 owns the dispatch choice) / ESC-9 / KX-B2",
+   "_status": "MEASUREMENT, NOT A RECOMMENDATION. WS4 does not choose between (b) and (b'); R22b assigns that to WS5. What the KX round failed to report is that its own load-following companion satisfies R8's bus-side envelope, WS3's R16 acceptance read on the pack, and the engine's own continuous flat-rating - on every seed of every ordered case - where the pinned mode of record violates all three. ESC-9 asks the lead to choose between remedies; one of them is already measured here, at the fuel deltas in fuel_kWh_per_km_by_case.",
+   "axes": {
+    "pack_discharge_peak_kW_bus": {
+     "limit": 125.0,
+     "limit_label": "R8 bus-side discharge envelope as restated by R12/ES-4",
+     "mode_b_block_of_record": {
+      "per_case_max": {
+       "nominal": 184.51958532945014,
+       "cda_5.4": 142.22844638407688,
+       "alt2000m_45C": 192.4662473109739
+      },
+      "worst_case_max": 192.4662473109739,
+      "worst_case_max_governing_case": "case alt2000m_45C of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 5 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C]",
+      "within_limit_on_every_ordered_seed": false
+     },
+     "mode_bp_companion": {
+      "per_case_max": {
+       "nominal": 92.1281939813538,
+       "cda_5.4": 96.924350649353,
+       "alt2000m_45C": 115.6479591046265
+      },
+      "worst_case_max": 115.6479591046265,
+      "worst_case_max_governing_case": "case alt2000m_45C of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 7 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/bp]",
+      "within_limit_on_every_ordered_seed": true
+     }
+    },
+    "pack_charge_peak_kW_bus": {
+     "limit": 110.0,
+     "limit_label": "R8 bus-side charge envelope",
+     "mode_b_block_of_record": {
+      "per_case_max": {
+       "nominal": 147.58458351650407,
+       "cda_5.4": 147.58458351650407,
+       "alt2000m_45C": 147.47335735552923
+      },
+      "worst_case_max": 147.58458351650407,
+      "worst_case_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 8 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "within_limit_on_every_ordered_seed": false
+     },
+     "mode_bp_companion": {
+      "per_case_max": {
+       "nominal": 100.20197066183997,
+       "cda_5.4": 99.2993552979512,
+       "alt2000m_45C": 91.57934743841176
+      },
+      "worst_case_max": 100.20197066183997,
+      "worst_case_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 6 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+      "within_limit_on_every_ordered_seed": true
+     }
+    },
+    "pack_charge_above_r16_accept_s": {
+     "limit": 0.0,
+     "limit_label": "WS3 R16 continuous charge acceptance at the declared cells, read as a PACK limit (KX-B1)",
+     "mode_b_block_of_record": {
+      "per_case_max": {
+       "nominal": 46.999999999957254,
+       "cda_5.4": 58.599999999946704,
+       "alt2000m_45C": 23.799999999978354
+      },
+      "worst_case_max": 58.599999999946704,
+      "worst_case_max_governing_case": "case cda_5.4 of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 4 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "within_limit_on_every_ordered_seed": false
+     },
+     "mode_bp_companion": {
+      "per_case_max": {
+       "nominal": 0.0,
+       "cda_5.4": 0.0,
+       "alt2000m_45C": 0.0
+      },
+      "worst_case_max": 0.0,
+      "worst_case_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+      "within_limit_on_every_ordered_seed": true
+     }
+    },
+    "engine_over_continuous_rating_s": {
+     "limit": 0.0,
+     "limit_label": "the 4HK1-V2C 132 kW continuous flat-rating x the case derate (KX-M1)",
+     "mode_b_block_of_record": {
+      "per_case_max": {
+       "nominal": 146.49999999986676,
+       "cda_5.4": 249.99999999977263,
+       "alt2000m_45C": 66.09999999993988
+      },
+      "worst_case_max": 249.99999999977263,
+      "worst_case_max_governing_case": "case cda_5.4 of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]",
+      "within_limit_on_every_ordered_seed": false
+     },
+     "mode_bp_companion": {
+      "per_case_max": {
+       "nominal": 0.0,
+       "cda_5.4": 0.0,
+       "alt2000m_45C": 0.0
+      },
+      "worst_case_max": 0.0,
+      "worst_case_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+      "within_limit_on_every_ordered_seed": true
+     }
+    },
+    "engine_shaft_peak_kW": {
+     "limit": null,
+     "limit_label": "informational: compare per case against engine_continuous_rating_kW_by_case below; the compliance verdict is the derate-aware seconds row above",
+     "mode_b_block_of_record": {
+      "per_case_max": {
+       "nominal": 147.88445330896414,
+       "cda_5.4": 147.88445330896414,
+       "alt2000m_45C": 133.59559927537524
+      },
+      "worst_case_max": 147.88445330896414,
+      "worst_case_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 3 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
+      "within_limit_on_every_ordered_seed": null
+     },
+     "mode_bp_companion": {
+      "per_case_max": {
+       "nominal": 131.1465762318337,
+       "cda_5.4": 131.1465762318337,
+       "alt2000m_45C": 121.92769711330514
+      },
+      "worst_case_max": 131.1465762318337,
+      "worst_case_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal/bp]",
+      "within_limit_on_every_ordered_seed": null
+     }
+    }
+   },
+   "engine_continuous_rating_kW_by_case": {
+    "nominal": 132.0,
+    "cda_5.4": 132.0,
+    "alt2000m_45C": 122.91839999999999
+   },
+   "engine_automotive_peak_kW": 153.30046750225958,
+   "generator_continuous_shaft_input_kW": 135.0,
+   "r16_accept_kW_bus_by_case": {
+    "nominal": 130.752,
+    "cda_5.4": 130.752,
+    "alt2000m_45C": 129.144
+   },
+   "fuel_kWh_per_km_by_case": {
+    "nominal": {
+     "mode_b": [
+      1.7010084250276258,
+      1.728099220748916
+     ],
+     "mode_bp": [
+      1.7057693036555654,
+      1.7215200545969436
+     ],
+     "bp_penalty_pct_on_median": 0.062042348068987854
+    },
+    "cda_5.4": {
+     "mode_b": [
+      2.018848800489633,
+      2.0378064476340145
+     ],
+     "mode_bp": [
+      2.0178203318319192,
+      2.0376429497795376
+     ],
+     "bp_penalty_pct_on_median": -0.042355449116515474
+    },
+    "alt2000m_45C": {
+     "mode_b": [
+      1.4131393969351607,
+      1.4260734657051741
+     ],
+     "mode_bp": [
+      1.438361916309073,
+      1.4513953475986154
+     ],
+     "bp_penalty_pct_on_median": 1.7993416648341085
+    }
+   },
+   "genset_starts_by_case": {
+    "nominal": {
+     "mode_b": [
+      5,
+      6
+     ],
+     "mode_bp": [
+      1,
+      1
+     ]
+    },
+    "cda_5.4": {
+     "mode_b": [
+      4,
+      4
+     ],
+     "mode_bp": [
+      1,
+      1
+     ]
+    },
+    "alt2000m_45C": {
+     "mode_b": [
+      6,
+      6
+     ],
+     "mode_bp": [
+      2,
+      2
+     ]
+    }
+   },
+   "reading": "on the three capability axes above, the load-following companion is inside every limit on every ordered seed and the pinned mode of record is outside all three. The fuel cost of that is inside the ensemble spread at nominal and at CdA 5.4 and about the corner penalty above at alt2000m_45C. This is one endpoint of R22b's question measured on the same trace as the other, which is what the companion exists for. It is not a WS4 recommendation and it does not price the axes R22b must also weigh - start transients, emissions aftertreatment temperature, engine duty at part load - none of which this run models."
   }
  },
  "spin_drag_operational_note_r22d": {
@@ -2767,8 +4836,11 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
    },
    "scaling": "[WS4-DECLARED] linear in road speed from WS2's 85 km/h point",
    "coast_no_regen_s_max": 26.099999999976262,
+   "coast_no_regen_s_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
    "coast_spin_shaft_kWh_max": 0.00017454623149206134,
+   "coast_spin_shaft_kWh_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
    "coast_spin_bus_kWh_max": 5.839193136479234e-05,
+   "coast_spin_bus_kWh_max_governing_case": "case nominal of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 23 of the enumerated 8-seed VOLT-REG ensemble [nominal]",
    "unbooked_pp_of_cycle_fuel": {
     "nominal": 0.0002776645392806949,
     "cda_5.4": 0.00023546494767478026,
@@ -2872,19 +4944,71 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   either ratify a Vehicle Zero payload basis or hold R32 open; WS4 will
   not describe any Vehicle Zero result as an efficiency advantage on
   the per-km number.
-- **ESC-8 (new — cites R16, R15, R2; for WS3/WS5/WS6) — THE R16 CURVE'S
-  HOT END CROSSES THE PACK-LOOP SIZING LINE.** R16's curve is consumed
-  as ordered and is not binding at any ordered case (§4-KX.4). But the
-  same curve gives 62.2 kW of charge acceptance at 55 °C cells, and
-  WS3's pack-loop sizing line is precisely "hold cells ≤ 55 °C at
-  +45 °C ambient" — so at the loop's *design ceiling* the pack accepts
-  less than this run's peak regen (69.1 kW bus), and a corner
-  descent would push regen into the R15 blend order's resistor and
-  friction columns. WS4 cannot resolve this: the cell-temperature
-  trajectory is WS3/WS6's and the blend order is WS5's. Requested
-  disposition: either a ruled maximum cell temperature for dispatch at
-  full regen, or an explicit acceptance that hot-corner descents run on
-  the resistor.
+  **RESTATED, KX r2 (adjudication M3).** Two corrections. (i) *Which
+  curb the 2.9 t belongs to:* it is WS1's **pre-conversion** operating
+  curb — 2,900 kg of payload at GVW behind a 3,700 kg
+  [WS1-ASSUMPTION] "NPR-HD chassis-cab + 16 ft dry-freight body + driver
+  + full fuel/DEF". The **series conversion's** mass (WS3's pack, WS4's
+  genset + generator, WS2's spine, less the deleted engine and gearbox)
+  is not charged against it. A denominator that does not charge
+  conversion mass cannot discharge R32, whose whole purpose — per
+  D13/R36, "won 6–10 % per km and gave 6–8 % back in freight" — is to
+  charge exactly that. (ii) *The prose now travels with the JSON:* the
+  r1 round exported `fuel_energy_kWh_per_payload_tonne_km` with full
+  R14 labels and **no** `payload_t`, basis or caveat anywhere in
+  `interface_ws4`, so a machine consumer saw a payload-denominated
+  metric with no denominator. `_inputs → payload_metric_basis` now
+  carries the tonnage, its WS1 source, the fact that it is identical in
+  all three cases, and an explicit caveat that the field is the per-km
+  field ÷ 2.9 and is not the R32 metric. WS4 keeps the field rather
+  than withdrawing it (withdrawal would silently remove an exported
+  member two live consumers are reading), and denominates nothing on it.
+- **ESC-8 (cites R16, R15, R2; for WS3/WS5/WS6) — RESTATED IN KX r2 ON
+  THE PACK QUANTITY, AND WIDENED TO THE READING ITSELF.** *r1 form: the
+  curve's hot end crosses WS3's pack-loop sizing line, stated on peak
+  **regen** (69.1 kW bus vs 62.2 kW accepted at 55 °C cells).*
+  That form understated its own case by roughly a factor of two, and it
+  rested on a choice WS4 had made without recording that a choice
+  existed (adjudication B1). Restated:
+
+  **(a) Which quantity the curve limits.** WS3's file header says *"pack
+  regen-acceptance"* and the column is `V2pack_chg_cont_kW_bus` — a
+  **pack** limit; WS3's REPORT_WS3 §4.2 presents the same curve to WS5
+  as a **regen-blend** rule. The r1 simulator implemented the blend
+  reading, capping the regen leg only, and added the genset's output to
+  the pack afterwards without testing it. On the pack quantity the
+  constraint is **active on every ordered case**: 39.1–47.0 /
+  41.4–58.6 / 13.6–23.8 s per cycle above continuous acceptance,
+  longest single excursion 15.4 s — longer than the 10-s pulse
+  window that would excuse it — peak pack charge **147.6 kW bus**
+  against 130.8 / 129.1 kW accepted. A pack cannot tell where its
+  charge current comes from, and the genset is on for a fraction
+  0.582–0.601 of cycle time, so this is structural to the dispatch of
+  record, not incidental.
+
+  **(b) The hot end, on the pack quantity.** At the 45 °C declared cells
+  the ordered run already charges at 147.5 kW against 129.1 kW
+  continuous. At 50 °C the continuous curve falls to **95.0 kW**. At
+  WS3's 55 °C loop ceiling the continuous rating is **62.2 kW** and
+  even the **10-s pulse** rating is **128.8 kW** — still below
+  this run's peak charge.
+
+  **(c) What enforcing the pack reading costs**, measured, not asserted:
+  worst shed **0.240 kWh** at cda_5.4, up to 59.7 s of
+  clipping, fuel penalty at most **+0.20 %**, and unserved bus
+  energy stays **0.0000 kWh** (§4-KX.4). The §4-KX.2 headline is
+  invariant under either reading.
+
+  WS4 cannot resolve this and does not: the semantics of WS3's interface
+  are WS3's, the cell-temperature trajectory is WS3/WS6's, and the blend
+  order is WS5's. **Requested disposition, three parts:** (1) rule which
+  quantity R16's continuous column limits — the regen leg or the pack —
+  and, if the pack, whether WS5's supervisor must trim the genset or shed
+  to the resistor; (2) a ruled maximum cell temperature for dispatch at
+  full charge, or an explicit acceptance that hot-corner descents run on
+  the resistor; (3) note that WS4's own load-following companion (b′)
+  stays inside the acceptance on every seed of every ordered case
+  (§4-KX.6) — reported, not recommended.
 - **ESC-9 (new — cites R8 as restated by R12/ES-4, R4/E24; for
   WS5/WS3) — THE DELIVERED PACK HAS THE ENERGY, NOT THE POWER.** The
   ordered R22a run completes every case with 0.0000 kWh unserved
@@ -2902,12 +5026,81 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   pack off the peak, or WS3 must restate the interface rating), or
   whether short excursions of this duration are accepted — and note
   that the archived gate's mode (a) never posed this question, because
-  the engine carried the peaks mechanically. This is R4/E24's "spine
-  not sized for forced series" record extended from the R3 motor rating
-  to the pack.
+  the engine carried the peaks mechanically **on the pack axis** (in
+  mode (b) the engine carries peaks too, above its own rating — see
+  ESC-10; the r1 closing sentence was incomplete and is corrected here).
+  This is R4/E24's "spine not sized for forced series" record extended
+  from the R3 motor rating to the pack.
+  **ADDED IN KX r2 (adjudication B2), without recommendation:** the
+  load-following companion (b′) that this block already carried for
+  R22b **satisfies R8's bus-side envelope in both directions, WS3's R16
+  acceptance read on the pack, and the engine's own continuous
+  flat-rating — on every seed of every ordered case** (pack discharge
+  peak 115.6 kW vs 125; charge peak 100.2 kW vs 110; 0.0 s above
+  R16 acceptance; 0.0 s above the continuous rating), at a fuel delta of
+  +0.06 % / -0.04 % / +1.80 % on the paired per-case median
+  (§4-KX.6). The r1 round named "run the genset earlier so the pack
+  never has to cover the peak alone" as an abstract remedy and did not
+  report that its own companion demonstrates it. WS4 still does not
+  choose the dispatch — that is R22b's, and the table does not price
+  start transients, aftertreatment temperature or part-load engine duty
+  — but the lead should not be asked to rule on this without the
+  measurement.
+
+- **ESC-10 (new, KX r2 — cites R18 and ESC-1; for the lead/WS6) — THE
+  GENSET RUNS ABOVE ITS OWN CONTINUOUS FLAT-RATING.** In the emergency
+  band the simulator caps the engine at the **automotive** full-load
+  curve (153.3 kW × derate — the 4HK1-TC hardware figure §2.1 itself
+  identifies as automotive), not at the **132.0 kW continuous
+  flat-rating** WS4 specifies. Measured over the ordered run: 0.0–146.5 /
+  161.8–250.0 / 55.0–66.1 s per cycle above the rating, worst 250.0 s
+  (case cda_5.4 of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 8 of the enumerated 8-seed VOLT-REG ensemble [cda_5.4]), peak shaft **147.9 kW = 112 %** of the
+  continuous rating, and the generator exposed on the same samples
+  against its 135.0 kW continuous shaft input (§4-KX.3).
+  Why it matters to the lead specifically: the 132 kW flat-rating is a
+  **blocking** R18 datasheet figure and a WS6 release blocker, specified
+  as an unlimited-hours prime/COP-class rating with **+0.82 kW** of
+  margin at the R6 corner (ESC-1, PROVISIONAL) — and 112 % for
+  ~3 minutes also exceeds the 10 %/1 h overload an ISO 8528-1 prime
+  rating allows. **This does not touch the §4-KX.2 headline:** WS4 ran
+  the bracket, and with the engine held to its own continuous rating in
+  the emergency band the run still completes every ordered case with
+  **0.0000 kWh** unserved on every seed. What the over-rating buys is
+  SOC margin, not feasibility: the CdA 5.4 SOC minimum deepens from
+  0.183 to 0.125 of usable, and fuel does not rise at all
+  (the worst case is -0.06 %, i.e. every ordered case burns slightly
+  *less*, because the capped engine stays nearer its island).
+  `engine_continuous_rating_bracket`. Requested disposition: either
+  rule that short excursions to the automotive curve are accepted for a
+  genset installation — in which case R18's datasheet task should
+  confirm the *automotive* curve too, not only the flat-rating — or rule
+  that the supervisor must hold the engine to its continuous rating, in
+  which case the emergency band's ceiling is a WS5 constraint and the
+  bracket above is the cost. WS4 does not choose.
+
+- **ESC-11 (new, KX r2 — cites R34; a clarification request, for the
+  lead) — WHAT "ONE TRACE PER RUN" MEANS.** R34 reads "every pipeline
+  exports a 10 Hz trace file per run". This pipeline executes
+  24 ordered mode-(b) runs plus their (b′) companions plus the
+  brackets and sensitivities; the per-**simulated**-run reading would be
+  ~132 MB of committed artefact for the ordered set alone, and the
+  per-**pipeline**-run reading is satisfied by a single file. The r1
+  round emitted one trace and asserted "one per run" without saying
+  which reading it meant (adjudication m4). WS4 now **declares** the
+  per-pipeline-run reading and, rather than sit on the ambiguity, emits
+  3 traces — one per **ordered case** at the reference seed — so
+  R34's stated consumer (the WS10 exhibit/simulator) has a full-rate
+  witness of each ordered case, with all 24 ordered runs
+  covered at 5 s in `data/series_duty_v2_soc_trajectories.csv`. Requested disposition: confirm the
+  reading. If the per-simulated-run reading is intended,
+  `run_ws4.py`'s `R34_TRACE_ALL_ORDERED_RUNS` constant emits all
+  24 with no other change, and the lead should say whether ~132 MB
+  of trace belongs in the repository.
 
 ## 13. Artefacts in this folder
 
+- `FINDINGS_KX_r1.md` — the adjudication this round reworks against
+  (input, not a WS4 product; not modified)
 - `REPORT_WS4.md` (this file, generated by `make_report_ws4.py`),
   `results_ws4.json` (every number, machine-readable; `interface_ws4`
   is the block downstream parses)
@@ -2922,11 +5115,13 @@ Injected byte-identically from `results_ws4.json → interface_ws4`
   constructed)
 - `data/gen_eff_map_V2.csv`, `data/gen_eff_map_V1.csv` — generator
   maps (headers carry the R10/1200 V SiC restatement)
-- `data/trace_series_duty_v2_nominal_seed23_10Hz.csv` — **R34 10 Hz trace** (66,143 rows), one per run:
-  the R22a nominal reference-seed run of mode (b), every bus-side and
-  engine-side channel plus SOC
-- `data/series_duty_v2_soc_trajectories.csv` — R22a SOC trajectories, all 8 seeds × 3 cases, 5 s
-  decimation
+- **R34 10 Hz traces**, 3 files — one per ordered case at the
+  reference seed, 66,143 rows each, every bus-side and engine-side
+  channel plus SOC: `data/trace_series_duty_v2_alt2000m_45C_seed23_10Hz.csv`, `data/trace_series_duty_v2_cda_5.4_seed23_10Hz.csv`, `data/trace_series_duty_v2_nominal_seed23_10Hz.csv`. The reading of R34 these satisfy is
+  declared in `series_duty_v2 → _trace_files → r34_interpretation` and
+  put to the lead as ESC-11.
+- `data/series_duty_v2_soc_trajectories.csv` — R22a SOC trajectories, all 8 seeds × 3 cases
+  (24 ordered runs), 5 s decimation
 - `figs/fig01_bsfc_v2.png`, `figs/fig02_g1_fuel.png` (archived-gate
   fuel by seed), `figs/fig03_v1_starts.png`,
   `figs/fig04_series_duty_soc.png` (R22a SOC trajectories)

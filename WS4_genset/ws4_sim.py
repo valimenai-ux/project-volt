@@ -151,8 +151,10 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                 chain=None, spin_shaft_kw=0.0, spin_bus_kw=0.0,
                 chg_accept_bus_kw=None, ser_band=None,
                 dis_cap_bus_kw=None, chg_cap_bus_kw=None,
+                r16_pack_cap_bus_kw=None, emerg_cap_cont_rating=False,
                 spin_coast_shaft_kw_85=None, spin_coast_bus_kw_85=None,
-                trace=False, soc_trace_stride=None):
+                trace=False, soc_trace_stride=None,
+                heat_window_s=(120.0, 600.0)):
     """Simulate one mode over one cycle realisation. Returns totals.
 
     G1-R additions (both default OFF so the ratified r2 configuration is
@@ -171,12 +173,32 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
     KX additions (all default OFF - with every KX argument at its
     default this function is bit-identical to the G1-R version):
       chg_accept_bus_kw : R16 pack charge-acceptance cap [kW, bus-side]
-                      on the regen path, from WS3's regen_acceptance.csv
+                      on the REGEN LEG, from WS3's regen_acceptance.csv
                       at the case's declared cell temperature. Regen
                       above it is shed to the friction/resistor column
                       per the R15 blend order. None -> uncapped (the
                       G1-R behaviour, where only the energy headroom and
                       the wheel-side regen_cap_kw bound the flow).
+                      KX r2 / adjudication KX-B1: this argument applies
+                      the curve to the REGEN LEG ONLY. It does NOT bound
+                      the PACK's total charge power, because the genset's
+                      p_gen_elec is added afterwards at
+                      p_batt_bus = p_gen_elec - p_bus_load. Whenever it
+                      is set, the PACK-side exceedance of the same curve
+                      is now MEASURED and exported
+                      (pack_chg_above_r16_*), so the two readings of
+                      WS3's interface are both on the record. To ENFORCE
+                      the pack reading, use r16_pack_cap_bus_kw below.
+      r16_pack_cap_bus_kw : KX r2 bracket (adjudication KX-B1 remedy
+                      (i)). R16 acceptance applied to the PACK's total
+                      bus-side charge power p_batt_bus, not just the
+                      regen leg: charge above it is shed and booked
+                      (r16_pack_shed_kWh / r16_pack_clip_s). Default
+                      None = the ordered behaviour, in which the pack
+                      reading is measured and reported but not
+                      enforced. WS4 does not choose between the two
+                      readings of WS3's curve; ESC-8 puts that to the
+                      lead and this bracket prices it.
       dis_cap_bus_kw : R8 bus-side pack POWER envelope, enforced. When
       chg_cap_bus_kw   set, discharge above the cap cannot be served and
                       is booked as unserved bus energy; charge above the
@@ -199,11 +221,26 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                       to fuel: the fuel totals are unchanged by it and
                       the member is exported separately so the direction
                       of the omission is on the record.
+      emerg_cap_cont_rating : KX r2 bracket (adjudication KX-M1). The
+                      emergency band's engine ceiling is normally the
+                      AUTOMOTIVE full-load curve (p_peak_kw x derate x
+                      0.97 = the 4HK1-TC's 153.3 kW automotive peak),
+                      which is not the genset's 132 kW continuous
+                      flat-rating. Set True to cap the emergency band at
+                      the continuous rating x derate instead, so the
+                      record shows what the genset's own rating costs.
+                      Default False = the ordered behaviour.
       trace         : collect the full per-sample 10 Hz trace (R34).
       soc_trace_stride : if set, collect a decimated SOC trajectory
                       (every Nth sample) - the per-seed SOC export the
                       KX directive orders, at a size that fits a
                       committed CSV.
+      heat_window_s : rolling-window lengths [s] over which the peak
+                      MEAN engine rejection is measured, for the WS6
+                      ledger (adjudication KX-m7: a cycle mean is not
+                      the case). Pure diagnostics - collected from the
+                      same per-sample rejection rate that already feeds
+                      eng_reject_kwh, so no fuel or energy number moves.
     """
     m = veh.m_gvw if m is None else m
     t = cyc["t"]; v = cyc["v"]
@@ -270,9 +307,38 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                regen_shed_r16_kwh=0.0, regen_bus_peak_kw=0.0,
                r8_dis_clip_s=0.0, r8_chg_clip_s=0.0, r8_chg_shed_kwh=0.0,
                coast_no_regen_s=0.0,
-               coast_spin_shaft_kwh_r22d=0.0, coast_spin_bus_kwh_r22d=0.0)
+               coast_spin_shaft_kwh_r22d=0.0, coast_spin_bus_kwh_r22d=0.0,
+               # --- KX r2 (adjudication KX-B1): the R16 curve read as a
+               # PACK charge limit, measured against p_batt_bus (which
+               # carries regen AND the genset), not against the regen
+               # leg alone. Reported always; enforced only when
+               # r16_pack_cap_bus_kw is set.
+               pack_chg_above_r16_s=0.0, pack_chg_above_r16_kwh=0.0,
+               pack_chg_above_r16_longest_s=0.0,
+               r16_pack_shed_kwh=0.0, r16_pack_clip_s=0.0,
+               # --- KX r2 (adjudication KX-M1): the genset's own
+               # continuous flat-rating, which the emergency band's
+               # automotive full-load ceiling lets the engine exceed.
+               eng_over_cont_s=0.0, eng_over_cont_kwh=0.0,
+               eng_over_cont_longest_s=0.0, eng_shaft_peak_kw=0.0,
+               gen_shaft_in_over_cont_s=0.0, gen_shaft_in_peak_kw=0.0,
+               # --- KX r2 (adjudication KX-m7): transient heat for WS6
+               eng_reject_peak_kw=0.0)
     soc_min, soc_max = SOC_START, SOC_START
     above_pin_prev = False
+    # KX r2 run-length trackers (all reset to 0 on every non-exceeding
+    # sample, so the exported *_longest_s is a single continuous
+    # excursion, not a total)
+    _r16_run_s = 0.0
+    _eng_run_s = 0.0
+    eng_cont_kw = engine.rated_cont_kw * derate
+    gen_cont_in_kw = gen.cont_kw_in
+    # KX r2 / KX-M1: the emergency band's ceiling, made explicit and
+    # switchable. Default is the AUTOMOTIVE full-load curve (unchanged);
+    # the bracket caps at the genset's own continuous flat-rating.
+    emerg_ceiling_kw = (eng_cont_kw if emerg_cap_cont_rating
+                        else p_peak_kw * derate * 0.97)
+    _rej_series = [] if heat_window_s else None
     tr = ([], [], [], [], [], [], [], [], [], [], []) if trace else None
     sc = ([], [], [], [], []) if soc_trace_stride else None
 
@@ -424,7 +490,7 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                         # load-follow along the locus, >= pin, up to the
                         # full-load curve (same curve mode a uses locked)
                         trim = (EMERG_HI * e_cap - e) / 120.0 / 1e3   # kW
-                        p_sh = min(p_peak_kw * derate * 0.97,
+                        p_sh = min(emerg_ceiling_kw,
                                    max(pin["p_shaft_kw"],
                                        (max(p_bus_load, 0.0) + trim) * 1.06))
                         rpm_e = float(np.interp(p_sh, loc_p, loc_rpm))
@@ -451,7 +517,7 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                     soc = e / e_cap
                     trim = (SOC_START - soc) * e_cap / 240.0 / 1e3   # kW
                     p_bus_want = max(p_bus_load, 0.0) + trim
-                    p_cap_bp = (p_peak_kw * derate * 0.97
+                    p_cap_bp = (emerg_ceiling_kw
                                 if emerg else engine.rated_cont_kw * derate)
                     if emerg:
                         agg["emerg_s"] += dt
@@ -481,6 +547,15 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                 * dt / 3600.0
             agg["r8_chg_clip_s"] += dt
             p_batt_bus = chg_cap_bus_kw
+        # KX r2 / KX-B1 remedy (i), bracket only: R16 acceptance read as
+        # the PACK's charge limit. Surplus above it is shed - it cannot be
+        # banked, and the pack cannot tell whether it came from regen or
+        # from the genset.
+        if r16_pack_cap_bus_kw is not None and p_batt_bus > r16_pack_cap_bus_kw:
+            agg["r16_pack_shed_kwh"] += (p_batt_bus - r16_pack_cap_bus_kw) \
+                * dt / 3600.0
+            agg["r16_pack_clip_s"] += dt
+            p_batt_bus = r16_pack_cap_bus_kw
         if locked_arr[i]:
             agg["bank_kwh"] += max(0.0, p_batt_bus) * dt / 3600.0
 
@@ -544,6 +619,47 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                 agg["pack_dis_peak_kw"] = -p_batt_raw
             if -p_batt_raw > 125.0:
                 agg["pack_dis_over_r8_125kW_s"] += dt
+        # KX r2 / KX-B1: the SAME R16 acceptance, read as the pack's own
+        # charge limit and tested against the pack's total charge power.
+        # A pack cannot tell where its charge current comes from; the
+        # regen-leg cap above never sees the genset's contribution.
+        if chg_accept_bus_kw is not None:
+            if p_batt_raw > chg_accept_bus_kw:
+                agg["pack_chg_above_r16_s"] += dt
+                agg["pack_chg_above_r16_kwh"] += \
+                    (p_batt_raw - chg_accept_bus_kw) * dt / 3600.0
+                _r16_run_s += dt
+                if _r16_run_s > agg["pack_chg_above_r16_longest_s"]:
+                    agg["pack_chg_above_r16_longest_s"] = _r16_run_s
+            else:
+                _r16_run_s = 0.0
+        # KX r2 / KX-M1: the engine's OWN continuous flat-rating (derated
+        # for the case), which the emergency band's automotive full-load
+        # ceiling (p_peak_kw x derate x 0.97) permits it to exceed, and
+        # the generator's continuous shaft-input rating.
+        if p_shaft_eng > agg["eng_shaft_peak_kw"]:
+            agg["eng_shaft_peak_kw"] = p_shaft_eng
+        if p_shaft_eng > eng_cont_kw:
+            agg["eng_over_cont_s"] += dt
+            agg["eng_over_cont_kwh"] += (p_shaft_eng - eng_cont_kw) \
+                * dt / 3600.0
+            _eng_run_s += dt
+            if _eng_run_s > agg["eng_over_cont_longest_s"]:
+                agg["eng_over_cont_longest_s"] = _eng_run_s
+        else:
+            _eng_run_s = 0.0
+        p_gen_shaft_in = p_gen_elec + p_gen_loss
+        if p_gen_shaft_in > agg["gen_shaft_in_peak_kw"]:
+            agg["gen_shaft_in_peak_kw"] = p_gen_shaft_in
+        if p_gen_shaft_in > gen_cont_in_kw:
+            agg["gen_shaft_in_over_cont_s"] += dt
+        # KX r2 / KX-m7: transient engine rejection for the WS6 ledger.
+        # Same quantity that accumulates into eng_reject_kwh above.
+        p_rej = f_gps * LHV_KJ_PER_G - p_shaft_eng
+        if p_rej > agg["eng_reject_peak_kw"]:
+            agg["eng_reject_peak_kw"] = p_rej
+        if _rej_series is not None:
+            _rej_series.append(p_rej)
         # R22d true-coast spin member (reported, never charged)
         if spin_coast_shaft_kw_85 is not None:
             if (v[i] > 1.0 / 3.6 and pw <= 0.0
@@ -570,6 +686,31 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
             tr[6].append(p_batt_bus); tr[7].append(soc)
             tr[8].append(p_shaft_eng); tr[9].append(f_gps)
             tr[10].append(1.0 if eng_running else 0.0)
+
+    # KX r2 / KX-m7: rolling-window peak MEAN engine rejection. A cooling
+    # owner sizes against a window, not against a cycle mean (the 72.6 kW
+    # row) nor against a single 0.1 s sample. Windows are declared in
+    # heat_window_s; a window longer than the run reports the run mean.
+    for _w in (heat_window_s or ()):
+        key = f"eng_reject_roll{int(_w)}s_max_kw"
+        n = max(1, int(round(_w / dt)))
+        if _rej_series is None or len(_rej_series) == 0:
+            agg[key] = 0.0
+            continue
+        if n >= len(_rej_series):
+            agg[key] = min(float(np.mean(_rej_series)),
+                           agg["eng_reject_peak_kw"])
+            continue
+        # mean-centred cumulative sum: the naive cumsum loses ~1e-10 kW to
+        # cancellation over 66k samples, which can put a window mean a hair
+        # ABOVE the instantaneous peak it is bounded by. Centring removes it.
+        _x = np.asarray(_rej_series, dtype=float)
+        _xb = float(_x.mean())
+        cs = np.concatenate(([0.0], np.cumsum(_x - _xb)))
+        # a window MEAN cannot exceed the instantaneous peak it averages;
+        # clamp so the exported rows are self-consistent to the last bit
+        agg[key] = min(float(np.max(cs[n:] - cs[:-n]) / n + _xb),
+                       agg["eng_reject_peak_kw"])
 
     # SOC-drift correction at the pinned point's marginal rate
     drift_kwh_cells = (e - e_cap * SOC_START) / 3.6e6
@@ -608,6 +749,14 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
     out["above_pin_transitions_per_h"] = agg["above_pin_transitions"] / hours
     out["fuel_energy_kWh_per_km"] = out["fuel_energy_kwh"] / out["distance_km"]
     out["eng_on_frac"] = agg["eng_on_s"] / out["duration_s"]
+    # KX r2: the ratings the two KX-B1/KX-M1 counters are measured against,
+    # carried out of the sim so the exports never restate them by hand.
+    out["eng_cont_rating_kw_derated"] = eng_cont_kw
+    out["emerg_ceiling_kw"] = emerg_ceiling_kw
+    out["gen_cont_shaft_in_kw"] = gen_cont_in_kw
+    out["r16_accept_bus_kw_applied"] = (float(chg_accept_bus_kw)
+                                        if chg_accept_bus_kw is not None
+                                        else None)
     if tr is not None:
         out["trace"] = dict(
             t_s=tr[0], v_kmh=tr[1], grade_pct=tr[2], P_wheel_kW=tr[3],

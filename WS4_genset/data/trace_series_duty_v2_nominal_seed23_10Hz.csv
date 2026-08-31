@@ -1,5 +1,5 @@
-# Project Volt WS4 - R34 10 Hz trace, one per run.
-# series_duty_v2 / nominal / mode (b) pure series at the pinned point / VOLT-REG seed 23 (reference)
+# Project Volt WS4 - R34 10 Hz trace. One file per ORDERED CASE at the reference seed; see results_ws4.json -> series_duty_v2 -> _trace_files -> r34_interpretation.
+# series_duty_v2 / nominal / mode (b) pure series at the pinned point / VOLT-REG seed 23
 # delivered pack 11.083608 kWh usable at the bus; R16 acceptance 130.752 kW bus at 25.0 C cells; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)
 # SOC is fraction of USABLE bus energy, not of nameplate
 t_s,v_kmh,grade_pct,P_wheel_kW,P_bus_load_kW,P_gen_bus_kW,P_batt_bus_kW,SOC,P_shaft_eng_kW,fuel_g_per_s,engine_on

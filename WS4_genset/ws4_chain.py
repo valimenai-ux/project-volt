@@ -223,6 +223,48 @@ class WS2TractionChain:
         return ((trq > self.t_feas_max_col[k])
                 | (trq < self.t_feas_min_col[k]) | clamped)
 
+    def boundary_exposure_strict_linear(self, rpm, trq):
+        """KX r2 / adjudication KX-m2 - the D5 reconciliation.
+
+        Same criterion as `boundary_exposure_strict`, except the feasible
+        TORQUE ENVELOPE is evaluated by LINEAR INTERPOLATION between the
+        two bracketing rpm columns instead of snapping to the nearest
+        column. This is the r3 adjudicator's implementation, and it
+        reproduces that adjudicator's published counts (3.6-7.6 s/cycle
+        at nominal, 7.4-20.6 s at CdA 5.4).
+
+        Why the two disagree: WS2's 662 V map begins at rpm = 0, and that
+        column has exactly ONE feasible cell, at T = 0, so
+        t_feas_max_col[0] = t_feas_min_col[0] = 0.0. Under the
+        nearest-column rule every motoring sample below 50 rpm
+        (v < 0.70 km/h - a standing start) is tested against a
+        ZERO-WIDTH envelope and flagged. Interpolating between columns
+        removes that degeneracy, because the rpm = 0 column's zero width
+        is blended with the finite width of the next column up.
+        """
+        rpm = np.asarray(rpm, float)
+        trq = np.asarray(trq, float)
+        t_hi = np.interp(rpm, self.rpms, self.t_feas_max_col)
+        t_lo = np.interp(rpm, self.rpms, self.t_feas_min_col)
+        clamped = ((rpm < self.rpms[0]) | (rpm > self.rpms[-1])
+                   | (trq < self.trqs[0]) | (trq > self.trqs[-1]))
+        return (trq > t_hi) | (trq < t_lo) | clamped
+
+    def degenerate_rpm_columns(self):
+        """Indices of rpm columns whose FEASIBLE torque envelope has zero
+        width (t_feas_min == t_feas_max) - the artefact behind D5. On
+        WS2's 662 V map this is exactly the rpm = 0 column."""
+        return np.where(self.t_feas_max_col <= self.t_feas_min_col)[0]
+
+    def nearest_col_is_degenerate(self, rpm):
+        """Boolean mask: the sample's nearest rpm column is one of the
+        zero-width columns above, i.e. its strict-exposure flag is a
+        grid artefact rather than a measurement."""
+        k = self._nearest_rpm_col(np.asarray(rpm, float))
+        deg = np.zeros(self.rpms.size, dtype=bool)
+        deg[self.degenerate_rpm_columns()] = True
+        return deg[k]
+
     def _nearest_rpm_col(self, rpm):
         rpm = np.asarray(rpm, float)
         k = np.clip(np.searchsorted(self.rpms, rpm), 0, self.rpms.size - 1)

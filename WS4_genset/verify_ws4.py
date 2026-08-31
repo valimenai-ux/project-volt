@@ -322,6 +322,101 @@ CHECKS = [
                      ("pack_dis_peak_kW_max", "{:.1f}"),
                      ("motor_over_rating_s_max", "{:.1f}"),
                      ("fuel_energy_kWh_per_payload_tonne_km_max", "{:.4f}"))],
+    # =====================================================================
+    # KX r2 headline renderings (rework against FINDINGS_KX_r1.md)
+    # =====================================================================
+    # KX-B1: the two readings of R16
+    ("series_duty_v2/r16_binding_analysis/peak_pack_charge_kW_bus",
+     "**{:.1f} kW bus**", "B1 peak pack charge"),
+    ("series_duty_v2/r16_binding_analysis/"
+     "pack_charge_above_r16_accept_longest_s/worst_case_max", "**{:.1f} s**",
+     "B1 longest excursion"),
+    ("series_duty_v2/r16_binding_analysis/pulse10s_at_ws3_loop_ceiling_55C_kW",
+     "**{:.1f} kW**", "B1 55C pulse rating"),
+    ("series_duty_v2/r16_binding_analysis/accept_at_50C_kW", "**{:.1f} kW**",
+     "B1 50C continuous acceptance"),
+    *[(f"series_duty_v2/r16_binding_analysis/"
+       f"pack_charge_above_r16_accept_s/per_case_{mm}/{c}", fmt,
+       f"B1 above-acceptance {c} {mm}")
+      for c in ("nominal", "cda_5.4", "alt2000m_45C")
+      for mm, fmt in (("min", "{:.1f}\u2013"), ("max", "{:.1f}"))],
+    ("series_duty_v2/r16_pack_acceptance_bracket/worst_shed_kWh",
+     "**{:.3f} kWh**", "B1 bracket worst shed"),
+    ("series_duty_v2/r16_pack_acceptance_bracket/worst_shed_governing_case",
+     "{}", "B1 bracket shed governing case"),
+    ("series_duty_v2/r16_pack_acceptance_bracket/worst_unserved_kWh",
+     "**{:.4f} kWh**", "B1 bracket unserved"),
+    ("series_duty_v2/r16_pack_acceptance_bracket/fuel_penalty_pct_max",
+     "**{:+.2f} %**", "B1 bracket fuel penalty"),
+    # KX-M1: the genset above its own continuous rating
+    *[(f"series_duty_v2/cases/{c}/ensemble/"
+       f"engine_over_continuous_rating_s_{mm}", fmt,
+       f"M1 over-rating {c} {mm}")
+      for c in ("nominal", "cda_5.4", "alt2000m_45C")
+      for mm, fmt in (("min", "{:.1f}\u2013"), ("max", "{:.1f}"))],
+    ("series_duty_v2/companion_bp_capability_comparison/axes/"
+     "engine_over_continuous_rating_s/mode_b_block_of_record/worst_case_max",
+     "**{:.1f} s**", "M1 worst over-rating seconds"),
+    ("series_duty_v2/companion_bp_capability_comparison/axes/"
+     "engine_shaft_peak_kW/mode_b_block_of_record/worst_case_max",
+     "**{:.1f} kW", "M1 peak engine shaft"),
+    ("series_duty_v2/companion_bp_capability_comparison/"
+     "engine_automotive_peak_kW", "{:.1f} kW", "M1 automotive peak"),
+    ("series_duty_v2/engine_continuous_rating_bracket/worst_unserved_kWh",
+     "{:.4f}", "M1 bracket unserved"),
+    # KX-B2: the companion on the capability axes
+    ("series_duty_v2/companion_bp_capability_comparison/axes/"
+     "pack_discharge_peak_kW_bus/mode_bp_companion/worst_case_max",
+     "{:.1f} kW vs 125", "B2 bp discharge peak"),
+    ("series_duty_v2/companion_bp_capability_comparison/axes/"
+     "pack_charge_peak_kW_bus/mode_bp_companion/worst_case_max",
+     "{:.1f} kW vs 110", "B2 bp charge peak"),
+    # KX-M3: the payload denominator
+    ("series_duty_v2/_inputs/payload_metric_basis/payload_basis_t",
+     "**{:.1f} t**", "M3 payload basis t"),
+    ("series_duty_v2/_inputs/payload_metric_basis/payload_basis_kg",
+     "{:,.0f} kg", "M3 payload basis kg"),
+    # KX-M2: the live block's own chain of record
+    ("series_duty_v2/_inputs/chain_of_record/map_file", "`{}`",
+     "M2 live chain map path"),
+    # KX-m2: D5 closed
+    *[(f"chain_boundary_exposure/d5_reconciliation/counts_s_per_cycle/{c}/"
+       f"strict_linear_envelope_r3_adjudicator_criterion/{i}", fmt,
+       f"m2 linear count {c}[{i}]")
+      for c in ("nominal", "cda_5.4")
+      for i, fmt in ((0, "{:.1f}\u2013"), (1, "{:.1f}"))],
+    ("chain_boundary_exposure/d5_reconciliation/"
+     "degenerate_column_speed_ceiling_kmh", "{:.2f} km/h",
+     "m2 degenerate column speed ceiling"),
+    # KX-m6: the corrected ledger rows
+    *[(f"heat_ledger_ws6/series_duty_v2_{c}_cycle_average/"
+       "engine_rejection_avg_kW", "**{:.4f}**", f"m6 ledger row {c}")
+      for c in ("nominal", "cda_5.4", "alt2000m_45C")],
+    # KX-m7: transient heat vs R20
+    ("heat_ledger_ws6/series_duty_v2_transient_vs_R20_design_point/"
+     "r20_design_point_radiator_package_kW", "**{:.1f} kW**",
+     "m7 R20 design point"),
+    ("heat_ledger_ws6/series_duty_v2_transient_vs_R20_design_point/cases/"
+     "alt2000m_45C/radiator_package_2min_max_kW", "**{:.1f} kW**",
+     "m7 corner 2-min radiator"),
+    ("heat_ledger_ws6/series_duty_v2_transient_vs_R20_design_point/cases/"
+     "alt2000m_45C/radiator_package_peak_kW", "**{:.1f} kW**",
+     "m7 corner peak radiator"),
+    # KX-m6: the superseded r1 rows, rendered from the historical literal
+    *[(f"heat_ledger_ws6/series_duty_v2_cycle_average_kx_r1_superseded/"
+       f"engine_rejection_avg_kW/{k}", "{:.4f} \u2192", f"m6 r1 row {k}")
+      for k in ("nominal", "cda_5_4", "alt2000m_45C")],
+    # KX-M1 bracket
+    ("series_duty_v2/engine_continuous_rating_bracket/soc_min_worst",
+     "**{:.3f}**", "M1 bracket SOC min"),
+    ("series_duty_v2/engine_continuous_rating_bracket/"
+     "fuel_penalty_pct_max", "worst case {:+.2f} %",
+     "M1 bracket fuel penalty"),
+    # KX-m4: R34
+    ("series_duty_v2/_trace_files/traces_emitted_n", "{:.0f} traces",
+     "m4 traces emitted"),
+    ("series_duty_v2/_trace_files/ordered_mode_b_runs", "{:.0f} ordered",
+     "m4 ordered runs"),
 ]
 
 fails = []
@@ -465,6 +560,270 @@ for _c, _cb in R["interface_ws4"]["series_duty_v2"]["cases"].items():
             if _k + "_governing_case" not in _cb["ensemble"]:
                 fails.append(f"  R14 PIN: {_c}/{_k} has no inline "
                              "governing-case label")
+
+# ===========================================================================
+# KX r2 STRUCTURAL PINS (rework against FINDINGS_KX_r1.md). Each of these
+# guards the ROOT CAUSE of one finding, not its rendering - so the defect
+# cannot come back through a different door.
+# ===========================================================================
+
+# --- m5: the F1 phrase must appear in all four PLACES, not merely four
+# times. The r1 pin counted occurrences; a count is not a place check, and
+# the r3 failure mode was a correction landing in three of four PLACES.
+_SEC_BOUNDS = [("headline", "\n## 0-KX2."),
+               ("s0-R", "\n## 0-R.", "\n## 0."),
+               ("s6", "\n## 6.", "\n## 7."),
+               ("s12-ESC", "\n## 12.", "\n## 13.")]
+
+
+def _slice(name):
+    if name == "headline":
+        return REPORT[:REPORT.index("\n## 0-KX2.")]
+    for row in _SEC_BOUNDS:
+        if row[0] == name:
+            a = REPORT.index(row[1])
+            b = REPORT.index(row[2], a + 1)
+            return REPORT[a:b]
+    raise KeyError(name)
+
+
+for _sec in ("headline", "s0-R", "s6", "s12-ESC"):
+    STRUCT += 1
+    _n = _flat(_slice(_sec)).count(_phrase)
+    if _n != 1:
+        fails.append(f"  m5 SECTION PIN: the F1 phrase '{_phrase}' occurs "
+                     f"{_n} times in the {_sec} slice, expected exactly 1 - "
+                     "a count is not a place check (adjudication KX-m5)")
+STRUCT += 1
+if _flat("corrected in the headline, \u00a76, ESC-2 and ESC-6") in FLAT:
+    fails.append("  m5 SUPERSEDED WORDING: \u00a70-R still names ESC-6 as an "
+                 "F1 location; ESC-6 carries no seed count")
+
+# --- M2: the LIVE block must resolve its own chain of record WITHOUT
+# reading the archived gate_g1 block. This is the F4 defect class,
+# reintroduced by the archival restructure; a path pin cannot catch a
+# field that is ABSENT from the block that needs it.
+_LIVE = R["interface_ws4"]["series_duty_v2"]
+STRUCT += 1
+if "chain_of_record" not in _LIVE["_inputs"]:
+    fails.append("  M2 PIN: series_duty_v2 -> _inputs has no "
+                 "chain_of_record - the live block cannot resolve the "
+                 "chain its numbers were produced with")
+else:
+    _cor = _LIVE["_inputs"]["chain_of_record"]
+    for _k in ("map_file", "map_voltage_V", "reduction_flat",
+               "ws2_rework_round", "map_file_sha256"):
+        STRUCT += 1
+        if _k not in _cor:
+            fails.append(f"  M2 PIN: chain_of_record is missing '{_k}'")
+    STRUCT += 1
+    if not os.path.exists(os.path.join(HERE, _cor["map_file"])):
+        fails.append("  M2 PIN: chain_of_record -> map_file does not "
+                     "resolve against the WS4 folder")
+    STRUCT += 1
+    if _cor["map_file"] != get("interface_ws4/gate_g1/"
+                               "traction_chain_of_record/map_file"):
+        fails.append("  M2 PIN: the live chain_of_record and the archived "
+                     "one disagree on map_file - same run, same map")
+STRUCT += 1
+if "boundary_convention_exposure" not in _LIVE["_inputs"]:
+    fails.append("  M2 PIN: the boundary-convention exposure is exported "
+                 "only inside the archived gate_g1 block")
+else:
+    for _c in ("nominal", "cda_5.4", "alt2000m_45C"):
+        STRUCT += 1
+        if _c not in _LIVE["_inputs"]["boundary_convention_exposure"]["cases"]:
+            fails.append(f"  M2 PIN: live boundary exposure missing case "
+                         f"{_c}")
+
+# --- B1: the misleading field must be gone under its old name, both
+# readings must be exported, and the pack reading must be MEASURED.
+_R16 = _LIVE["r16_binding_analysis"]
+STRUCT += 1
+if "bound_any_sample" in _R16:
+    fails.append("  B1 PIN: 'bound_any_sample' still present unqualified - "
+                 "it answers the regen-leg question and reads as answering "
+                 "the pack question (adjudication KX-B1)")
+for _k in ("regen_leg_bound_any_sample", "pack_charge_bound_by_r16_any_sample",
+           "pack_charge_above_r16_accept_s", "pack_charge_above_r16_accept_kWh",
+           "pack_charge_above_r16_accept_longest_s", "peak_pack_charge_kW_bus",
+           "pulse10s_kW_bus_at_declared_cells",
+           "pulse10s_covers_the_excursions", "_two_readings"):
+    STRUCT += 1
+    if _k not in _R16:
+        fails.append(f"  B1 PIN: r16_binding_analysis is missing '{_k}'")
+STRUCT += 1
+if _R16.get("pack_charge_bound_by_r16_any_sample") is not True:
+    fails.append("  B1 PIN: the measured pack-charge exceedance is not "
+                 "reported as binding, but the run charges above the curve")
+# the pack exceedance must be non-zero on EVERY ordered case, or the
+# finding's own evidence has silently vanished
+for _c in ("nominal", "cda_5.4", "alt2000m_45C"):
+    STRUCT += 1
+    if _R16["pack_charge_above_r16_accept_s"]["per_case_min"][_c] <= 0.0:
+        fails.append(f"  B1 PIN: pack charge above R16 acceptance is zero "
+                     f"on some seed of {_c} - re-check the counter")
+STRUCT += 1
+if "r16_pack_acceptance_bracket" not in _LIVE:
+    fails.append("  B1 PIN: the pack-reading bracket is not exported")
+
+# --- B2: the companion must carry the capability axes, not only fuel.
+for _c, _cb in _LIVE["cases"].items():
+    for _k in ("pack_dis_peak_kW_max", "pack_chg_peak_kW_max",
+               "pack_chg_above_r16_accept_s_max",
+               "engine_over_continuous_rating_s_max",
+               "engine_shaft_peak_kW_max"):
+        STRUCT += 1
+        if _k not in _cb["companion_bp_ensemble"]:
+            fails.append(f"  B2 PIN: {_c}/companion_bp_ensemble is missing "
+                         f"the capability export '{_k}' - the companion "
+                         "exists to give R22b both endpoints on the SAME "
+                         "axes")
+STRUCT += 1
+if "companion_bp_capability_comparison" not in _LIVE:
+    fails.append("  B2 PIN: the (b) vs (b') capability comparison is not "
+                 "exported")
+else:
+    for _ax, _row in _LIVE["companion_bp_capability_comparison"][
+            "axes"].items():
+        for _side in ("mode_b_block_of_record", "mode_bp_companion"):
+            STRUCT += 1
+            if "worst_case_max_governing_case" not in _row[_side]:
+                fails.append(f"  B2/R14 PIN: axis {_ax}/{_side} has no "
+                             "inline governing-case label")
+
+# --- M1: the engine over-rating counters must exist for BOTH modes, and
+# the ordered run must actually exceed the rating (the finding's evidence).
+for _c, _cb in _LIVE["cases"].items():
+    STRUCT += 1
+    if "engine_over_continuous_rating_s_max" not in _cb["ensemble"]:
+        fails.append(f"  M1 PIN: {_c} exports no engine over-rating counter")
+STRUCT += 1
+if "engine_continuous_rating_bracket" not in _LIVE:
+    fails.append("  M1 PIN: the continuous-rating bracket is not exported")
+elif not _LIVE["engine_continuous_rating_bracket"]["unserved_stays_zero"]:
+    fails.append("  M1 PIN: the continuous-rating bracket no longer shows "
+                 "zero unserved - the headline claim in s4-KX.3 is stale")
+
+# --- M3: the payload denominator must travel with the JSON.
+STRUCT += 1
+if "payload_metric_basis" not in _LIVE["_inputs"]:
+    fails.append("  M3 PIN: the payload-denominated metric is exported with "
+                 "no denominator, basis or caveat in interface_ws4")
+else:
+    _pb = _LIVE["_inputs"]["payload_metric_basis"]
+    for _k in ("payload_basis_t", "payload_basis_source", "_caveat"):
+        STRUCT += 1
+        if _k not in _pb:
+            fails.append(f"  M3 PIN: payload_metric_basis missing '{_k}'")
+    # the exported field must in fact BE per-km / payload_t, or the caveat
+    # is wrong
+    for _c, _cb in _LIVE["cases"].items():
+        STRUCT += 1
+        _lhs = _cb["ensemble"]["fuel_energy_kWh_per_payload_tonne_km_min"]
+        _rhs = (_cb["ensemble"]["fuel_energy_kWh_per_km_min"]
+                / _pb["payload_basis_t"])
+        if abs(_lhs - _rhs) > 1e-12:
+            fails.append(f"  M3 PIN: {_c} payload metric is not per-km / "
+                         "payload_basis_t; the exported caveat is wrong")
+
+# --- m3: the eight fields the adjudicator named must carry R14 labels.
+_M3_LABELS = [
+    ("interface_ws4/gate_g1/boundary_convention_exposure",
+     "nominal_one_sided_pp_max"),
+    ("interface_ws4/gate_g1/chain_weighting_convention/series_duty_weighted",
+     "eta_bus_to_wheel_max"),
+    ("interface_ws4/gate_g1/verdict", "margin_pct_ensemble_max"),
+    ("interface_ws4/series_duty_v2/r22d_coast_spin_member",
+     "coast_no_regen_s_max"),
+    ("interface_ws4/series_duty_v2/r22d_coast_spin_member",
+     "coast_spin_shaft_kWh_max"),
+    ("interface_ws4/series_duty_v2/r22d_coast_spin_member",
+     "coast_spin_bus_kWh_max"),
+    ("interface_ws4/spin_drag_operational_note_r22d/"
+     "measured_on_series_duty_v2", "coast_no_regen_s_max"),
+    ("interface_ws4/spin_drag_operational_note_r22d/"
+     "measured_on_series_duty_v2", "coast_spin_shaft_kWh_max"),
+    ("interface_ws4/spin_drag_operational_note_r22d/"
+     "measured_on_series_duty_v2", "coast_spin_bus_kWh_max"),
+    ("interface_ws4/gate_g1/attribution_rows/spin_drag_alone",
+     "delta_pp_min"),
+    ("interface_ws4/gate_g1/attribution_rows/map_vs_scalar_alone",
+     "delta_pp_min"),
+    ("interface_ws4/gate_g1/attribution_rows/both_g1r", "delta_pp_min"),
+]
+for _blk, _fld in _M3_LABELS:
+    STRUCT += 1
+    _o = get(_blk)
+    if _fld not in _o:
+        fails.append(f"  m3 PIN: {_blk}/{_fld} is absent")
+    elif _fld + "_governing_case" not in _o:
+        fails.append(f"  m3/R14 PIN: {_blk}/{_fld} carries no inline "
+                     "governing-case label")
+
+# --- m6: each ledger row must be the MAX OF THE PER-SEED CYCLE AVERAGES,
+# recomputed here from per_seed - not max(energy) / one seed's duration.
+for _c in ("nominal", "cda_5.4", "alt2000m_45C"):
+    _row = get(f"heat_ledger_ws6/series_duty_v2_{_c}_cycle_average")
+    _ps = get(f"series_duty_v2/cases/{_c}/per_seed")
+    for _rk, _ek in (("engine_rejection_avg_kW", "engine_reject_kWh"),
+                     ("generator_loss_avg_kW", "generator_loss_kWh"),
+                     ("electric_chain_loss_avg_kW", "chain_loss_kWh")):
+        STRUCT += 1
+        _want = max(v[_ek] / (v["duration_s"] / 3600.0)
+                    for v in _ps.values())
+        if abs(_row[_rk] - _want) > 1e-9:
+            fails.append(f"  m6 PIN: heat row {_c}/{_rk} = {_row[_rk]:.6f} "
+                         f"is not the max of the per-seed cycle averages "
+                         f"({_want:.6f})")
+        STRUCT += 1
+        if _rk + "_governing_case" not in _row:
+            fails.append(f"  m6/R14 PIN: heat row {_c}/{_rk} carries no "
+                         "component-specific governing case")
+
+# --- m7: the transient rows must be present and >= the cycle mean.
+for _c in ("nominal", "cda_5.4", "alt2000m_45C"):
+    _row = get(f"heat_ledger_ws6/series_duty_v2_{_c}_cycle_average")
+    for _k in ("engine_rejection_peak_kW", "engine_rejection_2min_max_kW",
+               "engine_rejection_10min_max_kW"):
+        STRUCT += 1
+        if _k not in _row:
+            fails.append(f"  m7 PIN: heat row {_c} has no '{_k}' - program "
+                         "rule 7 asks for heat by component AND CASE, and a "
+                         "cycle mean is not the case")
+    STRUCT += 1
+    if not (_row["engine_rejection_peak_kW"]
+            >= _row["engine_rejection_2min_max_kW"]
+            >= _row["engine_rejection_10min_max_kW"]
+            >= _row["engine_rejection_avg_kW"]):
+        fails.append(f"  m7 PIN: heat row {_c} rolling windows are not "
+                     "monotone peak >= 2min >= 10min >= mean")
+
+# --- m8: the hysteresis sensitivity must be an 8-seed ensemble (R9), and
+# the r1 reference-seed rows must still be there.
+STRUCT += 1
+if "hysteresis_sensitivity_ref_seed" in _LIVE:
+    fails.append("  m8 PIN: the block is still named "
+                 "hysteresis_sensitivity_ref_seed but is no longer a "
+                 "reference-seed quantity")
+STRUCT += 1
+if "hysteresis_sensitivity" not in _LIVE:
+    fails.append("  m8 PIN: hysteresis_sensitivity is absent")
+else:
+    for _c, _cb in _LIVE["hysteresis_sensitivity"]["cases"].items():
+        STRUCT += 1
+        if "ref_seed" not in _cb:
+            fails.append(f"  m8 PIN: {_c} dropped the r1 reference-seed rows")
+        STRUCT += 1
+        if "genset_starts_min" not in _cb["ws3_band_ensemble"]:
+            fails.append(f"  m8/R9 PIN: {_c}/ws3_band has no 8-seed envelope")
+    for _c in ("nominal", "cda_5.4", "alt2000m_45C"):
+        STRUCT += 1
+        _n = len(get(f"series_duty_v2/hysteresis_sensitivity/cases/{_c}/"
+                     "ws3_band/per_seed"))
+        if _n != 8:
+            fails.append(f"  m8/R9 PIN: {_c}/ws3_band ran {_n} seeds, "
+                         "expected 8")
 
 # --- R34: the 10 Hz trace must exist and actually be at 10 Hz.
 STRUCT += 1

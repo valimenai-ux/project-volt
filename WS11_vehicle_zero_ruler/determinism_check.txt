@@ -1,0 +1,86 @@
+Project Volt WS11 - byte-stability record, ROUND 2
+==================================================
+
+Measured, not asserted, and measured on THIS round's code rather than
+carried forward from round 1.
+
+Method: run the full pipeline (`run_ws11.py` then `make_report_ws11.py`)
+twice from a clean state and hash every committed artefact - the results
+file, the report, the run log, every CSV in data/ and every 10 Hz R34
+trace - after each pass, then diff the two hash listings.
+
+Result: TWO independent pairs of consecutive full passes were compared on
+this round's code, one mid-rework and one on the final state. Both
+returned ZERO differing files.
+
+  pass pair 1 (mid-rework code) : 0 differing files of 33
+  pass pair 2 (final code)      : 0 differing files of 33
+
+`make_report_ws11.py` is a pure function of `results_ws11.json`; running
+it twice against the same results file reproduces `REPORT_WS11.md` and
+`data/report_assertions.csv` byte-identically, which was checked directly
+after the final prose edits.
+
+`run_output.txt` deliberately carries no elapsed times: a committed
+artefact stamped with a timer can never be byte-stable, which is the
+first of CLAUDE.md's binding rules.
+
+Hashes of the committed artefact set as delivered
+-------------------------------------------------
+44948bf81c9910280abe3c21ae7d0bf439551160385c408a0196cdf936f9dc97      637985  results_ws11.json
+d1458b58112acf3db618f9b9335e298e02f2948c1f1dcfc7646e3c535ddd5632       81595  REPORT_WS11.md
+9faf1ae1e58ee70d33b9b273dd37bee8d67e2ca63b48e2f0f32b6bbf2f3532ec        7731  run_output.txt
+1748294ac6379c5ca4bea7b652426fb76cc1574755d177303ffbd430b3479a2f        4406  data/bracket_margins.csv
+01f1e69c5536ba8944f9933401ceb5bf0d296887c58b04c292ab99787c4e5a25        2487  data/headline_margins.csv
+143dec4af6dfcb9871bd9e3e9fc585c7ae0956c158cd45dff8819d9b7d47e372       17314  data/heat_ledger_ws6.csv
+503a989b75ab6ecc5ba03eccd0f642225e34ee7534a08efedac1f9c50e0282ed        3471  data/limit_counters.csv
+a70197b74b31cac4c944b570a75e7a111fa420a8894fad4a733aa88f21c1c990        2231  data/mass_ledger.csv
+b234f0f83c393a0981d44c2956747874a8f0735668ad7cb2e27c7dbf495c1aa5        2574  data/one_factor.csv
+3c0138b153951785c12b84fc36238544beded39f8ea7353ae74c2eed3d4b31bc       11540  data/per_seed_margins.csv
+6a30da056fd15685f5ae4db454b690b69741cb2fec82a6fed845b3877a92a79c       61339  data/report_assertions.csv
+4afd2bf1aff04b08b3de69f5e881c0e47ba654e9d6f8ba0209e8c9d67bba0d41         321  data/ruler_anchor.csv
+c857da8929a42489c62124063843ba1d4b19b0e49139384b43608ca7208b9eaa        2697  data/ruler_brackets.csv
+719b10470f54fc647f7911ec450bdfbfacaf0f5b10bd18d3b208751c59f80cb7        6546  data/ruler_fuel_flip_points.csv
+2439e0c2327725342adab50d3f9897110d46ea1a97c667b9f4b3bce25f40509a     2902262  data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv
+576acbaade5a16649f4613803fc0defbcb4afa25bb7f52800dcc854518ca6bfc     2901562  data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv
+d0b7e5c3e852061d09f36d5c5dfde5adb1bde66cc4a54c17bcefc3c5aae86daa     6022015  data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv
+56a09f48e34dc86c95577931f5cd9bf4f2a0c900b972d51686dca1a1b84c764d     5672261  data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv
+27af61e338912683946ee81d8c357be152649c1ef99c3aa261231260325e457f     2892113  data/trace_V2_VOLT-SUB_nominal_seed11_10Hz.csv
+f83f80e069019f291f0775150258423ed167eab095fb5a61a0bb2bef8162d4ab     5655705  data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv
+566ea46b9f7b8fbdb40ad6eab6fc153503f169c55e99d13b6a9035bc0a5d2cab     5341044  data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv
+2344970d7e8e9ea88d97107e210a6470c10d9fd186f1036986aba50ede02437e     2721361  data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv
+065aef64bc077c0300f4b4aa2550a0a251d11be3205365bb5344d7bc4b205347     2720811  data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv
+18e4f733f9bc1239bc2c8828db8233a83b33db52b68c6e4b34c0672fd3d5bdbb         372  data/trip_time_r38.csv
+2439e0c2327725342adab50d3f9897110d46ea1a97c667b9f4b3bce25f40509a  data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv
+576acbaade5a16649f4613803fc0defbcb4afa25bb7f52800dcc854518ca6bfc  data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv
+d0b7e5c3e852061d09f36d5c5dfde5adb1bde66cc4a54c17bcefc3c5aae86daa  data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv
+56a09f48e34dc86c95577931f5cd9bf4f2a0c900b972d51686dca1a1b84c764d  data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv
+27af61e338912683946ee81d8c357be152649c1ef99c3aa261231260325e457f  data/trace_V2_VOLT-SUB_nominal_seed11_10Hz.csv
+f83f80e069019f291f0775150258423ed167eab095fb5a61a0bb2bef8162d4ab  data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv
+566ea46b9f7b8fbdb40ad6eab6fc153503f169c55e99d13b6a9035bc0a5d2cab  data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv
+2344970d7e8e9ea88d97107e210a6470c10d9fd186f1036986aba50ede02437e  data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv
+065aef64bc077c0300f4b4aa2550a0a251d11be3205365bb5344d7bc4b205347  data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv
+
+Upstream vintage pinned for this round (captured at READ time)
+--------------------------------------------------------------
+14cb34639be0aa16a68ff508e4a27ffb714a5079fbe15eb1577e24e833c47f84  WS1/results.json
+d5f663d85e38979c7b55bbb7e7881dd0b0a4298a6ccd2d9089d7d60dfee4f2b1  WS1/volt_cycles.py
+0ab8050a09c665c8b84210acf1218513ff9d4a9048a367113fbfa3a869505283  WS1/volt_params.py
+c99b5a770558b5a0279e893cc01e8ca2cacfbbf6313df711cb9f84a93d5d6e6c  WS1/volt_physics.py
+1496c7123355877ed3fa20bc51a6596312c2ee0e56d048f3af2d974b54cbc746  WS2/data/capability_vs_rpm.csv
+280f2549950abe3951ff4d9f5ffcd85a44d354f62591c3c6e5a14262ca15d7b9  WS2/data/cycle_loss_summary.csv
+e0f617eafbcead33a8bb5edc07b95174826bd300be3b43b78b1593aa93c8ba4c  WS2/data/effmap_motor_inverter_662V.csv
+78266ce69cf6485e471b4e04d2f01c7c085f44730203d5a7a90aeaada1a69beb  WS2/results.json
+08cb24a3f8709d6f377c7a5243d7a67388e8917c5cfd0e8191321fadd9828bd1  WS3/regen_acceptance.csv
+0f766f86ef39e541506f7a83c576064d84bb3c9ad74b7bc598aa52cec0105a3b  WS3/results.json
+1011c0e8041a637ac5214586055b4f9d7bc864debab30a1b629d018d90a8f4bd  WS4/data/bsfc_map_4HK1_ref.csv
+b02a6c82fbbe8d3e006fb1d756fbee51b2cb04f50e4281c65e04c97e63876d0b  WS4/results_ws4.json
+5ee6b02df36903b5c5b5c4b97071bedf7aa8d5f0a5646ae0557806c966b2722a  WS4/ws4_chain.py
+33d9b498ec5bb59da92330ad25da7ce3d8899c2e80b1e937b92394e0dc5f9716  WS4/ws4_models.py
+de25e3da1fd2bb1ae5c8be3b590bd7f51c7cbba3143306957e0965b87a191632  WS4/ws4_sim.py
+571002d67e3237af27cb092dc6b1539802c67237be90447c02e0b5d0819adb4a  sources/as68rc_transmissionrepaircostguide.md
+1d713df76936bd5df94caf3808524a7aede5ca83835aec2cbd3430cf496ceeba  sources/fuelly_npr_hd_all.txt
+e8dda4f6437dd005e1d565b58dcb978f0922526acb088f3301f0890c0f1b184d  sources/isuzu_za_NPR400_spec_sheet.pdf
+bb29a6628c15cd2afcdeb5de9e49a019e71603a5c29ab4b89a5d7f649e6afe25  sources/isuzu_za_NPR400_spec_sheet.txt
+3990c65df67800a5807ace135797a29583863f57439829ccf655b2cfa05f0ce3  sources/isuzucv_npr-hd_diesel_specs.pdf
+6dc754e572b231597dfc8d3ad6eb7d4511b0bc1fb95c3cb04e9780744e2a30aa  sources/isuzucv_npr-hd_diesel_specs.txt

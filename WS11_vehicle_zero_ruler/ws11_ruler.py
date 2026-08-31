@@ -19,7 +19,8 @@ import numpy as np
 
 import volt_physics as vp                    # WS1, read-only
 from volt_params import VEH, CTL             # WS1, read-only
-from ws4_models import ENG_REF, LHV_KJ_PER_G  # WS4, read-only
+from ws4_models import (ENG_REF, LHV_KJ_PER_G,  # WS4, read-only
+                        BSFC_FROM_ETA)
 
 import ws11_params as P
 
@@ -76,22 +77,77 @@ def tc_wot_omega_e(w_t, engine, derate, w_lo, w_hi, iters=64):
     return 0.5 * (lo + hi)
 
 
-def pump_kw(rpm):
-    return P.PUMP_KW_AT_1800 * np.asarray(rpm, float) / 1800.0
+def pump_kw(rpm, kw_at_1800=None):
+    """AT pump/churning parasitic [kW] at engine speed `rpm`.
+
+    `kw_at_1800` is a declared lever (adjudication r1/B1): the headline
+    value is ruler-favourable and the pessimistic declared end is
+    P.PUMP_KW_AT_1800_PESSIMISTIC. Default = headline.
+    """
+    k = P.PUMP_KW_AT_1800 if kw_at_1800 is None else float(kw_at_1800)
+    return k * np.asarray(rpm, float) / 1800.0
 
 
 # ------------------------------------------------------------------ the sim
 def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
               p_acc_kw=None, idle_neutral=None, lam=None, trace=False,
-              shift_schedule="fuel_optimal"):
+              shift_schedule="fuel_optimal", eta_gear=None, eta_final=None,
+              pump_kw_at_1800=None, lockup_slip=None,
+              derate_load_fraction=False):
     """One ruler run over one cycle realisation.
 
     Returns the same shape of totals block the candidate runs return, so
     the two are differenced without any unit or convention step in between.
+
+    The four driveline levers `eta_gear`, `eta_final`, `pump_kw_at_1800`
+    and `lockup_slip` default to the HEADLINE (ruler-favourable) values in
+    ws11_params.py. Each has a declared pessimistic end in the same file
+    and each is exercised as a bracket (adjudication r1/B1: in round 1
+    none of the four entered the bracket set).
+
+    `derate_load_fraction` (adjudication r1/m8): when True the engine's
+    load fraction phi - and hence the smoke-limit term of the BSFC map -
+    is referenced to the DERATED full-load curve, which is the convention
+    WS4's `_bsfc_fast` applies to the candidates. Default False = the
+    round-1 behaviour (phi against the underated curve), kept as the
+    headline so no verdict number moves silently; the difference is
+    measured and exported.
     """
     p_acc_kw = P.P_ACC_CRANK_KW if p_acc_kw is None else float(p_acc_kw)
     idle_neutral = P.IDLE_NEUTRAL if idle_neutral is None else idle_neutral
     lam = veh.lam_rot if lam is None else lam
+    eta_gear_t = P.ETA_GEAR if eta_gear is None else tuple(eta_gear)
+    eta_final = P.ETA_FINAL if eta_final is None else float(eta_final)
+    pump_k = (P.PUMP_KW_AT_1800 if pump_kw_at_1800 is None
+              else float(pump_kw_at_1800))
+    slip = (P.LOCKUP_SLIP_LOSS if lockup_slip is None
+            else float(lockup_slip))
+
+    def _pump(rpm):
+        return pump_kw(rpm, pump_k)
+
+    def bsfc(n, t):
+        """BSFC lookup [g/kWh].
+
+        Default = `engine.bsfc`, whose load fraction phi is referred to
+        the UNDERATED full-load curve. With `derate_load_fraction` the
+        smoke-limit term is referred to the DERATED curve instead, which
+        is what WS4's `_bsfc_fast(engine, rpm, trq, tmax)` does for the
+        candidates when it is handed the derated `tmax`. Only phi moves;
+        bmep and fmep are properties of the actual (rpm, torque) and are
+        untouched. Adjudication r1/m8."""
+        if not (derate_load_fraction and derate != 1.0):
+            return engine.bsfc(n, t)
+        n = np.asarray(n, float)
+        t = np.asarray(t, float)
+        tmax_d = np.maximum(engine.t_max(n) * derate, 1e-6)
+        phi = np.clip(t / tmax_d, 0.0, 1.0)
+        bmep = engine.bmep_bar(t)
+        fmep = engine.fmep_bar(n)
+        mech = np.where(bmep > 0, bmep / (bmep + fmep), 0.0)
+        eta = engine.eta_i0 * engine._f_n(n) * engine._f_phi(phi) * mech
+        return np.where(eta > 1e-4, BSFC_FROM_ETA / np.maximum(eta, 1e-4),
+                        np.inf)
 
     t = cyc["t"]
     v = cyc["v"]
@@ -106,7 +162,7 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
 
     # ---- locked-gear candidate operating points, all gears, vectorised ---
     ratios = np.asarray(P.GEAR_RATIOS, float)
-    eta_gear = np.asarray(P.ETA_GEAR, float)
+    eta_gear = np.asarray(eta_gear_t, float)
     w_e_lock = w_wheel[None, :] * P.AXLE_RATIO * ratios[:, None]   # rad/s
     n_e_lock = w_e_lock * 60.0 / (2 * np.pi)
 
@@ -119,9 +175,9 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
 
     p_drive = np.clip(p_wheel, 0.0, None)
     # wheel -> transmission output -> transmission input (turbine)
-    p_turb = (p_drive[None, :] / P.ETA_FINAL) / eta_gear[:, None]
-    p_turb = p_turb / (1.0 - P.LOCKUP_SLIP_LOSS)
-    p_shaft_lock = p_turb + pump_kw(n_e_lock) + p_acc_kw
+    p_turb = (p_drive[None, :] / eta_final) / eta_gear[:, None]
+    p_turb = p_turb / (1.0 - slip)
+    p_shaft_lock = p_turb + _pump(n_e_lock) + p_acc_kw
     t_e_lock = p_shaft_lock * 1e3 / np.maximum(w_e_lock, 1e-9)
     t_av_lock = tmax(n_e_lock)
 
@@ -134,7 +190,7 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     feas &= lock_ok
     feas &= moving[None, :]
 
-    fuel_lock = engine.bsfc(n_e_lock, np.clip(t_e_lock, 1e-9, None)) \
+    fuel_lock = bsfc(n_e_lock, np.clip(t_e_lock, 1e-9, None)) \
         * np.clip(p_shaft_lock, 0.0, None) / 3600.0        # g/s
     fuel_lock = np.where(feas, fuel_lock, np.inf)
 
@@ -149,7 +205,7 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     sr_un = np.clip(w_t / np.maximum(w_e_un, 1e-9), 0.0, 1.0)
     t_imp_un = tc_capacity(sr_un) * w_e_un ** 2
     n_e_un = w_e_un * 60.0 / (2 * np.pi)
-    p_shaft_un = (t_imp_un * w_e_un / 1e3) + pump_kw(n_e_un) + p_acc_kw
+    p_shaft_un = (t_imp_un * w_e_un / 1e3) + _pump(n_e_un) + p_acc_kw
     t_e_un = p_shaft_un * 1e3 / np.maximum(w_e_un, 1e-9)
     t_av_un = tmax(n_e_un)
     t_turb_del = tc_torque_ratio(sr_un) * t_imp_un
@@ -157,16 +213,16 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     feas_un = ((n_e_un <= P.N_MAX_RPM)
                & (t_e_un <= t_av_un * (1.0 - P.TORQUE_RESERVE_FRAC))
                & delivers & moving[None, :])
-    fuel_un = engine.bsfc(n_e_un, np.clip(t_e_un, 1e-9, None)) \
+    fuel_un = bsfc(n_e_un, np.clip(t_e_un, 1e-9, None)) \
         * np.clip(p_shaft_un, 0.0, None) / 3600.0
     fuel_un = np.where(feas_un, fuel_un, np.inf)
 
     # ---- capability envelope (used for the shortfall book and by the
     # ---- trip-time simulator), all gears, both branches -------------------
     p_w_av_lock = np.clip(
-        (t_av_lock * w_e_lock / 1e3) - pump_kw(n_e_lock) - p_acc_kw,
-        0.0, None) * (1.0 - P.LOCKUP_SLIP_LOSS) \
-        * eta_gear[:, None] * P.ETA_FINAL
+        (t_av_lock * w_e_lock / 1e3) - _pump(n_e_lock) - p_acc_kw,
+        0.0, None) * (1.0 - slip) \
+        * eta_gear[:, None] * eta_final
     p_w_av_lock = np.where(lock_ok & (n_e_lock >= engine.idle_rpm)
                            & (n_e_lock <= P.N_MAX_RPM), p_w_av_lock, 0.0)
     w_e_wot = np.maximum(tc_wot_omega_e(w_t, engine, derate, w_lo, w_hi),
@@ -175,11 +231,11 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     n_e_wot = w_e_wot * 60.0 / (2 * np.pi)
     t_imp_wot = np.minimum(
         tc_capacity(sr_wot) * w_e_wot ** 2,
-        np.clip(tmax(n_e_wot) - pump_kw(n_e_wot) * 1e3
+        np.clip(tmax(n_e_wot) - _pump(n_e_wot) * 1e3
                 / np.maximum(w_e_wot, 1e-9)
                 - p_acc_kw * 1e3 / np.maximum(w_e_wot, 1e-9), 0.0, None))
     p_w_av_un = tc_torque_ratio(sr_wot) * t_imp_wot * w_t / 1e3 \
-        * eta_gear[:, None] * P.ETA_FINAL
+        * eta_gear[:, None] * eta_final
     p_w_av_un = np.where(n_e_wot <= P.N_MAX_RPM + 1e-6, p_w_av_un, 0.0)
     p_wheel_avail = np.max(np.maximum(p_w_av_lock, p_w_av_un), axis=0)
 
@@ -250,7 +306,7 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     t_cap = tmax(n_cap)
     p_cap = t_cap * n_cap * 2 * np.pi / 60.0 / 1e3
     f_cap = np.where(p_cap > 1e-9,
-                     engine.bsfc(n_cap, np.maximum(t_cap, 1e-9))
+                     bsfc(n_cap, np.maximum(t_cap, 1e-9))
                      * np.clip(p_cap, 0.0, None) / 3600.0, 0.0)
     gear = np.where(infeasible & moving, gbest + 1, gear)
     locked = np.where(infeasible & moving, lock_best, locked)
@@ -281,22 +337,23 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     f_gps = np.where(dfco, 0.0, f_gps)
     p_shaft = np.where(dfco, 0.0, p_shaft)
     t_eng = np.where(dfco, 0.0, t_eng)
-    # coupled but below the fuel-cut threshold: fuelled at the road-welded
-    # speed carrying pump + accessories only
-    coupled_fuelled = coupled & ~dfco
-    p_cf = pump_kw(n_b) + p_acc_kw
-    t_cf = p_cf * 1e3 / np.maximum(n_b * 2 * np.pi / 60.0, 1e-9)
-    f_cf = engine.bsfc(np.clip(n_b, engine.rpm_pts[0], None),
-                       np.maximum(t_cf, 1e-9)) * p_cf / 3600.0
-    f_gps = np.where(coupled_fuelled, f_cf, f_gps)
-    p_shaft = np.where(coupled_fuelled, p_cf, p_shaft)
-    t_eng = np.where(coupled_fuelled, t_cf, t_eng)
+    # Coupled-but-fuelled would be the overrun case below the fuel-cut
+    # threshold. It cannot occur: `coupled` requires a gear whose locked
+    # engine speed is >= N_LUG_MIN_RPM (1,100 rpm) and the fuel-cut
+    # threshold N_DFCO_RPM is 1,000 rpm, so coupled implies dfco by
+    # construction. Round 1 carried an unreachable branch here
+    # (adjudication r1/m13); it is replaced by the invariant it assumed.
+    coupled_fuelled_s = float(np.sum(coupled & ~dfco) * dt)
+    assert coupled_fuelled_s == 0.0, (
+        "coupled-but-fuelled overrun occurred: N_LUG_MIN_RPM has fallen "
+        "below N_DFCO_RPM and the ruler now needs an overrun fuelling "
+        "branch")
     # uncoupled braking (below the lock-up speed): idle fuel with accessories
     brake_idle = braking & ~coupled
     n_idle = engine.idle_rpm
     w_idle = n_idle * 2 * np.pi / 60.0
     t_acc_idle = p_acc_kw * 1e3 / w_idle
-    f_idle = float(engine.bsfc(n_idle, t_acc_idle) * p_acc_kw / 3600.0)
+    f_idle = float(bsfc(n_idle, t_acc_idle) * p_acc_kw / 3600.0)
     f_gps = np.where(brake_idle, f_idle, f_gps)
     p_shaft = np.where(brake_idle, p_acc_kw, p_shaft)
     n_eng = np.where(brake_idle, n_idle, n_eng)
@@ -310,9 +367,9 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     else:
         t_stall = float(tc_capacity(0.0) * w_idle ** 2)
         p_stop = float((t_stall + t_acc_idle) * w_idle / 1e3
-                       + float(pump_kw(n_idle)))
+                       + float(_pump(n_idle)))
         t_stop = p_stop * 1e3 / w_idle
-        f_stop = float(engine.bsfc(n_idle, t_stop) * p_stop / 3600.0)
+        f_stop = float(bsfc(n_idle, t_stop) * p_stop / 3600.0)
     f_gps = np.where(stopped, f_stop, f_gps)
     p_shaft = np.where(stopped, p_stop, p_shaft)
     n_eng = np.where(stopped, n_idle, n_eng)
@@ -331,8 +388,8 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     # candidates' unserved bus energy - and also reported raw.
     short = np.clip(np.where(moving, p_drive - p_wheel_avail, 0.0), 0.0, None)
     unserved_wheel_kwh = float(np.sum(short) * dt / 3600.0)
-    eta_marginal = float(max(eta_gear)) * P.ETA_FINAL \
-        * (1.0 - P.LOCKUP_SLIP_LOSS)
+    eta_marginal = float(max(eta_gear)) * eta_final \
+        * (1.0 - slip)
     bsfc_marginal = (fuel_g / e_shaft_kwh if e_shaft_kwh > 0 else 0.0)
     unserved_fuel_g = unserved_wheel_kwh / eta_marginal * bsfc_marginal
     fuel_g = fuel_g + unserved_fuel_g
@@ -382,9 +439,50 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
         idle_neutral=bool(idle_neutral),
         derate=float(derate),
         m_total_kg=float(m),
+        idle_fuel_g_per_s=f_idle,
+        idle_fuel_l_per_h=f_idle * 3600.0 / P.DENSITY_G_PER_L,
+        idle_rpm=float(n_idle),
+        idle_time_frac=float(np.sum(stopped) / n),
+        brake_energy_frac_of_tractive=(
+            float(np.sum(np.clip(-p_wheel, 0.0, None)))
+            / float(np.sum(p_drive)) if float(np.sum(p_drive)) > 0 else 0.0),
+        coupled_fuelled_s=coupled_fuelled_s,
+        levers=dict(eta_gear=list(eta_gear_t), eta_final=eta_final,
+                    pump_kw_at_1800=pump_k, lockup_slip=slip,
+                    shift_schedule=shift_schedule,
+                    derate_load_fraction=bool(derate_load_fraction)),
     )
-    # heat rejected by the engine, for the WS6 ledger (R9)
-    out["eng_reject_kwh"] = fuel_energy_kwh - e_shaft_kwh
+    # heat rejected by the engine, for the WS6 ledger (R9).
+    # m7: a cooling owner sizes against a WINDOW, not a cycle mean. The
+    # instantaneous peak and the peak rolling-window means are exported on
+    # the same basis WS4 exports them for the candidates, from the same
+    # per-sample rejection rate that already feeds eng_reject_kwh.
+    p_rej = np.clip(f_gps * LHV_KJ_PER_G - np.clip(p_shaft, 0.0, None),
+                    0.0, None)                                    # kW
+    # SWEEP (r2): this must be the heat of the fuel ACTUALLY BURNED minus
+    # the shaft work actually done. Round 1 used `fuel_energy_kwh`, which
+    # carries the unserved-wheel-energy fuel CORRECTION - fuel the engine
+    # never burned, for work it never did - so the ruler's ledger row was
+    # inflated by that correction while WS4's candidate-side
+    # `eng_reject_kwh` is accumulated per sample from the real burn. The
+    # two vehicles' rows were not on one basis. The correction is exported
+    # separately so nothing is lost.
+    out["eng_reject_kwh"] = float(np.sum(p_rej) * dt / 3600.0)
+    out["eng_reject_kwh_incl_unserved_correction_r1_basis"] = (
+        fuel_energy_kwh - e_shaft_kwh)
+    out["eng_reject_unserved_correction_kwh"] = (
+        (fuel_energy_kwh - e_shaft_kwh) - out["eng_reject_kwh"])
+    out["eng_reject_peak_kw"] = float(np.max(p_rej)) if n else 0.0
+    for _w in (120.0, 600.0):
+        nn = max(1, int(round(_w / dt)))
+        key = f"eng_reject_roll{int(_w)}s_max_kw"
+        if nn >= p_rej.size:
+            out[key] = min(float(np.mean(p_rej)), out["eng_reject_peak_kw"])
+            continue
+        xb = float(p_rej.mean())
+        cs = np.concatenate(([0.0], np.cumsum(p_rej - xb)))
+        out[key] = min(float(np.max(cs[nn:] - cs[:-nn]) / nn + xb),
+                       out["eng_reject_peak_kw"])
     if trace:
         out["trace"] = dict(
             t_s=t, v_kmh=v * 3.6, grade_pct=cyc["grade"] * 100.0,
@@ -394,37 +492,8 @@ def run_ruler(cyc, m, veh=VEH, engine=ENG_REF, derate=1.0,
     return out
 
 
-def ruler_available_wheel_kw(v_ms, engine, derate, veh, p_acc_kw):
-    """Best wheel power the ruler can deliver at road speed `v_ms`, taking
-    the best gear (kickdown) and the converter where it helps. Scalar."""
-    w_wheel = max(v_ms, 1e-6) / veh.r_dyn
-    best = 0.0
-    for g, ig in enumerate(P.GEAR_RATIOS):
-        w_t = w_wheel * P.AXLE_RATIO * ig
-        n_t = w_t * 60.0 / (2 * np.pi)
-        # locked branch
-        if n_t >= engine.idle_rpm and n_t <= P.N_MAX_RPM \
-                and v_ms * 3.6 >= P.V_LOCKUP_MIN_KMH and g + 1 >= \
-                P.LOCKUP_MIN_GEAR:
-            t_av = float(engine.t_max(n_t)) * derate
-            p_sh = t_av * w_t / 1e3
-            p_w = (p_sh - float(pump_kw(n_t)) - p_acc_kw) \
-                * (1.0 - P.LOCKUP_SLIP_LOSS) * P.ETA_GEAR[g] * P.ETA_FINAL
-            best = max(best, p_w)
-        # converter branch at wide-open throttle
-        w_lo = engine.idle_rpm * 2 * np.pi / 60.0
-        w_hi = P.N_MAX_RPM * 2 * np.pi / 60.0
-        if w_t < w_hi:
-            w_e = float(tc_wot_omega_e(np.array([w_t]), engine, derate,
-                                       w_lo, w_hi)[0])
-            w_e = max(w_e, w_lo)
-            sr = min(w_t / max(w_e, 1e-9), 1.0)
-            t_imp = float(tc_capacity(sr)) * w_e ** 2
-            t_av = float(engine.t_max(w_e * 60.0 / (2 * np.pi))) * derate
-            t_imp = min(t_imp, max(t_av - float(pump_kw(
-                w_e * 60.0 / (2 * np.pi))) - p_acc_kw * 1e3 / max(w_e, 1e-9),
-                0.0))
-            t_turb = float(tc_torque_ratio(sr)) * t_imp
-            p_w = t_turb * w_t / 1e3 * P.ETA_GEAR[g] * P.ETA_FINAL
-            best = max(best, p_w)
-    return best
+# NOTE (adjudication r1 sweep): `ruler_available_wheel_kw` lived here and
+# was never called by any module in this workstream - it duplicated
+# `ws11_capability.ruler_force_table`, which is the capability model of
+# record. It has been deleted rather than left as a second, unexercised
+# statement of the same physics.

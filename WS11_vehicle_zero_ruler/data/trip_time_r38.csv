@@ -1,4 +1,4 @@
 run,ruler_trip_time_s_median,cand_trip_time_s_median,ratio_min,ratio_median,ratio_worst,worst_pct_vs_ruler,r38_gate_le_5pct
 V1_on_VOLT-SUB[nominal],3490.80,3490.80,1.000000,1.000000,1.000000,+0.0000,PASS
-V2_on_VOLT-REG[nominal],6582.27,6577.05,0.999036,0.999190,0.999364,-0.0636,PASS
-V2_on_VOLT-REG[climb_10km_6pct],6963.13,6963.39,0.999923,1.000083,1.000441,+0.0441,PASS
+V2_on_VOLT-REG[nominal],6582.39,6577.05,0.999019,0.999189,0.999342,-0.0658,PASS
+V2_on_VOLT-REG[climb_10km_6pct],7029.65,7026.81,0.999428,0.999618,0.999846,-0.0154,PASS

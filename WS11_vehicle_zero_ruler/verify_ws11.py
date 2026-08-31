@@ -220,6 +220,179 @@ print(f"[9] {len(shared)} of WS11's input pins are also declared by WS4's "
       f"series_duty_v2, and every one matches - both workstreams consumed "
       f"byte-identical upstream files")
 
+# ------------- 10. B2: the two statements of steady speed on 6% must agree
+recon = R["sustained_6pct_capability"]["forward_pass_reconciliation"]
+tol = recon["tolerance_kmh"]
+n_rec = 0
+for k, row in recon["rows"].items():
+    check(row["ruler_abs_difference_kmh"] <= tol,
+          f"{k}: the capability pass settles the RULER at "
+          f"{row['ruler_forward_pass_kmh']:.2f} km/h on the sustained 6% "
+          f"grade but the closed-form sustainable speed is "
+          f"{row['ruler_closed_form_kmh']:.2f} km/h. Two fields of one "
+          f"results file cannot both be true (adjudication r1/B2).")
+    check(row["candidate_abs_difference_kmh"] <= tol,
+          f"{k}: the capability pass settles {row['candidate']} at "
+          f"{row['candidate_forward_pass_kmh']:.2f} km/h but the "
+          f"closed-form sustainable speed is "
+          f"{row['candidate_closed_form_kmh']:.2f} km/h")
+    n_rec += 1
+# and: any trip-time row on a corner carrying a sustained 6% grade MUST
+# report a settled speed, and any row that does not carry one MUST NOT.
+for k, v in R["trip_time_r38"].items():
+    has = v["ruler_settled_speed_on_6pct_kmh"] is not None
+    check(has == (v["case"] == "climb_10km_6pct"),
+          f"trip_time_r38.{k}: settled_speed_on_sustained_climb is "
+          f"{'present' if has else 'absent'} but the case is {v['case']} - "
+          f"the field is only meaningful on a corner carrying a SUSTAINED "
+          f"6% grade (adjudication r1/B2)")
+check(n_rec >= 1, "no sustained-climb corner reconciled at all")
+print(f"[10] B2: settled climb speed reconciles with "
+      f"sustained_6pct_capability_kmh on {n_rec} corner(s) to within "
+      f"{tol:.1f} km/h, and is exported only where a sustained grade exists")
+
+# ---------- 11. B1: every declared ruler lever is in the bracket set, and
+# ---------- the robustness row reverses all of them and no road change
+brk = R["ruler_calibration"]["brackets"]
+for need in ("gear_mesh_pessimistic", "at_pump_pessimistic",
+             "final_drive_pessimistic", "lockup_slip_pessimistic",
+             "all_ruler_modelling_choices_pessimistic"):
+    check(need in brk, f"bracket `{need}` missing - a declared "
+                       f"ruler-favourable choice is not bracketed "
+                       f"(adjudication r1/B1)")
+check(brk["all_ruler_modelling_choices_pessimistic"]["kind"]
+      == "ruler_modelling_combination",
+      "the robustness row is not classified as a pure ruler-modelling "
+      "combination")
+check(brk["CdA_5.4"]["kind"].startswith("road_load_change"),
+      "CdA 5.4 is not classified as a road-load change")
+# M4: the note must not claim what the data contradicts. Check the claim
+# directly instead of trusting prose: every ruler_modelling row raises the
+# candidate's margin; the road-load row lowers it.
+n_kind = 0
+for run, rows in R["ruler_bracket_effect_on_margin"]["rows"].items():
+    base = rows["headline_ruler_favourable"]["min"]
+    for name, e in rows.items():
+        if e["kind"] in ("ruler_modelling", "ruler_modelling_combination"):
+            check(e["min"] >= base - 1e-9,
+                  f"{run}/{name} is classified ruler_modelling but LOWERS "
+                  f"the candidate's margin ({e['min']:.4f} < {base:.4f})")
+            n_kind += 1
+        elif e["kind"].startswith("road_load_change"):
+            check(e["min"] <= base + 1e-9,
+                  f"{run}/{name} is classified a road-load change but "
+                  f"raises the candidate's margin")
+            n_kind += 1
+check(len(R["ruler_bracket_effect_on_margin"]["rows"]) >= 3,
+      "bracket margins were not run for both vehicles on both duties (B1)")
+print(f"[11] B1: all four driveline levers bracketed; {n_kind} bracket rows "
+      f"move in the direction their `kind` claims, on "
+      f"{len(R['ruler_bracket_effect_on_margin']['rows'])} vehicle x duty "
+      f"pairings")
+
+# ------------------- 12. B3: the flip points are first-class R14 fields
+flip = R["interface_ws11"]["ruler_fuel_flip_points"]
+for key, v in R["advance_kill"]["verdicts"].items():
+    check(key in flip, f"no ruler-fuel flip point exported for {key} "
+                       f"(adjudication r1/B3)")
+    f = flip[key]
+    for fld in ("pct_ruler_fuel_error_to_draw",
+                "pct_ruler_fuel_error_to_3pct_bar"):
+        check(isinstance(f.get(fld), float), f"{key}: {fld} missing")
+        check(isinstance(f.get(fld + "_governing_case"), str)
+              and len(f[fld + "_governing_case"]) > 10,
+              f"{key}: {fld} carries no governing case (R14)")
+    # the flip point must reproduce from the margin it is derived from
+    m = v["nominal_margin_pct_min"]
+    ks = list(R["ruler_fuel_flip_points"]["cases"][key]["nominal"]
+              ["to_0pct"]["multiplier_per_seed"].values())
+    check(abs(max(ks) - (1.0 - m / 100.0)) < 1e-12,
+          f"{key}: the 0% flip multiplier does not reproduce from the "
+          f"per-seed margins")
+check(R["ruler_calibration"]["corridor_check"]["calibrate_order_satisfied"]
+      is False,
+      "the calibrate order is recorded as satisfied; no ruler parameter was "
+      "moved to the anchor, so it was not")
+print("[12] B3: ruler-fuel flip points exported for both verdicts with "
+      "governing seeds, and they reproduce from the per-seed margins")
+
+# ---------------- 13. M2: pending rulings are reachable from the interface
+iface_s = json.dumps(R["interface_ws11"])
+check("ESC-" in iface_s,
+      "no ruling ID appears anywhere in interface_ws11 (R14 requires "
+      "fields conditioned on a pending ruling to carry the ruling ID)")
+pend = R["interface_ws11"]["pending_rulings_r14"]
+esc_ids = {e["id"].replace("-", "_") for e in R["escalations"]}
+for k in pend:
+    if k.startswith("_"):
+        continue
+    check(k in esc_ids, f"interface pending ruling {k} is not an escalation")
+    check("priced_by" in pend[k] and "conditions" in pend[k],
+          f"pending ruling {k}: missing conditions/priced_by")
+for need in ("cold_corner_pending_items", "verdict_robustness",
+             "capability_and_limit_worst_case", "ruler_idle"):
+    check(need in R["interface_ws11"],
+          f"interface is missing `{need}` - a downstream consumer reading "
+          f"only the interface cannot reach it")
+print(f"[13] M2: {len([k for k in pend if not k.startswith('_')])} pending "
+      f"rulings carried in the interface, each naming what it conditions "
+      f"and what prices it")
+
+# --------------------- 14. M6: every one-factor row is a paired statistic
+n_of = 0
+for run, rows in R["one_factor"]["rows"].items():
+    for name, d in rows.items():
+        key = "cost_pp" if "cost_pp" in d else "worth_pp"
+        ps = d.get(key.replace("_pp", "_pp_paired_per_seed"))
+        if ps is None and key == "cost_pp":
+            ps = None
+        check("PAIRED" in d.get("statistic", ""),
+              f"one_factor {run}/{name}: not declared paired (R36)")
+        if ps:
+            check(abs(d[key] - min(ps.values())) < 1e-9,
+                  f"one_factor {run}/{name}: {key} is not the min of the "
+                  f"per-seed paired differences (R36/D13)")
+        n_of += 1
+check("idle" in R["one_factor"]["rows"]["V1_on_VOLT-SUB"]
+      ["engine_operating_point"]["description"].lower(),
+      "the engine-operating-point row does not say what happens to idle")
+check("ABSORBED" in R["one_factor"]["rows"]["V1_on_VOLT-SUB"]
+      ["engine_operating_point"]["description"],
+      "the engine-operating-point row still implies idle survives it "
+      "(adjudication r1/M6b)")
+print(f"[14] M6: {n_of} one-factor rows are paired per-seed statistics")
+
+# ---------------- 15. M5: the anchor is an enumerated set with both members
+a = R["interface_ws11"]["ruler"]["anchor"]
+check(set(a["enumerated_member_set"]) == {"all_model_years", "fourhk1_era"},
+      "the anchor is not exported as an enumerated two-member set (R14)")
+check(a["worst_residual_vs_model_pct"]
+      == min(a["all_model_years"]["residual_vs_model_pct"],
+             a["fourhk1_era"]["residual_vs_model_pct"]),
+      "the anchor's worst residual is not the min over the enumerated set")
+check("BEST" in a["era_note_direction"],
+      "the era note does not state the direction the data points in "
+      "(adjudication r1/B3)")
+print(f"[15] M5: anchor exported as a two-member enumerated set; worst "
+      f"residual {a['worst_residual_vs_model_pct']:.2f}% governed by "
+      f"{a['worst_residual_governing_case']}")
+
+# -------------- 16. m6/R34: each verdict's GOVERNING corner has a trace
+traced = {os.path.basename(t["file"]) for t in
+          R["interface_ws11"]["traces_r34"]}
+for key, v in R["advance_kill"]["verdicts"].items():
+    veh, duty = key.split("_on_")
+    corner = v["worst_corner_governing_case"].split(" ")[0]
+    seed = R["_meta"]["seeds"][duty][0]
+    want = {f"trace_{veh}_{duty}_{corner}_seed{seed}_10Hz.csv",
+            f"trace_ruler_{duty}_{corner}_seed{seed}_10Hz.csv"}
+    for w in want:
+        check(w in traced,
+              f"{key}: the GOVERNING corner ({corner}) is not traced - "
+              f"{w} missing (R34, adjudication r1/m6)")
+print(f"[16] R34: {len(traced)} traces on disk, including both verdicts' "
+      f"governing corners")
+
 # ------------------------------------------------------------------ result
 print()
 if FAIL:

@@ -34,30 +34,63 @@ break-even curb mass ...
 verdicts ...
   V1_on_VOLT-SUB: ADVANCE (nominal min +20.11%, worst corner +19.12% at cold_-10C)
   V2_on_VOLT-REG: KILL (nominal min -7.93%, worst corner -9.98% at climb_10km_6pct)
-one-factor decomposition ...
-  V1_on_VOLT-SUB one-factor: mass +5.18 pp, regen +24.02 pp, start-stop +74.88 pp, operating point +11.41 pp
-  V2_on_VOLT-REG one-factor: mass +16.34 pp, regen +4.38 pp, start-stop +0.31 pp, operating point +12.59 pp
+ruler-fuel flip points ...
+  V1_on_VOLT-SUB [ADVANCE]: draws at ruler fuel x0.7989 (-20.11%), reaches the 3% bar at x0.8236 (-17.64%)
+  V2_on_VOLT-REG [KILL]: draws at ruler fuel x1.0693 (+6.93%), reaches the 3% bar at x1.1024 (+10.24%)
+one-factor decomposition (paired per-seed, R36) ...
+  V1_on_VOLT-SUB one-factor (paired): mass +5.11 pp, regen +23.59 pp, start-stop +72.58 pp, operating point +11.15 pp
+  V2_on_VOLT-REG one-factor (paired): mass +16.19 pp, regen +4.32 pp, start-stop +0.25 pp, operating point +12.34 pp
 trip time (R38) ...
   V1/VOLT-SUB[nominal] trip-time ratio worst 1.00000 (+0.000%)
-  V2/VOLT-REG[nominal] trip-time ratio worst 0.99936 (-0.064%)
-  V2/VOLT-REG[climb_10km_6pct] trip-time ratio worst 1.00044 (+0.044%)
+  V2/VOLT-REG[nominal] trip-time ratio worst 0.99934 (-0.066%)
+  V2/VOLT-REG[climb_10km_6pct] trip-time ratio worst 0.99985 (-0.015%)
 sustained 6% capability ...
+  settled-speed reconciliation V2_on_VOLT-REG[climb_10km_6pct]: ruler 82.01 vs 82.01 km/h, V2 74.93 vs 74.63 km/h
   sustained 6%: ruler 82.0 km/h, V1 31.8, V2 74.6
 ruler calibration against the sourced anchor, and ruler brackets ...
-  ruler bracket headline_ruler_favourable: VOLT-SUB median 19.18 L/100km, VOLT-REG median 19.03
-  ruler bracket physical_accessories: VOLT-SUB median 19.83 L/100km, VOLT-REG median 19.21
-  ruler bracket converter_stalled_at_idle: VOLT-SUB median 22.50 L/100km, VOLT-REG median 19.21
-  ruler bracket CdA_5.4: VOLT-SUB median 19.90 L/100km, VOLT-REG median 21.92
-  ruler bracket sequential_shift_schedule: VOLT-SUB median 19.19 L/100km, VOLT-REG median 19.03
-  ruler bracket rotating_inertia_charged: VOLT-SUB median 19.51 L/100km, VOLT-REG median 19.07
-  ruler bracket all_ruler_favourable_choices_reversed: VOLT-SUB median 24.20 L/100km, VOLT-REG median 22.31
-bracket effect on the verdicts ...
-  V1/VOLT-SUB: headline min +20.11%, all-reversed min +32.62%
-  V2/VOLT-REG: headline min -7.93%, all-reversed min -8.57%
+  ruler bracket headline_ruler_favourable [headline]: VOLT-SUB median 19.18 L/100km, VOLT-REG median 19.03
+  ruler bracket gear_mesh_pessimistic [ruler_modelling]: VOLT-SUB median 19.43 L/100km, VOLT-REG median 19.35
+  ruler bracket at_pump_pessimistic [ruler_modelling]: VOLT-SUB median 19.45 L/100km, VOLT-REG median 19.24
+  ruler bracket final_drive_pessimistic [ruler_modelling]: VOLT-SUB median 19.43 L/100km, VOLT-REG median 19.36
+  ruler bracket lockup_slip_pessimistic [ruler_modelling]: VOLT-SUB median 19.36 L/100km, VOLT-REG median 19.26
+  ruler bracket physical_accessories [ruler_modelling]: VOLT-SUB median 19.83 L/100km, VOLT-REG median 19.21
+  ruler bracket converter_stalled_at_idle [ruler_modelling]: VOLT-SUB median 22.50 L/100km, VOLT-REG median 19.21
+  ruler bracket sequential_shift_schedule [ruler_modelling]: VOLT-SUB median 19.19 L/100km, VOLT-REG median 19.03
+  ruler bracket rotating_inertia_charged [ruler_modelling]: VOLT-SUB median 19.51 L/100km, VOLT-REG median 19.07
+  ruler bracket four_driveline_levers_pessimistic [ruler_modelling_combination]: VOLT-SUB median 20.14 L/100km, VOLT-REG median 20.14
+  ruler bracket four_driveline_plus_accessories_plus_idle_in_drive [ruler_modelling_combination]: VOLT-SUB median 24.26 L/100km, VOLT-REG median 20.50
+  ruler bracket all_ruler_modelling_choices_pessimistic [ruler_modelling_combination]: VOLT-SUB median 24.62 L/100km, VOLT-REG median 20.54
+  ruler bracket CdA_5.4 [road_load_change_applied_to_both_vehicles]: VOLT-SUB median 19.90 L/100km, VOLT-REG median 21.92
+  ruler bracket all_ruler_modelling_pessimistic_plus_CdA_5.4_road_change [ruler_modelling_combination_PLUS_road_load_change]: VOLT-SUB median 25.38 L/100km, VOLT-REG median 23.72
+  ruler bracket r1_partial_reversal_plus_CdA_5.4_road_change [SUPERSEDED_round1_partial_reversal_PLUS_road_load_change]: VOLT-SUB median 24.20 L/100km, VOLT-REG median 22.31
+bracket effect on the verdicts (both vehicles, both duties) ...
+  V1/VOLT-SUB: headline min +20.11%, all-ruler-modelling-pessimistic min +37.78% median +38.33%
+  V2/VOLT-REG: headline min -7.93%, all-ruler-modelling-pessimistic min +0.13% median +0.59%
+  V2/VOLT-SUB: headline min +21.71%, all-ruler-modelling-pessimistic min +39.06% median +39.30%
 cold corner cab-heat bracket ...
-  V1 cold + cab heat: min +2.64%
-  V2 cold + cab heat: min -11.58%
-heat ledger ...
+  V1 cold + cab heat: min +4.72% (no-waste-heat-credit bound -5.42%)
+  V2 cold + cab heat: min -11.58% (no-waste-heat-credit bound -15.62%)
+cold corner with BOTH pending items applied (ESC-2 + ESC-4) ...
+  V1 cold + cab heat + CdA 5.4: min +3.662% median +4.052%
+  V2 cold + cab heat + CdA 5.4: min -13.653% median -13.257%
+heat ledger + capability/limit counters ...
+  LIMIT V2_on_VOLT-REG[nominal]: 146.5 s above the 132.0 kW continuous rating, unserved 0.000 kWh, SOC min 0.228
+  LIMIT V2_on_VOLT-REG[payload_p20]: 184.9 s above the 132.0 kW continuous rating, unserved 0.000 kWh, SOC min 0.173
+  LIMIT V2_on_VOLT-REG[payload_m20]: 12.0 s above the 132.0 kW continuous rating, unserved 0.000 kWh, SOC min 0.250
+  LIMIT V2_on_VOLT-REG[cold_-10C]: 98.5 s above the 132.0 kW continuous rating, unserved 0.000 kWh, SOC min 0.230
+  LIMIT V2_on_VOLT-REG[alt2000m_45C]: 66.1 s above the 122.9 kW continuous rating, unserved 0.000 kWh, SOC min 0.246
+  LIMIT V2_on_VOLT-REG[climb_10km_6pct]: 616.8 s above the 132.0 kW continuous rating, unserved 1.720 kWh, SOC min 0.000
+declared-choice brackets: engine curve, emergency band, derate convention, climb splice ...
+  engine curve ordered_ws4_reference: peak 153.3 kW, V2 margin min -7.925%
+  engine curve sourced_2023_spec_sheet_plateau: peak 160.3 kW, V2 margin min -7.836%
+  engine curve reference_scaled_to_sourced_peak_power: peak 160.3 kW, V2 margin min -8.002%
+emergency band capped at the continuous rating (WS4 KX-M1 bracket) ...
+  V1_on_VOLT-SUB emerg-capped: nominal margin min +20.114% (shift +0.000 pp)
+  V2_on_VOLT-REG emerg-capped: nominal margin min -7.742% (shift +0.000 pp)
+  V2_on_VOLT-SUB emerg-capped: nominal margin min +21.712% (shift +0.000 pp)
+derated load-fraction convention (m8) ...
+climb splice bracket at WS1 s4.4's own 85 km/h posing (m12) ...
+prose-support numbers ...
 interface block ...
 first-principles sanity checks ...
   per-km/per-payload identity residual 4.441e-16

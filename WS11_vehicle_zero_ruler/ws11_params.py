@@ -86,15 +86,30 @@ AXLE_RATIO = RULER_SOURCED["rear_axle_ratio"]                 # [SOURCED]
 N_GEARS = len(GEAR_RATIOS)
 
 # --- ruler driveline efficiencies -----------------------------------------
+# EVERY declared value below is stated as a PAIR: the headline (ruler-
+# favourable) value that the verdicts are computed at, and the PESSIMISTIC
+# DECLARED END - the value at the other end of the range the comment itself
+# names. Adjudication r1/B1: in round 1 these four carried a written
+# statement of where the true value lies and none of them entered the
+# bracket set, so the row exported as "all ruler-favourable choices
+# reversed" reversed none of them. They are bracket levers now, singly and
+# in combination (`ruler_calibration.brackets`).
+#
 # [WS11-DECLARED] Planetary-AT mesh efficiency by gear. 4th is the direct
 # (1:1) gear and is the most efficient; the two overdrives and the deep
 # reduction gears carry an extra mesh. Direction of error: these are at the
 # generous end of published MD planetary-AT figures, i.e. RULER-FAVOURABLE.
 ETA_GEAR = (0.960, 0.965, 0.970, 0.985, 0.965, 0.960)
+# pessimistic declared end: 2 points of mesh off every gear, which is the
+# lower end of the same published MD planetary-AT range.
+ETA_GEAR_PESSIMISTIC = (0.940, 0.945, 0.950, 0.965, 0.945, 0.940)
 # [WS11-DECLARED] hypoid final drive x propshaft/UJs. WS1's ratified
 # `eta_direct` = 0.95 covered clutch + driveshaft + 2.8:1 axle; 0.96 here is
 # the axle + shaft share of that, i.e. RULER-FAVOURABLE.
 ETA_FINAL = 0.96
+# pessimistic declared end: 0.94, i.e. the hypoid + shaft carrying the whole
+# of WS1's ratified 0.95 rather than the favourable share of it.
+ETA_FINAL_PESSIMISTIC = 0.94
 # [WS11-DECLARED, matched to WS4] transmission pump/churning parasitic.
 # WS4's ratified direct-path model charges 0.9 kW x (rpm/1800) churning to a
 # clutch + 2.8:1 axle. A torque-converter automatic with a high-pressure
@@ -102,10 +117,25 @@ ETA_FINAL = 0.96
 # error: a real A465 pump at line pressure is 1.5-2.5 kW at 1,800 rpm, so
 # this is RULER-FAVOURABLE.
 PUMP_KW_AT_1800 = 1.2
+# pessimistic declared end: 2.0 kW, the MIDPOINT of the 1.5-2.5 kW range
+# this file's own comment states - not its far end.
+PUMP_KW_AT_1800_PESSIMISTIC = 2.0
 # [WS11-DECLARED] lockup slip/pump-drag debit while locked (fraction of
 # input power). RULER-FAVOURABLE: 0 would be unphysical, 0.5% is at the
 # optimistic end.
 LOCKUP_SLIP_LOSS = 0.005
+# pessimistic declared end: 2.0%, the other end of the same range.
+LOCKUP_SLIP_LOSS_PESSIMISTIC = 0.020
+
+# The four levers above, plus the two headline choices that were already
+# bracketed in round 1 (accessories at the crank, neutral idle), plus the
+# shift schedule and the rotating-inertia member, are the RULER-MODELLING
+# choices. CdA is NOT one of them: it is a property of the ROAD LOAD both
+# vehicles drive, and reversing it moves the comparison against the
+# candidates. Round 1 mixed the two in one row; they are separated now.
+RULER_MODELLING_LEVERS = ("gear_mesh", "at_pump", "final_drive",
+                          "lockup_slip", "accessories", "idle_in_drive",
+                          "shift_schedule", "rotating_inertia")
 
 # --- torque converter ------------------------------------------------------
 # [WS11-DECLARED] class-typical single-stage three-element converter matched

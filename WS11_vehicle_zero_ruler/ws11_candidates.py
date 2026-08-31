@@ -104,14 +104,22 @@ def ser_band_for(name, ws3):
 
 def run_candidate(name, cyc, ws3, chain, m, veh=VEH, derate=1.0,
                   p_aux_kw=2.0, chg_accept_bus_kw=None, regen_cap_kw=75.0,
-                  mode="b", ser_band="auto", trace=False):
+                  mode="b", ser_band="auto", trace=False,
+                  emerg_cap_cont_rating=False):
+    """One candidate run. `emerg_cap_cont_rating` is WS4's own KX-M1
+    bracket, passed straight through: with it set the emergency band's
+    engine ceiling is the genset's CONTINUOUS rating x derate instead of
+    the automotive full-load curve. Round 1 never exercised it even though
+    V2 spends time above its ratified 132 kW continuous rating in four of
+    six cases (adjudication r1/M3)."""
     c = CANDIDATES[name]
     band = ser_band_for(name, ws3) if ser_band == "auto" else ser_band
     out = run_g1_mode(
         cyc, mode, c["engine"], c["gen"],
         usable_kwh=ws3["usable_bus_kWh"], p_aux_kw=p_aux_kw, veh=veh, m=m,
         derate=derate, regen_cap_kw=regen_cap_kw, chain=chain,
-        chg_accept_bus_kw=chg_accept_bus_kw, ser_band=band, trace=trace)
+        chg_accept_bus_kw=chg_accept_bus_kw, ser_band=band, trace=trace,
+        emerg_cap_cont_rating=emerg_cap_cont_rating)
     out["vehicle"] = name
     out["fuel_energy_kwh"] = out["fuel_energy_kwh"]
     return out

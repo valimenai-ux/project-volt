@@ -35,7 +35,15 @@ verdict as `FROZEN-<status>`, that is what appears here.
   label v7 applies to the underlying verdict where it applies one.
 - **Numbers** are ensemble statistics over 8 seeds unless stated otherwise, and
   every margin is a *paired per-seed* statistic (formed seed by seed, then
-  enveloped) per ruling R36.
+  enveloped) per ruling R36 — **with exactly one declared exception**: the two
+  archived Gate G1 attribution rows in claim 1 (**-7.01 pp** [g1_map_vs_scalar_pp]
+  and **-1.77 pp** [g1_spin_pp]) are differences of ensemble minima taken on
+  different seeds. They predate R36, are BASELINE_v3-ratified record, and were
+  deliberately not recomputed; their paired companions are exported beside them
+  and are given in claim 1. Every other margin in this file satisfies the rule.
+  The seed sets, for both vehicle classes:
+  "Ensemble = 8 seeds (VOLT-REG 23,3,4,5,6,7,8,9; VOLT-SUB 11,3,4,5,6,7,8,9" [vz_seeds]
+  and "seeds 8101-8108" [ws9_seeds].
 - **Metric of record** for both vehicles is fuel (or primary) energy per
   **payload** tonne-km. At fixed gross weight, powertrain mass is payload:
   "Per-km efficiency flatters; per-payload judges" [d13_perkm].
@@ -48,7 +56,7 @@ verdict as `FROZEN-<status>`, that is what appears here.
 
 **Status (v7, verbatim).** "(ratified, model-relative)" [v7_claim1_status]
 
-**What it means.** On a 6,600 kg GVW delivery truck, a single fixed reduction
+**What it means.** On a **6,600 kg** [gvw_kg] GVW delivery truck, a single fixed reduction
 plus an electric machine covers the whole tractive envelope, and the program
 tested the one place a mechanical path might still pay — a lockup clutch onto a
 fixed 2.8:1 top ratio — and killed it on a criterion written before the numbers
@@ -66,9 +74,33 @@ with load-point shifting on a real BSFC map and part-load derates on both sides.
 | seeds on which the locked path won | **0 of 8** [g1_seeds_positive] | |
 
 One-factor attribution of the reversal: replacing WS1's scalar efficiency chain
-with WS2's measured inverter+motor maps is worth **-7.01 pp** [g1_map_vs_scalar_pp],
+with WS2's modelled inverter+motor loss maps is worth **-7.01 pp** [g1_map_vs_scalar_pp],
 and charging the permanent-magnet machine's spin drag to the locked samples is
-worth a further **-1.77 pp** [g1_spin_pp]. The only near-break-even condition is
+worth a further **-1.77 pp** [g1_spin_pp].
+
+> **Two flags on those two rows, because both are inherited labels this
+> publication must not repeat unqualified.**
+>
+> **(a) The maps are computed, not measured.** BASELINE_v3 and WS4's archived
+> gate block both call them "measured maps"; they are produced by an analytic
+> loss model — `WS2_traction_motor/ws2_thermal.py`:88,
+> "Analytic steady state with resistance feedback" [ws2_analytic], with a dq
+> solver for the inverter. No instrument channel exists anywhere in this program
+> (LIMITATIONS §1). The word this file uses is *modelled*.
+>
+> **(b) These two rows are not paired per-seed.** The archived field says so in
+> its own governing-case string:
+> "difference of ensemble minima over the enumerated 8-seed VOLT-REG set: row min at seed 4 of 8-seed VOLT-REG ensemble [maps-only] minus prior-convention min at seed 5 of 8-seed VOLT-REG ensemble [prior-nominal]" [g1_map_construction].
+> The paired companions are exported outside the frozen archive at
+> `results_ws4.json` → `construction_sweep_kx_r3.gate_g1_one_factor_paired_companion`
+> and read **-7.32 pp** [g1_map_paired] and **-1.81 pp** [g1_spin_paired].
+> Nothing here recomputes the archived rows: they are BASELINE_v3-ratified
+> record, and "The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT" [g1_restraint_correct]
+> by the round-3 adjudicator. The verdict does not rest on either row — it rests
+> on the nominal margin — and both constructions carry the same sign and the same
+> conclusion.
+
+The only near-break-even condition is
 the larger frontal area, at **-0.09%** [g1_cda54_min] with **4 of 8** [g1_cda54_positive_seeds]
 seeds positive; the hot-and-high corner is the worst at **-5.90%** [g1_alt_min].
 
@@ -89,9 +121,10 @@ cd WS4_genset && python run_ws4.py && python make_report_ws4.py && python verify
 
 **What would change it.** (a) A hardware measurement of the reference truck —
 R44 makes this mandatory before any external efficiency claim. (b) A different
-total ratio: the 2.8:1's engine-sync rationale died with the clutch, and
-BASELINE_v3 records the total ratio as a free parameter for future revisions
-that was deliberately not reopened. (c) The workstream that carries these
+total ratio. BASELINE_v3 records the drivetrain as
+"(3.571:1 motor stage x 2.8:1 final). The 2.8:1's engine-sync" [ratio_2p8]
+rationale is void — the ratio is a free parameter for future revisions that was
+deliberately not reopened. (c) The workstream that carries these
 numbers is NOT CONVERGED — see §10 — so the surrounding heat-ledger and
 capability numbers are open even though the gate verdict is not.
 
@@ -103,7 +136,8 @@ capability numbers are open even though the gate verdict is not.
 "36 t: no single ratio spans cruise and grade at 36.3 t (ratified," [v7_claim2_body]
 "closed-form and simulated)" [v7_claim2_status]
 
-**Status (v7, verbatim).** ratified, closed-form and simulated.
+**Status (v7, verbatim).** ratified,
+"closed-form and simulated)" [v7_claim2_status]
 
 **What it means.** The premise that killed the gearbox at 6.6 t does not survive
 scaling. At **36,300 kg** [gcw] gross combination weight, the ratio that lets the
@@ -114,19 +148,23 @@ a 6% grade are not the same ratio, and they are not close.
 
 | quantity | value | basis |
 |---|---|---|
-| highest ratio that keeps the engine under 2,100 rpm at 105 km/h | **3.7699** [ratio_ceiling] | closed form, `ratio <= rpm_ceiling * 2*pi * r_dyn / (60 * v_cruise)` |
+| highest ratio that keeps the engine under **2,100 rpm** [rpm_ceiling] at **105 km/h** [v_cruise] | **3.7699** [ratio_ceiling] | closed form, `ratio <= rpm_ceiling * 2*pi * r_dyn / (60 * v_cruise)` |
 | lowest ratio that balances road load on a 6% grade at GCW | **6.88** [ratio_needed] | swept on a 0.01 grid, resolution-tested |
 | that ratio's overspeed at 105 km/h | **1,732 rpm** [ratio_rpm_over] | above the 2,100 rpm ceiling |
 | feasible single ratios in the swept set | `any_feasible = false` [ratio_any_feasible] | eleven ratios from 2.4 to 5.0 |
 
-The implied span is about 1.83:1, and a ten-fold refinement of both sweep grids
-moves the required ratio by 0.009 against a 1,732 rpm gap — the grid decides a
-decimal place, not the answer.
+The implied span is about 1.83:1 (6.88 / 3.7699, both cited above), and a
+ten-fold refinement of both sweep grids moves the required ratio by
+**-0.009** [ratio_d_res] against a 1,732 rpm gap — the grid decides a decimal
+place, not the answer.
 
 The same candidate (S3, the tandem split with no gearbox anywhere) is
-independently infeasible on adhesion: the regulatory 12% start needs
-**0.587** [mu_single_axle] on a single driven axle, against **0.293** [mu_tandem]
-for a 6x4 tandem, so a single-axle launch is out on anything but dry pavement.
+independently infeasible on adhesion. The requirement, as the workstream states
+it:
+"Regulation (EU) No 1230/2012: five starts within five minutes at >= 12% gradient, laden to the combination's technically permissible maximum laden mass. Located by the Task 0 scan at search-summary level; provisional per E13 precedent." [s3_startability_req]
+That start needs **0.587** [mu_single_axle] on a single driven axle, against
+**0.293** [mu_tandem] for a 6x4 tandem, so a single-axle launch is out on
+anything but dry pavement.
 
 **Evidence.**
 `WS8_semi_architecture/results_ws8.json` → `interface_ws8.S3_fixed_ratio_feasibility`
@@ -473,7 +511,7 @@ is not adjusted — see §11.
 discipline — "five-for-five first-pass defect detection" [v7_claim8_rate],
 including "the lead's own errors (ratified by its record)" [v7_claim8_status].
 
-**Status (v7, verbatim).** ratified by its record.
+**Status (v7, verbatim).** "the lead's own errors (ratified by its record)" [v7_claim8_status]
 
 **The evidence is [METHOD.md](METHOD.md)**, which enumerates seven first passes
 with a citation each, the failure-modes catalogue those passes produced, and the
@@ -520,9 +558,12 @@ V1's cold corner, from `results_ws11.json` → `cold_cab_heat_bracket.V1_on_VOLT
 
 Neither reading is ordered: the assignment specified no cab-heat member at all,
 and both Vehicle Zero candidates carry a running diesel whose coolant genuinely
-is free while it runs, so charging the full
-"3.0 kW of cab heat during the engine-off windows only" [ws11_cabheat_kw] as an
-electric load across the whole cycle is deliberately pessimistic. But the span
+is free while it runs. The ordered-bracket reading charges
+"3.0 kW of cab heat during the engine-off windows only" [ws11_cabheat_kw]; the
+harshest reading, the one that goes negative, is the workstream's own declared
+upper bound —
+"3.0 kW charged across the WHOLE cycle with no coolant credit at all: strictly more electric load than the ordered engine-off-windows-only reading, so this is the UPPER bound on the cab-heat penalty and the LOWER bound on the margin" [no_credit_direction]
+— and is deliberately pessimistic. But the span
 from -5.42% to +4.72% is the honest width of a member that is not modelled at
 the right time resolution, on the corner V1's ADVANCE is gated on. The ruling that would close it, ESC-2, was
 never made.
@@ -535,7 +576,10 @@ what "provisional" is carrying.
 
 ## 10. The frozen state, workstream by workstream
 
-Exactly as `BASELINE_v7_FREEZE.md` records it. R51:
+Statuses exactly as `BASELINE_v7_FREEZE.md` records them, quoted verbatim where
+v7 carries the row. Four rows are not in v7 and are attributed to the file that
+does carry them: WS1 (`BASELINE_v1.md`:119), WS2 and WS3 (`BASELINE_v3.md`:104-105),
+and WS6's reason for never starting (`PM_LOG.md`:123). R51:
 "Anything mid-flight at the moment of freeze completes its" [v7_r51] CURRENT step
 only. R53: "The Fable adjudication of WS9 is CANCELLED" [v7_r53].
 
@@ -608,11 +652,19 @@ kind of finding it is entitled to produce.
 
 ## Provenance
 
-Every number above is generated by `WS13_publication/build_citations.py` from the
-workstream results files and verified by `WS13_publication/verify_ws13.py`, which
-re-resolves each citation from its source, checks the source's SHA-256 against
-the ledger, and asserts that the value printed to you is the value on disk. The
-full index is [`WS13_publication/CITATIONS.md`](WS13_publication/CITATIONS.md).
+Every number above **that carries a `[marker]`** is generated by
+`WS13_publication/build_citations.py` from the workstream results files and
+verified by `WS13_publication/verify_ws13.py`, which re-resolves each citation
+from its source, checks the source's SHA-256 against the ledger, and asserts that
+the value printed to you is the value on disk. The full index is
+[`WS13_publication/CITATIONS.md`](WS13_publication/CITATIONS.md).
+
+**What is deliberately unmarked, stated so the coverage claim is exact.** Two
+kinds of numeral carry no marker: declared specification constants that recur in
+prose (gross weights, cruise speeds, rpm ceilings, grades) and figures restated
+within a sentence or two of their own marked instance. Both are checkable from
+the marked citations beside them, and neither is enforced by the verifier — so
+the claim this file makes is "every marked number", not "every number".
 The WS11 hot-swap seam figure — WS11 reproducing WS4's own exported series-duty
 ensemble to **0.0e+00** [ws4_seam] — is an example of the same discipline applied
 between workstreams rather than between a report and its data file.

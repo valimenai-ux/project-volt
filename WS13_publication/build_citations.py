@@ -311,6 +311,36 @@ NUMBERS = [
      WS8, ["interface_ws8", "whr_gate", "best_net_margin_pct", "S2"], PCT2),
     ("whr_s3", "best WHR system on S3, net of its mass charge, ensemble-min",
      WS8, ["interface_ws8", "whr_gate", "best_net_margin_pct", "S3"], PCT2),
+    # -- M2: the two archived G1 attribution rows and their paired companions --
+    ("g1_map_construction", "how the archived map-vs-scalar row is constructed, in its own field",
+     WS4, ["interface_ws4", "gate_g1", "attribution_rows", "map_vs_scalar_alone",
+           "delta_pp_min_governing_case"], "{}"),
+    ("g1_map_paired", "the paired companion of that row, exported outside the archive",
+     WS4, ["construction_sweep_kx_r3", "gate_g1_one_factor_paired_companion",
+           "map_vs_scalar_alone", "paired_delta_pp_min"], PP2),
+    ("g1_spin_paired", "the paired companion of the spin-drag row",
+     WS4, ["construction_sweep_kx_r3", "gate_g1_one_factor_paired_companion",
+           "spin_drag_alone", "paired_delta_pp_min"], PP2),
+
+    # -- M3: declared constants and requirement strings the prose renders -----
+    ("gvw_kg", "Vehicle Zero gross vehicle weight",
+     WS11, ["interface_ws11", "masses", "gvw_kg"], KG),
+    ("v_cruise", "the cruise speed the Class 8 ratio ceiling is solved at",
+     WS8, ["interface_ws8", "S3_fixed_ratio_feasibility", "ratio_ceiling_closed_form",
+           "v_cruise_kmh"], "{:.0f} km/h"),
+    ("rpm_ceiling", "the engine rpm ceiling that bound is solved against",
+     WS8, ["interface_ws8", "S3_fixed_ratio_feasibility", "ratio_ceiling_closed_form",
+           "rpm_ceiling"], "{:,.0f} rpm"),
+    ("ratio_d_res", "how far a tenfold grid refinement moves the required ratio",
+     WS8, ["interface_ws8", "S3_fixed_ratio_feasibility", "ratio_needed_to_hold_6pct",
+           "resolution_sensitivity", "d_ratio"], "{:+.3f}"),
+    ("s3_startability_req", "the regulatory startability requirement, as the workstream states it",
+     WS8, ["task5_s3_specific", "regulatory_startability_adhesion", "requirement"], "{}"),
+
+    # -- m4: the reading the harshest cab-heat figure actually belongs to -----
+    ("no_credit_direction", "what the harshest cab-heat reading charges, in its own field",
+     WS11, ["cold_cab_heat_bracket", "V1_on_VOLT-SUB", "no_waste_heat_credit_direction"], "{}"),
+
     ("s1_cold_corner", "S1's worst corner, the -10 C cold wall, ensemble-min",
      WS8, ["advance_kill", "candidates", "S1", "worst_corner_margin_pct_min"], PCT2),
     ("s1_gradeheavy", "the same candidate on the grade-heavy corner, ensemble-min",
@@ -595,6 +625,57 @@ QUOTES = [
     ("d3_band", "the pre-registered band G1-R missed, and by how much",
      "LEAD_HANDOVER.md", 38, "pre-registered G1-R at +4 to +6% and it came in at -2.58%"),
 
+    # -------- B1: the three rounds that returned nothing ------------------
+    ("ws2_r4_clean", "WS2 round 4, a review that found nothing",
+     "WS2_traction_motor/FINDINGS_WS2_r4.md", 3,
+     "Verdict: no blocking or material findings."),
+    ("ws3_r2_clean", "WS3 round 2, likewise",
+     "WS3_battery/FINDINGS_WS3_r2.md", 48,
+     "No blocking or material findings."),
+    ("ws4_r2_clean", "WS4 round 2, likewise",
+     "WS4_genset/FINDINGS_WS4_r2.md", 9,
+     "Verdict: no blocking or material findings. No new findings of any"),
+
+    # -------- M1: what WS2's efficiency maps actually are ------------------
+    ("ws2_analytic", "the model the inverter+motor loss maps are computed from",
+     "WS2_traction_motor/ws2_thermal.py", 88,
+     "Analytic steady state with resistance feedback"),
+
+    # -------- M2: the ruling that left the archived rows alone -------------
+    ("g1_restraint_correct", "the round-3 adjudicator on leaving the archived rows alone",
+     "PM_LOG.md", 119,
+     "The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT"),
+
+    # -------- M3: verifier and determinism counts REPRODUCE renders ---------
+    ("ws4_verify_count", "what WS4's verifier asserts",
+     "PM_LOG.md", 113, "252 headline renderings"),
+    ("ws5_verify_count", "what WS5's verifier asserts",
+     "PM_LOG.md", 131, "934/934 rendered numbers verified verbatim"),
+    ("ws5_determinism_count", "WS5's own determinism evidence",
+     "PM_LOG.md", 131, "19 artifacts byte-for-byte"),
+    ("ws9_verify_count", "what WS9's verifier asserts",
+     "PM_LOG.md", 105, "verify PASS at 593 checks"),
+    ("ws9_seeds", "Vehicle One's seed set",
+     "PM_LOG.md", 105, "seeds 8101-8108"),
+    ("ws11_verify_count", "what WS11's verifier asserts",
+     "PM_LOG.md", 127, "609/609 verbatim across 16 assertion sections"),
+    ("ws11_determinism", "WS11's measured byte-stability for the round of record",
+     "WS11_vehicle_zero_ruler/REPORT_WS11.md", 628,
+     "every file byte-identical, zero differing hashes"),
+    ("vz_seeds", "Vehicle Zero's two seed sets",
+     "WS11_vehicle_zero_ruler/REPORT_WS11.md", 187,
+     "Ensemble = 8 seeds (VOLT-REG 23,3,4,5,6,7,8,9; VOLT-SUB 11,3,4,5,6,7,8,9"),
+    ("ws1_13agent", "the review WS1 ran in place of an adjudicator round",
+     "WS1_loads_duty_cycles/REPORT_WS1.md", 12,
+     "13-agent adversarial review: seven agents recomputed the headline numbers"),
+    ("cda_provisional", "the aerodynamic bracket, and why it is a bracket",
+     "BASELINE_v1.md", 17,
+     "CdA 4.2 m^2 and rho 1.20 kg/m^3 are PROVISIONAL fitted values pending"),
+    ("s6_bte_headroom", "how much headroom the best semi candidate's engine bet has",
+     "BASELINE_v5.md", 45, "S6 is an engine bet with ~2.3 BTE points of"),
+    ("ratio_2p8", "the Vehicle Zero final drive whose rationale the G1 kill voided",
+     "BASELINE_v3.md", 52, "(3.571:1 motor stage x 2.8:1 final). The 2.8:1's engine-sync"),
+
     # -------- the frozen open findings ------------------------------------
     ("kx_radiator_v7", "the KX sizing case v7 leaves open",
      "BASELINE_v7_FREEZE.md", 44, "103.5 vs 95.0 kW)"),
@@ -769,10 +850,16 @@ def build() -> dict:
                 "is frozen and its hash is binding."
             ),
             "purpose": (
-                "Every number and quoted phrase used in README.md, METHOD.md, "
-                "FINDINGS.md, LIMITATIONS.md and REPRODUCE.md, resolved from the "
-                "file that owns it. Nothing in a publication file is transcribed "
-                "by hand (CLAUDE.md rule 2)."
+                "Every number and quoted phrase that carries a [marker] in "
+                "README.md, METHOD.md, FINDINGS.md, LIMITATIONS.md and "
+                "REPRODUCE.md, resolved from the file that owns it. This is the "
+                "enforced set: verify_ws13.py checks a marker's value against "
+                "its source, so nothing carrying a marker is transcribed by hand "
+                "(CLAUDE.md rule 2). It is NOT every numeral in the prose - "
+                "declared specification constants and figures restated within a "
+                "sentence or two of their own cited instance are deliberately "
+                "left unmarked, and the coverage claims in the publication say "
+                "'carries a marker' rather than 'every number' for that reason."
             ),
             "baseline_of_record": "BASELINE_v7_FREEZE.md",
             "entry_point": "WS13_publication/build_citations.py",

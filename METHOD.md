@@ -212,7 +212,10 @@ the structure is worth.
 Verbatim, one line each:
 
 1. **WS1** did not have a `ws-adjudicator` round — the agent did not exist yet.
-   It ran a 13-agent adversarial review inside the workstream instead, and
+   It ran a
+   "13-agent adversarial review: seven agents recomputed the headline numbers" [ws1_13agent]
+   from first principles, three audited the source, two attacked completeness and
+   one adjudicated. Its result:
    "Seventeen defects were found and fixed and nine analysis" [ws1_review] gaps
    closed before the report was submitted. There is no `FINDINGS_WS1_r1.md` on
    disk; the record of that review is `REPORT_WS1.md` §9, which lists each
@@ -224,6 +227,15 @@ Verbatim, one line each:
 5. **WS8** — "Verdict: NOT CLEAN. Two blocking findings, five material, six minor." [ws8_r1]
 6. **WS9** — "RESULT: NOT CLEAN. Four blocking, six material, nine minor." [ws9_pre]
 7. **WS11** — "Verdict on the round: NOT CLEAN" [ws11_r1] — 3 blocking, 8 material, 13 minor.
+
+**Three of the seventeen rounds returned nothing, and they are named here so
+the count cannot be read as seventeen-for-seventeen.** The claim is about first
+passes; three later rounds came back clean:
+"Verdict: no blocking or material findings." [ws2_r4_clean] (WS2 r4),
+"No blocking or material findings." [ws3_r2_clean] (WS3 r2), and
+"Verdict: no blocking or material findings. No new findings of any" [ws4_r2_clean]
+severity (WS4 r2). That is what a rework round closing properly looks like, and
+it is the reason the seven-for-seven figure is stated of first passes only.
 
 Rework rounds did not converge quickly either. WS8 was still not clean at its
 second and third rounds — "Verdict: NOT CLEAN. One blocking, four material, seven minor." [ws8_r2]
@@ -313,10 +325,11 @@ only assert.
 
 Each entry: the failure mode, the instance in this record that produced it, and
 the countermeasure that caught it. These are the modes an AI-run engineering
-program actually exhibits. Nine of the eleven are bookkeeping, labelling or
-case-enumeration errors; the tenth is the record contradicting itself across
-time; and the eleventh is the one instance the lead labelled a physics defect,
-which is included precisely so it can be examined rather than skipped.
+program actually exhibits. Eight of the eleven are bookkeeping, labelling or
+case-enumeration errors; FM-3 is structural and has no instance, by design; the
+tenth is the record contradicting itself across time; and the eleventh is the one
+instance the lead labelled a physics defect, which is included precisely so it
+can be examined rather than skipped.
 
 ### FM-1. Partial correction — the fix reintroduces the defect it fixed
 
@@ -412,7 +425,8 @@ those certifications. The result:
 claims and must be sampled, never accepted. This is the countermeasure to the
 countermeasure for FM-1: asking for clean-area reporting is right, and it
 creates a new surface of unverified assertions that has to be audited in turn.
-Sampling two of sixteen was enough to find both.
+The record states the order and the result; it does not state how many of the
+sixteen were sampled, so no claim is made here about how cheap the audit was.
 
 ### FM-5. Robustness asserted, not run
 

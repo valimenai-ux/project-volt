@@ -5,7 +5,7 @@
    "PM_LOG.md"
   ],
   "live_sources_note": "PM_LOG.md is the production log and is appended to by the foreman while this publication is being reviewed. Appends do not move the line numbers cited here, so verify_ws13.py treats a SHA-256 change on a live source as a WARNING and keeps the line-and-quote resolution as a hard check. Every other source is frozen and its hash is binding.",
-  "purpose": "Every number and quoted phrase used in README.md, METHOD.md, FINDINGS.md, LIMITATIONS.md and REPRODUCE.md, resolved from the file that owns it. Nothing in a publication file is transcribed by hand (CLAUDE.md rule 2).",
+  "purpose": "Every number and quoted phrase that carries a [marker] in README.md, METHOD.md, FINDINGS.md, LIMITATIONS.md and REPRODUCE.md, resolved from the file that owns it. This is the enforced set: verify_ws13.py checks a marker's value against its source, so nothing carrying a marker is transcribed by hand (CLAUDE.md rule 2). It is NOT every numeral in the prose - declared specification constants and figures restated within a sentence or two of their own cited instance are deliberately left unmarked, and the coverage claims in the publication say 'carries a marker' rather than 'every number' for that reason.",
   "baseline_of_record": "BASELINE_v7_FREEZE.md",
   "entry_point": "WS13_publication/build_citations.py",
   "verifier": "WS13_publication/verify_ws13.py",
@@ -16,14 +16,15 @@
    "LIMITATIONS.md",
    "REPRODUCE.md"
   ],
-  "n_citations": 250,
-  "n_numbers": 122,
-  "n_quotes": 128,
+  "n_citations": 276,
+  "n_numbers": 131,
+  "n_quotes": 145,
   "determinism": "No wall-clock, no randomness, no environment dependence: re-running reproduces this file byte for byte."
  },
  "source_sha256": {
   ".claude/agents/ws-adjudicator.md": "bd98c6f6b3dfdaf6b53d5251a786518a0eb05588bfae6756acce39cce06f1ef0",
   ".claude/agents/ws-worker.md": "2e2902e69781b72ccf8ed3245cb7a8c9c0462c5ac1b1a474bff5716703528082",
+  "BASELINE_v1.md": "bad2d072057657156b1792a6f365819e155ce272deee79779dc92a112082e5f8",
   "BASELINE_v2.md": "442e25c0e671e64350c2ce9516c5c9464f2bf9acd2b767306bcef183f49acdea",
   "BASELINE_v3.md": "a761775ebb09caa4f2ff7c2777d343776df7fdf6e595cd46bce294d0afb64a82",
   "BASELINE_v4.md": "6c51f25ab2d4b9fd776a2aa8df8779b94ba40e1558da0fe5e9c52478a5c78fd7",
@@ -32,16 +33,20 @@
   "BASELINE_v7_FREEZE.md": "4c2fa9406552d771eeb75b263d87fac07fd9d02c5ddb3735112d24e78e88b2fe",
   "LEAD_HANDOVER.md": "b93355630819769273b3b13f2d9ce1aaad8223628e9561981f85676cda055aa1",
   "PM_COWORK.md": "39650f5889eb81a4bb77ca4033ed55bbc9e7c2a43fa2546f96a9f86204073b58",
-  "PM_LOG.md": "e15c3cdff495075406e2fd41cf52c3870cf41e991f7ee8aafa8a17da309f1fa5",
+  "PM_LOG.md": "ffda46cac24ac7cb0314d58616d40d4ae1f3d2127e0d5a75b8ba484567f900b9",
   "WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md": "909de5603c7d6b71960f627019b9772840c11e36c9ff7f781a89152f9e40e361",
   "WS11_vehicle_zero_ruler/REPORT_WS11.md": "d1458b58112acf3db618f9b9335e298e02f2948c1f1dcfc7646e3c535ddd5632",
   "WS11_vehicle_zero_ruler/results_ws11.json": "44948bf81c9910280abe3c21ae7d0bf439551160385c408a0196cdf936f9dc97",
   "WS1_loads_duty_cycles/REPORT_WS1.md": "200679c5ece7a7b6823ef2101513c62f1b17c200d4fcef55f4d5dc17a5f88f7a",
   "WS2_traction_motor/FINDINGS_WS2_r1.md": "f4bedc662891807cf3bf0df06537bf94c2b22fe2e7f4fc73d2d5da98b5fed224",
+  "WS2_traction_motor/FINDINGS_WS2_r4.md": "477b73f99ec50efd049aeb4914a5abbf3a09f7a2a72c74de588c21f0a5e37b94",
+  "WS2_traction_motor/ws2_thermal.py": "55642cc658cef0aeaa1495b080e9b79022542b312c3c8efb439744b04766749e",
   "WS3_battery/FINDINGS_WS3_r1.md": "684b60dfe45eada95a778741ca4efb4bd8c665716b0ccb9a72adca048e90608e",
+  "WS3_battery/FINDINGS_WS3_r2.md": "bcaccc5ad96cd0e62b256dc3bcbf9883d644bc52216f0cfad1b86a9b73151221",
   "WS4_genset/FINDINGS_KX_r2.md": "4646d38469c4413812cfae35829b2901ef544c805bb2a5a21dd296c92e84696c",
   "WS4_genset/FINDINGS_KX_r3.md": "fadf22b9881fd259470f2a2133a99dd50ed0fc059986cbfccdea0b8884f07715",
   "WS4_genset/FINDINGS_WS4_r1.md": "2a338fe530b30d6bc9b18a7f84aacd5fd35db0d062d9aaba7b240bc2b2cd0d92",
+  "WS4_genset/FINDINGS_WS4_r2.md": "16f2fe2783513740051c133a33d60bcbb31deb55f13e036440ba8652ebc2a2f6",
   "WS4_genset/results_ws4.json": "b02a6c82fbbe8d3e006fb1d756fbee51b2cb04f50e4281c65e04c97e63876d0b",
   "WS8_semi_architecture/FINDINGS_WS8_r1.md": "b3db6878367b39f13ce2d430181ffcccd6e8c078308caf5d534b40c8656c3ce8",
   "WS8_semi_architecture/FINDINGS_WS8_r2.md": "08924729469d8d719bc94348c7636dce15d3031d7950aa8f36381c96e52dfd56",
@@ -213,6 +218,17 @@
      "calibrate_order_satisfied"
     ],
     "format": "!json:calibrate_order_satisfied: {}"
+   }
+  },
+  "cda_provisional": {
+   "what": "the aerodynamic bracket, and why it is a bracket",
+   "display": "CdA 4.2 m^2 and rho 1.20 kg/m^3 are PROVISIONAL fitted values pending",
+   "value": null,
+   "source": "BASELINE_v1.md",
+   "locator": {
+    "kind": "line",
+    "line": 17,
+    "quote": "CdA 4.2 m^2 and rho 1.20 kg/m^3 are PROVISIONAL fitted values pending"
    }
   },
   "clutch_deleted": {
@@ -883,6 +899,39 @@
     "format": "{:.0f}%"
    }
   },
+  "g1_map_construction": {
+   "what": "how the archived map-vs-scalar row is constructed, in its own field",
+   "display": "difference of ensemble minima over the enumerated 8-seed VOLT-REG set: row min at seed 4 of 8-seed VOLT-REG ensemble [maps-only] minus prior-convention min at seed 5 of 8-seed VOLT-REG ensemble [prior-nominal]",
+   "value": "difference of ensemble minima over the enumerated 8-seed VOLT-REG set: row min at seed 4 of 8-seed VOLT-REG ensemble [maps-only] minus prior-convention min at seed 5 of 8-seed VOLT-REG ensemble [prior-nominal]",
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "attribution_rows",
+     "map_vs_scalar_alone",
+     "delta_pp_min_governing_case"
+    ],
+    "format": "{}"
+   }
+  },
+  "g1_map_paired": {
+   "what": "the paired companion of that row, exported outside the archive",
+   "display": "-7.32 pp",
+   "value": -7.321304351336944,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "construction_sweep_kx_r3",
+     "gate_g1_one_factor_paired_companion",
+     "map_vs_scalar_alone",
+     "paired_delta_pp_min"
+    ],
+    "format": "{:+.2f} pp"
+   }
+  },
   "g1_map_vs_scalar_pp": {
    "what": "one-factor: measured maps replacing WS1's scalar chain",
    "display": "-7.01 pp",
@@ -933,6 +982,17 @@
     "format": "{:+.2f}%"
    }
   },
+  "g1_restraint_correct": {
+   "what": "the round-3 adjudicator on leaving the archived rows alone",
+   "display": "The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 119,
+    "quote": "The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT"
+   }
+  },
   "g1_seeds_positive": {
    "what": "seeds on which the locked path beat series at nominal",
    "display": "0 of 8",
@@ -947,6 +1007,22 @@
      "seeds_margin_positive_n"
     ],
     "format": "{:d} of 8"
+   }
+  },
+  "g1_spin_paired": {
+   "what": "the paired companion of the spin-drag row",
+   "display": "-1.81 pp",
+   "value": -1.8085088880424172,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "construction_sweep_kx_r3",
+     "gate_g1_one_factor_paired_companion",
+     "spin_drag_alone",
+     "paired_delta_pp_min"
+    ],
+    "format": "{:+.2f} pp"
    }
   },
   "g1_spin_pp": {
@@ -1008,6 +1084,21 @@
     "path": [
      "interface_ws8",
      "gcw_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "gvw_kg": {
+   "what": "Vehicle Zero gross vehicle weight",
+   "display": "6,600 kg",
+   "value": 6600.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "masses",
+     "gvw_kg"
     ],
     "format": "{:,.0f} kg"
    }
@@ -1110,6 +1201,21 @@
      "mu_required_tandem"
     ],
     "format": "{:.3f}"
+   }
+  },
+  "no_credit_direction": {
+   "what": "what the harshest cab-heat reading charges, in its own field",
+   "display": "3.0 kW charged across the WHOLE cycle with no coolant credit at all: strictly more electric load than the ordered engine-off-windows-only reading, so this is the UPPER bound on the cab-heat penalty and the LOWER bound on the margin",
+   "value": "3.0 kW charged across the WHOLE cycle with no coolant credit at all: strictly more electric load than the ordered engine-off-windows-only reading, so this is the UPPER bound on the cab-heat penalty and the LOWER bound on the margin",
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "cold_cab_heat_bracket",
+     "V1_on_VOLT-SUB",
+     "no_waste_heat_credit_direction"
+    ],
+    "format": "{}"
    }
   },
   "nx_consequence": {
@@ -1619,6 +1725,17 @@
     "quote": "PRE-B3 (S5-13L 6% climb ledger row on the"
    }
   },
+  "ratio_2p8": {
+   "what": "the Vehicle Zero final drive whose rationale the G1 kill voided",
+   "display": "(3.571:1 motor stage x 2.8:1 final). The 2.8:1's engine-sync",
+   "value": null,
+   "source": "BASELINE_v3.md",
+   "locator": {
+    "kind": "line",
+    "line": 52,
+    "quote": "(3.571:1 motor stage x 2.8:1 final). The 2.8:1's engine-sync"
+   }
+  },
   "ratio_any_feasible": {
    "what": "whether any swept single ratio satisfies both constraints",
    "display": "any_feasible = false",
@@ -1650,6 +1767,23 @@
     "format": "{:.4f}"
    }
   },
+  "ratio_d_res": {
+   "what": "how far a tenfold grid refinement moves the required ratio",
+   "display": "-0.009",
+   "value": -0.008999999999999453,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "S3_fixed_ratio_feasibility",
+     "ratio_needed_to_hold_6pct",
+     "resolution_sensitivity",
+     "d_ratio"
+    ],
+    "format": "{:+.3f}"
+   }
+  },
   "ratio_needed": {
    "what": "lowest single ratio that holds the 6% grade at GCW",
    "display": "6.88",
@@ -1678,6 +1812,22 @@
      "S3_fixed_ratio_feasibility",
      "ratio_needed_to_hold_6pct",
      "over_ceiling_by_rpm"
+    ],
+    "format": "{:,.0f} rpm"
+   }
+  },
+  "rpm_ceiling": {
+   "what": "the engine rpm ceiling that bound is solved against",
+   "display": "2,100 rpm",
+   "value": 2100.0,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "S3_fixed_ratio_feasibility",
+     "ratio_ceiling_closed_form",
+     "rpm_ceiling"
     ],
     "format": "{:,.0f} rpm"
    }
@@ -1933,6 +2083,21 @@
     "format": "{:+.2f}%"
    }
   },
+  "s3_startability_req": {
+   "what": "the regulatory startability requirement, as the workstream states it",
+   "display": "Regulation (EU) No 1230/2012: five starts within five minutes at >= 12% gradient, laden to the combination's technically permissible maximum laden mass. Located by the Task 0 scan at search-summary level; provisional per E13 precedent.",
+   "value": "Regulation (EU) No 1230/2012: five starts within five minutes at >= 12% gradient, laden to the combination's technically permissible maximum laden mass. Located by the Task 0 scan at search-summary level; provisional per E13 precedent.",
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "task5_s3_specific",
+     "regulatory_startability_adhesion",
+     "requirement"
+    ],
+    "format": "{}"
+   }
+  },
   "s3_wins_every_seed": {
    "what": "whether S3 wins per km on every seed at r3",
    "display": "wins_on_every_seed = true",
@@ -2096,6 +2261,17 @@
      "design_margin_pct_min"
     ],
     "format": "{:+.2f}%"
+   }
+  },
+  "s6_bte_headroom": {
+   "what": "how much headroom the best semi candidate's engine bet has",
+   "display": "S6 is an engine bet with ~2.3 BTE points of",
+   "value": null,
+   "source": "BASELINE_v5.md",
+   "locator": {
+    "kind": "line",
+    "line": 45,
+    "quote": "S6 is an engine bet with ~2.3 BTE points of"
    }
   },
   "s6_control": {
@@ -3044,6 +3220,33 @@
     "quote": "WS9: S6 / S4' / S5-13L / S7 FROZEN-PROVISIONAL ADVANCE on"
    }
   },
+  "v_cruise": {
+   "what": "the cruise speed the Class 8 ratio ceiling is solved at",
+   "display": "105 km/h",
+   "value": 105.0,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "S3_fixed_ratio_feasibility",
+     "ratio_ceiling_closed_form",
+     "v_cruise_kmh"
+    ],
+    "format": "{:.0f} km/h"
+   }
+  },
+  "vz_seeds": {
+   "what": "Vehicle Zero's two seed sets",
+   "display": "Ensemble = 8 seeds (VOLT-REG 23,3,4,5,6,7,8,9; VOLT-SUB 11,3,4,5,6,7,8,9",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 187,
+    "quote": "Ensemble = 8 seeds (VOLT-REG 23,3,4,5,6,7,8,9; VOLT-SUB 11,3,4,5,6,7,8,9"
+   }
+  },
   "wall3_11l": {
    "what": "steepest grade a contiguous 2-speed can hold on the 11 L engine",
    "display": "6%",
@@ -3228,6 +3431,17 @@
     "quote": "3.0 kW of cab heat during the engine-off windows only"
    }
   },
+  "ws11_determinism": {
+   "what": "WS11's measured byte-stability for the round of record",
+   "display": "every file byte-identical, zero differing hashes",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 628,
+    "quote": "every file byte-identical, zero differing hashes"
+   }
+  },
   "ws11_negative": {
    "what": "the harshest cab-heat reading taking that corner negative",
    "display": "the harshest one takes V1's governing corner negative",
@@ -3261,6 +3475,28 @@
     "quote": "Verdict on the round: NOT CLEAN"
    }
   },
+  "ws11_verify_count": {
+   "what": "what WS11's verifier asserts",
+   "display": "609/609 verbatim across 16 assertion sections",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 127,
+    "quote": "609/609 verbatim across 16 assertion sections"
+   }
+  },
+  "ws1_13agent": {
+   "what": "the review WS1 ran in place of an adjudicator round",
+   "display": "13-agent adversarial review: seven agents recomputed the headline numbers",
+   "value": null,
+   "source": "WS1_loads_duty_cycles/REPORT_WS1.md",
+   "locator": {
+    "kind": "line",
+    "line": 12,
+    "quote": "13-agent adversarial review: seven agents recomputed the headline numbers"
+   }
+  },
   "ws1_review": {
    "what": "WS1's pre-submission adversarial review",
    "display": "Seventeen defects were found and fixed and nine analysis",
@@ -3270,6 +3506,17 @@
     "kind": "line",
     "line": 15,
     "quote": "Seventeen defects were found and fixed and nine analysis"
+   }
+  },
+  "ws2_analytic": {
+   "what": "the model the inverter+motor loss maps are computed from",
+   "display": "Analytic steady state with resistance feedback",
+   "value": null,
+   "source": "WS2_traction_motor/ws2_thermal.py",
+   "locator": {
+    "kind": "line",
+    "line": 88,
+    "quote": "Analytic steady state with resistance feedback"
    }
   },
   "ws2_notconverged": {
@@ -3294,6 +3541,17 @@
     "quote": "Verdict: no blocking findings. Two material findings (WS2-F1, WS2-F2), five minor."
    }
   },
+  "ws2_r4_clean": {
+   "what": "WS2 round 4, a review that found nothing",
+   "display": "Verdict: no blocking or material findings.",
+   "value": null,
+   "source": "WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "locator": {
+    "kind": "line",
+    "line": 3,
+    "quote": "Verdict: no blocking or material findings."
+   }
+  },
   "ws3_r1": {
    "what": "WS3 round-1 adjudication verdict",
    "display": "Two findings of consequence (one blocking, one material), then minors.",
@@ -3305,6 +3563,17 @@
     "quote": "Two findings of consequence (one blocking, one material), then minors."
    }
   },
+  "ws3_r2_clean": {
+   "what": "WS3 round 2, likewise",
+   "display": "No blocking or material findings.",
+   "value": null,
+   "source": "WS3_battery/FINDINGS_WS3_r2.md",
+   "locator": {
+    "kind": "line",
+    "line": 48,
+    "quote": "No blocking or material findings."
+   }
+  },
   "ws4_r1": {
    "what": "WS4 round-1 adjudication verdict",
    "display": "Verdict: no blocking findings. Two material findings (F1, F2) and",
@@ -3314,6 +3583,17 @@
     "kind": "line",
     "line": 9,
     "quote": "Verdict: no blocking findings. Two material findings (F1, F2) and"
+   }
+  },
+  "ws4_r2_clean": {
+   "what": "WS4 round 2, likewise",
+   "display": "Verdict: no blocking or material findings. No new findings of any",
+   "value": null,
+   "source": "WS4_genset/FINDINGS_WS4_r2.md",
+   "locator": {
+    "kind": "line",
+    "line": 9,
+    "quote": "Verdict: no blocking or material findings. No new findings of any"
    }
   },
   "ws4_seam": {
@@ -3329,6 +3609,39 @@
      "max_abs_difference"
     ],
     "format": "{:.1e}"
+   }
+  },
+  "ws4_verify_count": {
+   "what": "what WS4's verifier asserts",
+   "display": "252 headline renderings",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 113,
+    "quote": "252 headline renderings"
+   }
+  },
+  "ws5_determinism_count": {
+   "what": "WS5's own determinism evidence",
+   "display": "19 artifacts byte-for-byte",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 131,
+    "quote": "19 artifacts byte-for-byte"
+   }
+  },
+  "ws5_verify_count": {
+   "what": "what WS5's verifier asserts",
+   "display": "934/934 rendered numbers verified verbatim",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 131,
+    "quote": "934/934 rendered numbers verified verbatim"
    }
   },
   "ws8_bar_corner": {
@@ -3443,6 +3756,28 @@
     "kind": "line",
     "line": 9,
     "quote": "RESULT: NOT CLEAN. Four blocking, six material, nine minor."
+   }
+  },
+  "ws9_seeds": {
+   "what": "Vehicle One's seed set",
+   "display": "seeds 8101-8108",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 105,
+    "quote": "seeds 8101-8108"
+   }
+  },
+  "ws9_verify_count": {
+   "what": "what WS9's verifier asserts",
+   "display": "verify PASS at 593 checks",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 105,
+    "quote": "verify PASS at 593 checks"
    }
   }
  }

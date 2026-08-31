@@ -12,16 +12,27 @@ wrong:
       foreman appends to while this publication is reviewed), where a hash
       change is reported as a warning and the binding check is [1];
   [3] every `[id]` marker in a publication file names a real citation;
-  [4] the citation's rendered string appears in the prose immediately before
-      its marker -- i.e. the number printed to the reader is the number on
-      disk, not a number retyped near a footnote;
+  [4] the citation's rendered string appears in the prose within a bounded
+      lookback window before its marker (LOOKBACK characters, about four lines)
+      -- i.e. the number printed to the reader is the number on disk, not a
+      number retyped near a footnote. Five display strings are shared by two
+      citation ids each, so for those the window is tightened to
+      LOOKBACK_SHARED, and the widest observed distance is printed on success
+      so the slack cannot quietly grow;
   [5] every citation in the ledger is used at least once (the ledger is what
       the publication cites, not a superset);
   [6] guard rail 1: the method claim is stated as "catches internal
-      inconsistency", never as "catches wrong physics", in every prose file;
+      inconsistency", never as "catches wrong physics", in every prose file
+      (REPRODUCE.md included), and a short list of measurement-implying labels
+      inherited from upstream ("measured map(s)", "measured inverter") may
+      appear only inside quotation marks, i.e. quoted as an inherited label and
+      never asserted in the publication's own voice. This check tests fixed
+      strings; it cannot detect every measurement-implying phrasing;
   [7] guard rail 2: no status is promoted -- each of v7's eight claims is
-      rendered with v7's own status text, and a list of promoted phrasings is
-      absent;
+      rendered with v7's own status text, v7's FROZEN- labels are present, and a
+      blacklist of promoted phrasings is absent. This is a string test: it
+      cannot detect promotion by framing, juxtaposition or omission, which
+      remains a reader's judgement;
   [8] the two REPORT_WS11 facts the assignment names appear in FINDINGS.md and
       LIMITATIONS.md, each with its citation;
   [9] the README's exhibit link is marked as a placeholder until the Pages
@@ -45,10 +56,15 @@ HERE = os.path.join(ROOT, "WS13_publication")
 LEDGER = os.path.join(HERE, "citations.json")
 
 PUBLICATION = ["README.md", "METHOD.md", "FINDINGS.md", "LIMITATIONS.md", "REPRODUCE.md"]
-PROSE = ["README.md", "METHOD.md", "FINDINGS.md", "LIMITATIONS.md"]
+# Guard rail 1 is swept over every publication file, REPRODUCE.md included.
+PROSE = PUBLICATION
 
-# how far back from a [id] marker the rendered value is allowed to sit
+# How far back from a [id] marker the rendered value is allowed to sit. The
+# general window is about four lines; where a display string is shared by more
+# than one citation id the window is tightened, because there the check is also
+# what distinguishes a marker attached to the right sibling from the wrong one.
 LOOKBACK = 320
+LOOKBACK_SHARED = 120
 
 failures: list[str] = []
 checks = 0
@@ -135,6 +151,14 @@ def main() -> int:
     marker = re.compile(r"\[([a-z0-9_]+)\]")
     used: dict[str, int] = {}
 
+    # display strings carried by more than one citation id
+    by_display: dict[str, list[str]] = {}
+    for cid, entry in cites.items():
+        by_display.setdefault(entry["display"], []).append(cid)
+    shared = {d for d, ids in by_display.items() if len(ids) > 1}
+    worst_gap = 0
+    worst_gap_site = ""
+
     for rel, body in text.items():
         for m in marker.finditer(body):
             cid = m.group(1)
@@ -142,13 +166,28 @@ def main() -> int:
                 # markdown link labels are [text](url); skip those
                 if body[m.end():m.end() + 1] == "(":
                     continue
+                # `[marker]` in backticks is prose ABOUT the notation, not a use
+                # of it -- the publication's coverage claims say "carries a
+                # `[marker]`" and that literal must not be read as an id.
+                if (body[max(0, m.start() - 1):m.start()] == "`"
+                        and body[m.end():m.end() + 1] == "`"):
+                    continue
                 check(False, f"[3] {rel}: marker [{cid}] is not a citation id")
                 continue
             used[cid] = used.get(cid, 0) + 1
-            window = body[max(0, m.start() - LOOKBACK):m.start()]
-            check(cites[cid]["display"] in window,
+            display = cites[cid]["display"]
+            limit = LOOKBACK_SHARED if display in shared else LOOKBACK
+            window = body[max(0, m.start() - limit):m.start()]
+            check(display in window,
                   f"[4] {rel}: [{cid}] is not preceded by its own value",
-                  f"expected {cites[cid]['display']!r} within {LOOKBACK} chars before the marker")
+                  f"expected {display!r} within {limit} chars before the marker"
+                  + (" (tightened: this display string is shared by "
+                     f"{len(by_display[display])} citation ids, so proximity is "
+                     "what identifies the right one)" if display in shared else ""))
+            if display in window:
+                gap = len(window) - window.rfind(display) - len(display)
+                if gap > worst_gap:
+                    worst_gap, worst_gap_site = gap, f"{rel}:[{cid}]"
 
     # ---------------------------------------------------------------- [5]
     unused = sorted(set(cites) - set(used))
@@ -169,6 +208,21 @@ def main() -> int:
             check(pre.endswith('never "') or pre.endswith("never "),
                   f"[6] {rel}: 'catches wrong physics' used outside its negation",
                   f"preceded by {pre!r}")
+        # Upstream calls WS2's efficiency maps "measured"; they are computed
+        # from an analytic loss model and LIMITATIONS §1 says no measurement
+        # exists in this program. The label may be QUOTED as inherited, never
+        # asserted in the publication's own voice.
+        # One regex, longest-match, so "measured maps" is not also flagged as a
+        # bare "measured map" whose closing quote is one character further on.
+        for m in re.finditer(r"measured (?:loss )?maps?\b|measured inverter\b",
+                             body):
+                quoted = (body[max(0, m.start() - 1):m.start()] == '"'
+                          and body[m.end():m.end() + 1] == '"')
+                check(quoted,
+                      f"[6] {rel}: {m.group(0)!r} asserted rather than quoted",
+                      "the maps are computed from an analytic loss model; if the "
+                      "upstream label is used it must sit inside quotation marks "
+                      "with the flag beside it")
 
     # ---------------------------------------------------------------- [7]
     findings = text["FINDINGS.md"]
@@ -231,6 +285,9 @@ def main() -> int:
         return 1
     for w in warnings:
         print("  ! " + w)
+    print(f"  widest value-to-marker gap: {worst_gap} chars at {worst_gap_site} "
+          f"(limit {LOOKBACK}, {LOOKBACK_SHARED} for the "
+          f"{len(shared)} shared display strings)")
     print(f"VERIFY OK — {checks} checks passed; "
           f"{len(cites)} citations, {sum(used.values())} markers, "
           f"{len(ledger['source_sha256']) - len(warnings)} source files unchanged"

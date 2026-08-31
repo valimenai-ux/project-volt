@@ -27,6 +27,7 @@ must be on that line.
 | `anchor_resid_all` | `-31.69%` | model residual against the all-years anchor | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.ruler.anchor.all_model_years.residual_vs_model_pct` |
 | `anchor_resid_era` | `-40.10%` | model residual against the era-correct anchor | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.ruler.anchor.fourhk1_era.residual_vs_model_pct` |
 | `calibrate_satisfied` | `calibrate_order_satisfied: false` | whether the assignment's calibration order was satisfied | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.ruler.anchor.calibrate_order_satisfied` |
+| `cda_provisional` | `CdA 4.2 m^2 and rho 1.20 kg/m^3 are PROVISIONAL fitted values pending` | the aerodynamic bracket, and why it is a bracket | `BASELINE_v1.md` | line 17 |
 | `clutch_deleted` | `GATE G1: EXECUTED. THE CLUTCH IS DELETED.` | the moment the program killed its own premise's favourite part | `BASELINE_v3.md` | line 7 |
 | `curb_ruler` | `3,700 kg` | stock NPR-HD operating curb | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.masses.curb_kg.ruler` |
 | `curb_v1` | `3,888 kg` | V1 Postal operating curb | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.masses.curb_kg.V1` |
@@ -82,14 +83,19 @@ must be on that line.
 | `g1_cda54_min` | `-0.09%` | G1-R at CdA 5.4, ensemble-min (the sole near-break-even case) | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.condition_dependence.margin_pct_ensemble_min_CdA_5.4` |
 | `g1_cda54_positive_seeds` | `4 of 8` | seeds on which the locked path beat series at CdA 5.4 | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.condition_dependence.seeds_margin_positive_n_CdA_5.4` |
 | `g1_criterion` | `5%` | G1 pre-committed kill criterion | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.kill_criterion_pct` |
+| `g1_map_construction` | `difference of ensemble minima over the enumerated 8-seed VOLT-REG set: row min at seed 4 of 8-seed VOLT-REG ensemble [maps-only] minus prior-convention min at seed 5 of 8-seed VOLT-REG ensemble [prior-nominal]` | how the archived map-vs-scalar row is constructed, in its own field | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.attribution_rows.map_vs_scalar_alone.delta_pp_min_governing_case` |
+| `g1_map_paired` | `-7.32 pp` | the paired companion of that row, exported outside the archive | `WS4_genset/results_ws4.json` | `construction_sweep_kx_r3.gate_g1_one_factor_paired_companion.map_vs_scalar_alone.paired_delta_pp_min` |
 | `g1_map_vs_scalar_pp` | `-7.01 pp` | one-factor: measured maps replacing WS1's scalar chain | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.attribution_rows.map_vs_scalar_alone.delta_pp_min` |
 | `g1_missed_pp` | `7.58 pp` | how far G1-R missed its own criterion | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.missed_by_pp` |
 | `g1_prior_min` | `+6.26%` | G1 first pass, nominal ensemble-min, superseded chain convention | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.attribution_rows.prior_convention.min` |
+| `g1_restraint_correct` | `The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT` | the round-3 adjudicator on leaving the archived rows alone | `PM_LOG.md` | line 119 |
 | `g1_seeds_positive` | `0 of 8` | seeds on which the locked path beat series at nominal | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.seeds_margin_positive_n` |
+| `g1_spin_paired` | `-1.81 pp` | the paired companion of the spin-drag row | `WS4_genset/results_ws4.json` | `construction_sweep_kx_r3.gate_g1_one_factor_paired_companion.spin_drag_alone.paired_delta_pp_min` |
 | `g1_spin_pp` | `-1.77 pp` | one-factor: PM spin-drag member | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.attribution_rows.spin_drag_alone.delta_pp_min` |
 | `g1r_median` | `-2.50%` | G1-R nominal ensemble median | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.margin_pct_ensemble_median` |
 | `g1r_min` | `-2.58%` | G1-R nominal ensemble-min after R12's chain correction | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.margin_pct_ensemble_min` |
 | `gcw` | `36,300 kg` | Vehicle One gross combination weight | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.gcw_kg` |
+| `gvw_kg` | `6,600 kg` | Vehicle Zero gross vehicle weight | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.masses.gvw_kg` |
 | `kx_notconverged` | `3 rework rounds exhausted, final round not clean` | KX stopped at the round cap | `PM_LOG.md` | line 121 |
 | `kx_r1_result` | `NOT CLEAN — 2 blocking, 3 material, 8 minor` | KX round-1 adjudication verdict | `PM_LOG.md` | line 78 |
 | `kx_r2_result` | `NOT CLEAN — 0 blocking, 3 material, 4 minor` | KX round-2 adjudication verdict | `PM_LOG.md` | line 95 |
@@ -98,6 +104,7 @@ must be on that line.
 | `kx_radiator_v7` | `103.5 vs 95.0 kW)` | the KX sizing case v7 leaves open | `BASELINE_v7_FREEZE.md` | line 44 |
 | `mu_single_axle` | `0.587` | adhesion S3's single driven axle needs at 12% startability | `WS8_semi_architecture/results_ws8.json` | `task5_s3_specific.regulatory_startability_adhesion.rows.0.mu_required_single_axle` |
 | `mu_tandem` | `0.293` | what a 6x4 tandem needs for the same start | `WS8_semi_architecture/results_ws8.json` | `task5_s3_specific.regulatory_startability_adhesion.rows.0.mu_required_tandem` |
+| `no_credit_direction` | `3.0 kW charged across the WHOLE cycle with no coolant credit at all: strictly more electric load than the ordered engine-off-windows-only reading, so this is the UPPER bound on the cab-heat penalty and the LOWER bound on the margin` | what the harshest cab-heat reading charges, in its own field | `WS11_vehicle_zero_ruler/results_ws11.json` | `cold_cab_heat_bracket.V1_on_VOLT-SUB.no_waste_heat_credit_direction` |
 | `nx_consequence` | `WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK` | the consequence the foreman recorded at the time | `PM_LOG.md` | line 124 |
 | `nx_decision` | `SKIP their adjudication rounds` | the principal's 07:40 decision to cut two adjudication rounds | `PM_LOG.md` | line 124 |
 | `nx_gate_meaning` | `a gate PASS on r2 is evidence of reproducibility only and is NOT evidence the findings are closed` | what a gate pass is and is not evidence of | `PM_LOG.md` | line 124 |
@@ -136,10 +143,13 @@ must be on that line.
 | `r46_preb1` | `module cannot fire on 10 of 15 fields — hard-coded verdict literals` | WS9 PRE-B1 as the lead recorded it | `BASELINE_v6.md` | line 68 |
 | `r46_preb2` | `PRE-B2 (PEM "exactly 0.0" is an` | WS9 PRE-B2 as the lead recorded it | `BASELINE_v6.md` | line 69 |
 | `r46_preb3` | `PRE-B3 (S5-13L 6% climb ledger row on the` | WS9 PRE-B3 as the lead recorded it | `BASELINE_v6.md` | line 70 |
+| `ratio_2p8` | `(3.571:1 motor stage x 2.8:1 final). The 2.8:1's engine-sync` | the Vehicle Zero final drive whose rationale the G1 kill voided | `BASELINE_v3.md` | line 52 |
 | `ratio_any_feasible` | `any_feasible = false` | whether any swept single ratio satisfies both constraints | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.S3_fixed_ratio_feasibility.any_feasible` |
 | `ratio_ceiling` | `3.7699` | highest single ratio that keeps the engine under its rpm ceiling at 105 km/h | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.S3_fixed_ratio_feasibility.ratio_ceiling_closed_form.value` |
+| `ratio_d_res` | `-0.009` | how far a tenfold grid refinement moves the required ratio | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.S3_fixed_ratio_feasibility.ratio_needed_to_hold_6pct.resolution_sensitivity.d_ratio` |
 | `ratio_needed` | `6.88` | lowest single ratio that holds the 6% grade at GCW | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.S3_fixed_ratio_feasibility.ratio_needed_to_hold_6pct.ratio` |
 | `ratio_rpm_over` | `1,732 rpm` | how far over the rpm ceiling that ratio puts the engine at 105 km/h | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.S3_fixed_ratio_feasibility.ratio_needed_to_hold_6pct.over_ceiling_by_rpm` |
+| `rpm_ceiling` | `2,100 rpm` | the engine rpm ceiling that bound is solved against | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.S3_fixed_ratio_feasibility.ratio_ceiling_closed_form.rpm_ceiling` |
 | `ruler_model_lp100` | `19.18 L/100 km` | the modelled ruler on VOLT-SUB, 8-seed median | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.ruler.l_per_100km_VOLT_SUB.median` |
 | `ruler_sustained_6pct` | `82.01 km/h` | the ruler's sustained speed on the same grade | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.sustained_6pct_capability_kmh.ruler` |
 | `s0_fleet_lp100` | `38.78 L/100 km` | the Class 8 ruler's fleet-mission consumption, 8-seed median | `WS8_semi_architecture/results_ws8.json` | `headline.s0_fleet_L_per_100km` |
@@ -155,6 +165,7 @@ must be on that line.
 | `s3_med` | `+1.64%` | S3 median | `WS8_semi_architecture/results_ws8.json` | `headline.table.3.margin_vs_S0_pct_median` |
 | `s3_min` | `-1.09%` | S3 tandem split, ensemble-min | `WS8_semi_architecture/results_ws8.json` | `headline.table.3.margin_vs_S0_pct_min` |
 | `s3_perkm_min` | `+4.88%` | S3 per-kilometre margin, paired per-seed, ensemble-min | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.per_km_margin_paired.corners.nominal.S3.ensemble.min` |
+| `s3_startability_req` | `Regulation (EU) No 1230/2012: five starts within five minutes at >= 12% gradient, laden to the combination's technically permissible maximum laden mass. Located by the Task 0 scan at search-summary level; provisional per E13 precedent.` | the regulatory startability requirement, as the workstream states it | `WS8_semi_architecture/results_ws8.json` | `task5_s3_specific.regulatory_startability_adhesion.requirement` |
 | `s3_wins_every_seed` | `wins_on_every_seed = true` | whether S3 wins per km on every seed at r3 | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.per_km_margin_paired.corners.nominal.S3.wins_on_every_seed` |
 | `s4_med` | `-1.06%` | S4 median | `WS8_semi_architecture/results_ws8.json` | `headline.table.4.margin_vs_S0_pct_median` |
 | `s4_min` | `-3.84%` | S4 range-extended BEV, ensemble-min | `WS8_semi_architecture/results_ws8.json` | `headline.table.4.margin_vs_S0_pct_min` |
@@ -165,6 +176,7 @@ must be on that line.
 | `s513_design` | `+5.36%` | S5-13L minimal transmission on the design duty, ensemble-min | `WS9_vehicle_one_wave2/results_ws9.json` | `headline.table.2.design_margin_pct_min` |
 | `s5_control` | `-5.75%` | S5 as ordered (11 L) on the control duty, ensemble-min | `WS9_vehicle_one_wave2/results_ws9.json` | `headline.table.1.control_margin_pct_min` |
 | `s5_design` | `+1.90%` | S5 as ordered (11 L) on the design duty, ensemble-min | `WS9_vehicle_one_wave2/results_ws9.json` | `headline.table.1.design_margin_pct_min` |
+| `s6_bte_headroom` | `S6 is an engine bet with ~2.3 BTE points of` | how much headroom the best semi candidate's engine bet has | `BASELINE_v5.md` | line 45 |
 | `s6_control` | `+7.26%` | S6 on the flat line-haul control duty, ensemble-min | `WS9_vehicle_one_wave2/results_ws9.json` | `headline.table.3.control_margin_pct_min` |
 | `s6_design` | `+7.50%` | S6 zero-mass stack on the grade-heavy design duty, ensemble-min | `WS9_vehicle_one_wave2/results_ws9.json` | `headline.table.3.design_margin_pct_min` |
 | `s7_control` | `-1.45%` | S7 on the control duty, ensemble-min | `WS9_vehicle_one_wave2/results_ws9.json` | `headline.table.4.control_margin_pct_min` |
@@ -235,6 +247,8 @@ must be on that line.
 | `v7_ws8_state` | `WS8 S1-S4 KILLED (final), WHR DROPPED (final); numbers` | WS8's frozen status | `BASELINE_v7_FREEZE.md` | line 38 |
 | `v7_ws9_open` | `findings PRE-B1..B3; S5-13L expected to convert to KILL-ON-TIME under` | WS9's open findings and the S5-13L expectation | `BASELINE_v7_FREEZE.md` | line 42 |
 | `v7_ws9_state` | `WS9: S6 / S4' / S5-13L / S7 FROZEN-PROVISIONAL ADVANCE on` | WS9's frozen status | `BASELINE_v7_FREEZE.md` | line 40 |
+| `v_cruise` | `105 km/h` | the cruise speed the Class 8 ratio ceiling is solved at | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.S3_fixed_ratio_feasibility.ratio_ceiling_closed_form.v_cruise_kmh` |
+| `vz_seeds` | `Ensemble = 8 seeds (VOLT-REG 23,3,4,5,6,7,8,9; VOLT-SUB 11,3,4,5,6,7,8,9` | Vehicle Zero's two seed sets | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 187 |
 | `wall3_11l` | `6%` | steepest grade a contiguous 2-speed can hold on the 11 L engine | `WS9_vehicle_one_wave2/results_ws9.json` | `two_walls.third_constraint_coupling_floor.ENG-11L.frontier.steepest_contiguous_grade` |
 | `wall3_13l` | `8%` | steepest grade a contiguous 2-speed can hold on the 13 L engine | `WS9_vehicle_one_wave2/results_ws9.json` | `two_walls.third_constraint_coupling_floor.ENG-13L.frontier.steepest_contiguous_grade` |
 | `wall3_floor_11l` | `25.4 km/h` | the 11 L low gear's coupling floor | `WS9_vehicle_one_wave2/results_ws9.json` | `two_walls.third_constraint_coupling_floor.ENG-11L.coupling_floor_kmh` |
@@ -248,15 +262,25 @@ must be on that line.
 | `ws11_aftertreatment` | `WS4's `aftertreatment_extra: 60 kg` is EXCLUDED from the headline` | the aftertreatment mass bracket excluded from V2's headline | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 170 |
 | `ws11_braking_share` | `braking is 5.84% of tractive energy` | why regen is worth little on the regional duty | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 248 |
 | `ws11_cabheat_kw` | `3.0 kW of cab heat during the engine-off windows only` | the cab-heat load the bracket charges | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 272 |
+| `ws11_determinism` | `every file byte-identical, zero differing hashes` | WS11's measured byte-stability for the round of record | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 628 |
 | `ws11_negative` | `the harshest one takes V1's governing corner negative` | the harshest cab-heat reading taking that corner negative | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 35 |
 | `ws11_negative_body` | `under the harshest cab-heat reading V1's governing corner goes NEGATIVE` | the same fact stated in the corner section | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 284 |
 | `ws11_r1` | `Verdict on the round: NOT CLEAN` | WS11 round-1 adjudication verdict | `WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md` | line 3 |
+| `ws11_verify_count` | `609/609 verbatim across 16 assertion sections` | what WS11's verifier asserts | `PM_LOG.md` | line 127 |
+| `ws1_13agent` | `13-agent adversarial review: seven agents recomputed the headline numbers` | the review WS1 ran in place of an adjudicator round | `WS1_loads_duty_cycles/REPORT_WS1.md` | line 12 |
 | `ws1_review` | `Seventeen defects were found and fixed and nine analysis` | WS1's pre-submission adversarial review | `WS1_loads_duty_cycles/REPORT_WS1.md` | line 15 |
+| `ws2_analytic` | `Analytic steady state with resistance feedback` | the model the inverter+motor loss maps are computed from | `WS2_traction_motor/ws2_thermal.py` | line 88 |
 | `ws2_notconverged` | `3 rounds exhausted, final round not clean` | WS2 stopped at the round cap | `PM_LOG.md` | line 45 |
 | `ws2_r1` | `Verdict: no blocking findings. Two material findings (WS2-F1, WS2-F2), five minor.` | WS2 round-1 adjudication verdict | `WS2_traction_motor/FINDINGS_WS2_r1.md` | line 3 |
+| `ws2_r4_clean` | `Verdict: no blocking or material findings.` | WS2 round 4, a review that found nothing | `WS2_traction_motor/FINDINGS_WS2_r4.md` | line 3 |
 | `ws3_r1` | `Two findings of consequence (one blocking, one material), then minors.` | WS3 round-1 adjudication verdict | `WS3_battery/FINDINGS_WS3_r1.md` | line 12 |
+| `ws3_r2_clean` | `No blocking or material findings.` | WS3 round 2, likewise | `WS3_battery/FINDINGS_WS3_r2.md` | line 48 |
 | `ws4_r1` | `Verdict: no blocking findings. Two material findings (F1, F2) and` | WS4 round-1 adjudication verdict | `WS4_genset/FINDINGS_WS4_r1.md` | line 9 |
+| `ws4_r2_clean` | `Verdict: no blocking or material findings. No new findings of any` | WS4 round 2, likewise | `WS4_genset/FINDINGS_WS4_r2.md` | line 9 |
 | `ws4_seam` | `0.0e+00` | WS11's hot-swap assertion against WS4's exported series duty | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.ws4_hot_swap_seam.max_abs_difference` |
+| `ws4_verify_count` | `252 headline renderings` | what WS4's verifier asserts | `PM_LOG.md` | line 113 |
+| `ws5_determinism_count` | `19 artifacts byte-for-byte` | WS5's own determinism evidence | `PM_LOG.md` | line 131 |
+| `ws5_verify_count` | `934/934 rendered numbers verified verbatim` | what WS5's verifier asserts | `PM_LOG.md` | line 131 |
 | `ws8_bar_corner` | `0%` | WS8/WS9 pre-committed corner bar | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.advance_kill.every_corner_pct` |
 | `ws8_bar_nominal` | `3%` | WS8/WS9 pre-committed advance bar at nominal | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.advance_kill.nominal_pct` |
 | `ws8_fleet_mix` | `fleet-mission fuel energy per PAYLOAD tonne-km [MJ/(t.km)], fleet mission = 70% LH-520 + 30% REG-165 by distance` | the fleet mission the Class 8 metric of record is read on | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.metric_of_record` |
@@ -266,3 +290,5 @@ must be on that line.
 | `ws8_r_dyn` | `0.5 m` | the tyre radius the ratio ceiling is solved at | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.vehicle.r_dyn_m` |
 | `ws9_corridor_speed` | `on a corridor averaging over 90 km/h` | the corridor speed that makes pre-boost a poor trade | `WS9_vehicle_one_wave2/REPORT_WS9.md` | line 921 |
 | `ws9_pre` | `RESULT: NOT CLEAN. Four blocking, six material, nine minor.` | WS9 pre-adjudication verdict | `WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md` | line 9 |
+| `ws9_seeds` | `seeds 8101-8108` | Vehicle One's seed set | `PM_LOG.md` | line 105 |
+| `ws9_verify_count` | `verify PASS at 593 checks` | what WS9's verifier asserts | `PM_LOG.md` | line 105 |

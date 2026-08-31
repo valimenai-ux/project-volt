@@ -109,10 +109,11 @@ Several load-bearing quantities are declared rather than measured, and are
 carried as brackets rather than as values. The honest reading of a bracketed
 result is the whole bracket:
 
-- **Aerodynamic drag.** CdA is a provisional fitted value pending a coastdown
-  that was never run. It is bracketed at 4.2 and 5.4 m² throughout, and it is a
-  change to the *road* both vehicles drive rather than a modelling choice, so it
-  lowers both margins.
+- **Aerodynamic drag.** BASELINE_v1 states it outright:
+  "CdA 4.2 m^2 and rho 1.20 kg/m^3 are PROVISIONAL fitted values pending" [cda_provisional]
+  a coastdown that was never run. It is bracketed at 4.2 and 5.4 m² throughout,
+  and it is a change to the *road* both vehicles drive rather than a modelling
+  choice, so it lowers both margins.
 - **The ruler's driveline.** Eight declared levers (gear mesh, AT pump, final
   drive, lock-up slip, accessories, idle-in-Drive, shift schedule, inertia), all
   set at their ruler-favourable ends in the headline. At their pessimistic ends
@@ -124,9 +125,9 @@ result is the whole bracket:
   "WS4's `aftertreatment_extra: 60 kg` is EXCLUDED from the headline" [ws11_aftertreatment]
   and carried as a bracket instead.
 - **The opposed-piston engine** underneath the best semi candidate is an engine
-  bet on a cited external basis, exported across three peak-BTE assumptions.
-  The lead recorded it as an engine bet with about 2.3 BTE points of headroom,
-  not a drivetrain result.
+  bet on a cited external basis, exported across three peak-BTE assumptions. The
+  lead recorded it plainly: "S6 is an engine bet with ~2.3 BTE points of" [s6_bte_headroom]
+  headroom, not a drivetrain result.
 
 ## 6. Statuses at freeze are provisional, and several are conditional on rounds that were ordered and never run
 

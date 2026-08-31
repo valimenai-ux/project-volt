@@ -5,10 +5,12 @@ someone with no engineering training, that killed its own best ideas on
 criteria written before the numbers existed.**
 
 This repository is the complete record: every baseline, every workstream, all
-seventeen adversarial reviews that failed the work, the production log with the
-foreman's own rule breaches in it, and the round that stopped NOT CONVERGED
-after exhausting its rework budget and was never reopened. Nothing was deleted
-to make the story tidier.
+seventeen adversarial review rounds — the seven first passes, every one of which
+returned material or blocking findings, the rework rounds that followed, and the
+three rounds that returned nothing — the production log with the foreman's own
+rule breaches in it, and the round that stopped NOT CONVERGED after exhausting
+its rework budget and was never reopened. Nothing was deleted to make the story
+tidier.
 
 | | |
 |---|---|
@@ -103,7 +105,7 @@ directly to the wheels and skip two energy conversions. The program built that
 clutch into the design, then put it on trial against a criterion written months
 of program-time earlier: beat pure series by at least 5% or be deleted. The
 first pass passed. Then a ruling corrected how the efficiency chain was counted
-— replacing a scalar assumption with the motor's measured loss map — and the
+— replacing a scalar assumption with the motor's modelled loss map — and the
 answer changed sign. The clutch was deleted, along with its actuator, its
 control code, its fault mode and the topology reference it came from.
 
@@ -117,9 +119,12 @@ pre-committed:
 | missed its own criterion by | **7.58 pp** [g1_missed_pp] |
 | seeds on which the locked path still won | **0 of 8** [g1_seeds_positive] |
 
-The reversal is attributable: measured maps instead of a scalar chain,
+The reversal is attributable: the modelled loss maps instead of a scalar chain,
 **-7.01 pp** [g1_map_vs_scalar_pp]; charging the motor's magnetic drag to the
-locked samples, **-1.77 pp** [g1_spin_pp]. The verdict:
+locked samples, **-1.77 pp** [g1_spin_pp]. Those two rows are the one exception
+to this publication's paired-per-seed rule — they are the archived, ratified
+differences of ensemble minima, and their paired companions are exported beside
+them; see [FINDINGS.md](FINDINGS.md) claim 1. The verdict:
 "GATE G1: EXECUTED. THE CLUTCH IS DELETED." [clutch_deleted]
 
 This is the load-bearing event in the whole record. A criterion written before
@@ -241,17 +246,23 @@ until the reviewer went quiet; one was then reopened by the lead with a stated
 reason and closed clean, and one was left exactly where it stopped.
 
 **Survived, at the status the record gives it.** Electric torque-fill replacing
-the gearbox at 6.6 t (ratified, model-relative). Two boundary laws — a mass
-boundary and a duty boundary — that say where the premise stops working and are
-results in their own right. A third wall on two-speed engine paths. And one
-provisional advance: V1 Postal at **+20.11%** [v1_nominal_min], conditional on
-four rulings that were ordered and never run.
+the gearbox at 6.6 t — v7 status "(ratified, model-relative)" [v7_claim1_status].
+Two boundary laws that say where the premise stops working and are results in
+their own right: the mass boundary, v7 status "ratified" and
+"closed-form and simulated)" [v7_claim2_status]; and the duty boundary, v7
+status "(V1 provisional, V2 kill)" [v7_claim3_status]. A third wall on two-speed
+engine paths, v7 status "coupling floor vs crawl speed (provisional)" [v7_claim4_status].
+And one advance carrying v7's own label, FROZEN-PROVISIONAL ADVANCE: V1 Postal at
+**+20.11%** [v1_nominal_min], conditional on four rulings that were ordered and
+never run. The Vehicle One wave-two advances are FROZEN-PROVISIONAL likewise, and
+V2 Trucker is FROZEN-KILL.
 
 **Not settled.** Nothing was measured. The ruler is uncalibrated. Every Vehicle
 Zero verdict is model-relative by the program's own ruling, and the workstream
-carrying the headline number was gated but never adversarially reviewed —
-which is the single most instructive event in the record and is written up as a
-control condition in [METHOD.md](METHOD.md) §4.
+carrying the headline number had its round-1 pass adjudicated NOT CLEAN and its
+round-2 rework gated but never adversarially reviewed — which is the single most
+instructive event in the record and is written up as a control condition in
+[METHOD.md](METHOD.md) §4.
 
 ---
 
@@ -286,8 +297,11 @@ stopping: "The trials have mostly validated why the status quo is what it is" [v
 - `NIGHT_REPORT.md`, `PM_PACKET_*.md` — shift and workstream hand-offs.
 - `.claude/agents/` — the worker and adjudicator definitions, which are part of
   the record.
-- `WS13_publication/CITATIONS.md` — every number in this publication, with the
-  file and path it came from.
+- `WS13_publication/CITATIONS.md` — every number and quoted phrase in this
+  publication that carries a `[marker]`, with the file and path it came from,
+  machine-checked. Declared specification constants and figures restated beside
+  their own cited instance are deliberately unmarked; the index says which is
+  which.
 
 Statuses are exactly those of `BASELINE_v7_FREEZE.md`. Nothing in this
 publication promotes one.

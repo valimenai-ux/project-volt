@@ -1,6 +1,8 @@
 # REPRODUCE
 
-Every number in [FINDINGS.md](FINDINGS.md) is regenerable from this repository.
+Every number in [FINDINGS.md](FINDINGS.md) that carries a `[marker]` is
+regenerable from this repository, and so is every result the unmarked
+specification constants describe.
 Each workstream is self-contained: one entry point, fixed seeds, a
 `requirements.txt`, a results data file, a report generated from that file, and
 a verifier that asserts the two agree.
@@ -76,7 +78,7 @@ python make_report.py      # -> REPORT_WS3.md, tables_ws3.md, regen_acceptance.c
 cd WS4_genset
 python run_ws4.py
 python make_report_ws4.py
-python verify_ws4.py       # 252 headline renderings + interface block + structural pins
+python verify_ws4.py       # "252 headline renderings" + interface block + structural pins
 ```
 
 This is the pipeline that carries the G1 record: the first pass at
@@ -90,8 +92,8 @@ the archived `interface_ws4.gate_g1` block whose `status` field reads
 cd WS5_controls
 python run_ws5.py
 python make_report_ws5.py
-python verify_ws5.py                # 934 rendered numbers, verbatim
-python check_determinism_ws5.py     # -> determinism_check.txt
+python verify_ws5.py                # "934/934 rendered numbers verified verbatim"
+python check_determinism_ws5.py     # -> determinism_check.txt, "19 artifacts byte-for-byte"
 ```
 
 ### WS8 — Vehicle One, semi-scale architecture trial
@@ -116,7 +118,7 @@ python run_ws9.py --jobs 6          # -> results_ws9.json, data/
 python check_determinism_ws9.py     # -> data/determinism_check.json
 python run_ws9.py --from-checkpoint # folds the determinism check into the record
 python make_report_ws9.py           # also emits CHANGELOG_WS9_r3.md
-python verify_ws9.py                # 593 checks, and re-checks the upstream pin
+python verify_ws9.py                # "verify PASS at 593 checks", and re-checks the upstream pin
 ```
 
 The determinism check runs *between* the simulation and the report because it
@@ -128,7 +130,7 @@ compares two independent runs and cannot run inside the process it is checking.
 cd WS11_vehicle_zero_ruler
 python run_ws11.py                  # ~22 min
 python make_report_ws11.py
-python verify_ws11.py               # 609/609 values verbatim, 16 assertion sections
+python verify_ws11.py               # "609/609 verbatim across 16 assertion sections"
 python check_determinism_ws11.py    # ~1 min, optional
 ```
 
@@ -136,6 +138,14 @@ This is the pipeline behind V1's **+20.11%** [v1_nominal_min] and V2's
 **-7.93%** [v2_nominal_min]. `check_determinism_ws11.py` recomputes the two
 headline blocks from scratch in about a minute for a reviewer who does not want
 to wait out the full run.
+
+The four verifier counts quoted in the command blocks above are the foreman's
+recorded gate results, not this file's arithmetic:
+"252 headline renderings" [ws4_verify_count] (WS4),
+"934/934 rendered numbers verified verbatim" [ws5_verify_count] and
+"19 artifacts byte-for-byte" [ws5_determinism_count] (WS5),
+"verify PASS at 593 checks" [ws9_verify_count] (WS9), and
+"609/609 verbatim across 16 assertion sections" [ws11_verify_count] (WS11).
 
 ### WS13 — this publication
 
@@ -186,24 +196,37 @@ Specifically:
 | WS5 | `WS5_controls/determinism_check.txt` — 19 artefacts byte-for-byte |
 | WS8 | `check_determinism_ws8.py`, `data/determinism_check.json` |
 | WS9 | `check_determinism_ws9.py`, `data/determinism_check.json` — note its own declaration that five of six corners were not re-simulated |
-| WS11 | `WS11_vehicle_zero_ruler/determinism_check.txt` — two consecutive full runs hashed file by file, zero differing |
-| WS13 | `build_citations.py` writes no timestamp and reads no clock; re-running reproduces `citations.json` byte for byte |
+| WS11 | `WS11_vehicle_zero_ruler/determinism_check.txt` — two consecutive full runs hashed file by file: "every file byte-identical, zero differing hashes" [ws11_determinism] |
+| WS13 | `build_citations.py` writes no timestamp and reads no clock; re-running reproduces `CITATIONS.md` byte for byte, and `citations.json` byte for byte **except for the `PM_LOG.md` hash line** — see the live-source note below |
 
 Committed `run_output.txt` files deliberately carry no elapsed times: an
 artefact stamped with a timer can never be byte-stable.
 
+**One declared exception, so running the command above does not surprise you.**
+`PM_LOG.md` is the production log and the foreman appends to it. It is one of
+WS13's cited sources, so its SHA-256 in `citations.json` goes stale by design,
+and re-running `build_citations.py` will rewrite exactly that one line. Nothing
+else moves: the cited log lines do not shift, because appends do not renumber
+earlier lines, and `verify_ws13.py` re-reads every cited line and quote as a hard
+check while reporting the hash change as an advisory warning. `citations.json` →
+`_meta.live_sources` names the file.
+
 **What determinism proves and does not prove.** It proves the pipeline is a
 function of its inputs and its seeds. It does not prove the function is right —
 WS11 round 1 passed a byte-stable mechanical gate and was then found NOT CLEAN
-with its central robustness claim falsified. See [METHOD.md](METHOD.md) §4.
+with its central robustness claim falsified. See [METHOD.md](METHOD.md) §4. This
+is the same boundary the whole publication sits inside: the method
+**catches internal inconsistency, never wrong physics**.
+**Consistency is not validity.**
 
 ## 4. Seeds
 
 8-seed ensembles throughout (ruling R9). The seed sets are declared in each
 workstream and are not randomised:
 
-- Vehicle Zero: VOLT-REG `[23, 3, 4, 5, 6, 7, 8, 9]`, VOLT-SUB `[11, 3, 4, 5, 6, 7, 8, 9]`.
-- Vehicle One: `[8101 … 8108]`.
+- Vehicle Zero, from the report that uses them:
+  "Ensemble = 8 seeds (VOLT-REG 23,3,4,5,6,7,8,9; VOLT-SUB 11,3,4,5,6,7,8,9" [vz_seeds].
+- Vehicle One: "seeds 8101-8108" [ws9_seeds].
 
 There is no unseeded randomness anywhere in the program, and no wall-clock
 dependence.
@@ -216,5 +239,6 @@ workstreams consume. The reports are generated from those files, so a
 disagreement between a report and its JSON is a bug the verifier will catch
 rather than a judgement call.
 
-The publication's own index of every number it prints, with the file and path
-each came from, is [`WS13_publication/CITATIONS.md`](WS13_publication/CITATIONS.md).
+The publication's own index of every marked number it prints, with the file and
+path each came from, is
+[`WS13_publication/CITATIONS.md`](WS13_publication/CITATIONS.md).

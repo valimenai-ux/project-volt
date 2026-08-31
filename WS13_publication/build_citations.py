@@ -79,17 +79,42 @@ def resolve_json(rel: str, path: list, fmt: str):
 
 
 def resolve_line(rel: str, line: int, quote: str):
+    """Resolve a line citation, returning (display, resolved_line).
+
+    The recorded line is checked first. If it no longer carries the quote and
+    the file is a declared LIVE source, the quote is searched for across the
+    file and accepted ONLY if it occurs on exactly one line -- a prepend or an
+    insertion renumbers lines without changing content, and a unique match is
+    unambiguous. Anything else (quote gone, quote now ambiguous, or a frozen
+    source that moved) is a hard failure, because those are the cases where a
+    citation could silently come to mean something different.
+
+    This exists because the original design assumed the production log was
+    append-only. It is not: a CLOSE-OUT hard-blocker notice was inserted at the
+    top of PM_LOG.md on 2026-08-31, moving every cited line down by 29.
+    """
     lines = _load_lines(rel)
-    if line < 1 or line > len(lines):
-        raise AssertionError(f"{rel}: line {line} out of range (file has {len(lines)})")
-    text = lines[line - 1]
-    if quote not in text:
+    if 1 <= line <= len(lines) and quote in lines[line - 1]:
+        return quote, line
+
+    hits = [i + 1 for i, text in enumerate(lines) if quote in text]
+    if rel in LIVE_SOURCES and len(hits) == 1:
+        return quote, hits[0]
+
+    if not hits:
         raise AssertionError(
-            f"{rel}:{line} does not contain the cited phrase.\n"
-            f"  expected substring: {quote!r}\n"
-            f"  line reads:         {text!r}"
-        )
-    return quote
+            f"{rel}:{line} no longer contains the cited phrase, and it is "
+            f"nowhere else in the file.\n  expected substring: {quote!r}")
+    if len(hits) > 1:
+        raise AssertionError(
+            f"{rel}:{line} moved and the phrase is now AMBIGUOUS "
+            f"(lines {hits}); re-pin it by hand.\n"
+            f"  substring: {quote!r}")
+    raise AssertionError(
+        f"{rel}:{line} does not contain the cited phrase; it is at line "
+        f"{hits[0]}. This source is not declared live, so it is not "
+        f"auto-repinned -- a frozen artifact should not move.\n"
+        f"  substring: {quote!r}")
 
 
 # --------------------------------------------------------------------------
@@ -827,13 +852,15 @@ def build() -> dict:
     for cid, what, rel, line, quote in QUOTES:
         if cid in entries:
             raise AssertionError(f"duplicate citation id: {cid}")
-        display = resolve_line(rel, line, quote)
+        display, resolved = resolve_line(rel, line, quote)
         entries[cid] = {
             "what": what,
             "display": display,
             "value": None,
             "source": rel,
-            "locator": {"kind": "line", "line": line, "quote": quote},
+            # the RESOLVED line, so the ledger always names where the quote is
+            # now; for a live source this may differ from the hint in the table
+            "locator": {"kind": "line", "line": resolved, "quote": quote},
         }
         sources.add(rel)
 
@@ -842,12 +869,19 @@ def build() -> dict:
             "workstream": "WS13_publication",
             "live_sources": sorted(LIVE_SOURCES),
             "live_sources_note": (
-                "PM_LOG.md is the production log and is appended to by the "
-                "foreman while this publication is being reviewed. Appends do "
-                "not move the line numbers cited here, so verify_ws13.py treats "
-                "a SHA-256 change on a live source as a WARNING and keeps the "
-                "line-and-quote resolution as a hard check. Every other source "
-                "is frozen and its hash is binding."
+                "PM_LOG.md is the production log and the foreman writes to it "
+                "while this publication is being reviewed. A SHA-256 change on "
+                "a live source is therefore a WARNING, not a failure. The "
+                "line-and-quote resolution stays a HARD check: the cited phrase "
+                "must still exist and, if its line has moved, must occur on "
+                "exactly one line, in which case the ledger records the new "
+                "line. This is deliberately not an append-only assumption - it "
+                "was one, and the record falsified it on 2026-08-31 when a "
+                "CLOSEOUT section 9 hard-blocker notice was inserted at the top "
+                "of PM_LOG.md and moved every cited line down by 29. A quote "
+                "that vanishes, or becomes ambiguous, or moves in a source that "
+                "is NOT declared live, still fails. Every other source is frozen "
+                "and its hash is binding."
             ),
             "purpose": (
                 "Every number and quoted phrase that carries a [marker] in "

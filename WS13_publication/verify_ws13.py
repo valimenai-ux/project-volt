@@ -5,7 +5,10 @@ Asserts, and fails loudly on, everything the publication is not allowed to get
 wrong:
 
   [1] every citation in `citations.json` re-resolves from its own source file
-      and still renders the string the ledger records;
+      and still renders the string the ledger records. A line citation whose
+      line has moved is accepted only in a declared live source and only where
+      the quote occurs on exactly one line; a vanished quote, an ambiguous one,
+      or any movement in a frozen source is a hard failure;
   [2] every source file is byte-identical to the one the ledger was built
       against (sha256), so a citation cannot silently drift -- except for the
       sources listed in `_meta.live_sources` (the production log, which the
@@ -35,9 +38,12 @@ wrong:
       remains a reader's judgement;
   [8] the two REPORT_WS11 facts the assignment names appear in FINDINGS.md and
       LIMITATIONS.md, each with its citation;
-  [9] the README's exhibit link is marked as a placeholder until the Pages
-      deploy fills it in -- both as the machine-readable HTML comment the
-      foreman greps for and as render-visible text a reader actually sees.
+  [9] the README's exhibit link is the live page. Post-deploy invariant
+      (CLOSEOUT section 7.5): the exhibit URL is present AND survives
+      HTML-comment stripping, so it is text a reader actually sees; and the
+      pre-deploy caveat is gone -- neither the pending sentence nor the
+      PLACEHOLDER marker may reappear. Absence is asserted, not merely
+      unchecked, so a stale caveat cannot silently return.
 
 Run:  python3 WS13_publication/verify_ws13.py
 Exit 0 = VERIFY OK.  Any failure exits 1 with the reason.
@@ -68,6 +74,8 @@ LOOKBACK_SHARED = 120
 
 failures: list[str] = []
 checks = 0
+live_sources: set[str] = set()
+line_moves: list[str] = []
 
 
 def check(ok: bool, label: str, detail: str = "") -> None:
@@ -104,18 +112,33 @@ def resolve(entry: dict) -> str:
             return fmt[len("!json:"):].format(json.dumps(node))
         return fmt.format(node)
     lines = read(entry["source"]).split("\n")
-    text = lines[loc["line"] - 1]
-    if loc["quote"] not in text:
+    line, quote, src = loc["line"], loc["quote"], entry["source"]
+    if 1 <= line <= len(lines) and quote in lines[line - 1]:
+        return quote
+    # A declared live source may be written to mid-review. If the quote moved,
+    # accept it only where it is UNAMBIGUOUS -- exactly one line carries it.
+    hits = [i + 1 for i, text in enumerate(lines) if quote in text]
+    if src in live_sources and len(hits) == 1:
+        line_moves.append(f"{src}: a cited line moved {line} -> {hits[0]}")
+        return quote
+    if not hits:
         raise AssertionError(
-            f'{entry["source"]}:{loc["line"]} no longer contains {loc["quote"]!r}; '
-            f'line reads {text!r}')
-    return loc["quote"]
+            f"{src}:{line} no longer contains {quote!r}, and it is nowhere "
+            f"else in the file")
+    if len(hits) > 1:
+        raise AssertionError(
+            f"{src}:{line} moved and {quote!r} is now AMBIGUOUS (lines {hits})")
+    raise AssertionError(
+        f"{src}:{line} does not contain {quote!r}; it is at line {hits[0]}. "
+        f"This source is not declared live, so it is not auto-repinned")
 
 
 def main() -> int:
     with open(LEDGER, encoding="utf-8") as fh:
         ledger = json.load(fh)
     cites = ledger["citations"]
+
+    live_sources.update(ledger["_meta"].get("live_sources", []))
 
     # ---------------------------------------------------------------- [2]
     live = set(ledger["_meta"].get("live_sources", []))
@@ -259,23 +282,28 @@ def main() -> int:
               f"[8] {rel} does not cite REPORT_WS11.md for those two facts")
 
     # ---------------------------------------------------------------- [9]
+    # Post-deploy (CLOSEOUT section 7.5). The exhibit is live and verified
+    # anonymously, so the invariant inverts: the URL must be there and visible,
+    # and the pre-deploy caveat must be GONE. Both absences are asserted rather
+    # than left unchecked, because a stale "this link is not live yet" caveat on
+    # a public page is the same defect class as a stale number -- prose that the
+    # record has moved past.
+    EXHIBIT_URL = "https://valimenai-ux.github.io/project-volt/"
+    PENDING_CAVEAT = "The exhibit link is pending."
+    PLACEHOLDER_MARKER = "PLACEHOLDER"
     readme = text["README.md"]
-    check("PLACEHOLDER" in readme,
-          "[9] README.md does not mark the exhibit link as a placeholder "
-          "(the machine-readable marker the foreman greps for in close-out §7)")
-    check("https://valimenai-ux.github.io/project-volt/" in readme,
-          "[9] README.md does not carry the exhibit's target URL")
-    # The HTML comment above is invisible in rendered markdown, so the caveat
-    # must ALSO exist as rendered text: between the repository going public and
-    # the deploy being verified, a reader would otherwise see an apparently
-    # live link with no visible qualification. Strip comments, then require it.
-    VISIBLE_CAVEAT = "The exhibit link is pending."
     rendered = re.sub(r"<!--.*?-->", "", readme, flags=re.DOTALL)
-    check(VISIBLE_CAVEAT in rendered,
-          "[9] README.md's exhibit caveat is not render-visible",
-          f"expected {VISIBLE_CAVEAT!r} outside any HTML comment")
-    check("https://valimenai-ux.github.io/project-volt/" in rendered,
-          "[9] the exhibit URL exists only inside an HTML comment")
+    check(EXHIBIT_URL in readme,
+          "[9] README.md does not carry the exhibit URL")
+    check(EXHIBIT_URL in rendered,
+          "[9] the exhibit URL exists only inside an HTML comment",
+          "it must be text a reader actually sees, not a comment")
+    check(PENDING_CAVEAT not in readme,
+          "[9] README.md still carries the pre-deploy pending caveat",
+          f"the exhibit is deployed; {PENDING_CAVEAT!r} must be removed")
+    check(PLACEHOLDER_MARKER not in readme,
+          "[9] README.md still carries the PLACEHOLDER marker",
+          "it was the pre-deploy grep target and must not survive the §7.5 patch")
 
     # ---------------------------------------------------------------- report
     if failures:
@@ -283,7 +311,7 @@ def main() -> int:
         for f in failures:
             print("  - " + f)
         return 1
-    for w in warnings:
+    for w in warnings + sorted(set(line_moves)):
         print("  ! " + w)
     print(f"  widest value-to-marker gap: {worst_gap} chars at {worst_gap_site} "
           f"(limit {LOOKBACK}, {LOOKBACK_SHARED} for the "

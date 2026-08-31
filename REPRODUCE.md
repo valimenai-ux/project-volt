@@ -203,13 +203,20 @@ Committed `run_output.txt` files deliberately carry no elapsed times: an
 artefact stamped with a timer can never be byte-stable.
 
 **One declared exception, so running the command above does not surprise you.**
-`PM_LOG.md` is the production log and the foreman appends to it. It is one of
-WS13's cited sources, so its SHA-256 in `citations.json` goes stale by design,
-and re-running `build_citations.py` will rewrite exactly that one line. Nothing
-else moves: the cited log lines do not shift, because appends do not renumber
-earlier lines, and `verify_ws13.py` re-reads every cited line and quote as a hard
-check while reporting the hash change as an advisory warning. `citations.json` →
-`_meta.live_sources` names the file.
+`PM_LOG.md` is the production log and the foreman writes to it while this
+publication is being reviewed. It is one of WS13's cited sources, so its SHA-256
+in `citations.json` goes stale by design and re-running `build_citations.py`
+rewrites that hash. `verify_ws13.py` reports the hash change as an advisory
+warning and keeps the line-and-quote resolution as a hard check.
+
+The line numbers can move too, and once did: on 2026-08-31 a CLOSEOUT §9
+hard-blocker notice was inserted at the *top* of `PM_LOG.md` and shifted all 23
+cited lines down by 29. The original design assumed the log was append-only;
+that assumption was wrong, the hard check caught it, and the locator now
+re-resolves a moved citation **only** where the quoted phrase occurs on exactly
+one line, recording the new line in the ledger. A quote that vanishes, becomes
+ambiguous, or moves inside a source that is *not* declared live still fails the
+run. `citations.json` → `_meta.live_sources` names the one live file.
 
 **What determinism proves and does not prove.** It proves the pipeline is a
 function of its inputs and its seeds. It does not prove the function is right —

@@ -63,12 +63,12 @@ must be on that line.
 | `etc_needed` | `2.91%` | gross fuel gain electric turbocompound needed to clear its gate | `WS9_vehicle_one_wave2/results_ws9.json` | `etc_gate.fuel_gain_needed_to_clear_gate_pct` |
 | `etc_payload_penalty` | `0.41%` | the payload electric turbocompound's mass costs | `WS9_vehicle_one_wave2/results_ws9.json` | `etc_gate.payload_penalty_pct` |
 | `fm_falseclean` | `Two of the sixteen areas the construction sweep certifies as` | the false clean certifications, adjudicator's wording | `WS4_genset/FINDINGS_KX_r3.md` | line 47 |
-| `fm_falseclean_pmlog` | `TWO are false, including one block that contains the very defect it certifies clean` | the same, in the production log | `PM_LOG.md` | line 119 |
-| `fm_governing_case` | `the R20/ESC-12 analysis is enumerated over a case set that EXCLUDES R20's own declared design case` | a governing case enumerated outside the ruling's own design case | `PM_LOG.md` | line 119 |
+| `fm_falseclean_pmlog` | `TWO are false, including one block that contains the very defect it certifies clean` | the same, in the production log | `PM_LOG.md` | line 148 |
+| `fm_governing_case` | `the R20/ESC-12 analysis is enumerated over a case set that EXCLUDES R20's own declared design case` | a governing case enumerated outside the ruling's own design case | `PM_LOG.md` | line 148 |
 | `fm_inert_provenance` | `an inherited WS3 input the report states it uses and the pipeline` | an inherited input the report claimed and the pipeline never called | `WS8_semi_architecture/FINDINGS_WS8_r1.md` | line 12 |
 | `fm_partial_findings` | `construction defect the same round just fixed in the heat ledger under m6` | the adjudicator's own statement of the same | `WS4_genset/FINDINGS_KX_r2.md` | line 369 |
-| `fm_partial_pmlog` | `the same construction defect this very round just fixed as m6, reintroduced in three new blocks` | the m6 defect class reintroduced by its own fix | `PM_LOG.md` | line 95 |
-| `fm_partial_sweep` | `found TWO MORE instances of the same defect family the adjudication had not named` | what the family sweep then found that the adjudication had not named | `PM_LOG.md` | line 110 |
+| `fm_partial_pmlog` | `the same construction defect this very round just fixed as m6, reintroduced in three new blocks` | the m6 defect class reintroduced by its own fix | `PM_LOG.md` | line 124 |
+| `fm_partial_sweep` | `found TWO MORE instances of the same defect family the adjudication had not named` | what the family sweep then found that the adjudication had not named | `PM_LOG.md` | line 139 |
 | `fm_r36` | `DOCTRINE CORRECTION (from M2). D13 is restated` | R36, the doctrine correction that made the paired statistic binding | `BASELINE_v5.md` | line 19 |
 | `fm_r36_why` | `ratio-of-medians artifact into doctrine. Per-km claims are stated on` | why R36 exists | `BASELINE_v5.md` | line 22 |
 | `fm_selfratification` | `You MAY NOT: ratify or reject work on its merits; resolve, soften,` | the rule the foreman/adjudicator split exists to enforce | `PM_COWORK.md` | line 18 |
@@ -76,9 +76,9 @@ must be on that line.
 | `fm_statofstat` | `every fuel delta between paired dispatches in the new blocks is a ratio of ensemble statistics` | the statistic-of-statistics finding, KX2-M3 | `WS4_genset/FINDINGS_KX_r2.md` | line 321 |
 | `fm_statofstat_row` | `\| nominal \| **+0.062 %** \| **+0.169 %** \| +0.088 % \|` | the exported figure beside the paired one | `WS4_genset/FINDINGS_KX_r2.md` | line 345 |
 | `fm_sweep_ws11` | `six further name/construction defects, two further unrun claims and seven further statistic-of-statistics constructions found` | what WS11's own sweep found beyond its adjudication | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 33 |
-| `fm_tautology` | `the concordance module cannot fire on two thirds of its fields` | a concordance check that could not fire | `PM_LOG.md` | line 116 |
+| `fm_tautology` | `the concordance module cannot fire on two thirds of its fields` | a concordance check that could not fire | `PM_LOG.md` | line 145 |
 | `fm_unrun` | `the KILL's robustness claim was false` | the unrun robustness claim that falsified a KILL's robustness | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 21 |
-| `fm_wrong_branch` | `exported 20.1 kW total rejection against a correct engine-coupled 507.3 kW` | an exported heat-ledger row on the wrong branch of a two-band envelope | `PM_LOG.md` | line 116 |
+| `fm_wrong_branch` | `exported 20.1 kW total rejection against a correct engine-coupled 507.3 kW` | an exported heat-ledger row on the wrong branch of a two-band envelope | `PM_LOG.md` | line 145 |
 | `g1_alt_min` | `-5.90%` | G1-R at the 2,000 m / +45 C corner, ensemble-min | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.condition_dependence.margin_pct_ensemble_min_at_2000m_45C` |
 | `g1_cda54_min` | `-0.09%` | G1-R at CdA 5.4, ensemble-min (the sole near-break-even case) | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.condition_dependence.margin_pct_ensemble_min_CdA_5.4` |
 | `g1_cda54_positive_seeds` | `4 of 8` | seeds on which the locked path beat series at CdA 5.4 | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.condition_dependence.seeds_margin_positive_n_CdA_5.4` |
@@ -88,7 +88,7 @@ must be on that line.
 | `g1_map_vs_scalar_pp` | `-7.01 pp` | one-factor: measured maps replacing WS1's scalar chain | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.attribution_rows.map_vs_scalar_alone.delta_pp_min` |
 | `g1_missed_pp` | `7.58 pp` | how far G1-R missed its own criterion | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.missed_by_pp` |
 | `g1_prior_min` | `+6.26%` | G1 first pass, nominal ensemble-min, superseded chain convention | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.attribution_rows.prior_convention.min` |
-| `g1_restraint_correct` | `The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT` | the round-3 adjudicator on leaving the archived rows alone | `PM_LOG.md` | line 119 |
+| `g1_restraint_correct` | `The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT` | the round-3 adjudicator on leaving the archived rows alone | `PM_LOG.md` | line 148 |
 | `g1_seeds_positive` | `0 of 8` | seeds on which the locked path beat series at nominal | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.seeds_margin_positive_n` |
 | `g1_spin_paired` | `-1.81 pp` | the paired companion of the spin-drag row | `WS4_genset/results_ws4.json` | `construction_sweep_kx_r3.gate_g1_one_factor_paired_companion.spin_drag_alone.paired_delta_pp_min` |
 | `g1_spin_pp` | `-1.77 pp` | one-factor: PM spin-drag member | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.attribution_rows.spin_drag_alone.delta_pp_min` |
@@ -96,20 +96,20 @@ must be on that line.
 | `g1r_min` | `-2.58%` | G1-R nominal ensemble-min after R12's chain correction | `WS4_genset/results_ws4.json` | `interface_ws4.gate_g1.verdict.margin_pct_ensemble_min` |
 | `gcw` | `36,300 kg` | Vehicle One gross combination weight | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.gcw_kg` |
 | `gvw_kg` | `6,600 kg` | Vehicle Zero gross vehicle weight | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.masses.gvw_kg` |
-| `kx_notconverged` | `3 rework rounds exhausted, final round not clean` | KX stopped at the round cap | `PM_LOG.md` | line 121 |
-| `kx_r1_result` | `NOT CLEAN — 2 blocking, 3 material, 8 minor` | KX round-1 adjudication verdict | `PM_LOG.md` | line 78 |
-| `kx_r2_result` | `NOT CLEAN — 0 blocking, 3 material, 4 minor` | KX round-2 adjudication verdict | `PM_LOG.md` | line 95 |
-| `kx_r3_result` | `NOT CLEAN — 1 blocking, 3 material, 6 minor` | KX round-3 adjudication verdict | `PM_LOG.md` | line 119 |
+| `kx_notconverged` | `3 rework rounds exhausted, final round not clean` | KX stopped at the round cap | `PM_LOG.md` | line 150 |
+| `kx_r1_result` | `NOT CLEAN — 2 blocking, 3 material, 8 minor` | KX round-1 adjudication verdict | `PM_LOG.md` | line 107 |
+| `kx_r2_result` | `NOT CLEAN — 0 blocking, 3 material, 4 minor` | KX round-2 adjudication verdict | `PM_LOG.md` | line 124 |
+| `kx_r3_result` | `NOT CLEAN — 1 blocking, 3 material, 6 minor` | KX round-3 adjudication verdict | `PM_LOG.md` | line 148 |
 | `kx_radiator_v6` | `CORNER (103.522 kW two-minute maximum), not its ambient` | the same case, to the figure the round measured | `BASELINE_v6.md` | line 90 |
 | `kx_radiator_v7` | `103.5 vs 95.0 kW)` | the KX sizing case v7 leaves open | `BASELINE_v7_FREEZE.md` | line 44 |
 | `mu_single_axle` | `0.587` | adhesion S3's single driven axle needs at 12% startability | `WS8_semi_architecture/results_ws8.json` | `task5_s3_specific.regulatory_startability_adhesion.rows.0.mu_required_single_axle` |
 | `mu_tandem` | `0.293` | what a 6x4 tandem needs for the same start | `WS8_semi_architecture/results_ws8.json` | `task5_s3_specific.regulatory_startability_adhesion.rows.0.mu_required_tandem` |
 | `no_credit_direction` | `3.0 kW charged across the WHOLE cycle with no coolant credit at all: strictly more electric load than the ordered engine-off-windows-only reading, so this is the UPPER bound on the cab-heat penalty and the LOWER bound on the margin` | what the harshest cab-heat reading charges, in its own field | `WS11_vehicle_zero_ruler/results_ws11.json` | `cold_cab_heat_bracket.V1_on_VOLT-SUB.no_waste_heat_credit_direction` |
-| `nx_consequence` | `WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK` | the consequence the foreman recorded at the time | `PM_LOG.md` | line 124 |
-| `nx_decision` | `SKIP their adjudication rounds` | the principal's 07:40 decision to cut two adjudication rounds | `PM_LOG.md` | line 124 |
-| `nx_gate_meaning` | `a gate PASS on r2 is evidence of reproducibility only and is NOT evidence the findings are closed` | what a gate pass is and is not evidence of | `PM_LOG.md` | line 124 |
-| `nx_number_moved` | `ONE NUMBER MOVED: V1's cold+cab-heat bracket` | the one number that moved in the unchecked rework | `PM_LOG.md` | line 127 |
-| `nx_ws5` | `WS5 is the only workstream of the night with ZERO adjudication rounds` | WS5, the workstream with no adjudication round at all | `PM_LOG.md` | line 132 |
+| `nx_consequence` | `WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK` | the consequence the foreman recorded at the time | `PM_LOG.md` | line 153 |
+| `nx_decision` | `SKIP their adjudication rounds` | the principal's 07:40 decision to cut two adjudication rounds | `PM_LOG.md` | line 153 |
+| `nx_gate_meaning` | `a gate PASS on r2 is evidence of reproducibility only and is NOT evidence the findings are closed` | what a gate pass is and is not evidence of | `PM_LOG.md` | line 153 |
+| `nx_number_moved` | `ONE NUMBER MOVED: V1's cold+cab-heat bracket` | the one number that moved in the unchecked rework | `PM_LOG.md` | line 156 |
+| `nx_ws5` | `WS5 is the only workstream of the night with ZERO adjudication rounds` | WS5, the workstream with no adjudication round at all | `PM_LOG.md` | line 161 |
 | `payload_ruler` | `2,900 kg` | stock NPR-HD payload at 6,600 kg GVW | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.masses.payload_at_gvw_kg.ruler` |
 | `payload_s0` | `20,785 kg` | Class 8 ruler payload at 36,300 kg GCW | `WS8_semi_architecture/results_ws8.json` | `headline.table.0.payload_kg` |
 | `payload_s0r` | `20,655 kg` | the wave-two ruler's payload, retarder mass charged | `WS9_vehicle_one_wave2/results_ws9.json` | `headline.table.0.payload_kg` |
@@ -266,11 +266,11 @@ must be on that line.
 | `ws11_negative` | `the harshest one takes V1's governing corner negative` | the harshest cab-heat reading taking that corner negative | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 35 |
 | `ws11_negative_body` | `under the harshest cab-heat reading V1's governing corner goes NEGATIVE` | the same fact stated in the corner section | `WS11_vehicle_zero_ruler/REPORT_WS11.md` | line 284 |
 | `ws11_r1` | `Verdict on the round: NOT CLEAN` | WS11 round-1 adjudication verdict | `WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md` | line 3 |
-| `ws11_verify_count` | `609/609 verbatim across 16 assertion sections` | what WS11's verifier asserts | `PM_LOG.md` | line 127 |
+| `ws11_verify_count` | `609/609 verbatim across 16 assertion sections` | what WS11's verifier asserts | `PM_LOG.md` | line 156 |
 | `ws1_13agent` | `13-agent adversarial review: seven agents recomputed the headline numbers` | the review WS1 ran in place of an adjudicator round | `WS1_loads_duty_cycles/REPORT_WS1.md` | line 12 |
 | `ws1_review` | `Seventeen defects were found and fixed and nine analysis` | WS1's pre-submission adversarial review | `WS1_loads_duty_cycles/REPORT_WS1.md` | line 15 |
 | `ws2_analytic` | `Analytic steady state with resistance feedback` | the model the inverter+motor loss maps are computed from | `WS2_traction_motor/ws2_thermal.py` | line 88 |
-| `ws2_notconverged` | `3 rounds exhausted, final round not clean` | WS2 stopped at the round cap | `PM_LOG.md` | line 45 |
+| `ws2_notconverged` | `3 rounds exhausted, final round not clean` | WS2 stopped at the round cap | `PM_LOG.md` | line 74 |
 | `ws2_r1` | `Verdict: no blocking findings. Two material findings (WS2-F1, WS2-F2), five minor.` | WS2 round-1 adjudication verdict | `WS2_traction_motor/FINDINGS_WS2_r1.md` | line 3 |
 | `ws2_r4_clean` | `Verdict: no blocking or material findings.` | WS2 round 4, a review that found nothing | `WS2_traction_motor/FINDINGS_WS2_r4.md` | line 3 |
 | `ws3_r1` | `Two findings of consequence (one blocking, one material), then minors.` | WS3 round-1 adjudication verdict | `WS3_battery/FINDINGS_WS3_r1.md` | line 12 |
@@ -278,9 +278,9 @@ must be on that line.
 | `ws4_r1` | `Verdict: no blocking findings. Two material findings (F1, F2) and` | WS4 round-1 adjudication verdict | `WS4_genset/FINDINGS_WS4_r1.md` | line 9 |
 | `ws4_r2_clean` | `Verdict: no blocking or material findings. No new findings of any` | WS4 round 2, likewise | `WS4_genset/FINDINGS_WS4_r2.md` | line 9 |
 | `ws4_seam` | `0.0e+00` | WS11's hot-swap assertion against WS4's exported series duty | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11.ws4_hot_swap_seam.max_abs_difference` |
-| `ws4_verify_count` | `252 headline renderings` | what WS4's verifier asserts | `PM_LOG.md` | line 113 |
-| `ws5_determinism_count` | `19 artifacts byte-for-byte` | WS5's own determinism evidence | `PM_LOG.md` | line 131 |
-| `ws5_verify_count` | `934/934 rendered numbers verified verbatim` | what WS5's verifier asserts | `PM_LOG.md` | line 131 |
+| `ws4_verify_count` | `252 headline renderings` | what WS4's verifier asserts | `PM_LOG.md` | line 142 |
+| `ws5_determinism_count` | `19 artifacts byte-for-byte` | WS5's own determinism evidence | `PM_LOG.md` | line 160 |
+| `ws5_verify_count` | `934/934 rendered numbers verified verbatim` | what WS5's verifier asserts | `PM_LOG.md` | line 160 |
 | `ws8_bar_corner` | `0%` | WS8/WS9 pre-committed corner bar | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.advance_kill.every_corner_pct` |
 | `ws8_bar_nominal` | `3%` | WS8/WS9 pre-committed advance bar at nominal | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.advance_kill.nominal_pct` |
 | `ws8_fleet_mix` | `fleet-mission fuel energy per PAYLOAD tonne-km [MJ/(t.km)], fleet mission = 70% LH-520 + 30% REG-165 by distance` | the fleet mission the Class 8 metric of record is read on | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.metric_of_record` |
@@ -290,5 +290,5 @@ must be on that line.
 | `ws8_r_dyn` | `0.5 m` | the tyre radius the ratio ceiling is solved at | `WS8_semi_architecture/results_ws8.json` | `interface_ws8.vehicle.r_dyn_m` |
 | `ws9_corridor_speed` | `on a corridor averaging over 90 km/h` | the corridor speed that makes pre-boost a poor trade | `WS9_vehicle_one_wave2/REPORT_WS9.md` | line 921 |
 | `ws9_pre` | `RESULT: NOT CLEAN. Four blocking, six material, nine minor.` | WS9 pre-adjudication verdict | `WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md` | line 9 |
-| `ws9_seeds` | `seeds 8101-8108` | Vehicle One's seed set | `PM_LOG.md` | line 105 |
-| `ws9_verify_count` | `verify PASS at 593 checks` | what WS9's verifier asserts | `PM_LOG.md` | line 105 |
+| `ws9_seeds` | `seeds 8101-8108` | Vehicle One's seed set | `PM_LOG.md` | line 134 |
+| `ws9_verify_count` | `verify PASS at 593 checks` | what WS9's verifier asserts | `PM_LOG.md` | line 134 |

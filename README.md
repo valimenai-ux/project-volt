@@ -18,13 +18,7 @@ tidier.
 | **The results** | [FINDINGS.md](FINDINGS.md) — eight claims, each with its status, numbers, evidence and reproduction command |
 | **The limits** | [LIMITATIONS.md](LIMITATIONS.md) — read this before you believe anything above |
 | **Reproduce it** | [REPRODUCE.md](REPRODUCE.md) — one command per workstream, the verifiers, the determinism checks |
-| **The exhibit** | https://valimenai-ux.github.io/project-volt/ — an interactive walk through the verdicts and the 10 Hz traces |
-
-> **The exhibit link is pending.** It is the deploy target, not a confirmed live page: the exhibit publishes at close-out §7 and the link should be treated as unbuilt until that deploy is verified.
-
-<!-- PLACEHOLDER: the exhibit URL above is the deploy target for WS12_exhibit/app/.
-     It goes live at the GitHub Pages deploy (CLOSEOUT §7) and is confirmed by the
-     foreman then. Until that anonymous 200 check passes, treat the link as unbuilt. -->
+| **The exhibit** | https://valimenai-ux.github.io/project-volt/ — the deployed exhibit, built from `WS12_exhibit/app/`: an interactive walk through the verdicts and the 10 Hz traces |
 
 ---
 

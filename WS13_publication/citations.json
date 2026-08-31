@@ -4,7 +4,7 @@
   "live_sources": [
    "PM_LOG.md"
   ],
-  "live_sources_note": "PM_LOG.md is the production log and is appended to by the foreman while this publication is being reviewed. Appends do not move the line numbers cited here, so verify_ws13.py treats a SHA-256 change on a live source as a WARNING and keeps the line-and-quote resolution as a hard check. Every other source is frozen and its hash is binding.",
+  "live_sources_note": "PM_LOG.md is the production log and the foreman writes to it while this publication is being reviewed. A SHA-256 change on a live source is therefore a WARNING, not a failure. The line-and-quote resolution stays a HARD check: the cited phrase must still exist and, if its line has moved, must occur on exactly one line, in which case the ledger records the new line. This is deliberately not an append-only assumption - it was one, and the record falsified it on 2026-08-31 when a CLOSEOUT section 9 hard-blocker notice was inserted at the top of PM_LOG.md and moved every cited line down by 29. A quote that vanishes, or becomes ambiguous, or moves in a source that is NOT declared live, still fails. Every other source is frozen and its hash is binding.",
   "purpose": "Every number and quoted phrase that carries a [marker] in README.md, METHOD.md, FINDINGS.md, LIMITATIONS.md and REPRODUCE.md, resolved from the file that owns it. This is the enforced set: verify_ws13.py checks a marker's value against its source, so nothing carrying a marker is transcribed by hand (CLAUDE.md rule 2). It is NOT every numeral in the prose - declared specification constants and figures restated within a sentence or two of their own cited instance are deliberately left unmarked, and the coverage claims in the publication say 'carries a marker' rather than 'every number' for that reason.",
   "baseline_of_record": "BASELINE_v7_FREEZE.md",
   "entry_point": "WS13_publication/build_citations.py",
@@ -33,7 +33,7 @@
   "BASELINE_v7_FREEZE.md": "4c2fa9406552d771eeb75b263d87fac07fd9d02c5ddb3735112d24e78e88b2fe",
   "LEAD_HANDOVER.md": "b93355630819769273b3b13f2d9ce1aaad8223628e9561981f85676cda055aa1",
   "PM_COWORK.md": "39650f5889eb81a4bb77ca4033ed55bbc9e7c2a43fa2546f96a9f86204073b58",
-  "PM_LOG.md": "ffda46cac24ac7cb0314d58616d40d4ae1f3d2127e0d5a75b8ba484567f900b9",
+  "PM_LOG.md": "a966676c641eb3a7efb88e1a65b985feb9c36acf6a503bea1c34a3bced060e22",
   "WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md": "909de5603c7d6b71960f627019b9772840c11e36c9ff7f781a89152f9e40e361",
   "WS11_vehicle_zero_ruler/REPORT_WS11.md": "d1458b58112acf3db618f9b9335e298e02f2948c1f1dcfc7646e3c535ddd5632",
   "WS11_vehicle_zero_ruler/results_ws11.json": "44948bf81c9910280abe3c21ae7d0bf439551160385c408a0196cdf936f9dc97",
@@ -663,7 +663,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 119,
+    "line": 148,
     "quote": "TWO are false, including one block that contains the very defect it certifies clean"
    }
   },
@@ -674,7 +674,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 119,
+    "line": 148,
     "quote": "the R20/ESC-12 analysis is enumerated over a case set that EXCLUDES R20's own declared design case"
    }
   },
@@ -707,7 +707,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 95,
+    "line": 124,
     "quote": "the same construction defect this very round just fixed as m6, reintroduced in three new blocks"
    }
   },
@@ -718,7 +718,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 110,
+    "line": 139,
     "quote": "found TWO MORE instances of the same defect family the adjudication had not named"
    }
   },
@@ -806,7 +806,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 116,
+    "line": 145,
     "quote": "the concordance module cannot fire on two thirds of its fields"
    }
   },
@@ -828,7 +828,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 116,
+    "line": 145,
     "quote": "exported 20.1 kW total rejection against a correct engine-coupled 507.3 kW"
    }
   },
@@ -989,7 +989,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 119,
+    "line": 148,
     "quote": "The r3 restraint on the ratified gate_g1_one_factor rows was confirmed CORRECT"
    }
   },
@@ -1110,7 +1110,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 121,
+    "line": 150,
     "quote": "3 rework rounds exhausted, final round not clean"
    }
   },
@@ -1121,7 +1121,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 78,
+    "line": 107,
     "quote": "NOT CLEAN — 2 blocking, 3 material, 8 minor"
    }
   },
@@ -1132,7 +1132,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 95,
+    "line": 124,
     "quote": "NOT CLEAN — 0 blocking, 3 material, 4 minor"
    }
   },
@@ -1143,7 +1143,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 119,
+    "line": 148,
     "quote": "NOT CLEAN — 1 blocking, 3 material, 6 minor"
    }
   },
@@ -1225,7 +1225,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 124,
+    "line": 153,
     "quote": "WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK"
    }
   },
@@ -1236,7 +1236,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 124,
+    "line": 153,
     "quote": "SKIP their adjudication rounds"
    }
   },
@@ -1247,7 +1247,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 124,
+    "line": 153,
     "quote": "a gate PASS on r2 is evidence of reproducibility only and is NOT evidence the findings are closed"
    }
   },
@@ -1258,7 +1258,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 127,
+    "line": 156,
     "quote": "ONE NUMBER MOVED: V1's cold+cab-heat bracket"
    }
   },
@@ -1269,7 +1269,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 132,
+    "line": 161,
     "quote": "WS5 is the only workstream of the night with ZERO adjudication rounds"
    }
   },
@@ -3482,7 +3482,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 127,
+    "line": 156,
     "quote": "609/609 verbatim across 16 assertion sections"
    }
   },
@@ -3526,7 +3526,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 45,
+    "line": 74,
     "quote": "3 rounds exhausted, final round not clean"
    }
   },
@@ -3618,7 +3618,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 113,
+    "line": 142,
     "quote": "252 headline renderings"
    }
   },
@@ -3629,7 +3629,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 131,
+    "line": 160,
     "quote": "19 artifacts byte-for-byte"
    }
   },
@@ -3640,7 +3640,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 131,
+    "line": 160,
     "quote": "934/934 rendered numbers verified verbatim"
    }
   },
@@ -3765,7 +3765,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 105,
+    "line": 134,
     "quote": "seeds 8101-8108"
    }
   },
@@ -3776,7 +3776,7 @@
    "source": "PM_LOG.md",
    "locator": {
     "kind": "line",
-    "line": 105,
+    "line": 134,
     "quote": "verify PASS at 593 checks"
    }
   }

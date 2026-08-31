@@ -36,10 +36,15 @@ python3 verify_ws13.py
    the ledger records;
 2. every source file's SHA-256 matches the ledger, so a citation cannot
    silently drift — **with one declared exception**: `PM_LOG.md` is the
-   production log and the foreman appends to it, so its hash goes stale by
-   design. It is named in `citations.json` → `_meta.live_sources`; a hash change
-   on it is reported as an advisory warning while its cited lines stay a hard
-   check under [1], because appends do not renumber earlier lines;
+   production log and the foreman writes to it while this publication is
+   reviewed, so its hash goes stale by design. It is named in `citations.json` →
+   `_meta.live_sources`; a hash change on it is an advisory warning, while its
+   cited lines stay a hard check under [1]. Line numbers in a live source may
+   move — a CLOSEOUT §9 notice inserted at the top of `PM_LOG.md` on
+   2026-08-31 moved all 23 cited lines down by 29, which is why the
+   append-only assumption the first design rested on is gone. A moved citation
+   re-resolves only where its quote occurs on exactly one line, and the ledger
+   records the new line;
 3. every `[id]` marker in a publication file names a real citation;
 4. the citation's rendered value appears in the prose within a bounded lookback
    window before its marker (`LOOKBACK`, about four lines; tightened to

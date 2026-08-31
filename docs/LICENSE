@@ -1,0 +1,83 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright 2026 Project Volt contributors
+
+This licence covers the PROSE and DATA of Project Volt:
+
+  - the publication documents at the repository root: README.md, METHOD.md,
+    FINDINGS.md, LIMITATIONS.md, REPRODUCE.md;
+  - every BASELINE_v*.md, ASSIGNMENT.md, *_DIRECTIVE.md, REPORT_WS*.md,
+    FINDINGS_WS*.md / FINDINGS_KX_*.md, CHANGELOG_WS*.md, PM_PACKET_*.md,
+    PM_LOG.md, NIGHT_REPORT.md, CLOSEOUT.md and the other program-record
+    markdown files;
+  - every results data file (results*.json), every data/*.csv export, every
+    10 Hz trace file, and the figures under figs/.
+
+The CODE in this repository is licensed Apache-2.0 instead; see ../LICENSE at
+the repository root for the file-level scope split.
+
+Third-party material retrieved and stored under WS*/sources/ (manufacturer
+specification sheets, public fuel-economy aggregates and similar) remains the
+property of its respective owners, is included for verification of the numbers
+that cite it, and is NOT relicensed by this file.
+
+-------------------------------------------------------------------------------
+
+You are free to:
+
+  Share  — copy and redistribute the material in any medium or format
+  Adapt  — remix, transform, and build upon the material for any purpose,
+           even commercially.
+
+The licensor cannot revoke these freedoms as long as you follow the licence
+terms.
+
+Under the following terms:
+
+  Attribution — You must give appropriate credit, provide a link to the
+  licence, and indicate if changes were made. You may do so in any reasonable
+  manner, but not in any way that suggests the licensor endorses you or your
+  use.
+
+  No additional restrictions — You may not apply legal terms or technological
+  measures that legally restrict others from doing anything the licence
+  permits.
+
+Notices:
+
+  You do not have to comply with the licence for elements of the material in
+  the public domain or where your use is permitted by an applicable exception
+  or limitation.
+
+  No warranties are given. The licence may not give you all of the permissions
+  necessary for your intended use. For example, other rights such as publicity,
+  privacy, or moral rights may limit how you use the material.
+
+-------------------------------------------------------------------------------
+
+ATTRIBUTION NOTE, AND ONE REQUEST THAT IS NOT A LICENCE TERM
+
+Suggested attribution:
+
+  "Project Volt (2026), https://github.com/valimenai-ux/project-volt,
+   CC BY 4.0."
+
+The request, which this licence does not and cannot enforce: if you quote a
+number from this repository, carry its status with it. Every verdict here is
+frozen at the status BASELINE_v7_FREEZE.md gives it, several are provisional,
+and none has been validated against hardware — the Vehicle Zero reference model
+is uncalibrated against its own sourced anchor. LIMITATIONS.md says exactly what
+is and is not established. A number from this repository quoted without its
+status is a misquotation of the record even though it is a correct copy of the
+digits.
+
+-------------------------------------------------------------------------------
+
+The full legal text of the Creative Commons Attribution 4.0 International
+Public Licence is at:
+
+  https://creativecommons.org/licenses/by/4.0/legalcode
+
+and a human-readable summary (which is not a substitute for the licence) at:
+
+  https://creativecommons.org/licenses/by/4.0/

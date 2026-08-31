@@ -1,0 +1,3449 @@
+{
+ "_meta": {
+  "workstream": "WS13_publication",
+  "live_sources": [
+   "PM_LOG.md"
+  ],
+  "live_sources_note": "PM_LOG.md is the production log and is appended to by the foreman while this publication is being reviewed. Appends do not move the line numbers cited here, so verify_ws13.py treats a SHA-256 change on a live source as a WARNING and keeps the line-and-quote resolution as a hard check. Every other source is frozen and its hash is binding.",
+  "purpose": "Every number and quoted phrase used in README.md, METHOD.md, FINDINGS.md, LIMITATIONS.md and REPRODUCE.md, resolved from the file that owns it. Nothing in a publication file is transcribed by hand (CLAUDE.md rule 2).",
+  "baseline_of_record": "BASELINE_v7_FREEZE.md",
+  "entry_point": "WS13_publication/build_citations.py",
+  "verifier": "WS13_publication/verify_ws13.py",
+  "publication_files": [
+   "README.md",
+   "METHOD.md",
+   "FINDINGS.md",
+   "LIMITATIONS.md",
+   "REPRODUCE.md"
+  ],
+  "n_citations": 250,
+  "n_numbers": 122,
+  "n_quotes": 128,
+  "determinism": "No wall-clock, no randomness, no environment dependence: re-running reproduces this file byte for byte."
+ },
+ "source_sha256": {
+  ".claude/agents/ws-adjudicator.md": "bd98c6f6b3dfdaf6b53d5251a786518a0eb05588bfae6756acce39cce06f1ef0",
+  ".claude/agents/ws-worker.md": "2e2902e69781b72ccf8ed3245cb7a8c9c0462c5ac1b1a474bff5716703528082",
+  "BASELINE_v2.md": "442e25c0e671e64350c2ce9516c5c9464f2bf9acd2b767306bcef183f49acdea",
+  "BASELINE_v3.md": "a761775ebb09caa4f2ff7c2777d343776df7fdf6e595cd46bce294d0afb64a82",
+  "BASELINE_v4.md": "6c51f25ab2d4b9fd776a2aa8df8779b94ba40e1558da0fe5e9c52478a5c78fd7",
+  "BASELINE_v5.md": "41331e1ab86cc2fbc7d441e1007370aed62db03f9c41697cf388164626ce03d6",
+  "BASELINE_v6.md": "117d9ff96bd9138c7c3be231a556a9e3dcdf05fcf6dbe7cb77c5aaa74add7410",
+  "BASELINE_v7_FREEZE.md": "4c2fa9406552d771eeb75b263d87fac07fd9d02c5ddb3735112d24e78e88b2fe",
+  "LEAD_HANDOVER.md": "b93355630819769273b3b13f2d9ce1aaad8223628e9561981f85676cda055aa1",
+  "PM_COWORK.md": "39650f5889eb81a4bb77ca4033ed55bbc9e7c2a43fa2546f96a9f86204073b58",
+  "PM_LOG.md": "e15c3cdff495075406e2fd41cf52c3870cf41e991f7ee8aafa8a17da309f1fa5",
+  "WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md": "909de5603c7d6b71960f627019b9772840c11e36c9ff7f781a89152f9e40e361",
+  "WS11_vehicle_zero_ruler/REPORT_WS11.md": "d1458b58112acf3db618f9b9335e298e02f2948c1f1dcfc7646e3c535ddd5632",
+  "WS11_vehicle_zero_ruler/results_ws11.json": "44948bf81c9910280abe3c21ae7d0bf439551160385c408a0196cdf936f9dc97",
+  "WS1_loads_duty_cycles/REPORT_WS1.md": "200679c5ece7a7b6823ef2101513c62f1b17c200d4fcef55f4d5dc17a5f88f7a",
+  "WS2_traction_motor/FINDINGS_WS2_r1.md": "f4bedc662891807cf3bf0df06537bf94c2b22fe2e7f4fc73d2d5da98b5fed224",
+  "WS3_battery/FINDINGS_WS3_r1.md": "684b60dfe45eada95a778741ca4efb4bd8c665716b0ccb9a72adca048e90608e",
+  "WS4_genset/FINDINGS_KX_r2.md": "4646d38469c4413812cfae35829b2901ef544c805bb2a5a21dd296c92e84696c",
+  "WS4_genset/FINDINGS_KX_r3.md": "fadf22b9881fd259470f2a2133a99dd50ed0fc059986cbfccdea0b8884f07715",
+  "WS4_genset/FINDINGS_WS4_r1.md": "2a338fe530b30d6bc9b18a7f84aacd5fd35db0d062d9aaba7b240bc2b2cd0d92",
+  "WS4_genset/results_ws4.json": "b02a6c82fbbe8d3e006fb1d756fbee51b2cb04f50e4281c65e04c97e63876d0b",
+  "WS8_semi_architecture/FINDINGS_WS8_r1.md": "b3db6878367b39f13ce2d430181ffcccd6e8c078308caf5d534b40c8656c3ce8",
+  "WS8_semi_architecture/FINDINGS_WS8_r2.md": "08924729469d8d719bc94348c7636dce15d3031d7950aa8f36381c96e52dfd56",
+  "WS8_semi_architecture/FINDINGS_WS8_r3.md": "2f4b95b65b53c89695aab4276c9651418a3b975c6820804fc87022bb6b58da69",
+  "WS8_semi_architecture/REPORT_WS8.md": "1677e7e680f4959b4c03601377583b8469a71b666bd6bcb3f8ca035d2b45ad4e",
+  "WS8_semi_architecture/results_ws8.json": "de125deb97bdb9d8b61c378206493adeaf22d294ca8005a8d9817c4ab03fa3d5",
+  "WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md": "caf7f1702094cd2cb39ae026774ae09105adc1493031aa4947abf19d62dc8939",
+  "WS9_vehicle_one_wave2/REPORT_WS9.md": "971073da7112feef82bbd1b32ffb67a0a25ace39588e465686af469044de4d50",
+  "WS9_vehicle_one_wave2/results_ws9.json": "7960d780c12d5f00daa6419e92ed32fbd743b42a830d9eb1a3307d06a4514b89"
+ },
+ "citations": {
+  "adj_mandate": {
+   "what": "where the adjudicator's mandate comes from",
+   "display": "only what is on disk. Your mandate comes from how WS1's two blocking",
+   "value": null,
+   "source": ".claude/agents/ws-adjudicator.md",
+   "locator": {
+    "kind": "line",
+    "line": 10,
+    "quote": "only what is on disk. Your mandate comes from how WS1's two blocking"
+   }
+  },
+  "adj_mandate2": {
+   "what": "the two WS1 defects that shaped that mandate",
+   "display": "defects were found — a wrong machine-readable interface and single-draw",
+   "value": null,
+   "source": ".claude/agents/ws-adjudicator.md",
+   "locator": {
+    "kind": "line",
+    "line": 11,
+    "quote": "defects were found — a wrong machine-readable interface and single-draw"
+   }
+  },
+  "adj_never": {
+   "what": "what the adjudicator may never do",
+   "display": "You never fix anything, never soften an escalation, never rule on one,",
+   "value": null,
+   "source": ".claude/agents/ws-adjudicator.md",
+   "locator": {
+    "kind": "line",
+    "line": 38,
+    "quote": "You never fix anything, never soften an escalation, never rule on one,"
+   }
+  },
+  "adj_threeway": {
+   "what": "the three-way verification the adjudicator performs",
+   "display": "agrees with the report prose AND the data file — three-way, verbatim.",
+   "value": null,
+   "source": ".claude/agents/ws-adjudicator.md",
+   "locator": {
+    "kind": "line",
+    "line": 22,
+    "quote": "agrees with the report prose AND the data file — three-way, verbatim."
+   }
+  },
+  "anchor_all_years": {
+   "what": "sourced NPR-HD in-use anchor, all model years",
+   "display": "28.07 L/100 km",
+   "value": 28.074596764693734,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "anchor",
+     "all_model_years",
+     "l_per_100km"
+    ],
+    "format": "{:.2f} L/100 km"
+   }
+  },
+  "anchor_era": {
+   "what": "the same anchor restricted to the 4HK1-era subset",
+   "display": "32.01 L/100 km",
+   "value": 32.01421566201477,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "anchor",
+     "fourhk1_era",
+     "l_per_100km"
+    ],
+    "format": "{:.2f} L/100 km"
+   }
+  },
+  "anchor_fuelups": {
+   "what": "anchor fuel-ups",
+   "display": "1,044 fuel-ups",
+   "value": 1044,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "anchor",
+     "all_model_years",
+     "fuel_ups"
+    ],
+    "format": "{:,d} fuel-ups"
+   }
+  },
+  "anchor_miles": {
+   "what": "anchor distance",
+   "display": "179,702 miles",
+   "value": 179702,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "anchor",
+     "all_model_years",
+     "miles"
+    ],
+    "format": "{:,d} miles"
+   }
+  },
+  "anchor_resid_all": {
+   "what": "model residual against the all-years anchor",
+   "display": "-31.69%",
+   "value": -31.692772343604204,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "anchor",
+     "all_model_years",
+     "residual_vs_model_pct"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "anchor_resid_era": {
+   "what": "model residual against the era-correct anchor",
+   "display": "-40.10%",
+   "value": -40.09855206782973,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "anchor",
+     "fourhk1_era",
+     "residual_vs_model_pct"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "calibrate_satisfied": {
+   "what": "whether the assignment's calibration order was satisfied",
+   "display": "calibrate_order_satisfied: false",
+   "value": false,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "anchor",
+     "calibrate_order_satisfied"
+    ],
+    "format": "!json:calibrate_order_satisfied: {}"
+   }
+  },
+  "clutch_deleted": {
+   "what": "the moment the program killed its own premise's favourite part",
+   "display": "GATE G1: EXECUTED. THE CLUTCH IS DELETED.",
+   "value": null,
+   "source": "BASELINE_v3.md",
+   "locator": {
+    "kind": "line",
+    "line": 7,
+    "quote": "GATE G1: EXECUTED. THE CLUTCH IS DELETED."
+   }
+  },
+  "curb_ruler": {
+   "what": "stock NPR-HD operating curb",
+   "display": "3,700 kg",
+   "value": 3700.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "masses",
+     "curb_kg",
+     "ruler"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "curb_v1": {
+   "what": "V1 Postal operating curb",
+   "display": "3,888 kg",
+   "value": 3888.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "masses",
+     "curb_kg",
+     "V1"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "curb_v2": {
+   "what": "V2 Trucker operating curb",
+   "display": "4,139 kg",
+   "value": 4139.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "masses",
+     "curb_kg",
+     "V2"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "d13_perkm": {
+   "what": "D13, per-km flatters and per-payload judges",
+   "display": "Per-km efficiency flatters; per-payload judges",
+   "value": null,
+   "source": "BASELINE_v4.md",
+   "locator": {
+    "kind": "line",
+    "line": 87,
+    "quote": "Per-km efficiency flatters; per-payload judges"
+   }
+  },
+  "d14_partload": {
+   "what": "the load fraction line-haul cruise actually runs at",
+   "display": "is a part-load condition (~1/3 rated)",
+   "value": null,
+   "source": "BASELINE_v4.md",
+   "locator": {
+    "kind": "line",
+    "line": 90,
+    "quote": "is a part-load condition (~1/3 rated)"
+   }
+  },
+  "d14_whr": {
+   "what": "D14, waste-heat recovery as a full-load technology",
+   "display": "Waste-heat recovery is a full-load technology; line-haul cruise",
+   "value": null,
+   "source": "BASELINE_v4.md",
+   "locator": {
+    "kind": "line",
+    "line": 89,
+    "quote": "Waste-heat recovery is a full-load technology; line-haul cruise"
+   }
+  },
+  "d15_duty": {
+   "what": "D15, architecture is duty-indexed",
+   "display": "Architecture is duty-indexed. Name the duty before the number",
+   "value": null,
+   "source": "BASELINE_v4.md",
+   "locator": {
+    "kind": "line",
+    "line": 92,
+    "quote": "Architecture is duty-indexed. Name the duty before the number"
+   }
+  },
+  "d16_thirdwall": {
+   "what": "D16, the third wall",
+   "display": "THE THIRD WALL",
+   "value": null,
+   "source": "BASELINE_v5.md",
+   "locator": {
+    "kind": "line",
+    "line": 69,
+    "quote": "THE THIRD WALL"
+   }
+  },
+  "d16_vz_miniature": {
+   "what": "Vehicle Zero's version of the third wall",
+   "display": "Vehicle Zero's 35 km/h",
+   "value": null,
+   "source": "BASELINE_v5.md",
+   "locator": {
+    "kind": "line",
+    "line": 73,
+    "quote": "Vehicle Zero's 35 km/h"
+   }
+  },
+  "d17_zeromass": {
+   "what": "D17, zero-mass levers are symmetric",
+   "display": "Zero-mass levers are symmetric",
+   "value": null,
+   "source": "BASELINE_v5.md",
+   "locator": {
+    "kind": "line",
+    "line": 75,
+    "quote": "Zero-mass levers are symmetric"
+   }
+  },
+  "d1_notnegotiable": {
+   "what": "D1, the criterion could not be negotiated with",
+   "display": "The criterion could not be",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 28,
+    "quote": "The criterion could not be"
+   }
+  },
+  "d1_precommit": {
+   "what": "D1, pre-commit then measure",
+   "display": "Pre-commit, then measure. Every gate has a numeric kill criterion",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 25,
+    "quote": "Pre-commit, then measure. Every gate has a numeric kill criterion"
+   }
+  },
+  "d20_stopgo": {
+   "what": "D20, the duty boundary as doctrine",
+   "display": "THE TRANSMISSIONLESS SERIES ARCHITECTURE IS A STOP-GO-DUTY",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 44,
+    "quote": "THE TRANSMISSIONLESS SERIES ARCHITECTURE IS A STOP-GO-DUTY"
+   }
+  },
+  "d20_why": {
+   "what": "D20, why the duty decides it",
+   "display": "duty at the same mass, because regen and engine-off pay for its",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 46,
+    "quote": "duty at the same mass, because regen and engine-off pay for its"
+   }
+  },
+  "d21_rule": {
+   "what": "D21, the rule it states",
+   "display": "require the ruler at its unfavourable end; advances require it",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 50,
+    "quote": "require the ruler at its unfavourable end; advances require it"
+   }
+  },
+  "d21_ruler": {
+   "what": "D21, why a lower-bound ruler is the wrong guarantee for a kill",
+   "display": "A LOWER-BOUND RULER IS THE WRONG GUARANTEE FOR A KILL",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 49,
+    "quote": "A LOWER-BOUND RULER IS THE WRONG GUARANTEE FOR A KILL"
+   }
+  },
+  "d2_prereg": {
+   "what": "D2, pre-registration in a context workers cannot read",
+   "display": "Pre-register acceptance bands before reading any report",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 30,
+    "quote": "Pre-register acceptance bands before reading any report"
+   }
+  },
+  "d2_private": {
+   "what": "D2, bands kept where workers cannot read them",
+   "display": "keep them where workers cannot read them",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 31,
+    "quote": "keep them where workers cannot read them"
+   }
+  },
+  "d3_band": {
+   "what": "the pre-registered band G1-R missed, and by how much",
+   "display": "pre-registered G1-R at +4 to +6% and it came in at -2.58%",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 38,
+    "quote": "pre-registered G1-R at +4 to +6% and it came in at -2.58%"
+   }
+  },
+  "d3_convention": {
+   "what": "D3, convention swaps are level shifts",
+   "display": "Convention swaps are level shifts, not perturbations",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 37,
+    "quote": "Convention swaps are level shifts, not perturbations"
+   }
+  },
+  "d4_ondisk": {
+   "what": "D4, artifacts on disk are the record",
+   "display": "Artifacts on disk are the record; prose is not",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 42,
+    "quote": "Artifacts on disk are the record; prose is not"
+   }
+  },
+  "d5_baserate": {
+   "what": "D5, the first-pass base rate as the lead recorded it",
+   "display": "Every first-pass adjudication in this program (WS1-WS4) found",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 47,
+    "quote": "Every first-pass adjudication in this program (WS1-WS4) found"
+   }
+  },
+  "d5_notphysics": {
+   "what": "D5, and where they did not",
+   "display": "selection, and definitional blurs, not physics",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 49,
+    "quote": "selection, and definitional blurs, not physics"
+   }
+  },
+  "d5_where": {
+   "what": "D5, where those defects lived",
+   "display": "material or blocking defects, almost all in interfaces, member",
+   "value": null,
+   "source": "LEAD_HANDOVER.md",
+   "locator": {
+    "kind": "line",
+    "line": 48,
+    "quote": "material or blocking defects, almost all in interfaces, member"
+   }
+  },
+  "duty_grade_max": {
+   "what": "steepest grade the design duty contains, 8-seed max",
+   "display": "10.74%",
+   "value": 0.1073763316456695,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "duties",
+     "GH-REG-165",
+     "ensemble",
+     "grade_max",
+     "max"
+    ],
+    "format": "{:.2%}"
+   }
+  },
+  "escws810_effect": {
+   "what": "what that defect does to every simulated descent",
+   "display": "harder than the resistor can absorb — fix ordered in WS8 r4 and",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 65,
+    "quote": "harder than the resistor can absorb — fix ordered in WS8 r4 and"
+   }
+  },
+  "escws810_lead": {
+   "what": "the one defect the lead labelled a physics defect",
+   "display": "ESC-WS8-10 is a PHYSICS DEFECT of record: the retard envelope never",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 63,
+    "quote": "ESC-WS8-10 is a PHYSICS DEFECT of record: the retard envelope never"
+   }
+  },
+  "escws810_ws8": {
+   "what": "the workstream's own statement of it, escalated not self-resolved",
+   "display": "The retard envelope does not re-solve when the buffer pack fills, so every simulated descent lets a candidate brake harder than its resistor can absorb",
+   "value": null,
+   "source": "WS8_semi_architecture/REPORT_WS8.md",
+   "locator": {
+    "kind": "line",
+    "line": 600,
+    "quote": "The retard envelope does not re-solve when the buffer pack fills, so every simulated descent lets a candidate brake harder than its resistor can absorb"
+   }
+  },
+  "etc_gate": {
+   "what": "the pre-committed waste-heat gate on the design duty",
+   "display": "2.5%",
+   "value": 2.5,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "etc_gate",
+     "gate",
+     "threshold_pct"
+    ],
+    "format": "{:.1f}%"
+   }
+  },
+  "etc_mass": {
+   "what": "the mass electric turbocompound charges",
+   "display": "85 kg",
+   "value": 85.0,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "etc_gate",
+     "mass_charge_kg"
+    ],
+    "format": "{:.0f} kg"
+   }
+  },
+  "etc_min": {
+   "what": "electric turbocompound on the design duty, net of mass, ensemble-min",
+   "display": "+1.67%",
+   "value": 1.6673369396484603,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "etc_gate",
+     "by_duty",
+     "GH-REG-165",
+     "ensemble",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "etc_needed": {
+   "what": "gross fuel gain electric turbocompound needed to clear its gate",
+   "display": "2.91%",
+   "value": 2.9132231404958677,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "etc_gate",
+     "fuel_gain_needed_to_clear_gate_pct"
+    ],
+    "format": "{:.2f}%"
+   }
+  },
+  "etc_payload_penalty": {
+   "what": "the payload electric turbocompound's mass costs",
+   "display": "0.41%",
+   "value": 0.4132231404958678,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "etc_gate",
+     "payload_penalty_pct"
+    ],
+    "format": "{:.2f}%"
+   }
+  },
+  "fm_falseclean": {
+   "what": "the false clean certifications, adjudicator's wording",
+   "display": "Two of the sixteen areas the construction sweep certifies as",
+   "value": null,
+   "source": "WS4_genset/FINDINGS_KX_r3.md",
+   "locator": {
+    "kind": "line",
+    "line": 47,
+    "quote": "Two of the sixteen areas the construction sweep certifies as"
+   }
+  },
+  "fm_falseclean_pmlog": {
+   "what": "the same, in the production log",
+   "display": "TWO are false, including one block that contains the very defect it certifies clean",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 119,
+    "quote": "TWO are false, including one block that contains the very defect it certifies clean"
+   }
+  },
+  "fm_governing_case": {
+   "what": "a governing case enumerated outside the ruling's own design case",
+   "display": "the R20/ESC-12 analysis is enumerated over a case set that EXCLUDES R20's own declared design case",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 119,
+    "quote": "the R20/ESC-12 analysis is enumerated over a case set that EXCLUDES R20's own declared design case"
+   }
+  },
+  "fm_inert_provenance": {
+   "what": "an inherited input the report claimed and the pipeline never called",
+   "display": "an inherited WS3 input the report states it uses and the pipeline",
+   "value": null,
+   "source": "WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 12,
+    "quote": "an inherited WS3 input the report states it uses and the pipeline"
+   }
+  },
+  "fm_partial_findings": {
+   "what": "the adjudicator's own statement of the same",
+   "display": "construction defect the same round just fixed in the heat ledger under m6",
+   "value": null,
+   "source": "WS4_genset/FINDINGS_KX_r2.md",
+   "locator": {
+    "kind": "line",
+    "line": 369,
+    "quote": "construction defect the same round just fixed in the heat ledger under m6"
+   }
+  },
+  "fm_partial_pmlog": {
+   "what": "the m6 defect class reintroduced by its own fix",
+   "display": "the same construction defect this very round just fixed as m6, reintroduced in three new blocks",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 95,
+    "quote": "the same construction defect this very round just fixed as m6, reintroduced in three new blocks"
+   }
+  },
+  "fm_partial_sweep": {
+   "what": "what the family sweep then found that the adjudication had not named",
+   "display": "found TWO MORE instances of the same defect family the adjudication had not named",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 110,
+    "quote": "found TWO MORE instances of the same defect family the adjudication had not named"
+   }
+  },
+  "fm_r36": {
+   "what": "R36, the doctrine correction that made the paired statistic binding",
+   "display": "DOCTRINE CORRECTION (from M2). D13 is restated",
+   "value": null,
+   "source": "BASELINE_v5.md",
+   "locator": {
+    "kind": "line",
+    "line": 19,
+    "quote": "DOCTRINE CORRECTION (from M2). D13 is restated"
+   }
+  },
+  "fm_r36_why": {
+   "what": "why R36 exists",
+   "display": "ratio-of-medians artifact into doctrine. Per-km claims are stated on",
+   "value": null,
+   "source": "BASELINE_v5.md",
+   "locator": {
+    "kind": "line",
+    "line": 22,
+    "quote": "ratio-of-medians artifact into doctrine. Per-km claims are stated on"
+   }
+  },
+  "fm_selfratification": {
+   "what": "the rule the foreman/adjudicator split exists to enforce",
+   "display": "You MAY NOT: ratify or reject work on its merits; resolve, soften,",
+   "value": null,
+   "source": "PM_COWORK.md",
+   "locator": {
+    "kind": "line",
+    "line": 18,
+    "quote": "You MAY NOT: ratify or reject work on its merits; resolve, soften,"
+   }
+  },
+  "fm_selfratification2": {
+   "what": "the same rule, second half",
+   "display": "filter, or summarize-in-place any escalation",
+   "value": null,
+   "source": "PM_COWORK.md",
+   "locator": {
+    "kind": "line",
+    "line": 19,
+    "quote": "filter, or summarize-in-place any escalation"
+   }
+  },
+  "fm_statofstat": {
+   "what": "the statistic-of-statistics finding, KX2-M3",
+   "display": "every fuel delta between paired dispatches in the new blocks is a ratio of ensemble statistics",
+   "value": null,
+   "source": "WS4_genset/FINDINGS_KX_r2.md",
+   "locator": {
+    "kind": "line",
+    "line": 321,
+    "quote": "every fuel delta between paired dispatches in the new blocks is a ratio of ensemble statistics"
+   }
+  },
+  "fm_statofstat_row": {
+   "what": "the exported figure beside the paired one",
+   "display": "| nominal | **+0.062 %** | **+0.169 %** | +0.088 % |",
+   "value": null,
+   "source": "WS4_genset/FINDINGS_KX_r2.md",
+   "locator": {
+    "kind": "line",
+    "line": 345,
+    "quote": "| nominal | **+0.062 %** | **+0.169 %** | +0.088 % |"
+   }
+  },
+  "fm_sweep_ws11": {
+   "what": "what WS11's own sweep found beyond its adjudication",
+   "display": "six further name/construction defects, two further unrun claims and seven further statistic-of-statistics constructions found",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 33,
+    "quote": "six further name/construction defects, two further unrun claims and seven further statistic-of-statistics constructions found"
+   }
+  },
+  "fm_tautology": {
+   "what": "a concordance check that could not fire",
+   "display": "the concordance module cannot fire on two thirds of its fields",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 116,
+    "quote": "the concordance module cannot fire on two thirds of its fields"
+   }
+  },
+  "fm_unrun": {
+   "what": "the unrun robustness claim that falsified a KILL's robustness",
+   "display": "the KILL's robustness claim was false",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 21,
+    "quote": "the KILL's robustness claim was false"
+   }
+  },
+  "fm_wrong_branch": {
+   "what": "an exported heat-ledger row on the wrong branch of a two-band envelope",
+   "display": "exported 20.1 kW total rejection against a correct engine-coupled 507.3 kW",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 116,
+    "quote": "exported 20.1 kW total rejection against a correct engine-coupled 507.3 kW"
+   }
+  },
+  "g1_alt_min": {
+   "what": "G1-R at the 2,000 m / +45 C corner, ensemble-min",
+   "display": "-5.90%",
+   "value": -5.897136845667756,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "condition_dependence",
+     "margin_pct_ensemble_min_at_2000m_45C"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "g1_cda54_min": {
+   "what": "G1-R at CdA 5.4, ensemble-min (the sole near-break-even case)",
+   "display": "-0.09%",
+   "value": -0.09073577982911674,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "condition_dependence",
+     "margin_pct_ensemble_min_CdA_5.4"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "g1_cda54_positive_seeds": {
+   "what": "seeds on which the locked path beat series at CdA 5.4",
+   "display": "4 of 8",
+   "value": 4,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "condition_dependence",
+     "seeds_margin_positive_n_CdA_5.4"
+    ],
+    "format": "{:d} of 8"
+   }
+  },
+  "g1_criterion": {
+   "what": "G1 pre-committed kill criterion",
+   "display": "5%",
+   "value": 5.0,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "kill_criterion_pct"
+    ],
+    "format": "{:.0f}%"
+   }
+  },
+  "g1_map_vs_scalar_pp": {
+   "what": "one-factor: measured maps replacing WS1's scalar chain",
+   "display": "-7.01 pp",
+   "value": -7.013618051692167,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "attribution_rows",
+     "map_vs_scalar_alone",
+     "delta_pp_min"
+    ],
+    "format": "{:+.2f} pp"
+   }
+  },
+  "g1_missed_pp": {
+   "what": "how far G1-R missed its own criterion",
+   "display": "7.58 pp",
+   "value": 7.581644717955561,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "missed_by_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "g1_prior_min": {
+   "what": "G1 first pass, nominal ensemble-min, superseded chain convention",
+   "display": "+6.26%",
+   "value": 6.261345943773722,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "attribution_rows",
+     "prior_convention",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "g1_seeds_positive": {
+   "what": "seeds on which the locked path beat series at nominal",
+   "display": "0 of 8",
+   "value": 0,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "seeds_margin_positive_n"
+    ],
+    "format": "{:d} of 8"
+   }
+  },
+  "g1_spin_pp": {
+   "what": "one-factor: PM spin-drag member",
+   "display": "-1.77 pp",
+   "value": -1.7681550624315525,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "attribution_rows",
+     "spin_drag_alone",
+     "delta_pp_min"
+    ],
+    "format": "{:+.2f} pp"
+   }
+  },
+  "g1r_median": {
+   "what": "G1-R nominal ensemble median",
+   "display": "-2.50%",
+   "value": -2.5036598384800866,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "margin_pct_ensemble_median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "g1r_min": {
+   "what": "G1-R nominal ensemble-min after R12's chain correction",
+   "display": "-2.58%",
+   "value": -2.5816447179555606,
+   "source": "WS4_genset/results_ws4.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws4",
+     "gate_g1",
+     "verdict",
+     "margin_pct_ensemble_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "gcw": {
+   "what": "Vehicle One gross combination weight",
+   "display": "36,300 kg",
+   "value": 36300.0,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "gcw_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "kx_notconverged": {
+   "what": "KX stopped at the round cap",
+   "display": "3 rework rounds exhausted, final round not clean",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 121,
+    "quote": "3 rework rounds exhausted, final round not clean"
+   }
+  },
+  "kx_r1_result": {
+   "what": "KX round-1 adjudication verdict",
+   "display": "NOT CLEAN — 2 blocking, 3 material, 8 minor",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 78,
+    "quote": "NOT CLEAN — 2 blocking, 3 material, 8 minor"
+   }
+  },
+  "kx_r2_result": {
+   "what": "KX round-2 adjudication verdict",
+   "display": "NOT CLEAN — 0 blocking, 3 material, 4 minor",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 95,
+    "quote": "NOT CLEAN — 0 blocking, 3 material, 4 minor"
+   }
+  },
+  "kx_r3_result": {
+   "what": "KX round-3 adjudication verdict",
+   "display": "NOT CLEAN — 1 blocking, 3 material, 6 minor",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 119,
+    "quote": "NOT CLEAN — 1 blocking, 3 material, 6 minor"
+   }
+  },
+  "kx_radiator_v6": {
+   "what": "the same case, to the figure the round measured",
+   "display": "CORNER (103.522 kW two-minute maximum), not its ambient",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 90,
+    "quote": "CORNER (103.522 kW two-minute maximum), not its ambient"
+   }
+  },
+  "kx_radiator_v7": {
+   "what": "the KX sizing case v7 leaves open",
+   "display": "103.5 vs 95.0 kW)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 44,
+    "quote": "103.5 vs 95.0 kW)"
+   }
+  },
+  "mu_single_axle": {
+   "what": "adhesion S3's single driven axle needs at 12% startability",
+   "display": "0.587",
+   "value": 0.5865905030803976,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "task5_s3_specific",
+     "regulatory_startability_adhesion",
+     "rows",
+     0,
+     "mu_required_single_axle"
+    ],
+    "format": "{:.3f}"
+   }
+  },
+  "mu_tandem": {
+   "what": "what a 6x4 tandem needs for the same start",
+   "display": "0.293",
+   "value": 0.2932952515401988,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "task5_s3_specific",
+     "regulatory_startability_adhesion",
+     "rows",
+     0,
+     "mu_required_tandem"
+    ],
+    "format": "{:.3f}"
+   }
+  },
+  "nx_consequence": {
+   "what": "the consequence the foreman recorded at the time",
+   "display": "WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 124,
+    "quote": "WS11's round-2 rework closes 3 blocking + 8 material + 13 minor findings and NOTHING WILL HAVE CHECKED THAT WORK"
+   }
+  },
+  "nx_decision": {
+   "what": "the principal's 07:40 decision to cut two adjudication rounds",
+   "display": "SKIP their adjudication rounds",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 124,
+    "quote": "SKIP their adjudication rounds"
+   }
+  },
+  "nx_gate_meaning": {
+   "what": "what a gate pass is and is not evidence of",
+   "display": "a gate PASS on r2 is evidence of reproducibility only and is NOT evidence the findings are closed",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 124,
+    "quote": "a gate PASS on r2 is evidence of reproducibility only and is NOT evidence the findings are closed"
+   }
+  },
+  "nx_number_moved": {
+   "what": "the one number that moved in the unchecked rework",
+   "display": "ONE NUMBER MOVED: V1's cold+cab-heat bracket",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 127,
+    "quote": "ONE NUMBER MOVED: V1's cold+cab-heat bracket"
+   }
+  },
+  "nx_ws5": {
+   "what": "WS5, the workstream with no adjudication round at all",
+   "display": "WS5 is the only workstream of the night with ZERO adjudication rounds",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 132,
+    "quote": "WS5 is the only workstream of the night with ZERO adjudication rounds"
+   }
+  },
+  "payload_ruler": {
+   "what": "stock NPR-HD payload at 6,600 kg GVW",
+   "display": "2,900 kg",
+   "value": 2900.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "masses",
+     "payload_at_gvw_kg",
+     "ruler"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s0": {
+   "what": "Class 8 ruler payload at 36,300 kg GCW",
+   "display": "20,785 kg",
+   "value": 20785.0,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     0,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s0r": {
+   "what": "the wave-two ruler's payload, retarder mass charged",
+   "display": "20,655 kg",
+   "value": 20655.0,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     0,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s1": {
+   "what": "S1 payload",
+   "display": "19,398 kg",
+   "value": 19397.719023795536,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     1,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s2": {
+   "what": "S2 payload",
+   "display": "19,106 kg",
+   "value": 19105.719023795536,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     2,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s3": {
+   "what": "S3 payload",
+   "display": "19,559 kg",
+   "value": 19559.231387580392,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     3,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s4": {
+   "what": "S4 payload",
+   "display": "19,344 kg",
+   "value": 19343.56414646685,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     4,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s4p": {
+   "what": "S4' payload",
+   "display": "20,134 kg",
+   "value": 20134.370309324804,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     5,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s513": {
+   "what": "S5-13L payload",
+   "display": "19,706 kg",
+   "value": 19706.323484784123,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     2,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s6": {
+   "what": "S6 payload (nothing added)",
+   "display": "20,655 kg",
+   "value": 20655.0,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     3,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_s7": {
+   "what": "S7 payload",
+   "display": "19,846 kg",
+   "value": 19845.51109083291,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     4,
+     "payload_kg"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_v1": {
+   "what": "V1 Postal payload at the same GVW",
+   "display": "2,712 kg",
+   "value": 2712.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "masses",
+     "payload_at_gvw_kg",
+     "V1"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "payload_v2": {
+   "what": "V2 Trucker payload at the same GVW",
+   "display": "2,461 kg",
+   "value": 2461.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "masses",
+     "payload_at_gvw_kg",
+     "V2"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "pem_control_med": {
+   "what": "the same, median",
+   "display": "-0.22%",
+   "value": -0.21646076315728113,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "bracket_margins",
+     "LH-520",
+     "S0R-PCC",
+     "ensemble",
+     "median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "pem_control_min": {
+   "what": "the same lever on the control duty, ensemble-min",
+   "display": "-0.35%",
+   "value": -0.35403431893819376,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "bracket_margins",
+     "LH-520",
+     "S0R-PCC",
+     "ensemble",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "pem_design_med": {
+   "what": "the same, median",
+   "display": "+0.03%",
+   "value": 0.026445002804538462,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "bracket_margins",
+     "GH-REG-165",
+     "S0R-PCC",
+     "ensemble",
+     "median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "pem_design_min": {
+   "what": "predictive energy management fitted to the ruler, design duty, ensemble-min",
+   "display": "-0.09%",
+   "value": -0.09463247522428148,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "bracket_margins",
+     "GH-REG-165",
+     "S0R-PCC",
+     "ensemble",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "preb2_actual": {
+   "what": "what PRE-B2 is actually about, in the findings file itself",
+   "display": "is a tautology of a missing key, not a measurement",
+   "value": null,
+   "source": "WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 66,
+    "quote": "is a tautology of a missing key, not a measurement"
+   }
+  },
+  "prem2_packtemp": {
+   "what": "an unbounded pack thermal state at a gating corner",
+   "display": "modelled pack temperatures reach 153 °C, including at a corner that gates",
+   "value": null,
+   "source": "WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 187,
+    "quote": "modelled pack temperatures reach 153 °C, including at a corner that gates"
+   }
+  },
+  "r14_body": {
+   "what": "what R14 requires of every worst-case field",
+   "display": "Every machine-readable worst-case field is computed as an",
+   "value": null,
+   "source": "BASELINE_v2.md",
+   "locator": {
+    "kind": "line",
+    "line": 74,
+    "quote": "Every machine-readable worst-case field is computed as an"
+   }
+  },
+  "r14_body2": {
+   "what": "R14, second half",
+   "display": "explicit max/min over an enumerated case set, with the governing case",
+   "value": null,
+   "source": "BASELINE_v2.md",
+   "locator": {
+    "kind": "line",
+    "line": 75,
+    "quote": "explicit max/min over an enumerated case set, with the governing case"
+   }
+  },
+  "r14_export": {
+   "what": "R14, the export discipline",
+   "display": "EXPORT DISCIPLINE",
+   "value": null,
+   "source": "BASELINE_v2.md",
+   "locator": {
+    "kind": "line",
+    "line": 73,
+    "quote": "EXPORT DISCIPLINE"
+   }
+  },
+  "r32_order": {
+   "what": "R32, the order that produced the honest-metric trial",
+   "display": "Vehicle Zero consistency flag: the payload-denominated metric",
+   "value": null,
+   "source": "BASELINE_v4.md",
+   "locator": {
+    "kind": "line",
+    "line": 81,
+    "quote": "Vehicle Zero consistency flag: the payload-denominated metric"
+   }
+  },
+  "r32_order2": {
+   "what": "R32, before any Vehicle Zero result is called an advantage",
+   "display": "described as an efficiency advantage. Not executed now.",
+   "value": null,
+   "source": "BASELINE_v4.md",
+   "locator": {
+    "kind": "line",
+    "line": 84,
+    "quote": "described as an efficiency advantage. Not executed now."
+   }
+  },
+  "r44_cannot": {
+   "what": "R44, why the anchor cannot calibrate",
+   "display": "calibrate a cycle",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 37,
+    "quote": "calibrate a cycle"
+   }
+  },
+  "r44_modelrelative": {
+   "what": "R44, verdicts are model-relative until hardware measures the ruler",
+   "display": "Verdicts are MODEL-RELATIVE until WS7 measures a",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 37,
+    "quote": "Verdicts are MODEL-RELATIVE until WS7 measures a"
+   }
+  },
+  "r44_noclaim": {
+   "what": "R44, no external efficiency claim before that measurement",
+   "display": "efficiency claim before it",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 39,
+    "quote": "efficiency claim before it"
+   }
+  },
+  "r45_b1": {
+   "what": "WS8 round-3 blocking finding 1, never closed",
+   "display": "B1: throttle-back branch on the pack power ceiling unmeasured,",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 57,
+    "quote": "B1: throttle-back branch on the pack power ceiling unmeasured,"
+   }
+  },
+  "r45_b1_size": {
+   "what": "how much of a candidate's move the unmeasured branch carries",
+   "display": "+1.64 pp of S3's move without a one-factor row",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 58,
+    "quote": "+1.64 pp of S3's move without a one-factor row"
+   }
+  },
+  "r45_b2": {
+   "what": "WS8 round-3 blocking finding 2, never closed",
+   "display": "commitment exports the instantaneous max under a \"60-second\" label,",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 59,
+    "quote": "commitment exports the instantaneous max under a \"60-second\" label,"
+   }
+  },
+  "r46_preb1": {
+   "what": "WS9 PRE-B1 as the lead recorded it",
+   "display": "module cannot fire on 10 of 15 fields — hard-coded verdict literals",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 68,
+    "quote": "module cannot fire on 10 of 15 fields — hard-coded verdict literals"
+   }
+  },
+  "r46_preb2": {
+   "what": "WS9 PRE-B2 as the lead recorded it",
+   "display": "PRE-B2 (PEM \"exactly 0.0\" is an",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 69,
+    "quote": "PRE-B2 (PEM \"exactly 0.0\" is an"
+   }
+  },
+  "r46_preb3": {
+   "what": "WS9 PRE-B3 as the lead recorded it",
+   "display": "PRE-B3 (S5-13L 6% climb ledger row on the",
+   "value": null,
+   "source": "BASELINE_v6.md",
+   "locator": {
+    "kind": "line",
+    "line": 70,
+    "quote": "PRE-B3 (S5-13L 6% climb ledger row on the"
+   }
+  },
+  "ratio_any_feasible": {
+   "what": "whether any swept single ratio satisfies both constraints",
+   "display": "any_feasible = false",
+   "value": false,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "S3_fixed_ratio_feasibility",
+     "any_feasible"
+    ],
+    "format": "!json:any_feasible = {}"
+   }
+  },
+  "ratio_ceiling": {
+   "what": "highest single ratio that keeps the engine under its rpm ceiling at 105 km/h",
+   "display": "3.7699",
+   "value": 3.769911184307752,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "S3_fixed_ratio_feasibility",
+     "ratio_ceiling_closed_form",
+     "value"
+    ],
+    "format": "{:.4f}"
+   }
+  },
+  "ratio_needed": {
+   "what": "lowest single ratio that holds the 6% grade at GCW",
+   "display": "6.88",
+   "value": 6.879999999999896,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "S3_fixed_ratio_feasibility",
+     "ratio_needed_to_hold_6pct",
+     "ratio"
+    ],
+    "format": "{:.2f}"
+   }
+  },
+  "ratio_rpm_over": {
+   "what": "how far over the rpm ceiling that ratio puts the engine at 105 km/h",
+   "display": "1,732 rpm",
+   "value": 1732.4510296527815,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "S3_fixed_ratio_feasibility",
+     "ratio_needed_to_hold_6pct",
+     "over_ceiling_by_rpm"
+    ],
+    "format": "{:,.0f} rpm"
+   }
+  },
+  "ruler_model_lp100": {
+   "what": "the modelled ruler on VOLT-SUB, 8-seed median",
+   "display": "19.18 L/100 km",
+   "value": 19.176978725674477,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler",
+     "l_per_100km_VOLT_SUB",
+     "median"
+    ],
+    "format": "{:.2f} L/100 km"
+   }
+  },
+  "ruler_sustained_6pct": {
+   "what": "the ruler's sustained speed on the same grade",
+   "display": "82.01 km/h",
+   "value": 82.01262916995378,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "sustained_6pct_capability_kmh",
+     "ruler"
+    ],
+    "format": "{:.2f} km/h"
+   }
+  },
+  "s0_fleet_lp100": {
+   "what": "the Class 8 ruler's fleet-mission consumption, 8-seed median",
+   "display": "38.78 L/100 km",
+   "value": 38.77841697044982,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "s0_fleet_L_per_100km"
+    ],
+    "format": "{:.2f} L/100 km"
+   }
+  },
+  "s1_cold_corner": {
+   "what": "S1's worst corner, the -10 C cold wall, ensemble-min",
+   "display": "-12.87%",
+   "value": -12.866708553446385,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "advance_kill",
+     "candidates",
+     "S1",
+     "worst_corner_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s1_gradeheavy": {
+   "what": "the same candidate on the grade-heavy corner, ensemble-min",
+   "display": "+7.52%",
+   "value": 7.5212697961006905,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "advance_kill",
+     "candidates",
+     "S1",
+     "corners",
+     2,
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s1_med": {
+   "what": "S1 median",
+   "display": "+0.73%",
+   "value": 0.7337463427837478,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     1,
+     "margin_vs_S0_pct_median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s1_min": {
+   "what": "S1 pure series, fleet mission per payload tonne-km, ensemble-min",
+   "display": "-0.69%",
+   "value": -0.6884959422473613,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     1,
+     "margin_vs_S0_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s1_perkm_min": {
+   "what": "S1 per-kilometre margin, paired per-seed, ensemble-min",
+   "display": "+6.03%",
+   "value": 6.031890631883995,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "per_km_margin_paired",
+     "corners",
+     "nominal",
+     "S1",
+     "ensemble",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s2_med": {
+   "what": "S2 median",
+   "display": "+1.89%",
+   "value": 1.8879465349681643,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     2,
+     "margin_vs_S0_pct_median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s2_min": {
+   "what": "S2 single cruise ratio + torque-fill, ensemble-min",
+   "display": "+0.59%",
+   "value": 0.5911100699440873,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     2,
+     "margin_vs_S0_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s2_perkm_max": {
+   "what": "S2 per-kilometre margin, ensemble-max (top of the per-km band)",
+   "display": "+11.06%",
+   "value": 11.060430701008329,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "per_km_margin_paired",
+     "corners",
+     "nominal",
+     "S2",
+     "ensemble",
+     "max"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s2_perkm_min": {
+   "what": "S2 per-kilometre margin, paired per-seed, ensemble-min",
+   "display": "+8.62%",
+   "value": 8.622645202258077,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "per_km_margin_paired",
+     "corners",
+     "nominal",
+     "S2",
+     "ensemble",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s3_med": {
+   "what": "S3 median",
+   "display": "+1.64%",
+   "value": 1.6381290929839507,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     3,
+     "margin_vs_S0_pct_median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s3_min": {
+   "what": "S3 tandem split, ensemble-min",
+   "display": "-1.09%",
+   "value": -1.085394090482248,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     3,
+     "margin_vs_S0_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s3_perkm_min": {
+   "what": "S3 per-kilometre margin, paired per-seed, ensemble-min",
+   "display": "+4.88%",
+   "value": 4.875986869353187,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "per_km_margin_paired",
+     "corners",
+     "nominal",
+     "S3",
+     "ensemble",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s3_wins_every_seed": {
+   "what": "whether S3 wins per km on every seed at r3",
+   "display": "wins_on_every_seed = true",
+   "value": true,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "per_km_margin_paired",
+     "corners",
+     "nominal",
+     "S3",
+     "wins_on_every_seed"
+    ],
+    "format": "!json:wins_on_every_seed = {}"
+   }
+  },
+  "s4_med": {
+   "what": "S4 median",
+   "display": "-1.06%",
+   "value": -1.059736946707445,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     4,
+     "margin_vs_S0_pct_median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s4_min": {
+   "what": "S4 range-extended BEV, ensemble-min",
+   "display": "-3.84%",
+   "value": -3.8418443085956486,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     4,
+     "margin_vs_S0_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s4_perkm_min": {
+   "what": "S4 per-kilometre margin, paired per-seed, ensemble-min",
+   "display": "+3.36%",
+   "value": 3.3595681274600055,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "per_km_margin_paired",
+     "corners",
+     "nominal",
+     "S4",
+     "ensemble",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s4p_control": {
+   "what": "S4' on the control duty, ensemble-min",
+   "display": "-6.81%",
+   "value": -6.807699516392367,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     5,
+     "control_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s4p_design": {
+   "what": "S4' range-extended BEV on the design duty, ensemble-min",
+   "display": "+11.95%",
+   "value": 11.953945283686181,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     5,
+     "design_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s513_control": {
+   "what": "S5-13L on the control duty, ensemble-min",
+   "display": "-1.38%",
+   "value": -1.3829278233895805,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     2,
+     "control_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s513_design": {
+   "what": "S5-13L minimal transmission on the design duty, ensemble-min",
+   "display": "+5.36%",
+   "value": 5.358821363140897,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     2,
+     "design_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s5_control": {
+   "what": "S5 as ordered (11 L) on the control duty, ensemble-min",
+   "display": "-5.75%",
+   "value": -5.747274831617208,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     1,
+     "control_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s5_design": {
+   "what": "S5 as ordered (11 L) on the design duty, ensemble-min",
+   "display": "+1.90%",
+   "value": 1.902903061223159,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     1,
+     "design_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s6_control": {
+   "what": "S6 on the flat line-haul control duty, ensemble-min",
+   "display": "+7.26%",
+   "value": 7.26221115026216,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     3,
+     "control_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s6_design": {
+   "what": "S6 zero-mass stack on the grade-heavy design duty, ensemble-min",
+   "display": "+7.50%",
+   "value": 7.501926011481562,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     3,
+     "design_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s7_control": {
+   "what": "S7 on the control duty, ensemble-min",
+   "display": "-1.45%",
+   "value": -1.4536978706378807,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     4,
+     "control_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "s7_design": {
+   "what": "S7 motorised trailer axle on the design duty, ensemble-min",
+   "display": "+4.51%",
+   "value": 4.509131390991899,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "headline",
+     "table",
+     4,
+     "design_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "span_bound": {
+   "what": "the ratio span a contiguous two-speed engine band allows",
+   "display": "2.058",
+   "value": 2.058,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "two_walls",
+     "third_constraint_coupling_floor",
+     "ENG-11L",
+     "frontier",
+     "contiguity_span_bound"
+    ],
+    "format": "{:.3f}"
+   }
+  },
+  "v1_breakeven_headroom": {
+   "what": "V1's distance from its own break-even curb",
+   "display": "+545 kg",
+   "value": 545.4920058465614,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "break_even_curb_kg",
+     "V1_on_VOLT-SUB",
+     "headroom_kg_worst"
+    ],
+    "format": "{:+,.0f} kg"
+   }
+  },
+  "v1_cold_both": {
+   "what": "V1 cold corner with ESC-2 and ESC-4 both applied",
+   "display": "+3.66%",
+   "value": 3.662210971402807,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "cold_corner_pending_items",
+     "V1_on_VOLT-SUB",
+     "with_cab_heat_and_CdA_5p4_pct"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_cold_cabheat_fp": {
+   "what": "V1 cold corner with the fixed-point cab-heat member alone",
+   "display": "+4.72%",
+   "value": 4.721007292072455,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "cold_cab_heat_bracket",
+     "V1_on_VOLT-SUB",
+     "margin_pct_per_payload_tkm_paired",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_cold_cabheat_r1": {
+   "what": "V1 cold corner on round 1's single-pass cab-heat smear",
+   "display": "+2.64%",
+   "value": 2.6395881520410382,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "cold_cab_heat_bracket",
+     "V1_on_VOLT-SUB",
+     "margin_pct_per_payload_tkm_paired_r1_single_pass_smear",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_cold_no_credit": {
+   "what": "V1 cold corner under the harshest cab-heat reading",
+   "display": "-5.42%",
+   "value": -5.423377310765462,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "cold_cab_heat_bracket",
+     "V1_on_VOLT-SUB",
+     "margin_pct_per_payload_tkm_paired_no_waste_heat_credit_worst",
+     "min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_cold_ordered": {
+   "what": "V1 cold corner exactly as ordered (the gated number)",
+   "display": "+19.12%",
+   "value": 19.12403661613544,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "cold_cab_heat_bracket",
+     "V1_on_VOLT-SUB",
+     "margin_ordered_corner"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_engineoff_pp": {
+   "what": "what engine-off alone is worth to V1 vs a load-following genset",
+   "display": "72.58 pp",
+   "value": 72.58466765102159,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V1_on_VOLT-SUB",
+     "start_stop_engine_off",
+     "worth_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "v1_flip_pct": {
+   "what": "ruler-fuel error at which V1 falls to the 3% bar",
+   "display": "-17.64%",
+   "value": -17.643311355660995,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler_fuel_flip_points",
+     "V1_on_VOLT-SUB",
+     "pct_ruler_fuel_error_to_3pct_bar"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_mass_cost_pp": {
+   "what": "freight V1 gives back, in margin points",
+   "display": "5.11 pp",
+   "value": 5.11305034631145,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V1_on_VOLT-SUB",
+     "mass_payload_denominator",
+     "cost_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "v1_nominal_min": {
+   "what": "V1 Postal nominal margin, per payload tonne-km, ensemble-min",
+   "display": "+20.11%",
+   "value": 20.11401201499117,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "verdicts",
+     "V1_on_VOLT-SUB",
+     "nominal_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_oppoint_pp": {
+   "what": "what the pinned operating point alone is worth to V1 (upper bound)",
+   "display": "11.15 pp",
+   "value": 11.152402051897672,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V1_on_VOLT-SUB",
+     "engine_operating_point",
+     "worth_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "v1_perkm_min": {
+   "what": "V1 per-kilometre margin, paired per-seed, ensemble-min",
+   "display": "+25.29%",
+   "value": 25.29282778781245,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V1_on_VOLT-SUB",
+     "mass_payload_denominator",
+     "margin_pct_per_km_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_pessimistic_min": {
+   "what": "V1 at the pessimistic end of the same eight levers",
+   "display": "+37.78%",
+   "value": 37.78314378327905,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "verdict_robustness",
+     "rows",
+     "V1_on_VOLT-SUB",
+     "pessimistic_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v1_regen_pp": {
+   "what": "what regen alone is worth to V1 on VOLT-SUB",
+   "display": "23.59 pp",
+   "value": 23.589019064739812,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V1_on_VOLT-SUB",
+     "regen",
+     "worth_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "v1_sustained_6pct": {
+   "what": "V1's sustained speed on a 6% grade with no buffer contribution",
+   "display": "31.76 km/h",
+   "value": 31.763807603730015,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "sustained_6pct_capability_kmh",
+     "V1"
+    ],
+    "format": "{:.2f} km/h"
+   }
+  },
+  "v1_worst_corner": {
+   "what": "V1 Postal worst corner (cold -10 C)",
+   "display": "+19.12%",
+   "value": 19.12403661613544,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "verdicts",
+     "V1_on_VOLT-SUB",
+     "worst_corner_margin_pct"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v2_breakeven_curb": {
+   "what": "the curb at which V2 would exactly draw",
+   "display": "3,944 kg",
+   "value": 3943.961315296891,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "break_even_curb_kg",
+     "V2_on_VOLT-REG",
+     "worst"
+    ],
+    "format": "{:,.0f} kg"
+   }
+  },
+  "v2_breakeven_headroom": {
+   "what": "V2's distance from its own break-even curb",
+   "display": "-195 kg",
+   "value": -195.03868470310908,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "break_even_curb_kg",
+     "V2_on_VOLT-REG",
+     "headroom_kg_worst"
+    ],
+    "format": "{:+,.0f} kg"
+   }
+  },
+  "v2_engineoff_pp": {
+   "what": "what engine-off alone is worth to V2 vs a load-following genset",
+   "display": "0.25 pp",
+   "value": 0.250357359805216,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V2_on_VOLT-REG",
+     "start_stop_engine_off",
+     "worth_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "v2_flip_pct": {
+   "what": "ruler-fuel error at which V2's KILL becomes a draw",
+   "display": "+6.93%",
+   "value": 6.93300755977404,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ruler_fuel_flip_points",
+     "V2_on_VOLT-REG",
+     "pct_ruler_fuel_error_to_draw"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v2_mass_cost_pp": {
+   "what": "freight V2 gives back, in margin points",
+   "display": "16.19 pp",
+   "value": 16.187444937496835,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V2_on_VOLT-REG",
+     "mass_payload_denominator",
+     "cost_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "v2_nominal_min": {
+   "what": "V2 Trucker nominal margin, per payload tonne-km, ensemble-min",
+   "display": "-7.93%",
+   "value": -7.9251801992324005,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "verdicts",
+     "V2_on_VOLT-REG",
+     "nominal_margin_pct_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v2_perkm_min": {
+   "what": "V2 per-kilometre margin, paired per-seed, ensemble-min",
+   "display": "+8.41%",
+   "value": 8.412459148168649,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V2_on_VOLT-REG",
+     "mass_payload_denominator",
+     "margin_pct_per_km_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v2_pessimistic_median": {
+   "what": "the same row, median",
+   "display": "+0.59%",
+   "value": 0.5911440801087857,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "verdict_robustness",
+     "rows",
+     "V2_on_VOLT-REG",
+     "pessimistic_median"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v2_pessimistic_min": {
+   "what": "V2 at the pessimistic end of all eight ruler-modelling levers",
+   "display": "+0.13%",
+   "value": 0.13239410830944548,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "verdict_robustness",
+     "rows",
+     "V2_on_VOLT-REG",
+     "pessimistic_min"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v2_regen_pp": {
+   "what": "what regen alone is worth to V2 on VOLT-REG",
+   "display": "4.32 pp",
+   "value": 4.320292223230451,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "one_factor",
+     "rows",
+     "V2_on_VOLT-REG",
+     "regen",
+     "worth_pp"
+    ],
+    "format": "{:.2f} pp"
+   }
+  },
+  "v2_unserved": {
+   "what": "worst unserved bus energy on V2's governing corner",
+   "display": "1.7204 kWh",
+   "value": 1.7203589733431122,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "capability_and_limit_worst_case",
+     "V2_on_VOLT-REG",
+     "candidate_worst_unserved_bus_kWh"
+    ],
+    "format": "{:.4f} kWh"
+   }
+  },
+  "v2_worst_corner": {
+   "what": "V2 Trucker worst corner (10 km / 6% climb)",
+   "display": "-9.98%",
+   "value": -9.978769250804442,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "verdicts",
+     "V2_on_VOLT-REG",
+     "worst_corner_margin_pct"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "v7_claim1": {
+   "what": "publishable claim 1, as v7 labels it",
+   "display": "Electric torque-fill replaces the gearbox entirely at 6.6 t",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 48,
+    "quote": "Electric torque-fill replaces the gearbox entirely at 6.6 t"
+   }
+  },
+  "v7_claim1_status": {
+   "what": "claim 1 status",
+   "display": "(ratified, model-relative)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 49,
+    "quote": "(ratified, model-relative)"
+   }
+  },
+  "v7_claim2": {
+   "what": "publishable claim 2",
+   "display": "The transmissionless premise has a MASS boundary between ~7 and",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 50,
+    "quote": "The transmissionless premise has a MASS boundary between ~7 and"
+   }
+  },
+  "v7_claim2_body": {
+   "what": "claim 2's second line, carrying the first half of its status",
+   "display": "36 t: no single ratio spans cruise and grade at 36.3 t (ratified,",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 51,
+    "quote": "36 t: no single ratio spans cruise and grade at 36.3 t (ratified,"
+   }
+  },
+  "v7_claim2_status": {
+   "what": "claim 2 status",
+   "display": "closed-form and simulated)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 52,
+    "quote": "closed-form and simulated)"
+   }
+  },
+  "v7_claim3": {
+   "what": "publishable claim 3",
+   "display": "It has a DUTY boundary: the same truck wins +20% on stop-go and",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 53,
+    "quote": "It has a DUTY boundary: the same truck wins +20% on stop-go and"
+   }
+  },
+  "v7_claim3_status": {
+   "what": "claim 3 status",
+   "display": "(V1 provisional, V2 kill)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 54,
+    "quote": "(V1 provisional, V2 kill)"
+   }
+  },
+  "v7_claim4": {
+   "what": "publishable claim 4",
+   "display": "A 2-speed under torque-fill meets a third wall",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 55,
+    "quote": "A 2-speed under torque-fill meets a third wall"
+   }
+  },
+  "v7_claim4_status": {
+   "what": "claim 4 status",
+   "display": "coupling floor vs crawl speed (provisional)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 56,
+    "quote": "coupling floor vs crawl speed (provisional)"
+   }
+  },
+  "v7_claim5": {
+   "what": "publishable claim 5",
+   "display": "At fixed gross weight, efficiency per added kilogram is the",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 57,
+    "quote": "At fixed gross weight, efficiency per added kilogram is the"
+   }
+  },
+  "v7_claim5_status": {
+   "what": "claim 5 status",
+   "display": "gave 6-8% back in freight (S3 excepted) (ratified, r3 numbers)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 59,
+    "quote": "gave 6-8% back in freight (S3 excepted) (ratified, r3 numbers)"
+   }
+  },
+  "v7_claim6": {
+   "what": "publishable claim 6",
+   "display": "Waste-heat recovery is a full-load technology on a part-load duty",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 60,
+    "quote": "Waste-heat recovery is a full-load technology on a part-load duty"
+   }
+  },
+  "v7_claim6_status": {
+   "what": "claim 6 status",
+   "display": "(ratified at semi scale)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 61,
+    "quote": "(ratified at semi scale)"
+   }
+  },
+  "v7_claim7": {
+   "what": "publishable claim 7",
+   "display": "Zero-mass levers are symmetric; predictive energy management is",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 62,
+    "quote": "Zero-mass levers are symmetric; predictive energy management is"
+   }
+  },
+  "v7_claim7_status": {
+   "what": "claim 7 status",
+   "display": "worth ~0 when the incumbent gets it too (provisional, PRE-B2)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 63,
+    "quote": "worth ~0 when the incumbent gets it too (provisional, PRE-B2)"
+   }
+  },
+  "v7_claim8": {
+   "what": "publishable claim 8",
+   "display": "The method: pre-registration, pre-committed kill criteria, fresh-",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 64,
+    "quote": "The method: pre-registration, pre-committed kill criteria, fresh-"
+   }
+  },
+  "v7_claim8_disc": {
+   "what": "claim 8's discipline list",
+   "display": "context disk-only adjudication, three-way verification, export",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 65,
+    "quote": "context disk-only adjudication, three-way verification, export"
+   }
+  },
+  "v7_claim8_rate": {
+   "what": "claim 8's stated first-pass detection rate",
+   "display": "five-for-five first-pass defect detection",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 66,
+    "quote": "five-for-five first-pass defect detection"
+   }
+  },
+  "v7_claim8_status": {
+   "what": "claim 8 status",
+   "display": "the lead's own errors (ratified by its record)",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 67,
+    "quote": "the lead's own errors (ratified by its record)"
+   }
+  },
+  "v7_kx_state": {
+   "what": "KX's frozen status",
+   "display": "KX: NOT CONVERGED after three rounds (radiator sizing case",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 43,
+    "quote": "KX: NOT CONVERGED after three rounds (radiator sizing case"
+   }
+  },
+  "v7_model_relative": {
+   "what": "the model-relative qualifier",
+   "display": "all Vehicle Zero verdicts are model-relative",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 37,
+    "quote": "all Vehicle Zero verdicts are model-relative"
+   }
+  },
+  "v7_r51": {
+   "what": "R51, the mid-flight rule",
+   "display": "Anything mid-flight at the moment of freeze completes its",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 14,
+    "quote": "Anything mid-flight at the moment of freeze completes its"
+   }
+  },
+  "v7_r52": {
+   "what": "R52, the status rule",
+   "display": "Every verdict and number keeps the status it holds at freeze",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 17,
+    "quote": "Every verdict and number keeps the status it holds at freeze"
+   }
+  },
+  "v7_r52b": {
+   "what": "R52, second half",
+   "display": "Nothing is promoted; nothing is quietly",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 18,
+    "quote": "Nothing is promoted; nothing is quietly"
+   }
+  },
+  "v7_r53": {
+   "what": "R53, the cancelled Fable pass",
+   "display": "The Fable adjudication of WS9 is CANCELLED",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 20,
+    "quote": "The Fable adjudication of WS9 is CANCELLED"
+   }
+  },
+  "v7_r54": {
+   "what": "R54, the open frontier",
+   "display": "WS6, WS7, WS10, Vehicle Zero wave two (R48) and Vehicle One",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 25,
+    "quote": "WS6, WS7, WS10, Vehicle Zero wave two (R48) and Vehicle One"
+   }
+  },
+  "v7_uncalibrated": {
+   "what": "the ruler's calibration status",
+   "display": "Ruler uncalibrated",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 36,
+    "quote": "Ruler uncalibrated"
+   }
+  },
+  "v7_v1_conditions": {
+   "what": "the four conditions V1's status is conditional on",
+   "display": "conditional on R43(a)-(d) (cab heat,",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 33,
+    "quote": "conditional on R43(a)-(d) (cab heat,"
+   }
+  },
+  "v7_v1_notrun": {
+   "what": "that those conditions were ordered and not run",
+   "display": "warm-up model, corner convention, CdA bracket), which were ordered",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 34,
+    "quote": "warm-up model, corner convention, CdA bracket), which were ordered"
+   }
+  },
+  "v7_v1_state": {
+   "what": "V1's frozen status",
+   "display": "FROZEN-PROVISIONAL ADVANCE, +20.11% nominal",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 31,
+    "quote": "FROZEN-PROVISIONAL ADVANCE, +20.11% nominal"
+   }
+  },
+  "v7_v2_state": {
+   "what": "V2's frozen status",
+   "display": "V2 Trucker: FROZEN-KILL, -7.93% headline, a draw at the",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 35,
+    "quote": "V2 Trucker: FROZEN-KILL, -7.93% headline, a draw at the"
+   }
+  },
+  "v7_why": {
+   "what": "the principal's stated reason for the freeze",
+   "display": "The trials have mostly validated why the status quo is what it is",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 9,
+    "quote": "The trials have mostly validated why the status quo is what it is"
+   }
+  },
+  "v7_ws5_state": {
+   "what": "WS5's frozen status as v7 states it",
+   "display": "WS5: status per its packet at freeze",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 44,
+    "quote": "WS5: status per its packet at freeze"
+   }
+  },
+  "v7_ws8_r4": {
+   "what": "that WS8 r4 was ordered and not run",
+   "display": "r3 adjudication not clean, r4 ordered and",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 39,
+    "quote": "r3 adjudication not clean, r4 ordered and"
+   }
+  },
+  "v7_ws8_state": {
+   "what": "WS8's frozen status",
+   "display": "WS8 S1-S4 KILLED (final), WHR DROPPED (final); numbers",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 38,
+    "quote": "WS8 S1-S4 KILLED (final), WHR DROPPED (final); numbers"
+   }
+  },
+  "v7_ws9_open": {
+   "what": "WS9's open findings and the S5-13L expectation",
+   "display": "findings PRE-B1..B3; S5-13L expected to convert to KILL-ON-TIME under",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 42,
+    "quote": "findings PRE-B1..B3; S5-13L expected to convert to KILL-ON-TIME under"
+   }
+  },
+  "v7_ws9_state": {
+   "what": "WS9's frozen status",
+   "display": "WS9: S6 / S4' / S5-13L / S7 FROZEN-PROVISIONAL ADVANCE on",
+   "value": null,
+   "source": "BASELINE_v7_FREEZE.md",
+   "locator": {
+    "kind": "line",
+    "line": 40,
+    "quote": "WS9: S6 / S4' / S5-13L / S7 FROZEN-PROVISIONAL ADVANCE on"
+   }
+  },
+  "wall3_11l": {
+   "what": "steepest grade a contiguous 2-speed can hold on the 11 L engine",
+   "display": "6%",
+   "value": 0.06,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "two_walls",
+     "third_constraint_coupling_floor",
+     "ENG-11L",
+     "frontier",
+     "steepest_contiguous_grade"
+    ],
+    "format": "{:.0%}"
+   }
+  },
+  "wall3_13l": {
+   "what": "steepest grade a contiguous 2-speed can hold on the 13 L engine",
+   "display": "8%",
+   "value": 0.08,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "two_walls",
+     "third_constraint_coupling_floor",
+     "ENG-13L",
+     "frontier",
+     "steepest_contiguous_grade"
+    ],
+    "format": "{:.0%}"
+   }
+  },
+  "wall3_floor_11l": {
+   "what": "the 11 L low gear's coupling floor",
+   "display": "25.4 km/h",
+   "value": 25.386448408304478,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "two_walls",
+     "third_constraint_coupling_floor",
+     "ENG-11L",
+     "coupling_floor_kmh"
+    ],
+    "format": "{:.1f} km/h"
+   }
+  },
+  "wall3_floor_13l": {
+   "what": "the 13 L low gear's coupling floor",
+   "display": "33.5 km/h",
+   "value": 33.46780115161473,
+   "source": "WS9_vehicle_one_wave2/results_ws9.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "two_walls",
+     "third_constraint_coupling_floor",
+     "ENG-13L",
+     "coupling_floor_kmh"
+    ],
+    "format": "{:.1f} km/h"
+   }
+  },
+  "whr_gate": {
+   "what": "the pre-committed waste-heat-recovery gate",
+   "display": "2.5%",
+   "value": 2.5,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "whr_gate",
+     "threshold_pct"
+    ],
+    "format": "{:.1f}%"
+   }
+  },
+  "whr_s1": {
+   "what": "best WHR system on S1, net of its mass charge, ensemble-min",
+   "display": "+1.75%",
+   "value": 1.751782303438002,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "whr_gate",
+     "best_net_margin_pct",
+     "S1"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "whr_s2": {
+   "what": "best WHR system on S2, net of its mass charge, ensemble-min",
+   "display": "+1.83%",
+   "value": 1.834617721374109,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "whr_gate",
+     "best_net_margin_pct",
+     "S2"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "whr_s3": {
+   "what": "best WHR system on S3, net of its mass charge, ensemble-min",
+   "display": "+2.38%",
+   "value": 2.378908568404933,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "whr_gate",
+     "best_net_margin_pct",
+     "S3"
+    ],
+    "format": "{:+.2f}%"
+   }
+  },
+  "worker_rule2": {
+   "what": "the worker's no-hand-transcription rule",
+   "display": "your results data file — nothing transcribed by hand.",
+   "value": null,
+   "source": ".claude/agents/ws-worker.md",
+   "locator": {
+    "kind": "line",
+    "line": 25,
+    "quote": "your results data file — nothing transcribed by hand."
+   }
+  },
+  "ws11_366": {
+   "what": "V1's governing corner under ESC-2 and ESC-4 together",
+   "display": "which take its governing corner to +3.66%",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 39,
+    "quote": "which take its governing corner to +3.66%"
+   }
+  },
+  "ws11_aftertreatment": {
+   "what": "the aftertreatment mass bracket excluded from V2's headline",
+   "display": "WS4's `aftertreatment_extra: 60 kg` is EXCLUDED from the headline",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 170,
+    "quote": "WS4's `aftertreatment_extra: 60 kg` is EXCLUDED from the headline"
+   }
+  },
+  "ws11_braking_share": {
+   "what": "why regen is worth little on the regional duty",
+   "display": "braking is 5.84% of tractive energy",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 248,
+    "quote": "braking is 5.84% of tractive energy"
+   }
+  },
+  "ws11_cabheat_kw": {
+   "what": "the cab-heat load the bracket charges",
+   "display": "3.0 kW of cab heat during the engine-off windows only",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 272,
+    "quote": "3.0 kW of cab heat during the engine-off windows only"
+   }
+  },
+  "ws11_negative": {
+   "what": "the harshest cab-heat reading taking that corner negative",
+   "display": "the harshest one takes V1's governing corner negative",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 35,
+    "quote": "the harshest one takes V1's governing corner negative"
+   }
+  },
+  "ws11_negative_body": {
+   "what": "the same fact stated in the corner section",
+   "display": "under the harshest cab-heat reading V1's governing corner goes NEGATIVE",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "locator": {
+    "kind": "line",
+    "line": 284,
+    "quote": "under the harshest cab-heat reading V1's governing corner goes NEGATIVE"
+   }
+  },
+  "ws11_r1": {
+   "what": "WS11 round-1 adjudication verdict",
+   "display": "Verdict on the round: NOT CLEAN",
+   "value": null,
+   "source": "WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 3,
+    "quote": "Verdict on the round: NOT CLEAN"
+   }
+  },
+  "ws1_review": {
+   "what": "WS1's pre-submission adversarial review",
+   "display": "Seventeen defects were found and fixed and nine analysis",
+   "value": null,
+   "source": "WS1_loads_duty_cycles/REPORT_WS1.md",
+   "locator": {
+    "kind": "line",
+    "line": 15,
+    "quote": "Seventeen defects were found and fixed and nine analysis"
+   }
+  },
+  "ws2_notconverged": {
+   "what": "WS2 stopped at the round cap",
+   "display": "3 rounds exhausted, final round not clean",
+   "value": null,
+   "source": "PM_LOG.md",
+   "locator": {
+    "kind": "line",
+    "line": 45,
+    "quote": "3 rounds exhausted, final round not clean"
+   }
+  },
+  "ws2_r1": {
+   "what": "WS2 round-1 adjudication verdict",
+   "display": "Verdict: no blocking findings. Two material findings (WS2-F1, WS2-F2), five minor.",
+   "value": null,
+   "source": "WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 3,
+    "quote": "Verdict: no blocking findings. Two material findings (WS2-F1, WS2-F2), five minor."
+   }
+  },
+  "ws3_r1": {
+   "what": "WS3 round-1 adjudication verdict",
+   "display": "Two findings of consequence (one blocking, one material), then minors.",
+   "value": null,
+   "source": "WS3_battery/FINDINGS_WS3_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 12,
+    "quote": "Two findings of consequence (one blocking, one material), then minors."
+   }
+  },
+  "ws4_r1": {
+   "what": "WS4 round-1 adjudication verdict",
+   "display": "Verdict: no blocking findings. Two material findings (F1, F2) and",
+   "value": null,
+   "source": "WS4_genset/FINDINGS_WS4_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 9,
+    "quote": "Verdict: no blocking findings. Two material findings (F1, F2) and"
+   }
+  },
+  "ws4_seam": {
+   "what": "WS11's hot-swap assertion against WS4's exported series duty",
+   "display": "0.0e+00",
+   "value": 0.0,
+   "source": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws11",
+     "ws4_hot_swap_seam",
+     "max_abs_difference"
+    ],
+    "format": "{:.1e}"
+   }
+  },
+  "ws8_bar_corner": {
+   "what": "WS8/WS9 pre-committed corner bar",
+   "display": "0%",
+   "value": 0.0,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "advance_kill",
+     "every_corner_pct"
+    ],
+    "format": "{:.0f}%"
+   }
+  },
+  "ws8_bar_nominal": {
+   "what": "WS8/WS9 pre-committed advance bar at nominal",
+   "display": "3%",
+   "value": 3.0,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "advance_kill",
+     "nominal_pct"
+    ],
+    "format": "{:.0f}%"
+   }
+  },
+  "ws8_fleet_mix": {
+   "what": "the fleet mission the Class 8 metric of record is read on",
+   "display": "fleet-mission fuel energy per PAYLOAD tonne-km [MJ/(t.km)], fleet mission = 70% LH-520 + 30% REG-165 by distance",
+   "value": "fleet-mission fuel energy per PAYLOAD tonne-km [MJ/(t.km)], fleet mission = 70% LH-520 + 30% REG-165 by distance",
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "metric_of_record"
+    ],
+    "format": "{}"
+   }
+  },
+  "ws8_r1": {
+   "what": "WS8 round-1 adjudication verdict",
+   "display": "Verdict: NOT CLEAN. Two blocking findings, five material, six minor.",
+   "value": null,
+   "source": "WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 7,
+    "quote": "Verdict: NOT CLEAN. Two blocking findings, five material, six minor."
+   }
+  },
+  "ws8_r2": {
+   "what": "WS8 round-2 adjudication verdict",
+   "display": "Verdict: NOT CLEAN. One blocking, four material, seven minor.",
+   "value": null,
+   "source": "WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "locator": {
+    "kind": "line",
+    "line": 11,
+    "quote": "Verdict: NOT CLEAN. One blocking, four material, seven minor."
+   }
+  },
+  "ws8_r3": {
+   "what": "WS8 round-3 adjudication verdict",
+   "display": "Verdict: NOT CLEAN. Two blocking, six material, twelve minor.",
+   "value": null,
+   "source": "WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "locator": {
+    "kind": "line",
+    "line": 5,
+    "quote": "Verdict: NOT CLEAN. Two blocking, six material, twelve minor."
+   }
+  },
+  "ws8_r_dyn": {
+   "what": "the tyre radius the ratio ceiling is solved at",
+   "display": "0.5 m",
+   "value": 0.5,
+   "source": "WS8_semi_architecture/results_ws8.json",
+   "locator": {
+    "kind": "json",
+    "path": [
+     "interface_ws8",
+     "vehicle",
+     "r_dyn_m"
+    ],
+    "format": "{:.1f} m"
+   }
+  },
+  "ws9_corridor_speed": {
+   "what": "the corridor speed that makes pre-boost a poor trade",
+   "display": "on a corridor averaging over 90 km/h",
+   "value": null,
+   "source": "WS9_vehicle_one_wave2/REPORT_WS9.md",
+   "locator": {
+    "kind": "line",
+    "line": 921,
+    "quote": "on a corridor averaging over 90 km/h"
+   }
+  },
+  "ws9_pre": {
+   "what": "WS9 pre-adjudication verdict",
+   "display": "RESULT: NOT CLEAN. Four blocking, six material, nine minor.",
+   "value": null,
+   "source": "WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "locator": {
+    "kind": "line",
+    "line": 9,
+    "quote": "RESULT: NOT CLEAN. Four blocking, six material, nine minor."
+   }
+  }
+ }
+}

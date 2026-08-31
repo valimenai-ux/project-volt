@@ -1,0 +1,8 @@
+# WS13 publication harness — Python standard library only.
+#
+# build_citations.py and verify_ws13.py use json, hashlib, os, re and sys.
+# No third-party package is required and none may be added: this harness must
+# run against the committed record with no environment that could change what
+# a citation resolves to.
+#
+# Tested on CPython 3.9 and 3.14.

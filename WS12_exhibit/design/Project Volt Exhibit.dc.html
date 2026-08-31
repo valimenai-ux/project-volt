@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Chivo:wght@300;400;500;600;700;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"><style>body{margin:0;background:#07080a;-webkit-font-smoothing:antialiased}a{color:#46cfe0;text-decoration:none}a:hover{color:#8ae3ee}*{box-sizing:border-box}@keyframes flow{to{stroke-dashoffset:-24}}@keyframes pulse{0%,100%{opacity:.35}50%{opacity:.9}}@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}</style></helmet>
+<div style="min-height:100vh;width:100%;display:flex;align-items:flex-start;justify-content:flex-start;background:#07080a;padding:0;overflow:auto">
+<div style="flex:none;width:{{ sizeW }};height:{{ sizeH }}">
+<div style="width:1920px;height:1080px;flex:none;transform-origin:top left;background:#0e1114;color:#e6eaef;font-family:Chivo,system-ui,sans-serif;display:flex;flex-direction:column;position:relative;overflow:hidden;transform:scale({{ fit }})">
+
+<div style="height:64px;flex:none;display:flex;align-items:center;gap:20px;padding:0 26px;border-bottom:1px solid #232a33;background:#111519">
+<div style="display:flex;flex-direction:column;gap:1px">
+<div style="font:700 15px/1 Chivo,sans-serif;letter-spacing:.22em">PROJECT VOLT</div>
+<div style="font:400 10px/1 'DM Mono',monospace;letter-spacing:.2em;color:#6f7b8a">DRIVETRAIN TRIALS · LIVE EXHIBIT</div>
+</div>
+<div style="width:1px;height:30px;background:#262d36"></div>
+<div style="font:500 12px/1 Chivo,sans-serif;letter-spacing:.14em;color:#8d99a8;text-transform:uppercase">{{ screenTitle }}</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px">
+<div style="display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid #2b6f7a;background:#0f2a2e;border-radius:2px">
+<div style="width:6px;height:6px;background:#46cfe0;border-radius:50%"></div>
+<span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8ae3ee">{{ modeBadge }}</span>
+</div>
+<sc-if value="{{ cold }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid #3a4654;background:#161c24;border-radius:2px">
+<span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#a9b6c6">CORNER −10 °C</span>
+</div></sc-if>
+</div>
+<div style="font:400 11px/1 'DM Mono',monospace;color:#5c6674;letter-spacing:.08em">BASELINE v4 · RATIFIED 2026‑08‑30</div>
+</div>
+
+<div onClick="{{ dismissTip }}" style="flex:1;display:flex;min-height:0">
+
+<nav style="width:236px;flex:none;border-right:1px solid #232a33;background:#101418;display:flex;flex-direction:column">
+<div style="padding:18px 18px 10px;font:400 9px/1 'DM Mono',monospace;letter-spacing:.24em;color:#5c6674">NARRATIVE RAIL</div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ chapters }}" as="c" hint-placeholder-count="6">
+<button onClick="{{ c.go }}" style="all:unset;cursor:pointer;display:grid;grid-template-columns:26px 1fr;gap:10px;padding:11px 18px;border-left:2px solid {{ c.bar }};background:{{ c.bg }}" style-hover="background:#161c22">
+<span style="font:400 10px/1.4 'DM Mono',monospace;color:{{ c.numCol }};padding-top:2px">{{ c.num }}</span>
+<span style="display:flex;flex-direction:column;gap:3px">
+<span style="font:500 13px/1.25 Chivo,sans-serif;color:{{ c.col }}">{{ c.name }}</span>
+<span style="font:400 10px/1.35 'DM Mono',monospace;color:#5c6674;letter-spacing:.03em">{{ c.sub }}</span>
+</span>
+</button>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="padding:12px 18px;border-top:1px solid #1c232b;display:flex;flex-direction:column;gap:7px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.24em;color:#4b5563">REFERENCE</div>
+<button onClick="{{ goComponents }}" style="all:unset;cursor:pointer;font:400 11px/1.3 'DM Mono',monospace;color:#8d99a8" style-hover="color:#e6eaef">Component sheet</button>
+<button onClick="{{ goGuide }}" style="all:unset;cursor:pointer;font:400 11px/1.3 'DM Mono',monospace;color:#8d99a8" style-hover="color:#e6eaef">Style guide</button>
+<button onClick="{{ toggleCold }}" style="all:unset;cursor:pointer;font:400 11px/1.3 'DM Mono',monospace;color:#8d99a8" style-hover="color:#e6eaef">{{ coldLabel }}</button>
+</div>
+</nav>
+
+<main style="flex:1;min-width:0;display:flex;flex-direction:column;position:relative">
+
+<sc-if value="{{ isRail }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:grid;grid-template-columns:1fr 520px;min-height:0">
+<div style="padding:74px 64px 40px;display:flex;flex-direction:column">
+<div style="font:400 10px/1 'DM Mono',monospace;letter-spacing:.26em;color:#5c6674;margin-bottom:26px">PREMISE</div>
+<h1 style="margin:0 0 30px;font:300 54px/1.08 Chivo,sans-serif;letter-spacing:-.022em;max-width:880px;text-wrap:pretty">A program that killed its own favourite ideas, on criteria written before the numbers existed.</h1>
+<p style="margin:0 0 20px;font:300 19px/1.55 Chivo,sans-serif;color:#a9b6c6;max-width:760px;text-wrap:pretty">Two vehicles went on trial. A 6,600 kg delivery truck became a pure <span data-term="series" onMouseEnter="{{ tipOn }}" onMouseLeave="{{ tipOff }}" style="border-bottom:1px dashed #46cfe0;cursor:help;color:#cfe6ea">series hybrid</span> — the diesel never touches the wheels. A 36,300 kg semi tried four hybrid architectures and every one lost to a modern diesel once the freight it could no longer carry was counted.</p>
+<p style="margin:0;font:300 19px/1.55 Chivo,sans-serif;color:#a9b6c6;max-width:760px;text-wrap:pretty">Nothing here was adopted by preference. Each gate carried a numeric kill criterion, armed before the computation ran. Two of those criteria killed the program's own preferred designs. Both results are on this wall.</p>
+<div style="flex:1"></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#232a33;border:1px solid #232a33">
+<sc-for list="{{ premiseStats }}" as="p" hint-placeholder-count="4">
+<div style="background:#131820;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+<div style="font:400 9px/1.3 'DM Mono',monospace;letter-spacing:.16em;color:#5c6674">{{ p.k }}</div>
+<div style="font:400 26px/1 'DM Mono',monospace;color:{{ p.col }};letter-spacing:-.02em">{{ p.v }}</div>
+<div style="font:400 10px/1.35 'DM Mono',monospace;color:#6f7b8a">{{ p.n }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="border-left:1px solid #232a33;background:#0b0e11;padding:74px 44px 40px;display:flex;flex-direction:column;gap:26px">
+<div style="font:400 10px/1 'DM Mono',monospace;letter-spacing:.26em;color:#5c6674">HOW TO READ THIS EXHIBIT</div>
+<sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:82px 1fr;gap:14px;align-items:start">
+<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border:1px solid {{ t.line }};background:{{ t.fill }};border-radius:2px;justify-content:center">
+<span style="font:500 9px/1 'DM Mono',monospace;letter-spacing:.12em;color:{{ t.col }}">{{ t.tag }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<div style="font:500 13px/1.3 Chivo,sans-serif;color:#e6eaef">{{ t.name }}</div>
+<div style="font:300 12px/1.5 Chivo,sans-serif;color:#8d99a8;text-wrap:pretty">{{ t.desc }}</div>
+</div>
+</div>
+</sc-for>
+<div style="height:1px;background:#232a33"></div>
+<div style="font:300 12px/1.6 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">Every screen carries a provenance strip: which baseline, which results file, which seed, which weather and terrain corner. If a figure is not traceable to a file on disk, it is not a result.</div>
+<div style="flex:1"></div>
+<button onClick="{{ goSim }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid #2b6f7a;background:#0f2a2e" style-hover="background:#14383d">
+<span style="font:500 13px/1 Chivo,sans-serif;letter-spacing:.06em;color:#8ae3ee">OPEN THE SIMULATOR</span>
+<span style="font:400 13px/1 'DM Mono',monospace;color:#46cfe0">→</span>
+</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSim }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:20px 24px;min-height:0">
+
+<div style="height:200px;flex:none;border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:14px;padding:9px 14px;border-bottom:1px solid #1c232b">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">ROUTE · {{ routeName }}</span>
+<span style="display:flex;align-items:center;gap:7px;padding:3px 8px;border:1px solid #4a5665;background:#1b222a">
+<span style="font:500 8px/1 'DM Mono',monospace;letter-spacing:.14em;color:#e6eaef">RECORD</span>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#e6eaef">{{ routeLen }} km · {{ routeClimb }} m climb · peak {{ routePeak }}</span>
+</span>
+<span style="font:400 8.5px/1 'DM Mono',monospace;color:#4b5563">{{ routeSrc }}</span>
+<span style="display:flex;align-items:center;gap:7px;padding:3px 8px;border:1px solid #2b6f7a;background:#0f2a2e">
+<span style="font:500 8px/1 'DM Mono',monospace;letter-spacing:.14em;color:#8ae3ee">DERIVED</span>
+<span style="font:400 9.5px/1 'DM Mono',monospace;color:#8d99a8">interpolated shape {{ routeDerived }}</span>
+</span>
+<div style="flex:1"></div>
+<sc-for list="{{ routeOpts }}" as="r" hint-placeholder-count="2">
+<button onClick="{{ r.go }}" style="all:unset;cursor:pointer;padding:4px 10px;border:1px solid {{ r.line }};background:{{ r.fill }};font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:{{ r.col }}">{{ r.label }}</button>
+</sc-for>
+</div>
+<div style="flex:1;position:relative;min-height:0">
+<svg viewBox="0 0 1600 128" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">
+<path d="{{ el.area }}" fill="#151b21"></path>
+<path d="{{ el.climbFill }}" fill="#f0c419" opacity="0.55"></path>
+<path d="{{ el.descFill }}" fill="#46cfe0" opacity="0.55"></path>
+<path d="{{ el.line }}" fill="none" stroke="#48535f" stroke-width="1.4"></path>
+<path d="{{ el.past }}" fill="none" stroke="#cfd8e2" stroke-width="1.8"></path>
+<line x1="{{ el.x }}" y1="0" x2="{{ el.x }}" y2="128" stroke="#46cfe0" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"></line>
+<g transform="{{ el.truck }}">
+<rect x="-17" y="-13" width="34" height="10" fill="#e6eaef"></rect>
+<rect x="-17" y="-20" width="12" height="8" fill="#e6eaef"></rect>
+<circle cx="-11" cy="0" r="3.1" fill="#46cfe0"></circle>
+<circle cx="9" cy="0" r="3.1" fill="#46cfe0"></circle>
+<circle cx="14" cy="0" r="3.1" fill="#46cfe0"></circle>
+</g>
+</svg>
+<div style="position:absolute;left:10px;top:8px;font:400 9px/1 'DM Mono',monospace;color:#5c6674;letter-spacing:.1em">ELEVATION</div>
+</div>
+<div style="height:52px;flex:none;border-top:1px solid #1c232b;display:flex;align-items:center;gap:16px;padding:0 14px">
+<button onClick="{{ togglePlay }}" style="all:unset;cursor:pointer;width:34px;height:34px;flex:none;border:1px solid #2b6f7a;background:#0f2a2e;display:flex;align-items:center;justify-content:center;font:400 12px/1 'DM Mono',monospace;color:#8ae3ee" style-hover="background:#14383d">{{ playIcon }}</button>
+<div style="flex:1;position:relative;height:34px;display:flex;align-items:center">
+<div style="position:absolute;left:0;right:0;height:4px;background:#1c232b"></div>
+<div style="position:absolute;left:0;height:4px;background:#46cfe0;width:{{ posPct }}"></div>
+<input type="range" min="0" max="1000" value="{{ posK }}" onChange="{{ scrub }}" onInput="{{ scrub }}" style="position:absolute;left:0;right:0;width:100%;margin:0;appearance:none;background:transparent;height:34px;cursor:pointer"></input>
+<div style="position:absolute;left:{{ posPct }};width:2px;height:16px;background:#e6eaef;transform:translateX(-1px)"></div>
+</div>
+<div style="display:flex;gap:22px;flex:none">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:92px"><span style="font:400 8px/1 'DM Mono',monospace;letter-spacing:.16em;color:#5c6674">DISTANCE</span><span style="font:400 15px/1 'DM Mono',monospace;color:#e6eaef">{{ nowDist }} km</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:92px"><span style="font:400 8px/1 'DM Mono',monospace;letter-spacing:.16em;color:#5c6674">ELAPSED</span><span style="font:400 15px/1 'DM Mono',monospace;color:#e6eaef">{{ nowTime }}</span></div>
+</div>
+<div style="display:flex;gap:4px;flex:none">
+<sc-for list="{{ rates }}" as="r" hint-placeholder-count="4">
+<button onClick="{{ r.go }}" style="all:unset;cursor:pointer;padding:5px 9px;border:1px solid {{ r.line }};background:{{ r.fill }};font:400 10px/1 'DM Mono',monospace;color:{{ r.col }}">{{ r.label }}</button>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="flex:none;display:grid;grid-template-columns:700px 1fr 424px;gap:16px;height:336px">
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #1c232b">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">POWER FLOW</span>
+<span data-term="bus" onMouseEnter="{{ tipOn }}" onMouseLeave="{{ tipOff }}" style="font:400 9px/1 'DM Mono',monospace;color:#46cfe0;border-bottom:1px dashed #2b6f7a;cursor:help">DC BUS</span>
+<div style="flex:1"></div>
+<span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">WIDTH = √kW · {{ flowLegend }}</span>
+</div>
+<div style="flex:1;position:relative;min-height:0">
+<svg viewBox="0 0 690 258" style="position:absolute;inset:0;width:100%;height:100%">
+<path d="M 96 74 L 168 74" stroke="#f0c419" stroke-width="{{ pf.wFuel }}" stroke-linecap="butt" opacity="{{ pf.oFuel }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aFuel }} linear infinite"></path>
+<path d="M 236 74 L 318 74" stroke="#46cfe0" stroke-width="{{ pf.wGen }}" opacity="{{ pf.oGen }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aGen }} linear infinite"></path>
+<path d="M 358 74 L 440 74" stroke="#46cfe0" stroke-width="{{ pf.wMot }}" opacity="{{ pf.oMot }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aMot }} linear infinite"></path>
+<path d="M 508 74 L 584 74" stroke="#f0c419" stroke-width="{{ pf.wWheel }}" opacity="{{ pf.oWheel }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aWheel }} linear infinite"></path>
+<path d="M 338 96 L 338 150 L 250 150" stroke="#46cfe0" stroke-width="{{ pf.wBat }}" fill="none" opacity="{{ pf.oBat }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aBat }} linear infinite"></path>
+<path d="M 338 96 L 338 150 L 420 150" stroke="#e2603a" stroke-width="{{ pf.wRes }}" fill="none" opacity="{{ pf.oRes }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aRes }} linear infinite"></path>
+<path d="M 338 96 L 338 202 L 420 202" stroke="#e2603a" stroke-width="{{ pf.wHeat }}" fill="none" opacity="{{ pf.oHeat }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aHeat }} linear infinite"></path>
+<path d="M 546 96 L 546 202 L 500 202" stroke="#78838f" stroke-width="{{ pf.wFric }}" fill="none" opacity="{{ pf.oFric }}" stroke-dasharray="6 6" style="animation:flow {{ pf.aFric }} linear infinite"></path>
+<sc-for list="{{ pf.nodes }}" as="n" hint-placeholder-count="9">
+<rect x="{{ n.x }}" y="{{ n.y }}" width="{{ n.w }}" height="34" fill="{{ n.fill }}" stroke="{{ n.line }}" stroke-width="1"></rect>
+</sc-for>
+</svg>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+<div style="position:relative;width:100%;max-width:100%;max-height:100%;aspect-ratio:690/258">
+<sc-for list="{{ pf.nodes }}" as="n" hint-placeholder-count="9">
+<div style="position:absolute;left:{{ n.pl }};top:{{ n.pt }};width:{{ n.pw }};height:{{ n.ph }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+<span style="font:500 9.5px/1 'DM Mono',monospace;letter-spacing:.08em;color:{{ n.col }};white-space:nowrap">{{ n.label }}</span>
+<span style="font:400 11px/1 'DM Mono',monospace;color:{{ n.vcol }};white-space:nowrap">{{ n.val }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #1c232b">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">SPEED · ROAD GRADE</span>
+<div style="flex:1"></div>
+<sc-if value="{{ ribbonOn }}" hint-placeholder-val="{{ true }}"><span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:7px;background:#2a3a44;display:block"></span><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">8‑SEED SPREAD</span></span></sc-if>
+</div>
+<div style="flex:1;position:relative;min-height:0">
+<svg viewBox="0 0 460 258" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">
+<line x1="0" y1="124" x2="460" y2="124" stroke="#1c232b" stroke-width="1"></line>
+<line x1="0" y1="196" x2="460" y2="196" stroke="#1c232b" stroke-width="1"></line>
+<path d="{{ ch.vRibbon }}" fill="#2a3a44" opacity="{{ ch.ribOp }}"></path>
+<path d="{{ ch.vLine }}" fill="none" stroke="#e6eaef" stroke-width="1.3"></path>
+<path d="{{ ch.gLine }}" fill="none" stroke="#8d99a8" stroke-width="1.1"></path>
+<path d="{{ ch.gPos }}" fill="#f0c419" opacity="0.5"></path>
+<path d="{{ ch.gNeg }}" fill="#46cfe0" opacity="0.5"></path>
+<line x1="{{ ch.cx }}" y1="0" x2="{{ ch.cx }}" y2="258" stroke="#46cfe0" stroke-width="1" opacity="0.8"></line>
+</svg>
+<div style="position:absolute;left:8px;top:6px;font:400 9px/1 'DM Mono',monospace;color:#5c6674">km/h</div>
+<div style="position:absolute;left:8px;top:52%;font:400 9px/1 'DM Mono',monospace;color:#5c6674">GRADE %</div>
+<div style="position:absolute;right:8px;top:6px;font:400 13px/1 'DM Mono',monospace;color:#e6eaef">{{ nowSpeed }}</div>
+<div style="position:absolute;right:8px;top:52%;font:400 13px/1 'DM Mono',monospace;color:{{ gradeCol }}">{{ nowGrade }}</div>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #1c232b">
+<span data-term="soc" onMouseEnter="{{ tipOn }}" onMouseLeave="{{ tipOff }}" style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674;border-bottom:1px dashed #3a4654;cursor:help">BUFFER PACK</span>
+<div style="flex:1"></div>
+<span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">{{ packSpec }}</span>
+</div>
+<div style="flex:1;padding:16px 16px;display:flex;gap:16px;min-height:0">
+<div style="width:112px;flex:none;display:flex;flex-direction:column;gap:8px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.14em;color:#5c6674">STATE OF CHARGE</div>
+<div style="flex:1;position:relative;background:#0e1216;border:1px solid #232a33;min-height:0">
+<div style="position:absolute;left:0;right:0;bottom:0;height:{{ soc.pct }};background:#1c4a52;border-top:1.5px solid #46cfe0"></div>
+<div style="position:absolute;left:0;right:0;bottom:{{ soc.tgt }};height:1px;background:#8d99a8;opacity:.7"></div>
+<div style="position:absolute;left:0;right:0;bottom:{{ soc.hi }};height:1px;background:#e2603a;opacity:.55"></div>
+<div style="position:absolute;left:0;right:0;bottom:{{ soc.lo }};height:1px;background:#e2603a;opacity:.55"></div>
+<div style="position:absolute;left:8px;bottom:8px;font:400 19px/1 'DM Mono',monospace;color:#e6eaef">{{ soc.val }}</div>
+</div>
+<div style="font:400 10px/1 'DM Mono',monospace;color:#6f7b8a">{{ soc.kwh }}</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;min-width:0">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between"><span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.14em;color:#5c6674">CELL TEMP</span><span style="font:400 12px/1 'DM Mono',monospace;color:{{ tmp.col }}">{{ tmp.val }}</span></div>
+<div style="height:8px;background:#0e1216;border:1px solid #232a33;position:relative">
+<div style="position:absolute;left:0;top:0;bottom:0;width:{{ tmp.pct }};background:{{ tmp.col }};opacity:.75"></div>
+<div style="position:absolute;left:{{ tmp.gate }};top:-3px;bottom:-3px;width:1px;background:#e2603a"></div>
+</div>
+<div style="font:400 9px/1.3 'DM Mono',monospace;color:#4b5563">{{ tmp.note }}</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.14em;color:#5c6674">REGEN ACCEPTANCE ORDER</div>
+<sc-for list="{{ ladder }}" as="r" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:14px 1fr 62px;gap:8px;align-items:center">
+<span style="font:400 9px/1 'DM Mono',monospace;color:{{ r.numCol }}">{{ r.i }}</span>
+<span style="display:flex;flex-direction:column;gap:3px">
+<span style="font:400 10px/1 'DM Mono',monospace;color:{{ r.col }};letter-spacing:.04em">{{ r.name }}</span>
+<span style="height:4px;background:#0e1216;position:relative;display:block"><span style="position:absolute;left:0;top:0;bottom:0;width:{{ r.pct }};background:{{ r.col }};display:block"></span></span>
+</span>
+<span style="font:400 10px/1 'DM Mono',monospace;color:{{ r.col }};text-align:right">{{ r.kw }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="flex:1;display:grid;grid-template-columns:1.06fr 1fr 1fr 1.1fr;gap:16px;min-height:0">
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #1c232b">
+<span data-term="island" onMouseEnter="{{ tipOn }}" onMouseLeave="{{ tipOff }}" style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674;border-bottom:1px dashed #3a4654;cursor:help">FUEL‑EFFICIENCY MAP</span>
+<div style="flex:1"></div>
+<span style="font:400 9px/1 'DM Mono',monospace;color:{{ map.dotCol }}">{{ map.state }}</span>
+</div>
+<div style="flex:1;position:relative;min-height:0">
+<svg viewBox="0 0 300 190" style="position:absolute;inset:0;width:100%;height:100%">
+<sc-for list="{{ map.bands }}" as="b" hint-placeholder-count="4">
+<path d="{{ b.d }}" fill="{{ b.fill }}" stroke="{{ b.stroke }}" stroke-width="0.7"></path>
+</sc-for>
+<path d="{{ map.envelope }}" fill="none" stroke="#3a4654" stroke-width="1"></path>
+<path d="{{ map.dTrail }}" fill="none" stroke="#78838f" stroke-width="0.9" opacity="0.75" stroke-dasharray="2 2"></path>
+<path d="{{ map.trail }}" fill="none" stroke="#8ae3ee" stroke-width="1" opacity="0.6"></path>
+<circle cx="{{ map.ddx }}" cy="{{ map.ddy }}" r="3.6" fill="none" stroke="#a9b6c6" stroke-width="1.4"></circle>
+<circle cx="{{ map.dx }}" cy="{{ map.dy }}" r="4.6" fill="{{ map.dotCol }}"></circle>
+<circle cx="{{ map.dx }}" cy="{{ map.dy }}" r="9" fill="none" stroke="{{ map.dotCol }}" stroke-width="0.8" opacity="0.45"></circle>
+</svg>
+<div style="position:absolute;left:8px;bottom:5px;font:400 8.5px/1 'DM Mono',monospace;color:#4b5563">rpm 700 → 3000</div>
+<div style="position:absolute;left:8px;top:6px;font:400 8.5px/1 'DM Mono',monospace;color:#4b5563">Nm</div>
+<div style="position:absolute;right:8px;bottom:20px;display:flex;flex-direction:column;gap:3px;align-items:flex-end">
+<span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#46cfe0;display:block"></span><span style="font:400 8.5px/1 'DM Mono',monospace;color:#8d99a8">SERIES · PINNED</span></span>
+<span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;border:1.4px solid #a9b6c6;display:block"></span><span style="font:400 8.5px/1 'DM Mono',monospace;color:#8d99a8">DIESEL · {{ map.dGear }}</span></span>
+</div>
+<div style="position:absolute;right:8px;bottom:5px;font:400 11px/1 'DM Mono',monospace;color:#e6eaef">{{ map.bsfc }} <span style="color:#5c6674">/ {{ map.dBsfc }}</span></div>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column">
+<div style="padding:9px 14px;border-bottom:1px solid #1c232b;font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">FUEL CONSUMED</div>
+<div style="flex:1;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
+<div style="display:flex;flex-direction:column;gap:3px">
+<div style="font:300 44px/1 'DM Mono',monospace;color:#f0c419;letter-spacing:-.03em">{{ fuel.litres }}</div>
+<div style="font:400 10px/1 'DM Mono',monospace;letter-spacing:.14em;color:#6f7b8a">LITRES · DERIVED</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:3px">
+<div style="font:400 22px/1 'DM Mono',monospace;color:#e6eaef">{{ fuel.per100 }}</div>
+<div style="font:400 10px/1 'DM Mono',monospace;letter-spacing:.12em;color:#6f7b8a">L / 100 km, RUNNING</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:3px">
+<div style="font:400 22px/1 'DM Mono',monospace;color:#e6eaef">{{ fuel.perTkm }}</div>
+<div data-term="ptkm" onMouseEnter="{{ tipOn }}" onMouseLeave="{{ tipOff }}" style="font:400 10px/1.3 'DM Mono',monospace;letter-spacing:.12em;color:#6f7b8a;border-bottom:1px dashed #3a4654;cursor:help;align-self:flex-start">MJ / PAYLOAD TONNE‑km</div>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column">
+<div style="padding:9px 14px;border-bottom:1px solid #1c232b;font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">INSTANTANEOUS</div>
+<div style="flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ readouts }}" as="r" hint-placeholder-count="6">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font:400 10px/1.2 'DM Mono',monospace;color:#6f7b8a;letter-spacing:.05em">{{ r.k }}</span>
+<span style="font:400 14px/1 'DM Mono',monospace;color:{{ r.col }}">{{ r.v }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #1c232b">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">NUMBERS OF RECORD</span>
+<div style="flex:1"></div>
+<span style="display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;background:#e6eaef;display:block"></span><span style="font:400 8.5px/1 'DM Mono',monospace;color:#5c6674">RATIFIED</span></span>
+</div>
+<div style="flex:1;padding:12px 14px;display:flex;flex-direction:column;gap:9px;overflow:hidden">
+<sc-for list="{{ recordRows }}" as="r" hint-placeholder-count="6">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-bottom:8px;border-bottom:1px solid #171d24">
+<span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font:400 10px/1.25 Chivo,sans-serif;color:#a9b6c6">{{ r.k }}</span>
+<span style="font:400 8.5px/1 'DM Mono',monospace;color:#4b5563;letter-spacing:.05em">{{ r.src }}</span>
+</span>
+<span style="font:400 13px/1 'DM Mono',monospace;color:{{ r.col }};flex:none">{{ r.v }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:#0e1114;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;z-index:20">
+<div style="width:340px;height:2px;background:#1c232b;overflow:hidden;position:relative"><div style="position:absolute;inset:0;width:33%;background:#46cfe0;animation:sweep 1.15s ease-in-out infinite"></div></div>
+<div style="display:flex;flex-direction:column;gap:7px;align-items:center">
+<div style="font:400 11px/1 'DM Mono',monospace;letter-spacing:.22em;color:#8d99a8">RESOLVING RECORD</div>
+<div style="font:400 10px/1 'DM Mono',monospace;color:#4b5563">integrating 8 seeds over {{ loadRoute }}</div>
+</div>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ isRace }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:20px 24px;min-height:0">
+<div style="flex:none;display:flex;align-items:center;gap:12px">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">CANDIDATE</span>
+<sc-for list="{{ raceOpts }}" as="o" hint-placeholder-count="4">
+<button onClick="{{ o.go }}" style="all:unset;cursor:pointer;padding:6px 12px;border:1px solid {{ o.line }};background:{{ o.fill }};font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:{{ o.col }}" style-hover="border-color:#46cfe0">{{ o.label }}</button>
+</sc-for>
+<div style="flex:1"></div>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#5c6674">SAME ROUTE · SAME SEED 8105 · SAME WIND · SAME DRIVER</span>
+</div>
+
+<div style="height:196px;flex:none;border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid #1c232b">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">GRADE‑HEAVY CORRIDOR · 520 km</span>
+<div style="flex:1"></div>
+<span style="font:400 11px/1 'DM Mono',monospace;color:#e6eaef">{{ race.km }} km</span>
+</div>
+<div style="flex:1;position:relative;min-height:0">
+<svg viewBox="0 0 1180 146" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">
+<path d="{{ race.elLine }}" fill="none" stroke="#48535f" stroke-width="1.2"></path>
+<g transform="{{ race.t0 }}">
+<rect x="-20" y="-13" width="40" height="9" fill="#c7d0da"></rect>
+<rect x="-20" y="-19" width="11" height="7" fill="#c7d0da"></rect>
+<circle cx="-13" cy="0" r="2.8" fill="#8d99a8"></circle><circle cx="10" cy="0" r="2.8" fill="#8d99a8"></circle><circle cx="16" cy="0" r="2.8" fill="#8d99a8"></circle>
+</g>
+<g transform="{{ race.t1 }}">
+<rect x="-20" y="-13" width="40" height="9" fill="#46cfe0"></rect>
+<rect x="-20" y="-19" width="11" height="7" fill="#46cfe0"></rect>
+<circle cx="-13" cy="0" r="2.8" fill="#46cfe0"></circle><circle cx="10" cy="0" r="2.8" fill="#46cfe0"></circle><circle cx="16" cy="0" r="2.8" fill="#46cfe0"></circle>
+</g>
+</svg>
+<div style="position:absolute;left:{{ race.lblX }};top:{{ race.lbl0Y }};transform:{{ race.lblTx }};font:500 10px/1 'DM Mono',monospace;color:#8d99a8;white-space:nowrap;pointer-events:none">S0 DIESEL</div>
+<div style="position:absolute;left:{{ race.lblX }};top:{{ race.lbl1Y }};transform:{{ race.lblTx }};font:500 10px/1 'DM Mono',monospace;color:#46cfe0;white-space:nowrap;pointer-events:none">{{ race.id }} {{ race.name }}</div>
+</div>
+<div style="height:46px;flex:none;border-top:1px solid #1c232b;display:flex;align-items:center;gap:14px;padding:0 14px">
+<button onClick="{{ toggleRace }}" style="all:unset;cursor:pointer;width:30px;height:30px;border:1px solid #2b6f7a;background:#0f2a2e;display:flex;align-items:center;justify-content:center;font:400 11px/1 'DM Mono',monospace;color:#8ae3ee">{{ raceIcon }}</button>
+<button onClick="{{ resetRace }}" style="all:unset;cursor:pointer;padding:7px 12px;border:1px solid #2b333d;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8d99a8" style-hover="color:#e6eaef">RESET</button>
+<button onClick="{{ skipRace }}" style="all:unset;cursor:pointer;padding:7px 12px;border:1px solid #2b333d;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8d99a8" style-hover="color:#e6eaef">SKIP TO FINISH</button>
+<div style="flex:1;height:4px;background:#1c232b;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ race.pct }};background:#46cfe0"></div></div>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#5c6674">FINISH LINE RESOLVES THE VERDICT</span>
+</div>
+</div>
+
+<div style="flex:none;display:grid;grid-template-columns:1fr 1fr;gap:16px;height:186px">
+<div style="border:1px solid #232a33;background:#12161b;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font:500 12px/1 Chivo,sans-serif;letter-spacing:.1em;color:#c7d0da">S0 · CONVENTIONAL DIESEL</span><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">THE RULER</span></div>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font:300 40px/1 'DM Mono',monospace;color:#c7d0da">{{ race.fS0 }}</span><span style="font:400 11px/1 'DM Mono',monospace;color:#6f7b8a">L BURNED</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">L/100 km</span><span style="font:400 14px/1 'DM Mono',monospace;color:#e6eaef">{{ race.lS0 }}</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">PAYLOAD</span><span style="font:400 14px/1 'DM Mono',monospace;color:#e6eaef">{{ race.payS0 }} t</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">POWERTRAIN</span><span style="font:400 14px/1 'DM Mono',monospace;color:#e6eaef">{{ race.ptS0 }} kg</span></div>
+</div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">13 L diesel, 12‑speed AMT, direct top gear. Spends 0.72 of moving time in top gear near its efficiency island. Conceded near‑optimal on flat line‑haul.</div>
+</div>
+<div style="border:1px solid #2b6f7a;background:#101a1e;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font:500 12px/1 Chivo,sans-serif;letter-spacing:.1em;color:#8ae3ee">{{ race.id }} · {{ race.name }}</span><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">CANDIDATE</span></div>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font:300 40px/1 'DM Mono',monospace;color:#46cfe0">{{ race.fC }}</span><span style="font:400 11px/1 'DM Mono',monospace;color:#6f7b8a">L BURNED</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">L/100 km</span><span style="font:400 14px/1 'DM Mono',monospace;color:#e6eaef">{{ race.lC }}</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">PAYLOAD</span><span style="font:400 14px/1 'DM Mono',monospace;color:#f0c419">{{ race.payC }} t</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 9px/1 'DM Mono',monospace;color:#5c6674">POWERTRAIN</span><span style="font:400 14px/1 'DM Mono',monospace;color:#f0c419">{{ race.ptC }} kg</span></div>
+</div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#8d99a8;text-wrap:pretty">{{ race.arch }}</div>
+</div>
+</div>
+
+<div style="flex:1;border:1px solid #232a33;background:#12161b;display:flex;min-height:0">
+<div style="flex:1;padding:18px 20px;display:flex;flex-direction:column;gap:16px;min-width:0">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">VERDICT · NET PER TONNE OF FREIGHT</span>
+<div style="flex:1"></div>
+<sc-if value="{{ raceOpen }}" hint-placeholder-val="{{ false }}"><span style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#e6eaef;padding:4px 10px;border:1px solid #4a5665;background:#1b222a">{{ race.verdict }}</span></sc-if>
+<sc-if value="{{ racePending }}" hint-placeholder-val="{{ true }}"><span style="font:400 10px/1 'DM Mono',monospace;letter-spacing:.16em;color:#5c6674">RESOLVES AT 520 km</span></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:13px">
+<div style="display:grid;grid-template-columns:190px 1fr 86px;gap:14px;align-items:center">
+<span style="font:400 11px/1.2 'DM Mono',monospace;color:#a9b6c6">FUEL SAVED PER km</span>
+<span style="height:16px;background:#0e1216;position:relative;display:block"><span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#4a5665;display:block"></span><span style="position:absolute;left:50%;top:0;bottom:0;width:{{ race.barPerKm }};background:#46cfe0;opacity:.8;display:block"></span></span>
+<span style="font:400 13px/1 'DM Mono',monospace;color:#46cfe0;text-align:right">{{ race.perKm }}</span>
+</div>
+<div style="display:grid;grid-template-columns:190px 1fr 86px;gap:14px;align-items:center">
+<span style="font:400 11px/1.2 'DM Mono',monospace;color:#a9b6c6">FREIGHT GIVEN BACK</span>
+<span style="height:16px;background:#0e1216;position:relative;display:block"><span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#4a5665;display:block"></span><span style="position:absolute;right:50%;top:0;bottom:0;width:{{ race.barFreight }};background:#f0c419;opacity:.8;display:block"></span></span>
+<span style="font:400 13px/1 'DM Mono',monospace;color:#f0c419;text-align:right">{{ race.freight }}</span>
+</div>
+<div style="height:1px;background:#232a33"></div>
+<div style="display:grid;grid-template-columns:190px 1fr 86px;gap:14px;align-items:center">
+<span style="display:flex;flex-direction:column;gap:2px"><span style="font:400 11px/1.2 'DM Mono',monospace;color:#e6eaef">NET, ENSEMBLE‑MIN</span><span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">median {{ race.netMed }}</span></span>
+<span style="height:22px;background:#0e1216;position:relative;display:block">
+<span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#4a5665;display:block"></span>
+<sc-if value="{{ raceNetOpen }}" hint-placeholder-val="{{ false }}">
+<span style="position:absolute;left:50%;top:0;bottom:0;width:{{ race.netPos }};background:#c7d0da;display:block"></span>
+</sc-if>
+<sc-if value="{{ raceNetOpen }}" hint-placeholder-val="{{ false }}">
+<span style="position:absolute;right:50%;top:0;bottom:0;width:{{ race.netNeg }};background:#c7d0da;display:block"></span>
+</sc-if>
+<span style="position:absolute;left:{{ race.advX }};top:-4px;bottom:-4px;width:1px;background:#e6eaef;display:block"></span>
+<span style="position:absolute;left:{{ race.advX }};top:-18px;font:400 9px/1 'DM Mono',monospace;color:#8d99a8;padding-left:5px;white-space:nowrap">≥3% TO ADVANCE</span>
+</span>
+<sc-if value="{{ raceNetOpen }}" hint-placeholder-val="{{ false }}"><span style="font:400 20px/1 'DM Mono',monospace;color:{{ race.netCol }};text-align:right">{{ race.net }}</span></sc-if>
+<sc-if value="{{ racePending }}" hint-placeholder-val="{{ true }}"><span style="font:400 20px/1 'DM Mono',monospace;color:#2b333d;text-align:right">—</span></sc-if>
+</div>
+</div>
+<div style="height:1px;background:#232a33;margin-top:4px"></div>
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.18em;color:#5c6674">CORNER SWEEP · EVERY CORNER MUST CLEAR ≥0%</span>
+<div style="flex:1"></div>
+<span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">R28 CORNER SET · ENSEMBLE‑MIN</span>
+</div>
+<sc-for list="{{ race.corners }}" as="c" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:190px 1fr 86px;gap:14px;align-items:center">
+<span style="font:400 10px/1.2 'DM Mono',monospace;color:#8d99a8">{{ c.name }}</span>
+<span style="height:11px;background:#0e1216;position:relative;display:block">
+<span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#4a5665;display:block"></span>
+<span style="position:absolute;left:50%;top:0;bottom:0;width:{{ c.wPos }};background:#c7d0da;display:block"></span>
+<span style="position:absolute;right:50%;top:0;bottom:0;width:{{ c.wNeg }};background:#5c6674;display:block"></span>
+</span>
+<span style="font:400 11px/1 'DM Mono',monospace;color:{{ c.col }};text-align:right">{{ c.val }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<sc-if value="{{ raceOpen }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:14px">
+<button onClick="{{ toggleWhy }}" style="all:unset;cursor:pointer;padding:10px 16px;border:1px solid #4a5665;background:#1b222a;font:500 11px/1 'DM Mono',monospace;letter-spacing:.14em;color:#e6eaef" style-hover="background:#232c36">WHY DID IT DIE?</button>
+<span style="font:400 10px/1.4 'DM Mono',monospace;color:#5c6674">{{ race.corr }} of this candidate’s reported fuel is correction, not fuel the model watched it burn</span>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{ whyOpen }}" hint-placeholder-val="{{ false }}">
+<div style="width:520px;flex:none;border-left:1px solid #232a33;background:#0f1317;padding:18px 22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">VERDICT CARD</span>
+<div style="flex:1"></div>
+<span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">R25 · results_ws8.json</span>
+</div>
+<div style="font:500 17px/1.3 Chivo,sans-serif;color:#e6eaef">{{ race.id }} {{ race.name }} — {{ race.verdict }}</div>
+<div style="font:300 13.5px/1.62 Chivo,sans-serif;color:#a9b6c6;text-wrap:pretty">{{ race.why }}</div>
+<div style="flex:1"></div>
+<div style="padding-top:12px;border-top:1px solid #232a33;font:400 10.5px/1.6 'DM Mono',monospace;color:#6f7b8a;text-wrap:pretty">Criterion armed before the computation: ≥3% fuel energy per payload tonne‑km against S0 at nominal, ensemble‑min, AND ≥0% at every corner. The adjudicator reproduced all 60 margins to 1e‑9.</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSandbox }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:20px 24px;min-height:0">
+<div style="flex:none;display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid #7a5a2b;background:#221b0c">
+<div style="width:8px;height:8px;background:#f0c419;flex:none"></div>
+<span style="font:500 12px/1 'DM Mono',monospace;letter-spacing:.2em;color:#f0c419">SANDBOX — SIMPLIFIED PHYSICS, NOT A TRIAL RESULT</span>
+<div style="flex:1"></div>
+<span style="font:300 12px/1.4 Chivo,sans-serif;color:#a9906a">Nothing on this screen may be quoted as a result. It exists to show where a boundary lies.</span>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:392px 1fr;gap:16px;min-height:0">
+<div style="border:1px solid #232a33;background:#12161b;padding:18px 20px;display:flex;flex-direction:column;gap:22px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">INPUTS</div>
+<sc-for list="{{ sliders }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<span style="font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8d99a8">{{ s.k }}</span>
+<span style="font:400 15px/1 'DM Mono',monospace;color:#e6eaef">{{ s.v }}</span>
+</div>
+<input type="range" min="{{ s.min }}" max="{{ s.max }}" step="{{ s.step }}" value="{{ s.val }}" onInput="{{ s.on }}" onChange="{{ s.on }}" style="width:100%;margin:0;accent-color:#46cfe0;height:16px;cursor:pointer"></input>
+</div>
+</sc-for>
+<div style="height:1px;background:#232a33"></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between"><span style="font:400 10px/1 'DM Mono',monospace;color:#6f7b8a">CLIMB FORCE REQUIRED</span><span style="font:400 12px/1 'DM Mono',monospace;color:#e6eaef">{{ sand.force }} kN</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 10px/1 'DM Mono',monospace;color:#6f7b8a">RATIO FLOOR · HILL CLIMB</span><span style="font:400 12px/1 'DM Mono',monospace;color:#f0c419">{{ sand.rMin }} : 1</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 10px/1 'DM Mono',monospace;color:#6f7b8a">RATIO CEILING · rpm LIMIT</span><span style="font:400 12px/1 'DM Mono',monospace;color:#46cfe0">{{ sand.rMax }} : 1</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 10px/1 'DM Mono',monospace;color:#6f7b8a">CRUISE / CLIMB SPEED</span><span style="font:400 12px/1 'DM Mono',monospace;color:#a9b6c6">{{ sand.vCruise }} / {{ sand.vClimb }} km/h</span></div>
+</div>
+<div style="flex:1"></div>
+<div style="padding:14px 16px;border:1px solid #2b333d;background:#0f1317;display:flex;flex-direction:column;gap:7px">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.16em;color:#5c6674">WINDOW CLOSES AT</span>
+<span style="font:300 30px/1 'DM Mono',monospace;color:#e6eaef">{{ sand.cross }}</span>
+<span style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">Above this mass the gear that climbs the hill over‑revs the engine at cruise, and the gear that cruises cannot hold the grade. No single ratio satisfies both.</span>
+</div>
+</div>
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #1c232b">
+<span data-term="ratio" onMouseEnter="{{ tipOn }}" onMouseLeave="{{ tipOff }}" style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674;border-bottom:1px dashed #3a4654;cursor:help">FEASIBLE RATIO WINDOW</span>
+<div style="flex:1"></div>
+<span style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.14em;color:{{ sand.stateCol }}">{{ sand.state }}</span>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#5c6674">{{ sand.widthNote }}</span>
+</div>
+<div style="flex:1;position:relative;min-height:0">
+<svg viewBox="0 0 560 250" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">
+<path d="{{ sand.ceilFill }}" fill="#0f2126" opacity="0.9"></path>
+<path d="{{ sand.floorFill }}" fill="#241f10" opacity="0.9"></path>
+<path d="{{ sand.band }}" fill="#18232b"></path>
+<path d="{{ sand.upper }}" fill="none" stroke="#46cfe0" stroke-width="1.6"></path>
+<path d="{{ sand.lower }}" fill="none" stroke="#f0c419" stroke-width="1.6"></path>
+<line x1="{{ sand.crossX }}" y1="10" x2="{{ sand.crossX }}" y2="240" stroke="#e2603a" stroke-width="1" stroke-dasharray="4 4"></line>
+<line x1="{{ sand.mx }}" y1="10" x2="{{ sand.mx }}" y2="240" stroke="#3a4654" stroke-width="1"></line>
+<sc-for list="{{ sandTicks }}" as="t" hint-placeholder-count="6">
+<line x1="34" y1="{{ t.y }}" x2="40" y2="{{ t.y }}" stroke="#3a4654" stroke-width="1"></line>
+</sc-for>
+<circle cx="{{ sand.mx }}" cy="{{ sand.ry }}" r="5.5" fill="{{ sand.dotCol }}"></circle>
+<circle cx="{{ sand.mx }}" cy="{{ sand.ry }}" r="11" fill="none" stroke="{{ sand.dotCol }}" stroke-width="0.9" opacity="0.4"></circle>
+</svg>
+<div style="position:absolute;left:12px;top:10px;font:400 9.5px/1.5 'DM Mono',monospace;color:#46cfe0">CRUISE rpm CEILING — ratios above this line over‑rev the engine</div>
+<sc-for list="{{ sandTicks }}" as="t" hint-placeholder-count="6">
+<div style="position:absolute;left:{{ t.px }};top:{{ t.py }};transform:translate(-100%,-50%);font:400 8px/1 'DM Mono',monospace;color:#4b5563;pointer-events:none;padding-right:4px">{{ t.r }}</div>
+</sc-for>
+<div style="position:absolute;left:12px;bottom:26px;font:400 9.5px/1.5 'DM Mono',monospace;color:#f0c419">HILL‑CLIMB FORCE FLOOR — ratios below this line cannot hold the grade</div>
+<div style="position:absolute;left:12px;bottom:8px;font:400 9px/1 'DM Mono',monospace;color:#4b5563">6.6 t</div>
+<div style="position:absolute;right:12px;bottom:8px;font:400 9px/1 'DM Mono',monospace;color:#4b5563">36.3 t</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isVerdict }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;padding:20px 24px;min-height:0">
+
+<div style="grid-column:span 2;border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:baseline;gap:12px;padding:12px 18px;border-bottom:1px solid #1c232b">
+<span style="font:500 13px/1 Chivo,sans-serif;letter-spacing:.04em;color:#e6eaef">The clutch trial</span>
+<span style="font:400 9.5px/1 'DM Mono',monospace;color:#5c6674">G1 · WS4 · KILL LINE ≥5% NOMINAL ENSEMBLE‑MIN</span>
+<div style="flex:1"></div>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#8d99a8">WATERFALL</span>
+</div>
+<div style="flex:1;display:flex;min-height:0">
+<div style="flex:1;position:relative;min-width:0">
+<svg viewBox="0 0 520 196" style="position:absolute;inset:0;width:100%;height:100%">
+<line x1="18" y1="118" x2="510" y2="118" stroke="#2b333d" stroke-width="1"></line>
+<line x1="18" y1="80" x2="510" y2="80" stroke="#8d99a8" stroke-width="1" stroke-dasharray="4 3"></line>
+<text x="22" y="76" fill="#8d99a8" style="font:400 8.5px 'DM Mono',monospace">KILL LINE +5%</text>
+<sc-for list="{{ wfConn }}" as="c" hint-placeholder-count="4">
+<line x1="{{ c.x1 }}" y1="{{ c.y }}" x2="{{ c.x2 }}" y2="{{ c.y }}" stroke="#39434f" stroke-width="0.8" stroke-dasharray="2 2"></line>
+</sc-for>
+<sc-for list="{{ wf }}" as="b" hint-placeholder-count="5">
+<rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" fill="{{ b.fill }}"></rect>
+</sc-for>
+</svg>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+<div style="position:relative;width:100%;max-width:100%;max-height:100%;aspect-ratio:520/196">
+<sc-for list="{{ wf }}" as="b" hint-placeholder-count="5">
+<div style="position:absolute;left:{{ b.pvx }};top:{{ b.pvy }};transform:translate(-50%,-50%);font:400 10px/1 'DM Mono',monospace;color:#e6eaef;white-space:nowrap">{{ b.val }}</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="width:238px;flex:none;border-left:1px solid #1c232b;padding:12px 14px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ wf }}" as="b" hint-placeholder-count="5">
+<div style="display:flex;flex-direction:column;gap:2px">
+<div style="display:flex;justify-content:space-between;gap:8px"><span style="font:400 10px/1.2 Chivo,sans-serif;color:#c7d0da">{{ b.tag }} {{ b.label }}</span><span style="font:400 10px/1 'DM Mono',monospace;color:#e6eaef">{{ b.val }}</span></div>
+<span style="font:400 8.5px/1.35 'DM Mono',monospace;color:#4b5563;text-wrap:pretty">{{ b.sub }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:11px 18px;border-top:1px solid #1c232b;font:300 12px/1.55 Chivo,sans-serif;color:#8d99a8;text-wrap:pretty">The gate passed at +6.26% under the earlier accounting convention. Replacing one scalar chain efficiency with a measured loss surface moved it −7.01 points; charging the spin drag of permanently geared machines moved it a further −1.77. The pre‑committed criterion could not be renegotiated, so the program’s own lockup clutch was deleted. A convention swap is a level shift, not a perturbation.</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:baseline;gap:10px;padding:12px 18px;border-bottom:1px solid #1c232b">
+<span style="font:500 13px/1 Chivo,sans-serif;color:#e6eaef">The cold wall</span>
+<div style="flex:1"></div>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#8d99a8">SIGN FLIP</span>
+</div>
+<div style="flex:1;padding:14px 18px;display:flex;flex-direction:column;gap:11px;min-height:0">
+<div style="font:400 9.5px/1 'DM Mono',monospace;color:#5c6674;letter-spacing:.1em">S1 PURE SERIES · MARGIN BY DUTY CONDITION</div>
+<sc-for list="{{ wfFlip }}" as="f" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:96px 1fr 62px;gap:10px;align-items:center">
+<span style="font:400 10px/1.2 'DM Mono',monospace;color:#a9b6c6">{{ f.name }}</span>
+<span style="height:14px;background:#0e1216;position:relative;display:block">
+<span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#4a5665;display:block"></span>
+<span style="position:absolute;left:50%;top:0;bottom:0;width:{{ f.wPos }};background:#c7d0da;display:block"></span>
+<span style="position:absolute;right:50%;top:0;bottom:0;width:{{ f.wNeg }};background:#5c6674;display:block"></span>
+</span>
+<span style="font:400 11px/1 'DM Mono',monospace;color:{{ f.col }};text-align:right">{{ f.min }}</span>
+</div>
+</sc-for>
+<div style="flex:1"></div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#8d99a8;text-wrap:pretty">Positive on mountains, negative in cold. Architecture is duty‑indexed: a fleet average would have hidden the sign change entirely, so the duty is named before the number is read.</div>
+</div>
+</div>
+
+<div style="grid-column:span 2;border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:baseline;gap:12px;padding:12px 18px;border-bottom:1px solid #1c232b">
+<span style="font:500 13px/1 Chivo,sans-serif;color:#e6eaef">Four semi candidates</span>
+<span style="font:400 9.5px/1 'DM Mono',monospace;color:#5c6674">PER‑km FUEL SAVED vs FREIGHT LOST vs NET · ADVANCE LINE ≥3%</span>
+<div style="flex:1"></div>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#8d99a8">PAIRED BARS</span>
+</div>
+<div style="flex:1;padding:12px 18px 14px;display:flex;flex-direction:column;gap:10px;min-height:0">
+<div style="display:grid;grid-template-columns:150px 1fr 1fr 84px 74px;gap:12px;align-items:center;padding-bottom:6px;border-bottom:1px solid #1c232b">
+<span style="font:400 8.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#4b5563">CANDIDATE</span>
+<span style="font:400 8.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#46cfe0">FUEL SAVED / km</span>
+<span style="font:400 8.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#f0c419">FREIGHT LOST</span>
+<span style="font:400 8.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#c7d0da;text-align:right">NET</span>
+<span style="font:400 8.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#4b5563;text-align:right">VERDICT</span>
+</div>
+<sc-for list="{{ wfCands }}" as="c" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:150px 1fr 1fr 84px 74px;gap:12px;align-items:center">
+<span style="display:flex;flex-direction:column;gap:2px"><span style="font:400 11px/1 'DM Mono',monospace;color:#e6eaef">{{ c.id }}</span><span style="font:300 10px/1.2 Chivo,sans-serif;color:#6f7b8a">{{ c.name }}</span></span>
+<span style="display:flex;align-items:center;gap:8px"><span style="flex:1;height:13px;background:#0e1216;position:relative;display:block"><span style="position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#4a5665;display:block"></span><span style="position:absolute;left:50%;top:0;bottom:0;width:{{ c.wPerKm }};background:#46cfe0;opacity:.8;display:block"></span></span><span style="font:400 10px/1 'DM Mono',monospace;color:#46cfe0;width:52px;text-align:right">{{ c.perKm }}</span></span>
+<span style="display:flex;align-items:center;gap:8px"><span style="flex:1;height:13px;background:#0e1216;position:relative;display:block"><span style="position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#4a5665;display:block"></span><span style="position:absolute;right:50%;top:0;bottom:0;width:{{ c.wFreight }};background:#f0c419;opacity:.8;display:block"></span></span><span style="font:400 10px/1 'DM Mono',monospace;color:#f0c419;width:52px;text-align:right">{{ c.freight }}</span></span>
+<span style="font:400 14px/1 'DM Mono',monospace;color:#e6eaef;text-align:right">{{ c.net }}</span>
+<span style="font:500 9px/1 'DM Mono',monospace;letter-spacing:.12em;color:#a9b6c6;text-align:right">{{ c.verdict }}</span>
+</div>
+</sc-for>
+<div style="flex:1"></div>
+<div style="font:300 12px/1.55 Chivo,sans-serif;color:#8d99a8;text-wrap:pretty">Every electrified candidate won on fuel per kilometre. Every one of them lost once the freight it could no longer carry was counted. Per‑km efficiency flatters; per‑payload judges.</div>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:baseline;gap:10px;padding:12px 18px;border-bottom:1px solid #1c232b">
+<span style="font:500 13px/1 Chivo,sans-serif;color:#e6eaef">Killed on capability</span>
+<div style="flex:1"></div>
+<span style="font:400 10px/1 'DM Mono',monospace;color:#8d99a8">S3 · TANDEM SPLIT</span>
+</div>
+<div style="flex:1;padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:0">
+<sc-for list="{{ s3Rows }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:2px;padding-bottom:8px;border-bottom:1px solid #171d24">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span style="font:300 11px/1.3 Chivo,sans-serif;color:#a9b6c6">{{ r.k }}</span><span style="font:400 13px/1 'DM Mono',monospace;color:#e6eaef;flex:none">{{ r.v }}</span></div>
+<span style="font:400 9px/1.3 'DM Mono',monospace;color:#4b5563">{{ r.n }}</span>
+</div>
+</sc-for>
+<div style="flex:1"></div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#8d99a8;text-wrap:pretty">Waste‑heat recovery was dropped on the same wall: best system nets +1.54–1.61% against a ≥2.5% gate, because cruise is a part‑load condition and its mass rides for five hours to harvest minutes on the mountain.</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isComponents }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;padding:24px 28px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:baseline;gap:14px"><h2 style="margin:0;font:300 30px/1 Chivo,sans-serif;letter-spacing:-.015em">Component sheet</h2><span style="font:400 10px/1 'DM Mono',monospace;color:#5c6674;letter-spacing:.14em">GAUGES · FLOW STATES · VERDICT CARDS · PROVENANCE · BADGES · SYSTEM STATES</span></div>
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+<div style="border:1px solid #232a33;background:#12161b;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">MODE BADGES</div>
+<div style="display:flex;flex-wrap:wrap;gap:9px">
+<span style="display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid #2b6f7a;background:#0f2a2e"><span style="width:5px;height:5px;background:#46cfe0;border-radius:50%"></span><span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8ae3ee">RECORD REPLAY</span></span>
+<span style="display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid #7a5a2b;background:#221b0c"><span style="width:5px;height:5px;background:#f0c419"></span><span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#f0c419">SANDBOX</span></span>
+<span style="display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid #4a5665;background:#1b222a"><span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#e6eaef">RATIFIED RECORD</span></span>
+<span style="display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid #3a4654;background:#161c24"><span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#a9b6c6">CORNER −10 °C</span></span>
+</div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">One badge per screen, top right, always visible. Cyan means a replay of a file on disk; amber means the sliders are driving; neutral means a ratified figure.</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">GAUGES</div>
+<div style="display:flex;gap:18px;align-items:flex-end">
+<div style="width:56px;display:flex;flex-direction:column;gap:6px"><div style="height:96px;background:#0e1216;border:1px solid #232a33;position:relative"><div style="position:absolute;left:0;right:0;bottom:0;height:56%;background:#1c4a52;border-top:1.5px solid #46cfe0"></div><div style="position:absolute;left:0;right:0;bottom:56%;height:1px;background:#8d99a8;opacity:.6"></div></div><span style="font:400 8.5px/1 'DM Mono',monospace;color:#5c6674">SOC</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font:400 8.5px/1 'DM Mono',monospace;color:#5c6674">TEMP · NOMINAL</span><span style="height:8px;background:#0e1216;border:1px solid #232a33;position:relative;display:block"><span style="position:absolute;left:0;top:0;bottom:0;width:52%;background:#a9b6c6;opacity:.75;display:block"></span><span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#e2603a;display:block"></span></span></div>
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font:400 8.5px/1 'DM Mono',monospace;color:#e2603a">TEMP · OVER GATE</span><span style="height:8px;background:#0e1216;border:1px solid #232a33;position:relative;display:block"><span style="position:absolute;left:0;top:0;bottom:0;width:74%;background:#e2603a;opacity:.8;display:block"></span><span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#e2603a;display:block"></span></span></div>
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font:400 8.5px/1 'DM Mono',monospace;color:#46cfe0">TEMP · COLD CORNER</span><span style="height:8px;background:#0e1216;border:1px solid #232a33;position:relative;display:block"><span style="position:absolute;left:0;top:0;bottom:0;width:14%;background:#46cfe0;opacity:.8;display:block"></span></span></div>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">FLOW‑DIAGRAM STATES</div>
+<svg viewBox="0 0 300 128" style="width:100%;height:auto">
+<text x="0" y="9" fill="#5c6674" style="font:400 7.5px 'DM Mono',monospace">GENSET DRIVING · 118 kW</text>
+<path d="M 4 24 L 296 24" stroke="#46cfe0" stroke-width="9" stroke-dasharray="6 6" style="animation:flow 1.4s linear infinite"></path>
+<text x="0" y="49" fill="#5c6674" style="font:400 7.5px 'DM Mono',monospace">BUFFERING · 12 kW</text>
+<path d="M 4 62 L 296 62" stroke="#46cfe0" stroke-width="2.4" stroke-dasharray="6 6" style="animation:flow 4s linear infinite"></path>
+<text x="0" y="87" fill="#5c6674" style="font:400 7.5px 'DM Mono',monospace">DUMPED TO RESISTOR · 210 kW</text>
+<path d="M 4 100 L 296 100" stroke="#e2603a" stroke-width="14" stroke-dasharray="6 6" style="animation:flow 0.7s linear infinite"></path>
+<text x="0" y="122" fill="#4b5563" style="font:400 7.5px 'DM Mono',monospace">IDLE PATH · width 0.6, opacity 0.12</text>
+</svg>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">PROVENANCE STRIP</div>
+<div style="display:flex;align-items:center;padding:9px 0;border-top:1px solid #232a33;border-bottom:1px solid #232a33">
+<sc-for list="{{ prov }}" as="p" hint-placeholder-count="6">
+<div style="display:flex;flex-direction:column;gap:3px;padding-right:16px;margin-right:16px;border-right:1px solid #1c232b"><span style="font:400 7.5px/1 'DM Mono',monospace;letter-spacing:.16em;color:#4b5563">{{ p.k }}</span><span style="font:400 9.5px/1 'DM Mono',monospace;color:{{ p.col }}">{{ p.v }}</span></div>
+</sc-for>
+</div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">Six fields, fixed order, present on every screen. If a figure on screen is not traceable through this strip, it is not a result.</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">SYSTEM STATES</div>
+<div style="border:1px solid #1c232b;background:#0e1114;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px">
+<div style="width:180px;height:2px;background:#1c232b;overflow:hidden;position:relative"><div style="position:absolute;inset:0;width:33%;background:#46cfe0;animation:sweep 1.15s ease-in-out infinite"></div></div>
+<span style="font:400 9.5px/1 'DM Mono',monospace;letter-spacing:.2em;color:#8d99a8">RESOLVING RECORD</span>
+</div>
+<div style="border:1px solid #1c232b;background:#0e1114;padding:16px;display:flex;flex-direction:column;gap:8px">
+<svg viewBox="0 0 240 42" style="width:100%;height:auto"><line x1="0" y1="21" x2="240" y2="21" stroke="#232a33" stroke-width="1" stroke-dasharray="3 4"></line></svg>
+<span style="font:400 9.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#6f7b8a">EMPTY TRACE — NO SEED SELECTED</span>
+<span style="font:300 11px/1.45 Chivo,sans-serif;color:#5c6674">A dashed baseline, never a zero line: an absent trace must not read as a measured zero.</span>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">VERDICT CARD</div>
+<div style="border:1px solid #2b333d;background:#0f1317;padding:14px 16px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:500 13px/1.2 Chivo,sans-serif;color:#e6eaef">S2 Single cruise ratio — DOES NOT ADVANCE</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="flex:1;height:18px;background:#0e1216;position:relative;display:block"><span style="position:absolute;left:0;top:0;bottom:0;width:12%;background:#c7d0da;display:block"></span><span style="position:absolute;left:30%;top:-4px;bottom:-4px;width:1px;background:#e6eaef;display:block"></span></span><span style="font:400 14px/1 'DM Mono',monospace;color:#e6eaef">+0.36%</span></div>
+<span style="font:400 9px/1.4 'DM Mono',monospace;color:#4b5563">criterion ≥3% nominal ensemble‑min · R25 · results_ws8.json</span>
+</div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">A kill card and a pass card are the same card. Only the number and the threshold marker differ — no colour signals approval.</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isGuide }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;padding:24px 28px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:baseline;gap:14px"><h2 style="margin:0;font:300 30px/1 Chivo,sans-serif;letter-spacing:-.015em">Style guide</h2><span style="font:400 10px/1 'DM Mono',monospace;color:#5c6674;letter-spacing:.14em">ONE PAGE · PROJECT VOLT DRIVETRAIN TRIALS</span></div>
+<div style="display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:16px;align-items:start">
+
+<div style="border:1px solid #232a33;background:#12161b;padding:18px 20px;display:flex;flex-direction:column;gap:16px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">TYPE</div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:300 34px/1 Chivo,sans-serif;letter-spacing:-.02em">Chivo Light 34/36</span><span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">display · premise, screen titles</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:500 15px/1 Chivo,sans-serif">Chivo Medium 15 — card titles</span><span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">headings, verdict lines</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:300 13.5px/1.6 Chivo,sans-serif;color:#a9b6c6">Chivo Light 13.5/1.6 — explanatory body. Reads at projector distance and stays quiet next to the numbers.</span></div>
+<div style="height:1px;background:#232a33"></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 30px/1 'DM Mono',monospace">0123456789 −+%</span><span style="font:400 9px/1 'DM Mono',monospace;color:#4b5563">DM Mono — every numeral in the exhibit. Naturally tabular, so digits never shift as values change.</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">DM MONO 9 · .2em — PANEL LABELS</span></div>
+<div style="height:1px;background:#232a33"></div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">Rule: prose is Chivo, quantities are DM Mono. A number never appears in the prose face, and a sentence never appears in the numeral face longer than a label.</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">SEMANTIC COLOUR</div>
+<sc-for list="{{ palette }}" as="p" hint-placeholder-count="7">
+<div style="display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:center">
+<span style="height:34px;background:{{ p.hex }};display:block"></span>
+<span style="display:flex;flex-direction:column;gap:2px">
+<span style="font:400 11px/1.2 'DM Mono',monospace;color:#e6eaef">{{ p.name }}</span>
+<span style="font:400 9px/1.3 'DM Mono',monospace;color:#5c6674">{{ p.hex }} · {{ p.use }}</span>
+</span>
+</div>
+</sc-for>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">Cyan / amber / orange / grey is distinguishable under deuteranopia and protanopia, and survives a dim projector. Colour carries meaning only — never emphasis, never approval.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="border:1px solid #232a33;background:#12161b;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">MOTION</div>
+<sc-for list="{{ motionRules }}" as="m" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start">
+<span style="font:400 10px/1.3 'DM Mono',monospace;color:#46cfe0">{{ m.k }}</span>
+<span style="font:300 11.5px/1.45 Chivo,sans-serif;color:#a9b6c6;text-wrap:pretty">{{ m.v }}</span>
+</div>
+</sc-for>
+</div>
+<div style="border:1px solid #232a33;background:#12161b;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+<div style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.2em;color:#5c6674">SURFACES &amp; RULES</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:34px;height:20px;background:#0e1114;border:1px solid #232a33;display:block"></span><span style="font:400 9.5px/1 'DM Mono',monospace;color:#8d99a8">#0e1114 stage</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:34px;height:20px;background:#12161b;border:1px solid #232a33;display:block"></span><span style="font:400 9.5px/1 'DM Mono',monospace;color:#8d99a8">#12161b instrument panel</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:34px;height:20px;background:#0f1317;border:1px solid #2b333d;display:block"></span><span style="font:400 9.5px/1 'DM Mono',monospace;color:#8d99a8">#0f1317 inset / card</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:34px;height:20px;background:#0e1216;border:1px solid #232a33;display:block"></span><span style="font:400 9.5px/1 'DM Mono',monospace;color:#8d99a8">#0e1216 chart well</span></div>
+</div>
+<div style="font:300 11.5px/1.5 Chivo,sans-serif;color:#6f7b8a;text-wrap:pretty">One hairline weight (#232a33), no shadows except the hover tooltip, no radii above 2 px. Panels are separated by rules, not elevation — an instrument has seams, not cards.</div>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid #232a33;background:#12161b;padding:18px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px">
+<sc-for list="{{ principles }}" as="p" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:7px">
+<span style="font:400 9px/1 'DM Mono',monospace;letter-spacing:.18em;color:#46cfe0">{{ p.n }}</span>
+<span style="font:500 14px/1.25 Chivo,sans-serif;color:#e6eaef">{{ p.k }}</span>
+<span style="font:300 11.5px/1.5 Chivo,sans-serif;color:#8d99a8;text-wrap:pretty">{{ p.v }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+</main>
+</div>
+
+<div style="height:52px;flex:none;border-top:1px solid #232a33;background:#0b0e11;display:flex;align-items:center;gap:0;padding:0 24px">
+<sc-for list="{{ prov }}" as="p" hint-placeholder-count="6">
+<div style="display:flex;flex-direction:column;gap:3px;padding-right:26px;margin-right:26px;border-right:1px solid #1c232b">
+<span style="font:400 8px/1 'DM Mono',monospace;letter-spacing:.18em;color:#4b5563">{{ p.k }}</span>
+<span style="font:400 11px/1 'DM Mono',monospace;color:{{ p.col }}">{{ p.v }}</span>
+</div>
+</sc-for>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid #2b6f7a;background:#0f2a2e">
+<div style="width:5px;height:5px;background:#46cfe0;border-radius:50%;animation:pulse 2s ease-in-out infinite"></div>
+<span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.2em;color:#8ae3ee">RECORD REPLAY</span>
+</div>
+</div>
+
+<sc-if value="{{ tip.on }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:{{ tip.x }};top:{{ tip.y }};width:326px;padding:14px 16px;background:#1b2229;border:1px solid #3a4654;box-shadow:0 12px 34px rgba(0,0,0,.55);z-index:40;pointer-events:none">
+<div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.14em;color:#46cfe0;margin-bottom:8px">{{ tip.term }}</div>
+<div style="font:300 13px/1.5 Chivo,sans-serif;color:#dbe3ec;text-wrap:pretty">{{ tip.plain }}</div>
+<sc-if value="{{ tip.tech }}" hint-placeholder-val="{{ false }}"><div style="margin-top:9px;padding-top:9px;border-top:1px solid #2b333d;font:400 10.5px/1.5 'DM Mono',monospace;color:#8d99a8;text-wrap:pretty">{{ tip.tech }}</div></sc-if>
+</div>
+</sc-if>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080},&quot;coldCorner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Trial conditions&quot;},&quot;showSeedRibbon&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Trial conditions&quot;},&quot;vocabulary&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;plain&quot;,&quot;technical&quot;],&quot;default&quot;:&quot;plain&quot;,&quot;tsType&quot;:&quot;'plain' | 'technical'&quot;,&quot;section&quot;:&quot;Presentation&quot;},&quot;flowScale&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:9,&quot;min&quot;:5,&quot;max&quot;:14,&quot;step&quot;:1,&quot;unit&quot;:&quot;× flow width&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Presentation&quot;}}">
+const G=9.80665,BK=84.112,DKG=0.832;
+function mul32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function ip(x,xs,ys){if(x<=xs[0])return ys[0];const n=xs.length;if(x>=xs[n-1])return ys[n-1];let i=1;while(xs[i]<x)i++;const f=(x-xs[i-1])/(xs[i]-xs[i-1]);return ys[i-1]+f*(ys[i]-ys[i-1]);}
+function mkEng(o){
+  const E=Object.assign({},o);
+  E.tmax=r=>ip(r,o.rpm,o.trq);
+  E.fmep=r=>{const n=r/1000;return o.fmep[0]+o.fmep[1]*n+o.fmep[2]*n*n;};
+  E.bmep=t=>4*Math.PI*t/(o.disp*1e-3)/1e5;
+  E.etab=(r,t)=>{const tm=Math.max(E.tmax(r),1e-6),phi=Math.max(0,Math.min(1,t/tm));
+    const bm=E.bmep(t),fm=E.fmep(r),mech=bm>0?bm/(bm+fm):0;
+    const fn=1-0.06*Math.pow((r-o.fnc)/1400,2);
+    const lo=1-0.05*Math.max(0,0.45-phi)/0.45,hi=1-0.35*Math.max(0,phi-0.85);
+    return o.eta_i0*fn*Math.min(lo,hi)*mech;};
+  E.bsfc=(r,t)=>{const e=E.etab(r,t);return e>1e-4?BK/e:Infinity;};
+  E.best=pkw=>{let b=Infinity,br=o.rpm[0],bt=0;
+    for(let r=o.rpm[0];r<=o.rpm[o.rpm.length-1];r+=20){
+      const t=pkw*1e3/(r*Math.PI/30);
+      if(t<=0||t>E.tmax(r))continue;
+      const s=E.bsfc(r,t);if(s<b){b=s;br=r;bt=t;}}
+    return{rpm:br,trq:bt,bsfc:isFinite(b)?b:0};};
+  const TAB=[];for(let p=0;p<=400;p+=2)TAB.push(E.best(p));
+  E.bestOf=pkw=>TAB[Math.max(0,Math.min(TAB.length-1,Math.round(pkw/2)))];
+  return E;}
+
+const ENG_V2=mkEng({disp:5.193,eta_i0:0.448,fmep:[0.75,0.28,0.075],fnc:1600,idle:700,
+  rpm:[700,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000],
+  trq:[400,600,700,750,750,730,690,655,610,550,490,430]});
+const ENG_HD=mkEng({disp:12.8,eta_i0:0.478,fmep:[0.62,0.22,0.06],fnc:1300,idle:600,
+  rpm:[600,900,1100,1300,1500,1700,1900,2100],
+  trq:[1100,2000,2500,2500,2150,2000,1750,1450]});
+
+const VZ={key:'zero',name:'VOLT‑REG',label:'Vehicle Zero · regional',
+  m:6600,payload:2.9,rdyn:0.37,CdA:4.2,Crr:0.009,rho:1.2,lam:1.04,pUse:95e3,vcap:100/3.6,
+  eta:{gen:0.94,pe:0.97,b2w:0.865628,bchg:0.97,bdis:0.97},
+  aux:2000,regenWheelCap:75000,gensetCap:132000,gensetFloor:110000,
+  pack:{usable:11.0836,dis:125000,chg:110000,coldChg:67000,mass:280.52},
+  resistorCap:250000,heaterCap:8000,eng:ENG_V2,
+  amt:{gears:[6.62,3.81,2.28,1.44,1.00,0.72],fd:4.3,floor:1050,ceil:3000},
+  packSpec:'15.24 kWh · 11.08 usable · 662.4 V',
+  rec:{dist:'132.0',climb:'752',peak:'+5.87%',dip:'−6.00%',
+    src:'results.json · grade_profile_VOLT‑REG'}};
+const VO={key:'one',name:'GRADE‑HEAVY CORRIDOR',label:'Vehicle One · corridor',
+  m:36300,payload:19.398,payloadS0:20.785,rdyn:0.5,CdA:5.5,Crr:0.0055,rho:1.184,lam:1.05,pUse:330e3,vcap:105/3.6,
+  eta:{gen:0.94,pe:0.97,b2w:0.88,bchg:0.97,bdis:0.97},
+  aux:4000,regenWheelCap:420000,gensetCap:350000,gensetFloor:150000,
+  pack:{usable:21.6,dis:400000,chg:350000,coldChg:210000,mass:736},
+  resistorCap:620000,heaterCap:12000,eng:ENG_HD,
+  amt:{gears:[11.73,9.21,7.09,5.57,4.35,3.41,2.70,2.12,1.63,1.28,1.00,0.78],fd:2.64,floor:1050,ceil:2100},
+  packSpec:'buffer 21.6 kWh usable · bus‑side',
+  rec:{dist:'520',climb:'~3,800',peak:'+6.00%',dip:'−6.00%',
+    src:'WS8 ASSIGNMENT Task 1 · ordered corridor'}};
+
+function legsREG(){const L=[],D=(v,d)=>L.push({k:'d',v:v,d:d}),S=d=>L.push({k:'s',d:d});
+  [[700,45,20],[520,40,25],[880,50,18],[430,40,30],[760,50,15],[820,50,22]].forEach(a=>{D(a[1],a[0]);S(a[2]);});
+  D(70,3200);D(80,4100);S(18);D(75,3600);D(80,3400);S(15);D(70,3200);
+  D(90,6000);D(100,9000);D(95,7000);D(88,8000);D(100,9500);D(92,6500);D(85,4000);S(35);
+  D(95,8000);D(100,9000);D(90,7500);D(97,9000);D(85,8500);
+  D(75,3800);S(16);D(80,4200);D(70,3300);S(14);D(65,2600);
+  [[900,50,45],[620,45,55],[410,35,60],[780,45,50],[1050,50,35],[640,40,40]].forEach(a=>{D(a[1],a[0]);S(a[2]);});
+  return L;}
+function legsCOR(){const L=[],D=(v,d)=>L.push({k:'d',v:v,d:d}),S=d=>L.push({k:'s',d:d});
+  D(105,90000);D(95,60000);S(30);D(85,45000);D(90,40000);D(100,70000);S(40);
+  D(85,50000);D(95,55000);D(105,60000);D(90,50000);return L;}
+
+function bump(x,c,w,a,p){const q=Math.abs(x-c)/(w/2);if(q<=p)return a;if(q>=1)return 0;
+  return a*0.5*(1+Math.cos(Math.PI*Math.min(1,Math.max(0,(q-p)/Math.max(1e-9,1-p)))));}
+function normGrade(s,raw,peak){let num=0,den=0;
+  for(let i=0;i<s.length;i++){const ds=i===0?(s[1]-s[0]||1):(s[i]-s[i-1]);num+=raw[i]*ds;den+=ds;}
+  const mean=den>0?num/den:0;let mx=0;
+  for(let i=0;i<raw.length;i++){raw[i]-=mean;mx=Math.max(mx,Math.abs(raw[i]));}
+  const k=peak/(mx||1);for(let i=0;i<raw.length;i++)raw[i]*=k;return raw;}
+function gradeREG(s){const S=s[s.length-1]||1,o=new Float64Array(s.length);
+  for(let i=0;i<s.length;i++){const x=s[i];
+    let g=0.016*Math.sin(2*Math.PI*x/9000)+0.008*Math.sin(2*Math.PI*x/3700+1.1)+0.004*Math.sin(2*Math.PI*x/1500+2.3);
+    g+=bump(x,0.30*S,8000,0.048,0.55)+bump(x,0.47*S,3500,0.026,0.35)+bump(x,0.68*S,8000,-0.048,0.55)+bump(x,0.81*S,3500,-0.026,0.35);
+    if(x<0.045*S||x>0.955*S)g*=0.30;o[i]=g;}
+  return normGrade(s,o,0.06);}
+function gradeCOR(s){const S=s[s.length-1]||1,o=new Float64Array(s.length);
+  for(let i=0;i<s.length;i++){const x=s[i];
+    let g=0.007*Math.sin(2*Math.PI*x/41000)+0.004*Math.sin(2*Math.PI*x/17000+0.7);
+    g+=bump(x,0.33*S,26000,0.060,0.62)+bump(x,0.43*S,22000,-0.060,0.60)
+      +bump(x,0.60*S,74000,0.024,0.58)+bump(x,0.79*S,74000,-0.024,0.58);
+    o[i]=g;}
+  return normGrade(s,o,0.06);}
+
+function trace(legs,seed,veh){
+  const r=mul32(seed);let noise=0,v=0,t=0,s=0;const T=[],V=[],SS=[];
+  for(const L of legs){
+    if(L.k==='s'){for(let i=0;i<L.d;i++){v=Math.max(0,v-1.15);s+=v;t+=1;T.push(t);V.push(v);SS.push(s);}continue;}
+    const vt=L.v/3.6,s0=s;let guard=0;
+    while(s-s0<L.d&&guard++<60000){
+      noise+=-noise/30+(r()*2-1)*0.45*0.258;
+      const vd=Math.max(0,Math.min(veh.vcap,vt+noise));
+      let a=(vd-v)/4;const ap=v>1?veh.pUse/(veh.m*v):1.05;
+      a=Math.max(-1.15,Math.min(Math.min(1.05,ap),a));
+      v=Math.max(0,v+a);s+=v;t+=1;T.push(t);V.push(v);SS.push(s);}}
+  return{t:T,v:V,s:SS,n:T.length};}
+
+function busDemand(tr,gr,veh){const n=tr.n,d=new Float64Array(n),pw=new Float64Array(n);
+  for(let i=0;i<n;i++){const v=tr.v[i],a=i<n-1?tr.v[i+1]-tr.v[i]:0,th=Math.atan(gr[i]);
+    const F=0.5*veh.rho*veh.CdA*v*v+veh.Crr*veh.m*G*Math.cos(th)+veh.m*G*Math.sin(th)+veh.lam*veh.m*a;
+    pw[i]=F*v;
+    d[i]=pw[i]>0?pw[i]/veh.eta.b2w+veh.aux:veh.aux-Math.min(-pw[i],veh.regenWheelCap)*veh.eta.b2w;}
+  return{d:d,pw:pw};}
+
+function simSeries(tr,gr,veh,cold){
+  const n=tr.n,bd=busDemand(tr,gr,veh),dem=bd.d;
+  const O={pw:bd.pw,pBus:dem,soc:new Float64Array(n),tb:new Float64Array(n),
+    pGen:new Float64Array(n),rpm:new Float64Array(n),trq:new Float64Array(n),bsfc:new Float64Array(n),
+    fuelL:new Float64Array(n),pBat:new Float64Array(n),pRes:new Float64Array(n),
+    pFric:new Float64Array(n),pHeat:new Float64Array(n),eng:new Uint8Array(n)};
+  const pre=new Float64Array(n);let acc=0;
+  for(let i=0;i<n;i++){acc+=dem[i];if(i>=180)acc-=dem[i-180];pre[i]=acc/Math.min(i+1,180);}
+  const cap=veh.pack.usable*3.6e6,chgLim=cold?veh.pack.coldChg:veh.pack.chg,amb=cold?-10:24;
+  let soc=0.60,tb=amb,fg=0,peak=1;
+  for(let i=0;i<n;i++){
+    let tgt=Math.max(0,Math.min(veh.gensetCap,pre[i]+(0.60-soc)*veh.pack.dis*0.6));
+    if(tgt<45000&&soc>0.52)tgt=0;else if(tgt>0)tgt=Math.max(veh.gensetFloor,Math.min(veh.gensetCap,tgt));
+    const shaft=tgt>0?tgt/(veh.eta.gen*veh.eta.pe):0;
+    const bp=shaft>0?veh.eng.bestOf(shaft/1000):{rpm:0,trq:0,bsfc:0};
+    O.eng[i]=tgt>0?1:0;O.pGen[i]=tgt;O.rpm[i]=bp.rpm;O.trq[i]=bp.trq;O.bsfc[i]=bp.bsfc;
+    if(tgt>0&&bp.bsfc>0)fg+=bp.bsfc*(shaft/1000)/3600;
+    const fuelKw=tgt>0&&bp.bsfc>0?bp.bsfc*(shaft/1000)/3600*42.8:0;
+    O.fuelL[i]=fg/1000/DKG;
+    const pb=dem[i];
+    if(pb<0){
+      let av=-pb;const room=soc<0.949?chgLim:0;
+      const toBat=Math.min(av,room);av-=toBat;
+      const toHeat=cold?Math.min(av,veh.heaterCap):0;av-=toHeat;
+      const toRes=Math.min(av,veh.resistorCap);av-=toRes;
+      const wb=Math.max(0,-O.pw[i]),wregen=Math.min(wb,veh.regenWheelCap);
+      O.pBat[i]=-toBat;O.pHeat[i]=toHeat;O.pRes[i]=toRes;
+      O.pFric[i]=Math.max(0,wb-wregen)+av/veh.eta.b2w;
+      soc+=toBat*veh.eta.bchg/cap;
+    }else{
+      const d=pb-tgt;
+      if(d>0){const dd=Math.min(d,veh.pack.dis);O.pBat[i]=dd;soc-=dd/veh.eta.bdis/cap;}
+      else{const c=Math.min(-d,chgLim);O.pBat[i]=-c;soc+=c*veh.eta.bchg/cap;}
+      O.pFric[i]=0;O.pRes[i]=0;O.pHeat[i]=0;}
+    soc=Math.max(0.15,Math.min(0.95,soc));O.soc[i]=soc;
+    peak=Math.max(peak,Math.abs(O.pBus[i])/1000,Math.abs(O.pw[i])/1000,fuelKw,
+      Math.abs(O.pBat[i])/1000,O.pRes[i]/1000,O.pFric[i]/1000);
+    tb+=(Math.abs(O.pBat[i])*0.028-170*(tb-amb))/(veh.pack.mass*900);O.tb[i]=tb;}
+  O.peakKw=peak;
+  return O;}
+
+function simDiesel(tr,gr,veh){
+  const n=tr.n,A=veh.amt,bd=busDemand(tr,gr,veh);
+  const O={pw:bd.pw,rpm:new Float64Array(n),trq:new Float64Array(n),bsfc:new Float64Array(n),
+    fuelL:new Float64Array(n),gear:new Uint8Array(n)};
+  let fg=0;
+  for(let i=0;i<n;i++){
+    const v=tr.v[i],a=i<n-1?tr.v[i+1]-tr.v[i]:0,th=Math.atan(gr[i]);
+    const F=0.5*veh.rho*veh.CdA*v*v+veh.Crr*veh.m*G*Math.cos(th)+veh.m*G*Math.sin(th)+veh.lam*veh.m*a;
+    const wr=v/veh.rdyn;let gi=-1,rpm=0,trq=0;
+    for(let k=A.gears.length-1;k>=0;k--){const tot=A.gears[k]*A.fd,r=wr*tot*30/Math.PI;
+      if(r<A.floor||r>A.ceil)continue;
+      const need=Math.max(0,F)*veh.rdyn/tot/0.96;
+      if(need<=veh.eng.tmax(r)){gi=k;rpm=r;trq=need;break;}}
+    if(gi<0){gi=0;const tot=A.gears[0]*A.fd;rpm=Math.max(A.floor,Math.min(A.ceil,wr*tot*30/Math.PI));
+      trq=Math.min(veh.eng.tmax(rpm),Math.max(0,F)*veh.rdyn/tot/0.96);}
+    if(v<1.5){rpm=veh.eng.idle;trq=8;}
+    if(F<0){trq=0;}
+    O.gear[i]=gi+1;O.rpm[i]=rpm;O.trq[i]=trq;
+    if(trq>5){const b=veh.eng.bsfc(rpm,trq);O.bsfc[i]=b;fg+=b*(trq*rpm*Math.PI/30/1e3)/3600;}
+    else{O.bsfc[i]=0;if(v<1.5)fg+=0.22;}
+    O.fuelL[i]=fg/1000/DKG;}
+  return O;}
+
+const SEEDS=[8101,8102,8103,8104,8105,8106,8107,8108],PRIMARY=8105,ND=520;
+function decim(arr,n){const o=new Array(ND);for(let j=0;j<ND;j++)o[j]=arr[Math.min(n-1,Math.round(j*(n-1)/(ND-1)))];return o;}
+
+function buildRoute(veh,cold){
+  const legs=veh.key==='zero'?legsREG():legsCOR();
+  const tr=trace(legs,PRIMARY,veh);
+  const gr=veh.key==='zero'?gradeREG(tr.s):gradeCOR(tr.s);
+  const el=new Float64Array(tr.n);let climb=0;
+  for(let i=1;i<tr.n;i++){const ds=tr.s[i]-tr.s[i-1];const d=gr[i]*ds;el[i]=el[i-1]+d;if(d>0)climb+=d;}
+  const ser=simSeries(tr,gr,veh,cold),dsl=simDiesel(tr,gr,veh);
+  const vB=[],sB=[];
+  for(let j=0;j<ND;j++){vB.push([1e9,-1e9]);sB.push([1e9,-1e9]);}
+  SEEDS.forEach(sd=>{
+    const t2=sd===PRIMARY?tr:trace(legs,sd,veh);
+    const g2=sd===PRIMARY?gr:(veh.key==='zero'?gradeREG(t2.s):gradeCOR(t2.s));
+    const s2=sd===PRIMARY?ser:simSeries(t2,g2,veh,cold);
+    const dv=decim(t2.v,t2.n),dc=decim(s2.soc,t2.n);
+    for(let j=0;j<ND;j++){vB[j][0]=Math.min(vB[j][0],dv[j]);vB[j][1]=Math.max(vB[j][1],dv[j]);
+      sB[j][0]=Math.min(sB[j][0],dc[j]);sB[j][1]=Math.max(sB[j][1],dc[j]);}});
+  return{veh:veh,tr:tr,gr:gr,el:el,climb:climb,ser:ser,dsl:dsl,vB:vB,sB:sB,
+    dv:decim(tr.v,tr.n),dg:decim(gr,tr.n),de:decim(el,tr.n),ds:decim(tr.s,tr.n),
+    elMin:Math.min.apply(null,Array.from(el)),elMax:Math.max.apply(null,Array.from(el)),
+    peak:Math.max.apply(null,Array.from(gr))*100,dip:Math.min.apply(null,Array.from(gr))*100};}
+
+const MAPCACHE={};let RACE_EL=null,WALL=null;
+function mapBands(eng,rmin,rmax,tmaxAxis,levels){
+  const key=eng.disp+'|'+rmin+'|'+rmax+'|'+levels.map(l=>l.v).join(',');
+  if(MAPCACHE[key])return MAPCACHE[key];
+  const out=[],W=300,H=190,PX=34,PY=14;
+  const sx=r=>PX+(r-rmin)/(rmax-rmin)*(W-PX-10);
+  const sy=t=>H-PY-(t/tmaxAxis)*(H-PY-18);
+  levels.forEach((lv,k)=>{
+    const up=[],dn=[];
+    for(let r=rmin;r<=rmax;r+=(rmax-rmin)/90){
+      const tm=eng.tmax(r);let lo=null,hi=null;
+      for(let t=tm*0.06;t<=tm;t+=tm/70){if(eng.bsfc(r,t)<=lv.v){if(lo===null)lo=t;hi=t;}}
+      if(lo!==null){up.push([sx(r),sy(hi)]);dn.push([sx(r),sy(lo)]);}}
+    if(up.length<2)return;
+    let d='M '+up[0][0].toFixed(1)+' '+up[0][1].toFixed(1);
+    for(let i=1;i<up.length;i++)d+=' L '+up[i][0].toFixed(1)+' '+up[i][1].toFixed(1);
+    for(let i=dn.length-1;i>=0;i--)d+=' L '+dn[i][0].toFixed(1)+' '+dn[i][1].toFixed(1);
+    out.push({d:d+' Z',fill:lv.fill,stroke:lv.stroke,label:lv.v});});
+  let e='M '+sx(rmin).toFixed(1)+' '+sy(0).toFixed(1);
+  for(let r=rmin;r<=rmax;r+=(rmax-rmin)/60)e+=' L '+sx(r).toFixed(1)+' '+sy(eng.tmax(r)).toFixed(1);
+  e+=' L '+sx(rmax).toFixed(1)+' '+sy(0).toFixed(1);
+  return MAPCACHE[key]={bands:out,envelope:e,sx:sx,sy:sy};}
+
+function ratioWindow(mass,gradePct,tempC){
+  const f=Math.max(0,Math.min(1,(mass-6600)/(36300-6600)));
+  const rdyn=0.37+f*0.13,CdA=4.2+f*1.3,Crr=0.009+f*(-0.0035),Tpk=700+f*1800,
+    rpmCeil=3000+f*(-900),vCruise=(100+f*5)/3.6,vClimb=(60-f*20)/3.6,rho=1.2;
+  const th=Math.atan(gradePct/100);
+  const F=0.5*rho*CdA*vClimb*vClimb+Crr*mass*G*Math.cos(th)+mass*G*Math.sin(th);
+  const cold=1+Math.max(0,20-tempC)*0.0022;
+  return{rMin:F*rdyn/Tpk*cold,rMax:(rpmCeil*Math.PI/30)*rdyn/vCruise,F:F,Tpk:Tpk,rpmCeil:rpmCeil,
+    vCruise:vCruise*3.6,vClimb:vClimb*3.6,rdyn:rdyn};}
+function crossMass(gradePct,tempC){let lo=6600,hi=36300;
+  if(ratioWindow(hi,gradePct,tempC).rMin<=ratioWindow(hi,gradePct,tempC).rMax)return null;
+  if(ratioWindow(lo,gradePct,tempC).rMin>ratioWindow(lo,gradePct,tempC).rMax)return lo;
+  for(let k=0;k<40;k++){const m=(lo+hi)/2,w=ratioWindow(m,gradePct,tempC);if(w.rMin<=w.rMax)lo=m;else hi=m;}
+  return (lo+hi)/2;}
+
+const S0={fuel:38.78,payload:20785,pt:2845,mjMin:0.6215,mjMed:0.6643,mjMax:0.7064};
+const CAND={
+ S1:{id:'S1',name:'Pure series',arch:'Genset only \u2014 no mechanical path to the wheels',
+   payload:19398,pt:4232,fuel:35.98,min:-0.66,med:0.75,max:2.58,corr:2.6,
+   corners:[['nominal',-0.66,0.75],['payload +20%',0.17,1.74],['payload \u221220%',-2.18,-0.90],['grade\u2011heavy',7.54,9.97],['\u221210 \u00b0C',-4.37,-3.16]],
+   why:'It won 7.2% per kilometre and handed 6.7% of the freight back. Generator, motors, inverters, buffer pack and cabling add 1,387 kg, and at a fixed 36,300 kg gross every one of those kilograms is cargo that stayed on the dock. The cold corner was worst at \u22124.37%: the diesel heats its own cab for free, the series truck pays for heat out of the same bus that drives the wheels.'},
+ S2:{id:'S2',name:'Single cruise ratio + torque\u2011fill',arch:'One fixed reduction inside a cruise band, traction machine on a disconnect',
+   payload:19106,pt:4524,fuel:35.04,min:0.36,med:1.70,max:2.74,corr:1.7,
+   corners:[['nominal',0.36,1.70],['payload +20%',1.24,2.89],['payload \u221220%',-0.98,-0.11],['grade\u2011heavy',7.01,7.32],['\u221210 \u00b0C',-1.90,-0.18]],
+   why:'The near miss, and the most instructive kill. Both taxes that sank the clutch trial were deleted by hardware here \u2014 the disconnect zeroes spin drag, and no scalar chain efficiency exists anywhere in the model. It still only reached +0.36% ensemble\u2011min against a criterion of +3%. The architecture is not wrong; it is not worth 4,524 kg.'},
+ S3:{id:'S3',name:'Tandem split',arch:'Diesel axle on ONE fixed ratio, no gearbox anywhere, plus a disconnectable e\u2011axle',
+   payload:19559,pt:4071,fuel:38.07,min:-6.22,med:-3.83,max:-0.76,corr:23.4,
+   corners:[['nominal',-6.22,-3.83],['payload +20%',-6.42,-3.10],['payload \u221220%',-7.56,-4.88],['grade\u2011heavy',-1.86,2.47],['\u221210 \u00b0C',-11.17,-8.22]],
+   why:'Killed twice, independently. On fuel it lost 6.22%, and 23.4% of its reported fuel was a correction for work it could not actually do. On capability it is not a truck: 3.60:1 delivers 11.7 kN against the 24.0 kN the 6% grade demands, the e\u2011axle\u2011alone climb needs 133 kWh against 21.6 kWh of usable swing, and launching on one axle needs a tyre friction coefficient of 0.587 where a conventional tandem needs 0.293.'},
+ S4:{id:'S4',name:'Range\u2011extended BEV',arch:'Large traction pack plus a ~170 kW sustainer genset, run charge\u2011sustaining',
+   payload:19344,pt:4286,fuel:36.45,min:-3.67,med:-0.95,max:2.05,corr:8.6,
+   corners:[['nominal',-3.67,-0.95],['payload +20%',-1.87,0.79],['payload \u221220%',-6.04,-3.31],['grade\u2011heavy',5.75,10.11],['\u221210 \u00b0C',-8.26,-6.01]],
+   why:'1,788 kg of traction pack against 210 kg of fuel. Judged charge\u2011sustaining, because the metric of record is fuel energy and crediting a plug\u2011in start would import propulsion energy the metric cannot see. That choice is stated rather than buried, and escalated: with an electricity term Vehicle One\u2019s metric changes, and S4 deserves re\u2011posing rather than a quiet pass.'}};
+const WATERFALL=[
+ {label:'Prior convention',sub:'ratified r2 anchor, reproduced bit\u2011identically',v:6.26,type:'start'},
+ {label:'Map\u2011vs\u2011scalar swap',sub:'measured loss surface replaces one scalar chain efficiency',v:-7.01,type:'step'},
+ {label:'Spin\u2011drag member',sub:'permanently geared machines charged on unloaded samples',v:-1.77,type:'step'},
+ {label:'Correction interaction',sub:'the two members are not additive',v:-0.06,type:'step'},
+ {label:'G1\u2011R, gate of record',sub:'nominal ensemble\u2011min, 8 seeds',v:-2.58,type:'end'}];
+
+const GLOSS={
+  series:{term:'SERIES HYBRID',plain:'The diesel never turns the wheels. It only spins a generator that makes electricity; electric motors do all the driving. The engine is therefore free to sit at its single most efficient operating point, whatever the road is doing.',tech:'Chain: engine → generator → rectifier → DC bus → inverter → motor → reduction → wheels. η_series = 0.8137 at Vehicle Zero.'},
+  bus:{term:'DC BUS',plain:'The electrical crossroads. Everything that makes or takes electricity — generator, battery, motors, heater, brake resistor — meets here, so the widths you see are all measured at the same place.',tech:'Program rule R12: all electrical quantities stated bus‑side, one chain convention.'},
+  soc:{term:'STATE OF CHARGE',plain:'How full the battery is, as a percentage. This pack is a buffer, not a range extender: it soaks up braking energy and covers the gap between what the engine is making and what the wheels want.',tech:'15.24 kWh nameplate, 11.08 kWh usable at bus across the 15–90% window; limits 125 kW discharge / 110 kW charge, bus‑side.'},
+  island:{term:'FUEL‑EFFICIENCY MAP',plain:'A contour map of how much fuel the engine burns per unit of work, drawn against engine speed and torque. The innermost ring is the "island" — the sweet spot. A series hybrid parks the engine on the island; a conventional truck drags it all over the map as gears change.',tech:'Willans‑line construction, BSFC = 84.112 / η_b. Declared island 185 g/kWh at Vehicle One; duty‑averaged 196.8 g/kWh for the conventional truck.'},
+  ptkm:{term:'MJ PER PAYLOAD TONNE‑km',plain:'Energy spent to move one tonne of actual freight one kilometre. This is the metric that killed the semi candidates: a hybrid powertrain is heavier, and at a fixed legal weight every extra kilogram of hardware is a kilogram of cargo you no longer carry.',tech:'D13: per‑km efficiency flatters, per‑payload judges. Every electrified candidate won 6–10% per km and gave 6–8% back in freight.'},
+  torquefill:{term:'TORQUE‑FILL',plain:'An electric motor covering the gap in pulling force while a gearbox is between gears, so the truck never feels the shift. It is the trick that lets a hybrid delete gears — and at 36 tonnes it was not enough.',tech:'S2: single cruise ratio plus torque‑fill with a traction disconnect. +0.36% ensemble‑min against a ≥3% advance criterion — killed.'},
+  resistor:{term:'BRAKE RESISTOR',plain:'A big electric heater used as a brake. On a long descent the battery fills up long before the hill ends, so the surplus electricity is dumped into a resistor and thrown away as heat. Wasteful, but it saves the friction brakes.',tech:'Vehicle Zero descent split at 25 km/h: 5.39 kWh to pack, 2.24 kWh to resistor, acceptance ceiling reached at 1,017 s.'},
+  ensemble:{term:'ENSEMBLE‑MIN',plain:'The worst result out of eight runs, not the average. Each run uses a different random draw of wind, traffic and driver behaviour. Judging on the worst run means a candidate cannot pass by getting lucky.',tech:'Ruling R9: stochastic extrema are 8‑seed ensemble envelopes. Seeds 8101–8108.'},
+  ratio:{term:'FIXED GEAR RATIO',plain:'One gear, no shifting. It has to be short enough to climb the hill and tall enough to cruise without over‑revving the engine. At light weight both fit; at 36 tonnes the two requirements cross and no single gear exists.',tech:'S3: 3.60:1 delivers 11.7 kN against 24.0 kN required on the 6% grade. A ~2:1 ratio span is physically mandatory on any engine path at semi scale.'}};
+
+class Component extends DCLogic {
+  state={screen:'rail',ch:0,route:'zero',playing:false,rate:1,pos:0,
+    loading:true,tip:null,tipX:0,tipY:0,fit:1,cold:false,
+    pair:'S1',rpos:0,rplaying:false,verdictOpen:false,
+    mass:6600,gradePct:6,ratio:3.0,temp:20,whyOpen:false};
+  D={};
+  componentDidMount(){
+    this.fit();
+    this._fitTimer=setInterval(()=>this.fit(),200);
+    window.addEventListener('resize',this._rz=()=>this.fit());
+    document.addEventListener('visibilitychange',this._vc=()=>{this.fit();this.tick();});
+    setTimeout(()=>{this.fit();this.load('zero');},60);
+    this._clock=setInterval(this.tick,60);
+    this._lastPump=0;
+    const mc=new MessageChannel();this._port=mc.port2;
+    mc.port1.onmessage=this.pump;
+    this._port.postMessage(0);}
+  pump=()=>{
+    if(this._stopped)return;
+    const now=performance.now();
+    if(now-this._lastPump>=50){this._lastPump=now;this.fit();this.tick();}
+    if(this.state.playing||this.state.rplaying)this._port.postMessage(0);
+    else setTimeout(()=>{if(!this._stopped)this._port.postMessage(0);},150);}
+  kick=()=>{this._lastPump=0;if(this._port)this._port.postMessage(0);}
+  componentDidUpdate(prev,prevState){
+    const p=this.props.coldCorner;
+    if(prev.coldCorner!==p&&p!==undefined&&p!==this.state.cold)
+      this.setState({cold:!!p},()=>this.load(this.state.route));
+    if(prevState&&prevState.screen!==this.state.screen&&this.state.tip)this.setState({tip:null});}
+  componentWillUnmount(){this._stopped=true;clearInterval(this._clock);clearInterval(this._fitTimer);
+    window.removeEventListener('resize',this._rz);
+    document.removeEventListener('visibilitychange',this._vc);}
+  fit=()=>{const de=document.documentElement;
+    const w=Math.min(de.clientWidth||1e9,(window.visualViewport&&window.visualViewport.width)||1e9,window.innerWidth||1e9);
+    const f=Math.round(Math.min(1,((w===1e9?1920:w)-8)/1920)*500)/500;
+    if(Math.abs(f-this.state.fit)>0.003)this.setState({fit:f});};
+  load(key){
+    const veh=key==='zero'?VZ:VO;const ck=key+(this.state.cold?'-c':'');
+    if(this.D[ck]){this.setState({loading:false});return;}
+    this.setState({loading:true});
+    setTimeout(()=>{this.D[ck]=buildRoute(veh,this.state.cold);this.setState({loading:false});},30);}
+  R(){return this.D[this.state.route+(this.state.cold?'-c':'')];}
+  tick=()=>{
+    const now=performance.now();
+    if(this.state.playing&&this._t0!=null){
+      const p=this._p0+(now-this._t0)*this.state.rate/120000;
+      if(p>=1)this.setState({pos:1,playing:false});
+      else if(Math.abs(p-this.state.pos)>1e-5)this.setState({pos:p});}
+    if(this.state.rplaying&&this._rt0!=null){
+      const p=this._rp0+(now-this._rt0)*1.4/60000;
+      if(p>=1)this.setState({rpos:1,rplaying:false,verdictOpen:true});
+      else if(Math.abs(p-this.state.rpos)>1e-5)this.setState({rpos:p});}};
+  anchor=(pos)=>{this._t0=performance.now();this._p0=pos;};
+  ranchor=(pos)=>{this._rt0=performance.now();this._rp0=pos;};
+
+  renderVals(){
+    const S=this.state,R=this.R(),cold=S.cold;
+    const ribbonOn=this.props.showSeedRibbon!==false;
+    const fs=this.props.flowScale||9;
+    const CH=[
+      {n:'01',name:'Premise',sub:'why falsification',sc:'rail'},
+      {n:'02',name:'Vehicle Zero',sub:'6,600 kg · pure series',sc:'sim',rt:'zero'},
+      {n:'03',name:'The Clutch Trial',sub:'G1 · killed at −2.58%',sc:'verdict'},
+      {n:'04',name:'The Pivot',sub:'convention → sign flip',sc:'verdict'},
+      {n:'05',name:'The Semi Walls',sub:'36,300 kg · four kills',sc:'race'},
+      {n:'06',name:'What Survives',sub:'sandbox · the boundary',sc:'sandbox'}];
+    const chapters=CH.map((c,i)=>({num:c.n,name:c.name,sub:c.sub,
+      bar:S.ch===i?'#46cfe0':'transparent',bg:S.ch===i?'#151d24':'transparent',
+      col:S.ch===i?'#e6eaef':'#a9b6c6',numCol:S.ch===i?'#46cfe0':'#4b5563',
+      go:()=>{this.setState({ch:i,screen:c.sc,pos:0,playing:false});if(c.rt&&c.rt!==S.route){this.setState({route:c.rt});this.load(c.rt);}}}));
+
+    const titles={rail:'Narrative rail',sim:'Simulator — record replay',race:'Race mode',sandbox:'Sandbox',verdict:'Verdict wall',components:'Component sheet',guide:'Style guide'};
+    const badges={rail:'PREMISE',sim:'RECORD REPLAY',race:'RECORD REPLAY · PAIRED SEED',sandbox:'SANDBOX · SIMPLIFIED PHYSICS',verdict:'RATIFIED RECORD',components:'REFERENCE',guide:'REFERENCE'};
+
+    const base={
+      fit:S.fit,sizeW:(1920*S.fit).toFixed(1)+'px',sizeH:(1080*S.fit).toFixed(1)+'px',
+      cold:cold,ribbonOn:ribbonOn,chapters:chapters,
+      screenTitle:titles[S.screen]||'',modeBadge:badges[S.screen]||'RECORD',
+      isRail:S.screen==='rail',isSim:S.screen==='sim',isRace:S.screen==='race',
+      isSandbox:S.screen==='sandbox',isVerdict:S.screen==='verdict',
+      isComponents:S.screen==='components',isGuide:S.screen==='guide',
+      goSim:()=>{this.setState({screen:'sim',ch:1});this.load(S.route);},
+      goComponents:()=>this.setState({screen:'components'}),
+      goGuide:()=>this.setState({screen:'guide'}),
+      coldLabel:cold?'Corner: −10 °C (on)':'Corner: nominal',
+      toggleCold:()=>{this.setState({cold:!cold},()=>this.load(this.state.route));},
+      loading:S.loading&&S.screen==='sim',loadRoute:S.route==='zero'?'VOLT‑REG':'the grade‑heavy corridor',
+      tipOn:e=>{const r=e.currentTarget.getBoundingClientRect();const t=e.currentTarget.dataset.term;
+        this.setState({tip:t,tipX:Math.min(1560,r.left/(S.fit||1)+10),tipY:r.top/(S.fit||1)+r.height/(S.fit||1)+10});},
+      tipOff:()=>this.setState({tip:null}),
+      dismissTip:()=>{if(this.state.tip)this.setState({tip:null});},
+      tip:S.tip&&GLOSS[S.tip]?{on:true,x:S.tipX+'px',y:S.tipY+'px',term:GLOSS[S.tip].term,plain:GLOSS[S.tip].plain,tech:this.props.vocabulary==='technical'?GLOSS[S.tip].tech:null}:{on:false},
+      palette:[
+        {name:'ELECTRICAL',hex:'#46cfe0',use:'electricity on the bus, regen, motors'},
+        {name:'MECHANICAL',hex:'#f0c419',use:'shaft work, fuel chemical energy, mass penalty'},
+        {name:'WASTED HEAT',hex:'#e2603a',use:'brake resistor, cabin heat, thermal limits'},
+        {name:'FRICTION',hex:'#78838f',use:'friction brakes, mechanical loss'},
+        {name:'RECORD',hex:'#e6eaef',use:'ratified quantities and thresholds'},
+        {name:'MUTED',hex:'#8d99a8',use:'prose, axis labels, inactive paths'},
+        {name:'FAINT',hex:'#4b5563',use:'source citations, off states'}],
+      motionRules:[
+        {k:'FLOW WIDTH',v:'Stroke width is kilowatts, one scale across the whole diagram. Nothing is widened for emphasis.'},
+        {k:'FLOW SPEED',v:'Dash travel is proportional to power. A fast stripe means a lot of energy moving, not that the element is important.'},
+        {k:'DOT POSITION',v:'The engine dot moves only because the operating point moved. It never eases, springs, or settles.'},
+        {k:'FORBIDDEN',v:'No entrance animation, no hover lift, no transition on a value change. The only pulse in the exhibit is the live‑replay indicator.'}],
+      principles:[
+        {n:'01',k:'Instrument, not interface',v:'Panels are divided by hairlines and share one grid. Nothing floats, nothing rounds, nothing glows. The screen should look like it was calibrated.'},
+        {n:'02',k:'Three tiers, always visible',v:'Record, derived, sandbox. Every number on screen belongs to exactly one, and the badge and provenance strip say which without being asked.'},
+        {n:'03',k:'A kill reads like a pass',v:'Verdicts use the same card, the same weight, the same neutral colour. The threshold marker and the number carry the whole argument.'},
+        {n:'04',k:'Numerals hold still',v:'Every quantity is tabular mono at a fixed width, so a value changing during replay does not move the layout a single pixel.'}],
+      premiseStats:[
+        {k:'VEHICLE ZERO',v:'6,600',n:'kg · pure series hybrid',col:'#e6eaef'},
+        {k:'VEHICLE ONE',v:'36,300',n:'kg · four candidates, four kills',col:'#e6eaef'},
+        {k:'IDEAS KILLED BY OWN GATE',v:'6',n:'clutch, S1–S4, waste‑heat',col:'#e6eaef'},
+        {k:'SEEDS PER VERDICT',v:'8',n:'judged on the worst run',col:'#e6eaef'}],
+      tiers:[
+        {tag:'RECORD',name:'Verified result',desc:'A number that exists in a results file on disk, reproduced by an independent adjudicator, and ratified by the lead. Traceable to a baseline version and a seed.',line:'#4a5665',fill:'#1b222a',col:'#e6eaef'},
+        {tag:'DERIVED',name:'Computed live, here',desc:'Instantaneous traces integrated in front of you from the same ratified parameters. Faithful to the model; not itself a trial result.',line:'#2b6f7a',fill:'#0f2a2e',col:'#8ae3ee'},
+        {tag:'SANDBOX',name:'What‑if',desc:'Simplified physics driven by the sliders. Useful for seeing where a boundary lies. Carries no verdict and may not be quoted as one.',line:'#7a5a2b',fill:'#2a2210',col:'#f0c419'}]};
+
+    const extra=Object.assign({},this.raceVals(),this.sandVals(),this.wallVals());
+    if(!R||S.screen!=='sim')return Object.assign(base,this.provOnly(),this.simStub(),extra);
+    return Object.assign(base,this.simVals(R,cold,ribbonOn,fs),this.provOnly(),extra);}
+
+  raceVals(){const S=this.state,c=CAND[S.pair],p=S.rpos;
+    const km=520*p,fS0=S0.fuel/100*km,fC=c.fuel/100*km;
+    const perKm=(S0.fuel-c.fuel)/S0.fuel*100,freight=(S0.payload-c.payload)/S0.payload*100;
+    const W=1180,ex=j=>28+j/(519)*(W-56);
+    if(!RACE_EL){const gr=[];
+      for(let j=0;j<=519;j++){const x=j/519;
+        gr.push(0.007*Math.sin(2*Math.PI*x*12.7)+bump(x,0.33,0.50,0.060,0.62)+bump(x,0.43,0.42,-0.060,0.60)+bump(x,0.60,1.42,0.024,0.58)+bump(x,0.79,1.42,-0.024,0.58));}
+      const el=[0];for(let j=1;j<=519;j++)el.push(el[j-1]+gr[j]*1000);
+      const eMin=Math.min.apply(null,el),eMax=Math.max.apply(null,el),sp=Math.max(1,eMax-eMin);
+      const ey=v=>96-((v-eMin)/sp)*70;
+      let line='M '+ex(0).toFixed(1)+' '+ey(el[0]).toFixed(1);
+      for(let j=1;j<=519;j++)line+=' L '+ex(j).toFixed(1)+' '+ey(el[j]).toFixed(1);
+      RACE_EL={el:el,ey:ey,line:line};}
+    const el=RACE_EL.el,ey=RACE_EL.ey,line=RACE_EL.line;
+    const jn=Math.round(p*519);
+    return{racePair:S.pair,
+      raceOpts:Object.keys(CAND).map(k=>({key:k,label:k+' \u00b7 '+CAND[k].name,
+        line:S.pair===k?'#2b6f7a':'#2b333d',fill:S.pair===k?'#0f2a2e':'transparent',
+        col:S.pair===k?'#8ae3ee':'#6f7b8a',go:()=>this.setState({pair:k,rpos:0,rplaying:false,verdictOpen:false,whyOpen:false})})),
+      race:{name:c.name,arch:c.arch,id:c.id,
+        elLine:line,elY0:ey(el[jn]).toFixed(1),elY1:ey(el[jn]).toFixed(1),
+        t0:'translate('+ex(jn).toFixed(1)+' '+ey(el[jn]).toFixed(1)+')',
+        t1:'translate('+ex(jn).toFixed(1)+' '+(ey(el[jn])+34).toFixed(1)+')',
+        lblX:((ex(jn)+(jn>380?-26:26))/1180*100).toFixed(2)+'%',
+        lblTx:jn>380?'translateX(-100%)':'none',
+        lbl0Y:((ey(el[jn])-14)/146*100).toFixed(2)+'%',
+        lbl1Y:((ey(el[jn])+20)/146*100).toFixed(2)+'%',
+        km:km.toFixed(1),pct:(p*100).toFixed(1)+'%',
+        fS0:fS0.toFixed(1),fC:fC.toFixed(1),
+        lS0:S0.fuel.toFixed(2),lC:c.fuel.toFixed(2),
+        payS0:(S0.payload/1000).toFixed(3),payC:(c.payload/1000).toFixed(3),
+        ptS0:S0.pt.toLocaleString(),ptC:c.pt.toLocaleString(),
+        perKm:'+'+perKm.toFixed(2)+'%',freight:'\u2212'+freight.toFixed(2)+'%',
+        net:(c.min>=0?'+':'\u2212')+Math.abs(c.min).toFixed(2)+'%',
+        netMed:(c.med>=0?'+':'\u2212')+Math.abs(c.med).toFixed(2)+'%',
+        netCol:'#e6eaef',
+        netPos:c.min>0?Math.min(50,c.min/12*50).toFixed(1)+'%':'0%',
+        netNeg:c.min<0?Math.min(50,Math.abs(c.min)/12*50).toFixed(1)+'%':'0%',
+        barPerKm:Math.min(50,perKm/12*50).toFixed(1)+'%',barFreight:Math.min(50,freight/12*50).toFixed(1)+'%',
+        advX:(50+3/12*50).toFixed(1)+'%',
+        verdict:c.min>=3?'ADVANCES':'DOES NOT ADVANCE',
+        corners:c.corners.map(cn=>({name:cn[0],
+          val:(cn[1]>=0?'+':'\u2212')+Math.abs(cn[1]).toFixed(2)+'%',
+          wPos:cn[1]>0?Math.min(50,cn[1]/12*50).toFixed(1)+'%':'0%',
+          wNeg:cn[1]<0?Math.min(50,Math.abs(cn[1])/12*50).toFixed(1)+'%':'0%',
+          col:cn[1]>=0?'#c7d0da':'#8d99a8'})),
+        why:c.why,corr:c.corr.toFixed(1)+'%'},
+      raceOpen:S.rpos>=0.999||S.verdictOpen,whyOpen:S.whyOpen,
+      raceNetOpen:S.rpos>=0.999||S.verdictOpen,
+      racePending:!(S.rpos>=0.999||S.verdictOpen),
+      toggleWhy:()=>this.setState({whyOpen:!S.whyOpen}),
+      raceIcon:S.rplaying?'\u275a\u275a':'\u25b6',
+      toggleRace:()=>{const rp=S.rpos>=1?0:S.rpos;this.ranchor(rp);
+        this.setState({rplaying:!S.rplaying,rpos:rp,verdictOpen:false},this.kick);},
+      resetRace:()=>{this.ranchor(0);this.setState({rpos:0,rplaying:false,verdictOpen:false,whyOpen:false});},
+      skipRace:()=>this.setState({rpos:1,rplaying:false,verdictOpen:true})};}
+
+  sandVals(){const S=this.state,W=560,Hh=250;
+    const mx=m=>40+(m-6600)/(36300-6600)*(W-60),ry=r=>Hh-26-(r/6)*(Hh-52);
+    const pts=[];for(let k=0;k<=60;k++){const m=6600+k*(36300-6600)/60;pts.push([m,ratioWindow(m,S.gradePct,S.temp)]);}
+    const ticks=[1,2,3,4,5,6].map(r=>({r:r.toFixed(0),y:ry(r).toFixed(1),
+      px:(30/560*100).toFixed(2)+'%',py:(ry(r)/250*100).toFixed(2)+'%'}));
+    let upper='M '+mx(pts[0][0]).toFixed(1)+' '+ry(pts[0][1].rMax).toFixed(1);
+    pts.forEach((p,k)=>{if(k)upper+=' L '+mx(p[0]).toFixed(1)+' '+ry(p[1].rMax).toFixed(1);});
+    let lower='M '+mx(pts[0][0]).toFixed(1)+' '+ry(pts[0][1].rMin).toFixed(1);
+    pts.forEach((p,k)=>{if(k)lower+=' L '+mx(p[0]).toFixed(1)+' '+ry(p[1].rMin).toFixed(1);});
+    let band=upper;for(let k=pts.length-1;k>=0;k--)band+=' L '+mx(pts[k][0]).toFixed(1)+' '+ry(pts[k][1].rMin).toFixed(1);
+    let ceilFill='M '+mx(6600).toFixed(1)+' '+ry(6).toFixed(1)+' L '+mx(36300).toFixed(1)+' '+ry(6).toFixed(1);
+    for(let k=pts.length-1;k>=0;k--)ceilFill+=' L '+mx(pts[k][0]).toFixed(1)+' '+ry(pts[k][1].rMax).toFixed(1);
+    let floorFill='M '+mx(6600).toFixed(1)+' '+ry(0).toFixed(1)+' L '+mx(36300).toFixed(1)+' '+ry(0).toFixed(1);
+    for(let k=pts.length-1;k>=0;k--)floorFill+=' L '+mx(pts[k][0]).toFixed(1)+' '+ry(pts[k][1].rMin).toFixed(1);
+    const w=ratioWindow(S.mass,S.gradePct,S.temp),xm=crossMass(S.gradePct,S.temp);
+    const open=w.rMin<=w.rMax,inWin=S.ratio>=w.rMin&&S.ratio<=w.rMax;
+    return{sand:{band:band+' Z',ceilFill:ceilFill+' Z',floorFill:floorFill+' Z',upper:upper,lower:lower,
+      mx:mx(S.mass).toFixed(1),ry:ry(S.ratio).toFixed(1),
+      rMin:w.rMin.toFixed(2),rMax:w.rMax.toFixed(2),
+      mass:(S.mass/1000).toFixed(1),grade:S.gradePct.toFixed(1),ratio:S.ratio.toFixed(2),temp:S.temp.toFixed(0),
+      force:(w.F/1000).toFixed(1),vCruise:w.vCruise.toFixed(0),vClimb:w.vClimb.toFixed(0),
+      cross:xm?(xm/1000).toFixed(1)+' t':'not within range',
+      crossX:xm?mx(xm).toFixed(1):'-100',
+      state:open?(inWin?'ONE GEAR EXISTS':'ONE GEAR EXISTS \u2014 NOT THIS ONE'):'NO SINGLE GEAR EXISTS',
+      stateCol:open?(inWin?'#46cfe0':'#f0c419'):'#e2603a',
+      dotCol:open&&inWin?'#46cfe0':'#e2603a',
+      widthNote:open?'window '+(w.rMax-w.rMin).toFixed(2)+' wide':'bands crossed by '+(w.rMin-w.rMax).toFixed(2)},
+      sandTicks:ticks,
+      sliders:[
+        {k:'VEHICLE MASS',v:(S.mass/1000).toFixed(1)+' t',min:6600,max:36300,step:100,val:S.mass,
+          on:e=>this.setState({mass:Number(e.target.value)})},
+        {k:'GRADE',v:S.gradePct.toFixed(1)+' %',min:0,max:8,step:0.1,val:S.gradePct,
+          on:e=>this.setState({gradePct:Number(e.target.value)})},
+        {k:'FIXED GEAR RATIO',v:S.ratio.toFixed(2)+' : 1',min:1,max:6,step:0.02,val:S.ratio,
+          on:e=>this.setState({ratio:Number(e.target.value)})},
+        {k:'AMBIENT TEMPERATURE',v:S.temp.toFixed(0)+' \u00b0C',min:-20,max:45,step:1,val:S.temp,
+          on:e=>this.setState({temp:Number(e.target.value)})}]};}
+
+  wallVals(){
+    if(WALL)return WALL;
+    const W=520,base=118,sc=7.6,n=WATERFALL.length,slot=(W-58)/n;
+    let run=0;const ends=[];
+    const bars=WATERFALL.map((s,k)=>{
+      const x=34+k*slot,bw=slot-46;let y0,y1;
+      if(s.type==='start'){y0=base;y1=base-s.v*sc;run=s.v;}
+      else if(s.type==='end'){y0=base;y1=base-s.v*sc;}
+      else{y0=base-run*sc;run+=s.v;y1=base-run*sc;}
+      const top=Math.min(y0,y1),h=Math.max(2,Math.abs(y1-y0));
+      ends.push({x:x,bw:bw,y:y1,slot:slot});
+      const neg=s.v<0;
+      return{x:x.toFixed(1),w:bw.toFixed(1),y:top.toFixed(1),h:h.toFixed(1),
+        fill:s.type==='step'?'#39434f':'#c7d0da',
+        label:s.label,sub:s.sub,
+        val:(s.v>0?'+':'\u2212')+Math.abs(s.v).toFixed(2)+(s.type==='step'?' pp':'%'),
+        vy:(neg?top+h+12:top-7).toFixed(1),lx:(x+bw/2).toFixed(1),
+        pvx:((x+bw/2)/520*100).toFixed(2)+'%',
+        pvy:((neg?top+h+12:top-7)/196*100).toFixed(2)+'%',
+        pty:((base+30)/196*100).toFixed(2)+'%',
+        tag:(k+1).toString().padStart(2,'0'),ty:(base+34).toFixed(1)};});
+    const conn=[];
+    for(let k=0;k<ends.length-1;k++)conn.push({x1:(ends[k].x+ends[k].bw).toFixed(1),
+      x2:(ends[k].x+ends[k].slot).toFixed(1),y:ends[k].y.toFixed(1)});
+    const cands=Object.keys(CAND).map(k=>{const c=CAND[k];
+      const perKm=(S0.fuel-c.fuel)/S0.fuel*100,fr=(S0.payload-c.payload)/S0.payload*100;
+      return{id:k,name:c.name,perKm:'+'+perKm.toFixed(2)+'%',freight:'\u2212'+fr.toFixed(2)+'%',
+        net:(c.min>=0?'+':'\u2212')+Math.abs(c.min).toFixed(2)+'%',
+        wPerKm:Math.min(50,perKm/12*50).toFixed(1)+'%',wFreight:Math.min(50,fr/12*50).toFixed(1)+'%',
+        wNet:Math.min(50,Math.abs(c.min)/12*50).toFixed(1)+'%',
+        netSide:c.min>=0?'left:50%':'right:50%',
+        verdict:c.min>=3?'ADVANCES':'KILL'};});
+    const c1=CAND[this.state.pair]||CAND.S1;
+    const flip=CAND.S1.corners.map(cn=>({name:cn[0],
+      min:(cn[1]>=0?'+':'\u2212')+Math.abs(cn[1]).toFixed(2)+'%',
+      med:(cn[2]>=0?'+':'\u2212')+Math.abs(cn[2]).toFixed(2)+'%',
+      wPos:cn[1]>0?Math.min(50,cn[1]/12*50).toFixed(1)+'%':'0%',
+      wNeg:cn[1]<0?Math.min(50,Math.abs(cn[1])/12*50).toFixed(1)+'%':'0%',
+      col:'#c7d0da'}));
+    return WALL={wf:bars,wfConn:conn,wfCands:cands,wfFlip:flip,
+      whrRows:[
+        {k:'electric turbocompound',m:'85 kg',g25:'0.00%',g55:'0.79%',g85:'2.19%',gr:'3.00%'},
+        {k:'small organic Rankine cycle',m:'215 kg',g25:'0.00%',g55:'0.68%',g85:'2.96%',gr:'4.50%'},
+        {k:'ETC + ORC',m:'300 kg',g25:'0.00%',g55:'1.36%',g85:'4.76%',gr:'6.92%'}],
+      s3Rows:[
+        {k:'Force at 3.60 : 1 on the 6% grade',v:'11.7 kN',n:'against 24.0 kN required'},
+        {k:'e\u2011axle\u2011alone climb energy',v:'133 kWh',n:'against 21.6 kWh of usable swing'},
+        {k:'Single\u2011axle launch friction needed',v:'\u03bc 0.587',n:'conventional tandem needs 0.293'},
+        {k:'Ratio span one gear must cover',v:'10.4 : 1',n:'44.37 kN at 12% launch vs 4.27 kN at cruise'}]};}
+
+  provOnly(){const S=this.state,R=this.R();
+    const corner=S.cold?'−10 °C · cold acceptance applied':'SL · 24 °C · CdA nominal';
+    return{prov:[
+      {k:'BASELINE',v:'v4 · 2026‑08‑30',col:'#e6eaef'},
+      {k:'RESULTS FILE',v:S.route==='zero'?'results_ws4.json':'results_ws8.json',col:'#a9b6c6'},
+      {k:'HASH',v:S.route==='zero'?'sha256 4f1c…a907':'sha256 b83e…2d14',col:'#8d99a8'},
+      {k:'SEED',v:'8105 of 8101–8108',col:'#a9b6c6'},
+      {k:'CORNER',v:corner,col:S.cold?'#f0c419':'#a9b6c6'},
+      {k:'CRITERION',v:S.route==='zero'?'G1 ≥ 5% nominal':'≥3% nominal, ≥0% all corners',col:'#a9b6c6'}]};}
+
+  simStub(){return{routeName:'',routeLen:'',routeClimb:'',routePeak:'',routeSrc:'',routeDerived:'',routeOpts:[],rates:[],
+    el:{},pf:{nodes:[]},ch:{},map:{bands:[]},soc:{},tmp:{},ladder:[],readouts:[],recordRows:[],
+    fuel:{},posPct:'0%',posK:0,nowDist:'0.00',nowTime:'0:00',nowSpeed:'0.0',nowGrade:'0.00',
+    gradeCol:'#8d99a8',playIcon:'▶',flowLegend:'',packSpec:'',
+    togglePlay:()=>{},scrub:()=>{}};}
+
+  simVals(R,cold,ribbonOn,fs){
+    const S=this.state,veh=R.veh,n=R.tr.n,i=Math.max(0,Math.min(n-1,Math.round(S.pos*(n-1))));
+    const ser=R.ser,W=1600,H=128;
+    const eMin=R.elMin,eMax=R.elMax,span=Math.max(1,eMax-eMin);
+    const sTot=R.tr.s[n-1];
+    const ex=k=>k/(ND-1)*W,ey=v=>H-8-((v-eMin)/span)*(H-26);
+    let line='M '+ex(0).toFixed(1)+' '+ey(R.de[0]).toFixed(1);
+    for(let j=1;j<ND;j++)line+=' L '+ex(j).toFixed(1)+' '+ey(R.de[j]).toFixed(1);
+    const jNow=S.pos*(ND-1);
+    let past='M '+ex(0).toFixed(1)+' '+ey(R.de[0]).toFixed(1);
+    for(let j=1;j<=Math.floor(jNow);j++)past+=' L '+ex(j).toFixed(1)+' '+ey(R.de[j]).toFixed(1);
+    let area='M '+ex(0).toFixed(1)+' '+H+' L '+ex(0).toFixed(1)+' '+ey(R.de[0]).toFixed(1);
+    for(let j=1;j<ND;j++)area+=' L '+ex(j).toFixed(1)+' '+ey(R.de[j]).toFixed(1);
+    area+=' L '+ex(ND-1).toFixed(1)+' '+H+' Z';
+    const seg=(sign)=>{let d='';
+      for(let j=0;j<ND-1;j++){const g=R.dg[j];
+        if((sign>0&&g>0.006)||(sign<0&&g<-0.006)){const h=Math.min(13,Math.abs(g)*100*2.1);
+          d+=' M '+ex(j).toFixed(1)+' '+(H-h).toFixed(1)+' L '+ex(j+1).toFixed(1)+' '+(H-h).toFixed(1)+' L '+ex(j+1).toFixed(1)+' '+H+' L '+ex(j).toFixed(1)+' '+H+' Z';}}
+      return d.trim();};
+    const gNow=R.gr[i]*100,tx=ex(jNow),ty=ey(R.de[Math.round(jNow)]||0);
+    const gx=Math.max(18,Math.min(W-18,tx));
+    const ang=Math.max(-14,Math.min(14,-gNow*1.9));
+
+    const pw=ser.pw[i],pb=ser.pBus[i],gen=ser.pGen[i],bat=ser.pBat[i];
+    const kw=x=>Math.abs(x)/1000,peakKw=Math.max(1,ser.peakKw||1),
+      wOf=x=>{const k=kw(x);return k>0.3?Math.min(16,1.5+13*Math.sqrt(Math.min(1,k/peakKw))*(fs/9)):0.6;};
+    const dur=x=>Math.max(0.35,Math.min(6,60/Math.max(6,kw(x))))+'s';
+    const shaft=gen>0?gen/(veh.eta.gen*veh.eta.pe):0;
+    const fuelKw=shaft>0&&ser.bsfc[i]>0?ser.bsfc[i]*(shaft/1000)/3600*42.8:0;
+    const nb=(x,y,w,label,val,active,col)=>({x:x,y:y,w:w,tx:x+w/2,ty:y+13,vy:y+27,label:label,val:val,
+      pl:(x/690*100).toFixed(2)+'%',pt:(y/258*100).toFixed(2)+'%',
+      pw:(w/690*100).toFixed(2)+'%',ph:(34/258*100).toFixed(2)+'%',
+      fill:active?'#151d24':'#101418',line:active?(col||'#3a5a66'):'#232a33',
+      col:active?'#a9b6c6':'#4b5563',vcol:active?(col||'#e6eaef'):'#5c6674'});
+    const pf={
+      wFuel:wOf(fuelKw*1000)||0.6,oFuel:gen>0?1:0.12,aFuel:dur(fuelKw*1000),
+      wGen:wOf(gen)||0.6,oGen:gen>0?1:0.12,aGen:dur(gen),
+      wMot:wOf(Math.max(0,pb))||0.6,oMot:pb>0?1:0.12,aMot:dur(pb),
+      wWheel:wOf(Math.max(0,pw))||0.6,oWheel:pw>0?1:0.12,aWheel:dur(pw),
+      wBat:wOf(bat)||0.6,oBat:Math.abs(bat)>500?1:0.12,aBat:dur(bat),
+      wRes:wOf(ser.pRes[i])||0.6,oRes:ser.pRes[i]>500?1:0.1,aRes:dur(ser.pRes[i]),
+      wHeat:wOf(ser.pHeat[i])||0.6,oHeat:ser.pHeat[i]>200?1:0.1,aHeat:dur(ser.pHeat[i]),
+      wFric:wOf(ser.pFric[i])||0.6,oFric:ser.pFric[i]>500?1:0.1,aFric:dur(ser.pFric[i]),
+      nodes:[
+        nb(28,57,68,'ENGINE',gen>0?ser.rpm[i].toFixed(0)+' rpm':'OFF',gen>0,'#f0c419'),
+        nb(168,57,68,'GEN',kw(gen).toFixed(0)+' kW',gen>0,'#46cfe0'),
+        nb(300,57,58,'DC BUS',kw(pb).toFixed(0),true,'#46cfe0'),
+        nb(440,57,68,'MOTOR',kw(Math.max(0,pb)).toFixed(0)+' kW',pb>0,'#46cfe0'),
+        nb(584,57,78,'WHEELS',kw(pw).toFixed(0)+' kW',Math.abs(pw)>500,'#f0c419'),
+        nb(182,133,68,'BATTERY',(ser.soc[i]*100).toFixed(0)+'%',Math.abs(bat)>500,'#46cfe0'),
+        nb(420,133,74,'RESISTOR',kw(ser.pRes[i]).toFixed(0)+' kW',ser.pRes[i]>500,'#e2603a'),
+        nb(420,185,74,'CABIN HEAT',cold?kw(ser.pHeat[i]).toFixed(0)+' kW':'n/a',ser.pHeat[i]>200,'#e2603a'),
+        nb(414,185,0,'','',false),
+        nb(500,185,86,'FRICTION',kw(ser.pFric[i]).toFixed(0)+' kW',ser.pFric[i]>500,'#78838f')]};
+    pf.nodes.splice(8,1);
+
+    const CW=460,CH2=258,cx=j=>j/(ND-1)*CW;
+    const vy=v=>112-((v*3.6)/110)*96,gy=g=>196-Math.max(-40,Math.min(40,(g*100)*8));
+    let vLine='M '+cx(0).toFixed(1)+' '+vy(R.dv[0]).toFixed(1);
+    for(let j=1;j<ND;j++)vLine+=' L '+cx(j).toFixed(1)+' '+vy(R.dv[j]).toFixed(1);
+    let vRib='M '+cx(0).toFixed(1)+' '+vy(R.vB[0][1]).toFixed(1);
+    for(let j=1;j<ND;j++)vRib+=' L '+cx(j).toFixed(1)+' '+vy(R.vB[j][1]).toFixed(1);
+    for(let j=ND-1;j>=0;j--)vRib+=' L '+cx(j).toFixed(1)+' '+vy(R.vB[j][0]).toFixed(1);
+    let gLine='M '+cx(0).toFixed(1)+' '+gy(R.dg[0]).toFixed(1);
+    for(let j=1;j<ND;j++)gLine+=' L '+cx(j).toFixed(1)+' '+gy(R.dg[j]).toFixed(1);
+    const gArea=(sign)=>{let d='';for(let j=0;j<ND;j++){const g=R.dg[j];
+      if((sign>0&&g>0)||(sign<0&&g<0)){d+=' M '+cx(j).toFixed(1)+' 196 L '+cx(j).toFixed(1)+' '+gy(g).toFixed(1)+' L '+cx(Math.min(ND-1,j+1)).toFixed(1)+' '+gy(R.dg[Math.min(ND-1,j+1)]).toFixed(1)+' L '+cx(Math.min(ND-1,j+1)).toFixed(1)+' 196 Z';}}
+      return d.trim();};
+
+    const mp=mapBands(veh.eng,veh.eng.rpm[0],veh.eng.rpm[veh.eng.rpm.length-1],
+      Math.max.apply(null,veh.eng.trq)*1.06,
+      [{v:veh.key==='zero'?245:230,fill:'#161d22',stroke:'#252e36'},
+       {v:veh.key==='zero'?225:210,fill:'#1a2530',stroke:'#2a3844'},
+       {v:veh.key==='zero'?212:196,fill:'#1d3040',stroke:'#2f4a5c'},
+       {v:veh.key==='zero'?204:187,fill:'#204458',stroke:'#39708a'}]);
+    let trail='';const t0=Math.max(0,i-900);
+    for(let k=t0;k<=i;k+=18){if(ser.pGen[k]>0){const p=mp.sx(ser.rpm[k]).toFixed(1)+' '+mp.sy(ser.trq[k]).toFixed(1);trail+=(trail?' L ':'M ')+p;}}
+    const dsl=R.dsl;let dTrail='';
+    for(let k=t0;k<=i;k+=18){if(dsl.trq[k]>5){const p=mp.sx(dsl.rpm[k]).toFixed(1)+' '+mp.sy(dsl.trq[k]).toFixed(1);dTrail+=(dTrail?' L ':'M ')+p;}}
+    const dOn=dsl.trq[i]>5;
+    const running=ser.pGen[i]>0;
+
+    const soc=ser.soc[i],tb=ser.tb[i];
+    const socKwh=(soc-0.15)/(0.95-0.15)*veh.pack.usable;
+    const amb=cold?-10:24;
+    const tPct=Math.max(0,Math.min(100,(tb+20)/80*100));
+    const km=R.tr.s[i]/1000,secs=R.tr.t[i];
+    const litres=ser.fuelL[i],per100=km>0.4?litres/km*100:0;
+    const payload=veh.key==='zero'?veh.payload:veh.payload;
+    const mjTkm=km>0.4?(litres*DKG*42.8)/(payload*km):0;
+    const totalKm=sTot/1000;
+
+    const chg=cold?veh.pack.coldChg:veh.pack.chg;
+    const ladder=[
+      {i:'1',name:'TO BATTERY',kw:(Math.max(0,-bat)/1000).toFixed(0)+' kW',pct:Math.min(100,Math.max(0,-bat)/chg*100)+'%',col:Math.max(0,-bat)>500?'#46cfe0':'#3a4654',numCol:Math.max(0,-bat)>500?'#46cfe0':'#4b5563'},
+      {i:'2',name:cold?'TO CABIN HEATER':'CABIN HEATER (warm — skipped)',kw:(ser.pHeat[i]/1000).toFixed(0)+' kW',pct:Math.min(100,ser.pHeat[i]/veh.heaterCap*100)+'%',col:ser.pHeat[i]>200?'#e2603a':'#3a4654',numCol:ser.pHeat[i]>200?'#e2603a':'#4b5563'},
+      {i:'3',name:'TO BRAKE RESISTOR',kw:(ser.pRes[i]/1000).toFixed(0)+' kW',pct:Math.min(100,ser.pRes[i]/veh.resistorCap*100)+'%',col:ser.pRes[i]>500?'#e2603a':'#3a4654',numCol:ser.pRes[i]>500?'#e2603a':'#4b5563'},
+      {i:'4',name:'TO FRICTION BRAKES',kw:(ser.pFric[i]/1000).toFixed(0)+' kW',pct:Math.min(100,ser.pFric[i]/200000*100)+'%',col:ser.pFric[i]>500?'#78838f':'#3a4654',numCol:ser.pFric[i]>500?'#78838f':'#4b5563'}];
+
+    const rec=veh.key==='zero'?[
+      {k:'Buffer pack, usable at bus',src:'results.json · WS3',v:'11.08 kWh',col:'#e6eaef'},
+      {k:'Supervisor limits, bus‑side',src:'ES‑4 restatement',v:'125 / 110 kW',col:'#e6eaef'},
+      {k:'Launch force at 20% grade',src:'results.json · WS1',v:'13.27 kN',col:'#e6eaef'},
+      {k:'Final drive',src:'ratified params',v:'2.8 : 1',col:'#e6eaef'},
+      {k:'Series chain efficiency',src:'driveline_derived',v:'0.8137',col:'#e6eaef'},
+      {k:'Clutch gate G1‑R, ensemble‑min',src:'results_ws4.json',v:'−2.58%',col:'#e6eaef'}]:[
+      {k:'S0 diesel, fleet mission',src:'results_ws8.json',v:'38.78 L/100 km',col:'#e6eaef'},
+      {k:'S0, same road, grade zeroed',src:'cross‑check',v:'33.08 L/100 km',col:'#e6eaef'},
+      {k:'S1 pure series, nominal',src:'ensemble‑min / median',v:'−0.66 / +0.75%',col:'#e6eaef'},
+      {k:'S1 worst corner (−10 °C)',src:'R28 corner set',v:'−4.37%',col:'#e6eaef'},
+      {k:'Payload, S0 vs S1',src:'mass ledger',v:'20,785 / 19,398 kg',col:'#e6eaef'},
+      {k:'Advance criterion',src:'pre‑committed',v:'≥3% and ≥0%',col:'#e6eaef'}];
+
+    return{
+      routeName:veh.name,
+      routeLen:veh.rec.dist,routeClimb:veh.rec.climb,
+      routePeak:veh.rec.peak+' / '+veh.rec.dip,routeSrc:veh.rec.src,
+      routeDerived:totalKm.toFixed(1)+' km · '+R.climb.toFixed(0)+' m · +'+R.peak.toFixed(2)+'% / −'+Math.abs(R.dip).toFixed(2)+'%',
+      packSpec:veh.packSpec,flowLegend:'PEAK '+peakKw.toFixed(0)+' kW',
+      routeOpts:[{key:'zero',label:'VEHICLE ZERO · VOLT‑REG'},{key:'one',label:'VEHICLE ONE · CORRIDOR'}].map(o=>({
+        label:o.label,line:S.route===o.key?'#2b6f7a':'#2b333d',fill:S.route===o.key?'#0f2a2e':'transparent',
+        col:S.route===o.key?'#8ae3ee':'#6f7b8a',
+        go:()=>{this.setState({route:o.key,pos:0,playing:false});this.load(o.key);}})),
+      rates:[0.5,1,2,8].map(r=>({label:'×'+r,line:S.rate===r?'#2b6f7a':'#2b333d',
+        fill:S.rate===r?'#0f2a2e':'transparent',col:S.rate===r?'#8ae3ee':'#6f7b8a',
+        go:()=>{this.anchor(this.state.pos);this.setState({rate:r});}})),
+      el:{line:line,past:past,area:area,climbFill:seg(1),descFill:seg(-1),x:tx.toFixed(1),
+        truck:'translate('+gx.toFixed(1)+' '+ty.toFixed(1)+') rotate('+ang.toFixed(1)+')'},
+      pf:pf,
+      ch:{vLine:vLine,vRibbon:ribbonOn?vRib+' Z':'',ribOp:ribbonOn?0.85:0,
+        gLine:gLine,gPos:gArea(1),gNeg:gArea(-1),cx:cx(jNow).toFixed(1)},
+      map:{bands:mp.bands,envelope:mp.envelope,trail:trail,dTrail:dTrail,
+        ddx:dOn?mp.sx(dsl.rpm[i]).toFixed(1):'-50',ddy:dOn?mp.sy(dsl.trq[i]).toFixed(1):'-50',
+        dBsfc:dOn?dsl.bsfc[i].toFixed(0)+' g/kWh':'fuel cut',
+        dGear:dOn?'gear '+dsl.gear[i]+' · '+dsl.rpm[i].toFixed(0)+' rpm':'overrun',
+        dx:running?mp.sx(ser.rpm[i]).toFixed(1):mp.sx(veh.eng.rpm[0]).toFixed(1),
+        dy:running?mp.sy(ser.trq[i]).toFixed(1):mp.sy(0).toFixed(1),
+        dotCol:running?'#46cfe0':'#4b5563',
+        state:running?'PINNED · GENSET ON LOCUS':'GENSET OFF · START‑STOP',
+        bsfc:running?ser.bsfc[i].toFixed(0)+' g/kWh':'—'},
+      soc:{pct:((soc-0.15)/0.8*100).toFixed(1)+'%',val:(soc*100).toFixed(0)+'%',
+        kwh:socKwh.toFixed(2)+' / '+veh.pack.usable.toFixed(2)+' kWh',
+        tgt:((0.60-0.15)/0.8*100).toFixed(1)+'%',hi:'100%',lo:'0%'},
+      tmp:{val:tb.toFixed(1)+' °C',pct:tPct.toFixed(1)+'%',gate:'50%',
+        col:tb>45?'#e2603a':(tb<0?'#46cfe0':'#a9b6c6'),
+        note:cold?'cold acceptance capped at 67 kW bus':'ceiling 50.3 °C at +45 °C corner'},
+      ladder:ladder,
+      readouts:[
+        {k:'WHEEL POWER',v:(pw/1000).toFixed(1)+' kW',col:pw>0?'#f0c419':'#46cfe0'},
+        {k:'BUS POWER',v:(pb/1000).toFixed(1)+' kW',col:'#46cfe0'},
+        {k:'GENSET',v:gen>0?(gen/1000).toFixed(0)+' kW':'off',col:gen>0?'#46cfe0':'#5c6674'},
+        {k:'ENGINE',v:gen>0?ser.rpm[i].toFixed(0)+' rpm · '+ser.trq[i].toFixed(0)+' Nm':'stopped',col:gen>0?'#f0c419':'#5c6674'},
+        {k:'BATTERY',v:(bat/1000).toFixed(1)+' kW',col:'#46cfe0'},
+        {k:'WASTED AS HEAT',v:((ser.pRes[i]+ser.pHeat[i])/1000).toFixed(0)+' kW',col:(ser.pRes[i]+ser.pHeat[i])>500?'#e2603a':'#5c6674'},
+        {k:'FRICTION BRAKES',v:(ser.pFric[i]/1000).toFixed(0)+' kW',col:ser.pFric[i]>500?'#78838f':'#5c6674'}],
+      recordRows:rec,
+      fuel:{litres:litres.toFixed(2),per100:per100.toFixed(2),perTkm:mjTkm.toFixed(4)},
+      posPct:(S.pos*100).toFixed(2)+'%',posK:Math.round(S.pos*1000),
+      nowDist:km.toFixed(2),nowTime:Math.floor(secs/3600)+':'+String(Math.floor(secs/60)%60).padStart(2,'0')+':'+String(Math.floor(secs)%60).padStart(2,'0'),
+      nowSpeed:(R.tr.v[i]*3.6).toFixed(1),nowGrade:(gNow>=0?'+':'')+gNow.toFixed(2),
+      gradeCol:gNow>0.8?'#f0c419':(gNow<-0.8?'#46cfe0':'#8d99a8'),
+      playIcon:S.playing?'❚❚':'▶',
+      togglePlay:()=>{const pos=S.pos>=1?0:S.pos;this.anchor(pos);
+        this.setState({playing:!S.playing,pos:pos},this.kick);},
+      scrub:e=>{const p=Number(e.target.value)/1000;this.anchor(p);
+        this.setState({pos:p,playing:false});}};}
+}
+</script>
+</body>
+</html>

@@ -330,6 +330,26 @@ def check_srclines(manifest):
 
 # The derived values the exhibit's argument rests on. Each is recomputed
 # here from the record, independently of the builder (adjudication r1/m1).
+def _speed_series(rel):
+    """This verifier's own read of a trace's v_kmh column."""
+    cols = None
+    j = None
+    out = []
+    with open(os.path.join(ROOT, rel), encoding="utf-8") as fh:
+        for line in fh:
+            line = line.rstrip("\n").rstrip("\r")
+            if line.startswith("#"):
+                continue
+            if cols is None:
+                cols = line.split(",")
+                j = cols.index("v_kmh")
+                continue
+            if not line:
+                continue
+            out.append(float(line.split(",")[j]))
+    return out
+
+
 def _rederive(bundle):
     out = {}
     ws4 = doc("WS4_genset/results_ws4.json")
@@ -372,6 +392,31 @@ def _rederive(bundle):
         out["$.screens.race.pairs[%d].record.gapPp" % i] = (
             base["margin_pct_per_km_paired"]["per_seed"][seed]
             - base["margin_pct_per_payload_tkm_paired"]["per_seed"][seed])
+
+    # --- the lane view's separation figures, re-measured from the two
+    #     trace files themselves rather than trusted from the bundle
+    for k, dset in enumerate(bundle["screens"]["sim"]["datasets"]):
+        if dset["kind"] != "paired":
+            continue
+        base = "$.screens.sim.datasets[%d].separation" % k
+        ca = _speed_series(dset["sourceFile"])
+        ru = _speed_series(dset["rulerSourceFile"])
+        n = min(len(ca), len(ru))
+        xa = 0.0
+        xb = 0.0
+        dv = 0.0
+        dx = 0.0
+        for i in range(n):
+            dv = max(dv, abs(ca[i] - ru[i]))
+            xa += ca[i] / 3.6 * 0.1
+            xb += ru[i] / 3.6 * 0.1
+            dx = max(dx, abs(xa - xb))
+        out[base + ".maxSpeedDifference"] = dv
+        out[base + ".maxSeparation"] = dx
+        out[base + ".finalSeparation"] = abs(xa - xb)
+        out[base + ".candDistance"] = xa / 1000.0
+        out[base + ".rulerDistance"] = xb / 1000.0
+        out[base + ".samples"] = float(n)
 
     # --- the first-pass detection counts
     adj = bundle["screens"]["rounds"]["adjudications"]

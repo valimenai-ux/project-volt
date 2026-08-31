@@ -27,6 +27,7 @@ correctly fails — that is the point.
 
 import hashlib
 import os
+import shutil
 import subprocess
 import sys
 
@@ -59,6 +60,8 @@ def main():
         print("\n[--] npm run build")
         if not os.path.isdir(os.path.join(APP, "node_modules")):
             subprocess.run(["npm", "ci"], cwd=APP, check=False)
+        # Always build into a clean dist; see check_determinism_ws12.py.
+        shutil.rmtree(os.path.join(APP, "dist"), ignore_errors=True)
         if subprocess.run(["npm", "run", "build"], cwd=APP).returncode:
             return 1
 

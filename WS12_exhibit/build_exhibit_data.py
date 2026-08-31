@@ -667,6 +667,59 @@ def mechanisms_for(p):
     return out
 
 
+# ---------------------------------------------------------------- motion
+# Position along the route, measured from the record and nothing else.
+# A conforming R34 trace carries `x_m` (cumulative distance) and it is used
+# directly. WS11's pre-R34 traces do not, so distance is integrated from
+# their own `v_kmh` at their own 0.1 s step and labelled DERIVED.
+_MOTION = {}
+
+
+def pair_motion(cand_rel, ruler_rel):
+    """Measure how far apart the two vehicles of a paired set ever get.
+
+    Nothing here is smoothed, scaled or separated for legibility. If the
+    two traces hold the same speed column the answer is zero, and zero is
+    what the screen shows.
+    """
+    key = (cand_rel, ruler_rel)
+    if key in _MOTION:
+        return _MOTION[key]
+    _, _, ca, ra = TR.read_trace(cand_rel, want_columns=["t_s", "v_kmh"])
+    _, _, rb, rr = TR.read_trace(ruler_rel, want_columns=["t_s", "v_kmh"])
+    n = min(len(ra), len(rr))
+    xa = 0.0
+    xb = 0.0
+    dv_max = 0.0
+    dx_max = 0.0
+    dx_at_s = 0.0
+    dx_at_km = 0.0
+    for i in range(n):
+        va = float(ra[i][1])
+        vb = float(rr[i][1])
+        dv_max = max(dv_max, abs(va - vb))
+        xa += va / 3.6 * DT_S
+        xb += vb / 3.6 * DT_S
+        d = abs(xa - xb)
+        if d > dx_max:
+            dx_max = d
+            dx_at_s = float(ra[i][0])
+            dx_at_km = xa / 1000.0
+    out = {
+        "samples": n,
+        "cand_km": xa / 1000.0,
+        "ruler_km": xb / 1000.0,
+        "max_abs_dv_kmh": dv_max,
+        "max_abs_dx_m": dx_max,
+        "max_abs_dx_at_s": dx_at_s,
+        "max_abs_dx_at_km": dx_at_km,
+        "final_abs_dx_m": abs(xa - xb),
+        "identical_speed_columns": dv_max == 0.0,
+    }
+    _MOTION[key] = out
+    return out
+
+
 def build_race_screen(trace_index):
     pairs = []
     for p in RACE_PAIRS:
@@ -712,6 +765,8 @@ def build_race_screen(trace_index):
             "seed": p["seed"],
             "candTraceId": trace_index[p["candTrace"]],
             "rulerTraceId": trace_index[p["rulerTrace"]],
+            "_candTrace": p["candTrace"],
+            "_rulerTrace": p["rulerTrace"],
             "payloadRuler": cite(WS11, base + ["payload_kg_ruler"], ",.0f",
                                  suf=" kg"),
             "payloadCand": cite(WS11, base + ["payload_kg_candidate"], ",.0f",
@@ -1487,7 +1542,193 @@ def build_trace_registry():
     return rows, published
 
 
-def build_sim_screen(trace_index, registry):
+# Which vehicle in a WS11 paired set carries which verdict of record. The
+# ruler is the incumbent and has no verdict; it is labelled as such rather
+# than given a badge it does not have.
+LANE_STATUS = {
+    "V1": ("V1 Postal", status_badge("FROZEN-PROVISIONAL"),
+           ["interface_ws11", "verdicts", "V1_on_VOLT-SUB", "verdict"]),
+    "V2": ("V2 Trucker", status_badge("FROZEN-KILL"),
+           ["interface_ws11", "verdicts", "V2_on_VOLT-REG", "verdict"]),
+}
+
+
+def build_sim_datasets(trace_index, race_pairs):
+    """The simulator's selectable sets.
+
+    Two kinds. A WS5 duty trace is R34-conforming, drives every instrument
+    panel, and has no ruler pair — so it renders one lane and says why the
+    other is empty. A WS11 paired set is pre-R34, so it drives the lane
+    view and the route strip and nothing else, and the panels it cannot
+    feed state what the file does not carry.
+    """
+    out = []
+    for t in SIM_TRACES:
+        tid = trace_index[t["rel"]]
+        info = trace_index["_info"][t["rel"]]
+        out.append({
+            "id": tid,
+            "kind": "single",
+            "schemaClass": "R34",
+            "label": t["label"],
+            "shortLabel": t["label"].split(" · ")[0] + " · "
+                          + t["label"].split(" · ")[1],
+            "sourceFile": t["rel"],
+            "bsfcMap": t["map"],
+            "headerLines": info["headerLines"],
+            "meta": info["meta"],
+            "lanes": [{
+                "traceId": tid,
+                "role": "candidate",
+                "roleLabel": "CANDIDATE",
+                "vehicle": info["meta"].get("vehicle", ""),
+                "name": t["label"].split(" · ")[0],
+                "positionSource": "x_m",
+                "positionBasis": ("read directly from the trace's own "
+                                  "cumulative-distance column, x_m"),
+            }],
+            "pairAbsence": {
+                "headline": "No ruler lane. WS5 exported no paired "
+                            "incumbent run for this duty.",
+                "body": ("The side-by-side view needs two traces at the "
+                         "same duty, corner and seed. WS5's set is the "
+                         "candidate only; the stock NPR-HD was not re-run "
+                         "under WS5. The second lane is drawn dashed and "
+                         "left empty rather than filled with anything, and "
+                         "the paired sets that DO exist are in this "
+                         "selector beside it."),
+                "wherePairedSetsAre": "the four WS11 paired sets below",
+            },
+            "missingSchemaElements": [],
+        })
+
+    for p in race_pairs:
+        cand_rel = p["_candTrace"]
+        ruler_rel = p["_rulerTrace"]
+        ci = trace_index["_info"][cand_rel]
+        ri = trace_index["_info"][ruler_rel]
+        m = pair_motion(cand_rel, ruler_rel)
+        name, badge, vpath = LANE_STATUS[p["vehicle"]]
+        header, meta, cols, rows = TR.read_trace(cand_rel)
+        val = TR.describe_pre_r34(cand_rel, header, meta, cols, rows)
+        missing = sorted(set(val["missingCoreColumns"])
+                         | set(val["missingElectrifiedColumns"])
+                         | set(val["missingEngineColumns"]))
+        out.append({
+            "id": "pair-" + p["id"],
+            "kind": "paired",
+            "schemaClass": "PRE-R34",
+            "label": p["label"] + " · " + p["sub"],
+            "shortLabel": p["vehicle"] + " · " + p["duty"] + " · "
+                          + p["case"],
+            "sourceFile": cand_rel,
+            "rulerSourceFile": ruler_rel,
+            "bsfcMap": None,
+            "headerLines": ci["headerLines"],
+            "rulerHeaderLines": ri["headerLines"],
+            "meta": ci["meta"],
+            "racePairId": p["id"],
+            "lanes": [
+                {"traceId": trace_index[cand_rel],
+                 "role": "candidate",
+                 "roleLabel": "CANDIDATE",
+                 "vehicle": p["vehicle"],
+                 "name": name,
+                 "statusBadge": badge,
+                 "verdict": cite(WS11, vpath, "str"),
+                 "payload": p["payloadCand"],
+                 "positionSource": "v_kmh",
+                 "positionBasis": ("integrated from the trace's own v_kmh "
+                                   "at its own 0.1 s step; this file "
+                                   "predates TRACE_SCHEMA and carries no "
+                                   "x_m column")},
+                {"traceId": trace_index[ruler_rel],
+                 "role": "ruler",
+                 "roleLabel": "INCUMBENT - NO VERDICT OF RECORD",
+                 "vehicle": "ruler",
+                 "name": "Stock NPR-HD",
+                 "payload": p["payloadRuler"],
+                 "positionSource": "v_kmh",
+                 "positionBasis": ("integrated from the trace's own v_kmh "
+                                   "at its own 0.1 s step; this file "
+                                   "predates TRACE_SCHEMA and carries no "
+                                   "x_m column")},
+            ],
+            "separation": build_separation(p, m),
+            "missingSchemaElements": missing,
+            "preR34Note": ("This is a pre-R34 file. It carries speed, "
+                           "grade, wheel power, fuel rate and the bus "
+                           "columns, and nothing else the schema names. "
+                           "The lane view and the route strip run on what "
+                           "it has; every panel below that needs a column "
+                           "it does not have says so instead of drawing "
+                           "one."),
+        })
+    return out
+
+
+def build_separation(p, m):
+    """What the record says about how far apart the two vehicles get."""
+    unserved = None
+    infeasible = None
+    if p["case"] == "climb_10km_6pct":
+        unserved = cite(WS11, ["interface_ws11",
+                               "capability_and_limit_worst_case",
+                               "V2_on_VOLT-REG",
+                               "ruler_worst_unserved_wheel_kWh"], ".4f",
+                        suf=" kWh")
+        infeasible = cite(WS11, ["interface_ws11",
+                                 "capability_and_limit_worst_case",
+                                 "V2_on_VOLT-REG",
+                                 "ruler_worst_capability_infeasible_s"],
+                          ".1f", suf=" s")
+    src = ("sample-by-sample comparison of the two traces' own v_kmh "
+           "columns, integrated at the files' own 0.1 s step: %s vs %s"
+           % (p["_candTrace"], p["_rulerTrace"]))
+    out = {
+        "maxSpeedDifference": lit(m["max_abs_dv_kmh"], ".6f", suf=" km/h",
+                                  source=src),
+        "maxSeparation": lit(m["max_abs_dx_m"], ".3f", suf=" m",
+                             source=src),
+        "finalSeparation": lit(m["final_abs_dx_m"], ".3f", suf=" m",
+                               source=src),
+        "candDistance": lit(m["cand_km"], ".3f", suf=" km", source=src),
+        "rulerDistance": lit(m["ruler_km"], ".3f", suf=" km", source=src),
+        "samples": lit(float(m["samples"]), ",.0f", source=src),
+        "identical": m["identical_speed_columns"],
+        "headline": ("The two trucks never separate, and that is the "
+                     "record, not a simplification."
+                     if m["identical_speed_columns"]
+                     else "Where the record separates them, the lanes "
+                          "separate."),
+        "body": ("Both files carry the same demanded speed at every one of "
+                 "their samples, so both vehicles cover the same distance "
+                 "at the same instant for the whole run. The race between "
+                 "them is in energy, not in position, and the lane view "
+                 "would be lying if it drew a gap. No offset, no easing "
+                 "and no scaling is applied to either lane."),
+    }
+    if unserved is not None:
+        out["capabilityNote"] = {
+            "headline": "This is the corner where the ruler cannot keep "
+                        "up — and the trace still does not show it.",
+            "body": ("On the 10 km 6% climb the record has the stock truck "
+                     "capability-limited for the seconds below, unable to "
+                     "hold the demanded speed, and books the work it could "
+                     "not do as unserved energy. The speed column carries "
+                     "the DEMAND for both vehicles, so the shortfall never "
+                     "reaches the position axis. The honest place to read "
+                     "it is the energy ledger beside it, and this is the "
+                     "clearest single reason the exhibit does not treat a "
+                     "trace as a picture of what happened."),
+            "unservedWheel": unserved,
+            "infeasibleSeconds": infeasible,
+        }
+    return out
+
+
+def build_sim_screen(trace_index, registry, race_pairs):
+    datasets = build_sim_datasets(trace_index, race_pairs)
     traces = []
     for t in SIM_TRACES:
         info = trace_index["_info"][t["rel"]]
@@ -1535,6 +1776,21 @@ def build_sim_screen(trace_index, registry):
                           "resolved."),
         },
         "traces": traces,
+        "datasets": datasets,
+        "lanes": {
+            "title": "The route, both lanes",
+            "kicker": "RECORD-ONLY MOTION",
+            "rule": ("Each truck's position comes from its own trace of "
+                     "record and from nothing else: a conforming file's "
+                     "own x_m column where the schema carries one, and an "
+                     "integration of the file's own v_kmh where it does "
+                     "not. No synthetic motion, no invented separation, no "
+                     "offset for legibility."),
+            "postClose": ("Added after the close-out, on the principal's "
+                          "order, as a visualization of traces already "
+                          "published. It reads no new file, moves no "
+                          "number and changes no status."),
+        },
         "payloadNote": {
             "headline": "The payload this screen divides by comes from the "
                         "trace header, as ordered. It is not the payload "
@@ -2321,6 +2577,49 @@ def build_interface(bundle, manifest, decimation, maps, registry, sources):
                 "bytes": max(r["bytes"] for r in registry),
             },
         },
+        "post_close_additions": [{
+            "id": "sim-lane-view",
+            "ordered_by": "the principal, after the close-out",
+            "what": ("a side-by-side lane view on the simulator screen: "
+                     "each vehicle drawn on its own lane, moving along the "
+                     "route, driven by the existing play / pause / scrub / "
+                     "speed transport"),
+            "scope": "visualization only",
+            "moves": ("no number, no status, no verdict. It reads only "
+                      "trace files this exhibit already published and "
+                      "results fields it already cited."),
+            "position_source": {
+                "R34": "the trace's own x_m cumulative-distance column, "
+                       "read directly",
+                "PRE-R34": "integrated from the trace's own v_kmh at its "
+                           "own 0.1 s step, because the file predates "
+                           "TRACE_SCHEMA and carries no x_m",
+            },
+            "datasets_total": len(bundle["screens"]["sim"]["datasets"]),
+            "datasets_paired": sum(
+                1 for x in bundle["screens"]["sim"]["datasets"]
+                if x["kind"] == "paired"),
+            "datasets_single": sum(
+                1 for x in bundle["screens"]["sim"]["datasets"]
+                if x["kind"] == "single"),
+            "separation_measured": {
+                x["racePairId"]: {
+                    "max_abs_separation_m": x["separation"][
+                        "maxSeparation"]["v"],
+                    "max_abs_speed_difference_kmh": x["separation"][
+                        "maxSpeedDifference"]["v"],
+                    "samples_compared": x["separation"]["samples"]["v"],
+                }
+                for x in bundle["screens"]["sim"]["datasets"]
+                if x["kind"] == "paired"},
+            "finding": ("every WS11 paired set carries byte-identical "
+                        "speed columns, so the two vehicles never separate "
+                        "on any of the four datasets - including the "
+                        "capability-limited climb, where the record books "
+                        "the ruler's shortfall as unserved energy and not "
+                        "as a slower speed. The lanes render that "
+                        "lockstep."),
+        }],
         "maps_published": [m["name"] for m in maps],
         # Traces and maps only. The data bundle and the two manifests are
         # served too, but their size cannot appear here: this field lives
@@ -2549,6 +2848,7 @@ def main():
             uniq.append(s)
     sources = sorted(uniq, key=lambda s: s["file"])
 
+    race = build_race_screen(trace_index)
     bundle = {
         "meta": {
             "program": "Project Volt",
@@ -2565,9 +2865,10 @@ def main():
         "provenance": build_provenance(),
         "screens": {
             "verdict": build_verdict_screen(),
-            "race": build_race_screen(trace_index),
+            "race": race,
             "rounds": build_rounds_screen(),
-            "sim": build_sim_screen(trace_index, registry),
+            "sim": build_sim_screen(trace_index, registry,
+                                    race["pairs"]),
             "sandbox": build_sandbox_screen(),
             "method": build_method_screen(sources, published_bytes,
                                           len(decimation)),

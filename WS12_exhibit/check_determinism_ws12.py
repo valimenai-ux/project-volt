@@ -11,6 +11,7 @@ Written to `determinism_check.txt`, the same pattern WS5 and WS11 use.
 
 import hashlib
 import os
+import shutil
 import subprocess
 import sys
 
@@ -82,11 +83,19 @@ def main():
         and r.returncode == 0
 
     if with_app:
-        r1 = subprocess.run(["npm", "run", "build"], cwd=APP,
-                            capture_output=True, text=True)
+        # Each build writes into a CLEAN dist. Building over an existing
+        # one lets the platform's directory-copy leave empty " 2" siblings
+        # beside `dist/traces`, which are cruft rather than output, and it
+        # also makes the comparison a from-scratch one rather than an
+        # overwrite.
+        def fresh_build():
+            shutil.rmtree(os.path.join(APP, "dist"), ignore_errors=True)
+            return subprocess.run(["npm", "run", "build"], cwd=APP,
+                                  capture_output=True, text=True)
+
+        r1 = fresh_build()
         b1 = snapshot(APP, ("dist",))
-        r2 = subprocess.run(["npm", "run", "build"], cwd=APP,
-                            capture_output=True, text=True)
+        r2 = fresh_build()
         b2 = snapshot(APP, ("dist",))
         log.append("npm run build exits: %d, %d" % (r1.returncode,
                                                     r2.returncode))

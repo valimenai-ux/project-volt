@@ -7,11 +7,14 @@ import {
   Panel,
   PanelHead,
   Quote,
+  StatusBadge,
   TierBadge,
 } from '../ui'
 import { loadScrub, loadSegment, validateLoaded } from '../trace'
 import type { Loaded, RunCheck } from '../trace'
 import type { Cited, RegistryRow, TraceEntry } from '../types'
+import Lanes, { laneDistance } from './Lanes'
+import type { LaneRun } from './Lanes'
 
 // ------------------------------------------------------------ BSFC map
 
@@ -514,11 +517,16 @@ function Registry({ rows, note }: { rows: RegistryRow[]; note: string }) {
 // ------------------------------------------------------------------ main
 
 export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
-  const [sel, setSel] = useState(d.traces[0].id)
-  const t: TraceEntry = bundle.traces[sel]
-  const meta = d.traces.find((x: any) => x.id === sel)
+  const [sel, setSel] = useState(d.datasets[0].id)
+  const ds = d.datasets.find((x: any) => x.id === sel) ?? d.datasets[0]
+  const isR34 = ds.schemaClass === 'R34'
+  // The instrument panels replay the dataset's FIRST lane; the lane view
+  // replays every lane it has.
+  const t: TraceEntry = bundle.traces[ds.lanes[0].traceId]
+  const meta = ds
 
   const [scrub, setScrub] = useState<Loaded | null>(null)
+  const [laneRuns, setLaneRuns] = useState<(LaneRun | null)[]>([])
   const [check, setCheck] = useState<RunCheck | null>(null)
   const [seg, setSeg] = useState<Loaded | null>(null)
   const [segIx, setSegIx] = useState(-1)
@@ -533,26 +541,36 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
 
   useEffect(() => {
     setScrub(null)
+    setLaneRuns([])
     setSeg(null)
     setSegIx(-1)
     setErr(null)
     setPos(0)
     setPlaying(false)
+    setMap(null)
     let live = true
-    loadScrub(t)
-      .then((s) => {
+    const entries: TraceEntry[] = ds.lanes.map(
+      (l: any) => bundle.traces[l.traceId],
+    )
+    Promise.all(entries.map((e) => loadScrub(e)))
+      .then((loaded) => {
         if (!live) return
-        setScrub(s)
-        setCheck(validateLoaded(t, s))
+        setScrub(loaded[0])
+        setCheck(validateLoaded(entries[0], loaded[0]))
+        setLaneRuns(
+          loaded.map((l, k) => laneDistance(l, entries[k].stride * 0.1)),
+        )
       })
       .catch((e) => live && setErr(String(e)))
-    loadBsfc(meta.bsfcMap)
-      .then((m) => live && setMap(m))
-      .catch(() => undefined)
+    if (ds.bsfcMap) {
+      loadBsfc(ds.bsfcMap)
+        .then((m) => live && setMap(m))
+        .catch(() => undefined)
+    }
     return () => {
       live = false
     }
-  }, [sel, t, meta.bsfcMap])
+  }, [sel, ds, bundle.traces])
 
   useEffect(() => {
     if (!playing) return
@@ -612,7 +630,7 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
       </div>
     )
 
-  if (check && !check.ok)
+  if (isR34 && check && !check.ok)
     return (
       <Panel accent={C.heat}>
         <PanelHead
@@ -710,20 +728,24 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
           kicker="SELECT A TRACE"
           title={meta.label}
           right={
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: '5px 11px',
-                border: '1px dashed ' + C.lineHard,
-                font: '500 9.5px/1 ' + F.mono,
-                letterSpacing: '.16em',
-                color: C.muted,
-              }}
-              title={d.disposition._why_no_badge}
-            >
-              {d.disposition.shortForm}
-            </span>
+            ds.kind === 'paired' ? (
+              <StatusBadge s={ds.lanes[0].statusBadge} />
+            ) : (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '5px 11px',
+                  border: '1px dashed ' + C.lineHard,
+                  font: '500 9.5px/1 ' + F.mono,
+                  letterSpacing: '.16em',
+                  color: C.muted,
+                }}
+                title={d.disposition._why_no_badge}
+              >
+                {d.disposition.shortForm}
+              </span>
+            )
           }
         />
         <div
@@ -735,7 +757,7 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
             flexWrap: 'wrap',
           }}
         >
-          {d.traces.map((x2: any) => {
+          {d.datasets.map((x2: any) => {
             const on = x2.id === sel
             return (
               <button
@@ -749,9 +771,21 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
                   background: on ? C.electricalBg : 'transparent',
                   font: '400 10.5px/1.3 ' + F.mono,
                   color: on ? C.electricalLo : C.muted,
+                  display: 'flex',
+                  gap: '8px',
+                  alignItems: 'center',
                 }}
               >
-                {x2.label}
+                <span>{x2.shortLabel}</span>
+                <span
+                  style={{
+                    font: '400 8px/1 ' + F.mono,
+                    letterSpacing: '.1em',
+                    color: on ? C.electricalLo : C.ghost,
+                  }}
+                >
+                  {x2.kind === 'paired' ? 'TWO LANES' : 'ONE LANE'}
+                </span>
               </button>
             )
           })}
@@ -850,7 +884,44 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
             </span>
           </div>
 
+          {/* the route, both lanes — record-only motion */}
+          <Lanes d={d} ds={ds} runs={laneRuns} pos={pos} />
+
+          {!isR34 ? (
+            <div
+              style={{
+                border: '1px dashed ' + C.mechanicalLine,
+                padding: '14px 16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '9px',
+              }}
+            >
+              <Label>WHAT THIS FILE DOES NOT CARRY</Label>
+              <Body style={{ fontSize: '12px' }}>{ds.preR34Note}</Body>
+              <span
+                style={{
+                  font: '400 10px/1.7 ' + F.mono,
+                  color: C.faint,
+                  wordBreak: 'break-word',
+                }}
+              >
+                {ds.missingSchemaElements.join(' · ')}
+              </span>
+              <Body style={{ fontSize: '12px', color: C.faint }}>
+                {'Every panel that needs one of those columns is absent ' +
+                  'below rather than drawn from a substitute. The elevation ' +
+                  'profile, the R15 blend cascade, the engine dot, the ' +
+                  'state-of-charge and pack-temperature traces and the ' +
+                  'cumulative-fuel counter all need columns this file does ' +
+                  'not have.'}
+              </Body>
+            </div>
+          ) : null}
+
           {/* elevation */}
+          {isR34 ? (
+          <>
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
               <Label>ELEVATION FROM z_m</Label>
@@ -1074,7 +1145,11 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
             </div>
           </div>
 
+          </>
+          ) : null}
+
           {/* ribbon */}
+          {isR34 ? (
           <div
             style={{
               border: '1px dashed ' + C.lineHard,
@@ -1089,10 +1164,15 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
               {d.ribbon.reason}
             </span>
           </div>
+          ) : null}
 
           {/* trace header, from the file itself */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-            <Label>THIS FILE'S OWN HEADER, VERBATIM</Label>
+            <Label>
+              {ds.kind === 'paired'
+                ? "BOTH FILES' OWN HEADERS, VERBATIM"
+                : "THIS FILE'S OWN HEADER, VERBATIM"}
+            </Label>
             <div
               style={{
                 border: '1px solid ' + C.lineSoft,
@@ -1112,11 +1192,31 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
                   {'# ' + h}
                 </span>
               ))}
+              {(ds.rulerHeaderLines ?? []).length ? (
+                <span
+                  style={{
+                    font: '400 9px/2.2 ' + F.mono,
+                    letterSpacing: '.16em',
+                    color: C.ghost,
+                  }}
+                >
+                  {ds.rulerSourceFile}
+                </span>
+              ) : null}
+              {(ds.rulerHeaderLines ?? []).map((h: string, i: number) => (
+                <span
+                  key={'r' + i}
+                  style={{ font: '400 10px/1.5 ' + F.mono, color: C.faint }}
+                >
+                  {'# ' + h}
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </Panel>
 
+      {ds.kind === 'single' ? (
       <Panel accent={C.mechanicalLine}>
         <PanelHead
           kicker="THE WORKSTREAM THIS TRACE COMES FROM"
@@ -1158,6 +1258,7 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
           <Quote c={d.blendOrder.quote} />
         </div>
       </Panel>
+      ) : null}
 
       <Registry rows={d.registry} note={d.registryNote} />
     </div>

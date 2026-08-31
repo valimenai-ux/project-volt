@@ -1,22 +1,22 @@
 EXHIBIT VERIFY — WS12
 ====================================================================
-1 MANIFEST/BUNDLE         512 checked       0 failed  PASS
-2 CITATIONS               249 checked       0 failed  PASS
+1 MANIFEST/BUNDLE         550 checked       0 failed  PASS
+2 CITATIONS               263 checked       0 failed  PASS
 3 QUOTES                   47 checked       0 failed  PASS
 4 FILE FACTS               64 checked       0 failed  PASS
-5 DERIVED                 162 checked       0 failed  PASS
-6 BADGES                   26 checked       0 failed  PASS
-7 APP SOURCE               15 checked       0 failed  PASS
+5 DERIVED                 210 checked       0 failed  PASS
+6 BADGES                   30 checked       0 failed  PASS
+7 APP SOURCE               16 checked       0 failed  PASS
 8 DECIMATION               10 checked       0 failed  PASS
 9 SUBSEQUENCE              10 checked       0 failed  PASS
 10 DECIMATION BADGE         3 checked       0 failed  PASS
 11 SANDBOX                 27 checked       0 failed  PASS
 12 SEVERITIES              17 checked       0 failed  PASS
-13 REPORT                  45 checked       0 failed  PASS
+13 REPORT                  51 checked       0 failed  PASS
 ====================================================================
 
-1187 assertions, 0 failures.
+1298 assertions, 0 failures.
 Traces published: 10, 34.36 MB, 512557 rows at 10 Hz, 51263 at 1 Hz.
-Manifest: 512 entries (249 cited, 47 quoted, 53 file facts, 1 file refs, 152 derived).
+Manifest: 550 entries (263 cited, 47 quoted, 53 file facts, 1 file refs, 176 derived).
 
 RESULT: PASS

@@ -1,8 +1,8 @@
 {
- "assertions_total": 1187,
+ "assertions_total": 1298,
  "checks": {
   "1 MANIFEST/BUNDLE": {
-   "checked": 512,
+   "checked": 550,
    "failed": 0
   },
   "10 DECIMATION BADGE": {
@@ -18,11 +18,11 @@
    "failed": 0
   },
   "13 REPORT": {
-   "checked": 45,
+   "checked": 51,
    "failed": 0
   },
   "2 CITATIONS": {
-   "checked": 249,
+   "checked": 263,
    "failed": 0
   },
   "3 QUOTES": {
@@ -34,15 +34,15 @@
    "failed": 0
   },
   "5 DERIVED": {
-   "checked": 162,
+   "checked": 210,
    "failed": 0
   },
   "6 BADGES": {
-   "checked": 26,
+   "checked": 30,
    "failed": 0
   },
   "7 APP SOURCE": {
-   "checked": 15,
+   "checked": 16,
    "failed": 0
   },
   "8 DECIMATION": {

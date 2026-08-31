@@ -91,8 +91,8 @@
   "badges": {
    "_rule": "every key in the bundle named `badge` or ending `Badge` is a badge render site and is enumerated here. Status positions carry one of v7's five labels; the non-status ones are the decimation badge, which is a sentence and not a status.",
    "by_label": {
-    "FROZEN-KILL": 8,
-    "FROZEN-PROVISIONAL": 9,
+    "FROZEN-KILL": 10,
+    "FROZEN-PROVISIONAL": 11,
     "FROZEN-RATIFIED": 1,
     "NOT CONVERGED": 1
    },
@@ -103,8 +103,8 @@
     "$.screens.method.tiers[2].tag",
     "$.screens.sim.decimation.badge"
    ],
-   "positions_total": 24,
-   "status_positions_total": 19
+   "positions_total": 28,
+   "status_positions_total": 23
   },
   "cut_elements": [
    {
@@ -257,22 +257,61 @@
   },
   "manifest": {
    "by_kind": {
-    "cite": 249,
-    "derived": 152,
+    "cite": 263,
+    "derived": 176,
     "file": 53,
     "fileref": 1,
     "quote": 47,
     "srcline": 10
    },
    "by_tier": {
-    "DERIVED": 98,
-    "RECORD": 414
+    "DERIVED": 122,
+    "RECORD": 428
    },
-   "entries_total": 512
+   "entries_total": 550
   },
   "maps_published": [
    "bsfc_map_V1_candidate.csv",
    "bsfc_map_V2_candidate.csv"
+  ],
+  "post_close_additions": [
+   {
+    "datasets_paired": 4,
+    "datasets_single": 2,
+    "datasets_total": 6,
+    "finding": "every WS11 paired set carries byte-identical speed columns, so the two vehicles never separate on any of the four datasets - including the capability-limited climb, where the record books the ruler's shortfall as unserved energy and not as a slower speed. The lanes render that lockstep.",
+    "id": "sim-lane-view",
+    "moves": "no number, no status, no verdict. It reads only trace files this exhibit already published and results fields it already cited.",
+    "ordered_by": "the principal, after the close-out",
+    "position_source": {
+     "PRE-R34": "integrated from the trace's own v_kmh at its own 0.1 s step, because the file predates TRACE_SCHEMA and carries no x_m",
+     "R34": "the trace's own x_m cumulative-distance column, read directly"
+    },
+    "scope": "visualization only",
+    "separation_measured": {
+     "v1-sub-cold": {
+      "max_abs_separation_m": 0.0,
+      "max_abs_speed_difference_kmh": 0.0,
+      "samples_compared": 34852.0
+     },
+     "v1-sub-nominal": {
+      "max_abs_separation_m": 0.0,
+      "max_abs_speed_difference_kmh": 0.0,
+      "samples_compared": 34852.0
+     },
+     "v2-reg-climb": {
+      "max_abs_separation_m": 0.0,
+      "max_abs_speed_difference_kmh": 0.0,
+      "samples_compared": 69934.0
+     },
+     "v2-reg-nominal": {
+      "max_abs_separation_m": 0.0,
+      "max_abs_speed_difference_kmh": 0.0,
+      "samples_compared": 66143.0
+     }
+    },
+    "what": "a side-by-side lane view on the simulator screen: each vehicle drawn on its own lane, moving along the route, driven by the existing play / pause / scrub / speed transport"
+   }
   ],
   "published_payload_bytes": 34602996,
   "published_payload_scope": "app/public/traces + app/public/maps",
@@ -924,6 +963,8 @@
    "lede": "Two trucks, one duty, one seed, one road. Two counters run side by side: fuel per kilometre, and fuel per tonne of freight per kilometre. Watch them come apart.",
    "pairs": [
     {
+     "_candTrace": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv",
+     "_rulerTrace": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
      "candTraceId": "ws11-V1_VOLT-SUB_nominal_seed11",
      "case": "nominal",
      "derived": {
@@ -1432,6 +1473,8 @@
      "vehicle": "V1"
     },
     {
+     "_candTrace": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+     "_rulerTrace": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
      "candTraceId": "ws11-V1_VOLT-SUB_cold_-10C_seed11",
      "case": "cold_-10C",
      "derived": {
@@ -1940,6 +1983,8 @@
      "vehicle": "V1"
     },
     {
+     "_candTrace": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv",
+     "_rulerTrace": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
      "candTraceId": "ws11-V2_VOLT-REG_nominal_seed23",
      "case": "nominal",
      "derived": {
@@ -2448,6 +2493,8 @@
      "vehicle": "V2"
     },
     {
+     "_candTrace": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+     "_rulerTrace": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
      "candTraceId": "ws11-V2_VOLT-REG_climb_10km_6pct_seed23",
      "case": "climb_10km_6pct",
      "derived": {
@@ -5795,6 +5842,866 @@
      "v": 42.8
     }
    },
+   "datasets": [
+    {
+     "bsfcMap": "bsfc_map_V1_candidate.csv",
+     "headerLines": [
+      "program: Project Volt",
+      "workstream: WS5",
+      "round: r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+      "vehicle: V1",
+      "architecture: pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+      "duty: VOLT-SUB",
+      "corner: nominal",
+      "seed: 11",
+      "mass_kg: 6600.0",
+      "payload_kg: 2900.0",
+      "baseline_version: BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+      "results_file: results_ws5.json",
+      "results_sha256: 9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+      "generated_utc: 2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+      "note: V1 R19 start-stop at the 35 kW bus fixed point on WS3's 3.0 kWh band",
+      "note: bus-side electrical quantities (R12)",
+      "note: columns absent by design: gear / lockup / motor_disconnect / P_comp_brake_kW / T_motor_C - see the V2 trace header",
+      "note: soc_pct is on the USABLE window, not on nameplate"
+     ],
+     "id": "ws5-V1_VOLT-SUB_nominal_seed11",
+     "kind": "single",
+     "label": "V1 Postal · VOLT-SUB · nominal · seed 11",
+     "lanes": [
+      {
+       "name": "V1 Postal",
+       "positionBasis": "read directly from the trace's own cumulative-distance column, x_m",
+       "positionSource": "x_m",
+       "role": "candidate",
+       "roleLabel": "CANDIDATE",
+       "traceId": "ws5-V1_VOLT-SUB_nominal_seed11",
+       "vehicle": "V1"
+      }
+     ],
+     "meta": {
+      "architecture": "pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+      "baseline_version": "BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+      "corner": "nominal",
+      "duty": "VOLT-SUB",
+      "generated_utc": "2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+      "mass_kg": "6600.0",
+      "note": "V1 R19 start-stop at the 35 kW bus fixed point on WS3's 3.0 kWh band",
+      "payload_kg": "2900.0",
+      "program": "Project Volt",
+      "results_file": "results_ws5.json",
+      "results_sha256": "9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+      "round": "r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+      "seed": "11",
+      "vehicle": "V1",
+      "workstream": "WS5"
+     },
+     "missingSchemaElements": [],
+     "pairAbsence": {
+      "body": "The side-by-side view needs two traces at the same duty, corner and seed. WS5's set is the candidate only; the stock NPR-HD was not re-run under WS5. The second lane is drawn dashed and left empty rather than filled with anything, and the paired sets that DO exist are in this selector beside it.",
+      "headline": "No ruler lane. WS5 exported no paired incumbent run for this duty.",
+      "wherePairedSetsAre": "the four WS11 paired sets below"
+     },
+     "schemaClass": "R34",
+     "shortLabel": "V1 Postal · VOLT-SUB",
+     "sourceFile": "WS5_controls/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv"
+    },
+    {
+     "bsfcMap": "bsfc_map_V2_candidate.csv",
+     "headerLines": [
+      "program: Project Volt",
+      "workstream: WS5",
+      "round: r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+      "vehicle: V2",
+      "architecture: pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+      "duty: VOLT-REG",
+      "corner: nominal",
+      "seed: 23",
+      "mass_kg: 6600.0",
+      "payload_kg: 2900.0",
+      "baseline_version: BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+      "results_file: results_ws5.json",
+      "results_sha256: 9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+      "generated_utc: 2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+      "note: WS5 recommended R22b dispatch: load-following (R22b c)",
+      "note: bus-side electrical quantities (R12); states are the supervisor state machine's active state per region",
+      "note: columns absent by design (TRACE_SCHEMA: an absent trace must not read as a measured zero): gear / lockup / motor_disconnect - this architecture has none; P_comp_brake_kW - a pure-series engine is not coupled to the road and cannot compression-brake; T_motor_C - WS5 does not model motor winding temperature",
+      "note: soc_pct is on the USABLE window (WS5's convention throughout), not on nameplate"
+     ],
+     "id": "ws5-V2_VOLT-REG_nominal_seed23",
+     "kind": "single",
+     "label": "V2 Trucker · VOLT-REG · nominal · seed 23",
+     "lanes": [
+      {
+       "name": "V2 Trucker",
+       "positionBasis": "read directly from the trace's own cumulative-distance column, x_m",
+       "positionSource": "x_m",
+       "role": "candidate",
+       "roleLabel": "CANDIDATE",
+       "traceId": "ws5-V2_VOLT-REG_nominal_seed23",
+       "vehicle": "V2"
+      }
+     ],
+     "meta": {
+      "architecture": "pure series (BASELINE_v3 executed Gate G1's kill clause; no clutch, no mode selection, no synchronisation)",
+      "baseline_version": "BASELINE_v7_FREEZE.md (research freeze; supersedes v6, which superseded v5)",
+      "corner": "nominal",
+      "duty": "VOLT-REG",
+      "generated_utc": "2026-08-31T00:00:00Z (run-of-record date, not a wall clock - a wall clock would break the byte-stability rule)",
+      "mass_kg": "6600.0",
+      "note": "WS5 recommended R22b dispatch: load-following (R22b c)",
+      "payload_kg": "2900.0",
+      "program": "Project Volt",
+      "results_file": "results_ws5.json",
+      "results_sha256": "9c702dd9117e87eedad7b4257d91a94e70bf43285b81d22a7ca26a23fd9d8861",
+      "round": "r1 (first pass; no FINDINGS_WS5_r*.md exists)",
+      "seed": "23",
+      "vehicle": "V2",
+      "workstream": "WS5"
+     },
+     "missingSchemaElements": [],
+     "pairAbsence": {
+      "body": "The side-by-side view needs two traces at the same duty, corner and seed. WS5's set is the candidate only; the stock NPR-HD was not re-run under WS5. The second lane is drawn dashed and left empty rather than filled with anything, and the paired sets that DO exist are in this selector beside it.",
+      "headline": "No ruler lane. WS5 exported no paired incumbent run for this duty.",
+      "wherePairedSetsAre": "the four WS11 paired sets below"
+     },
+     "schemaClass": "R34",
+     "shortLabel": "V2 Trucker · VOLT-REG",
+     "sourceFile": "WS5_controls/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv"
+    },
+    {
+     "bsfcMap": null,
+     "headerLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "V1 pure series (mode b) / VOLT-SUB / nominal / seed 11",
+      "mass 6600 kg, payload 2712 kg; delivered pack 11.083608 kWh usable; R16 acceptance 130.752 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+     ],
+     "id": "pair-v1-sub-nominal",
+     "kind": "paired",
+     "label": "V1 Postal vs stock NPR-HD · VOLT-SUB · nominal · seed 11",
+     "lanes": [
+      {
+       "name": "V1 Postal",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V1_on_VOLT-SUB",
+         "nominal",
+         "payload_kg_candidate"
+        ],
+        "pathText": "results → V1_on_VOLT-SUB → nominal → payload_kg_candidate",
+        "pre": "",
+        "s": "2,712 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2712.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "candidate",
+       "roleLabel": "CANDIDATE",
+       "statusBadge": "FROZEN-PROVISIONAL",
+       "traceId": "ws11-V1_VOLT-SUB_nominal_seed11",
+       "vehicle": "V1",
+       "verdict": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": "str",
+        "path": [
+         "interface_ws11",
+         "verdicts",
+         "V1_on_VOLT-SUB",
+         "verdict"
+        ],
+        "pathText": "interface_ws11 → verdicts → V1_on_VOLT-SUB → verdict",
+        "pre": "",
+        "s": "ADVANCE",
+        "suf": "",
+        "tier": "RECORD",
+        "v": "ADVANCE"
+       }
+      },
+      {
+       "name": "Stock NPR-HD",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V1_on_VOLT-SUB",
+         "nominal",
+         "payload_kg_ruler"
+        ],
+        "pathText": "results → V1_on_VOLT-SUB → nominal → payload_kg_ruler",
+        "pre": "",
+        "s": "2,900 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2900.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "ruler",
+       "roleLabel": "INCUMBENT - NO VERDICT OF RECORD",
+       "traceId": "ws11-ruler_VOLT-SUB_nominal_seed11",
+       "vehicle": "ruler"
+      }
+     ],
+     "meta": {},
+     "missingSchemaElements": [
+      "N_eng_rpm",
+      "P_comp_brake_kW",
+      "P_friction_brake_kW",
+      "P_heater_kW",
+      "P_motor_bus_kW",
+      "P_motor_mech_kW",
+      "P_regen_pack_kW",
+      "P_resistor_kW",
+      "T_eng_Nm",
+      "T_motor_C",
+      "T_pack_C",
+      "engine_state",
+      "fuel_cum_g",
+      "gear",
+      "genset_state",
+      "lockup",
+      "motor_disconnect",
+      "soc_pct",
+      "trip_time_flag",
+      "x_m",
+      "z_m"
+     ],
+     "preR34Note": "This is a pre-R34 file. It carries speed, grade, wheel power, fuel rate and the bus columns, and nothing else the schema names. The lane view and the route strip run on what it has; every panel below that needs a column it does not have says so instead of drawing one.",
+     "racePairId": "v1-sub-nominal",
+     "rulerHeaderLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "RULER (stock NPR-HD) / VOLT-SUB / nominal / seed 11",
+      "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+     ],
+     "rulerSourceFile": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+     "schemaClass": "PRE-R34",
+     "separation": {
+      "body": "Both files carry the same demanded speed at every one of their samples, so both vehicles cover the same distance at the same instant for the whole run. The race between them is in energy, not in position, and the lane view would be lying if it drew a gap. No offset, no easing and no scaling is applied to either lane.",
+      "candDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "19.820 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 19.819519761111376
+      },
+      "finalSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "headline": "The two trucks never separate, and that is the record, not a simplification.",
+      "identical": true,
+      "maxSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "maxSpeedDifference": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+       "fmt": ".6f",
+       "pre": "",
+       "s": "0.000000 km/h",
+       "suf": " km/h",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "rulerDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "19.820 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 19.819519761111376
+      },
+      "samples": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+       "fmt": ",.0f",
+       "pre": "",
+       "s": "34,852",
+       "suf": "",
+       "tier": "DERIVED",
+       "v": 34852.0
+      }
+     },
+     "shortLabel": "V1 · VOLT-SUB · nominal",
+     "sourceFile": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv"
+    },
+    {
+     "bsfcMap": null,
+     "headerLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "V1 pure series (mode b) / VOLT-SUB / cold_-10C / seed 11",
+      "mass 6600 kg, payload 2712 kg; delivered pack 11.083608 kWh usable; R16 acceptance 66.985 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+     ],
+     "id": "pair-v1-sub-cold",
+     "kind": "paired",
+     "label": "V1 Postal vs stock NPR-HD · VOLT-SUB · cold -10 C · seed 11 · V1's governing corner",
+     "lanes": [
+      {
+       "name": "V1 Postal",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V1_on_VOLT-SUB",
+         "cold_-10C",
+         "payload_kg_candidate"
+        ],
+        "pathText": "results → V1_on_VOLT-SUB → cold_-10C → payload_kg_candidate",
+        "pre": "",
+        "s": "2,712 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2712.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "candidate",
+       "roleLabel": "CANDIDATE",
+       "statusBadge": "FROZEN-PROVISIONAL",
+       "traceId": "ws11-V1_VOLT-SUB_cold_-10C_seed11",
+       "vehicle": "V1",
+       "verdict": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": "str",
+        "path": [
+         "interface_ws11",
+         "verdicts",
+         "V1_on_VOLT-SUB",
+         "verdict"
+        ],
+        "pathText": "interface_ws11 → verdicts → V1_on_VOLT-SUB → verdict",
+        "pre": "",
+        "s": "ADVANCE",
+        "suf": "",
+        "tier": "RECORD",
+        "v": "ADVANCE"
+       }
+      },
+      {
+       "name": "Stock NPR-HD",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V1_on_VOLT-SUB",
+         "cold_-10C",
+         "payload_kg_ruler"
+        ],
+        "pathText": "results → V1_on_VOLT-SUB → cold_-10C → payload_kg_ruler",
+        "pre": "",
+        "s": "2,900 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2900.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "ruler",
+       "roleLabel": "INCUMBENT - NO VERDICT OF RECORD",
+       "traceId": "ws11-ruler_VOLT-SUB_cold_-10C_seed11",
+       "vehicle": "ruler"
+      }
+     ],
+     "meta": {},
+     "missingSchemaElements": [
+      "N_eng_rpm",
+      "P_comp_brake_kW",
+      "P_friction_brake_kW",
+      "P_heater_kW",
+      "P_motor_bus_kW",
+      "P_motor_mech_kW",
+      "P_regen_pack_kW",
+      "P_resistor_kW",
+      "T_eng_Nm",
+      "T_motor_C",
+      "T_pack_C",
+      "engine_state",
+      "fuel_cum_g",
+      "gear",
+      "genset_state",
+      "lockup",
+      "motor_disconnect",
+      "soc_pct",
+      "trip_time_flag",
+      "x_m",
+      "z_m"
+     ],
+     "preR34Note": "This is a pre-R34 file. It carries speed, grade, wheel power, fuel rate and the bus columns, and nothing else the schema names. The lane view and the route strip run on what it has; every panel below that needs a column it does not have says so instead of drawing one.",
+     "racePairId": "v1-sub-cold",
+     "rulerHeaderLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "RULER (stock NPR-HD) / VOLT-SUB / cold_-10C / seed 11",
+      "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+     ],
+     "rulerSourceFile": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+     "schemaClass": "PRE-R34",
+     "separation": {
+      "body": "Both files carry the same demanded speed at every one of their samples, so both vehicles cover the same distance at the same instant for the whole run. The race between them is in energy, not in position, and the lane view would be lying if it drew a gap. No offset, no easing and no scaling is applied to either lane.",
+      "candDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "19.820 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 19.819519761111376
+      },
+      "finalSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "headline": "The two trucks never separate, and that is the record, not a simplification.",
+      "identical": true,
+      "maxSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "maxSpeedDifference": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+       "fmt": ".6f",
+       "pre": "",
+       "s": "0.000000 km/h",
+       "suf": " km/h",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "rulerDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "19.820 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 19.819519761111376
+      },
+      "samples": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+       "fmt": ",.0f",
+       "pre": "",
+       "s": "34,852",
+       "suf": "",
+       "tier": "DERIVED",
+       "v": 34852.0
+      }
+     },
+     "shortLabel": "V1 · VOLT-SUB · cold_-10C",
+     "sourceFile": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv"
+    },
+    {
+     "bsfcMap": null,
+     "headerLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "V2 pure series (mode b) / VOLT-REG / nominal / seed 23",
+      "mass 6600 kg, payload 2461 kg; delivered pack 11.083608 kWh usable; R16 acceptance 130.752 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+     ],
+     "id": "pair-v2-reg-nominal",
+     "kind": "paired",
+     "label": "V2 Trucker vs stock NPR-HD · VOLT-REG · nominal · seed 23",
+     "lanes": [
+      {
+       "name": "V2 Trucker",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V2_on_VOLT-REG",
+         "nominal",
+         "payload_kg_candidate"
+        ],
+        "pathText": "results → V2_on_VOLT-REG → nominal → payload_kg_candidate",
+        "pre": "",
+        "s": "2,461 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2461.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "candidate",
+       "roleLabel": "CANDIDATE",
+       "statusBadge": "FROZEN-KILL",
+       "traceId": "ws11-V2_VOLT-REG_nominal_seed23",
+       "vehicle": "V2",
+       "verdict": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": "str",
+        "path": [
+         "interface_ws11",
+         "verdicts",
+         "V2_on_VOLT-REG",
+         "verdict"
+        ],
+        "pathText": "interface_ws11 → verdicts → V2_on_VOLT-REG → verdict",
+        "pre": "",
+        "s": "KILL",
+        "suf": "",
+        "tier": "RECORD",
+        "v": "KILL"
+       }
+      },
+      {
+       "name": "Stock NPR-HD",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V2_on_VOLT-REG",
+         "nominal",
+         "payload_kg_ruler"
+        ],
+        "pathText": "results → V2_on_VOLT-REG → nominal → payload_kg_ruler",
+        "pre": "",
+        "s": "2,900 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2900.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "ruler",
+       "roleLabel": "INCUMBENT - NO VERDICT OF RECORD",
+       "traceId": "ws11-ruler_VOLT-REG_nominal_seed23",
+       "vehicle": "ruler"
+      }
+     ],
+     "meta": {},
+     "missingSchemaElements": [
+      "N_eng_rpm",
+      "P_comp_brake_kW",
+      "P_friction_brake_kW",
+      "P_heater_kW",
+      "P_motor_bus_kW",
+      "P_motor_mech_kW",
+      "P_regen_pack_kW",
+      "P_resistor_kW",
+      "T_eng_Nm",
+      "T_motor_C",
+      "T_pack_C",
+      "engine_state",
+      "fuel_cum_g",
+      "gear",
+      "genset_state",
+      "lockup",
+      "motor_disconnect",
+      "soc_pct",
+      "trip_time_flag",
+      "x_m",
+      "z_m"
+     ],
+     "preR34Note": "This is a pre-R34 file. It carries speed, grade, wheel power, fuel rate and the bus columns, and nothing else the schema names. The lane view and the route strip run on what it has; every panel below that needs a column it does not have says so instead of drawing one.",
+     "racePairId": "v2-reg-nominal",
+     "rulerHeaderLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "RULER (stock NPR-HD) / VOLT-REG / nominal / seed 23",
+      "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+     ],
+     "rulerSourceFile": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+     "schemaClass": "PRE-R34",
+     "separation": {
+      "body": "Both files carry the same demanded speed at every one of their samples, so both vehicles cover the same distance at the same instant for the whole run. The race between them is in energy, not in position, and the lane view would be lying if it drew a gap. No offset, no easing and no scaling is applied to either lane.",
+      "candDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "131.959 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 131.95867094722394
+      },
+      "finalSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "headline": "The two trucks never separate, and that is the record, not a simplification.",
+      "identical": true,
+      "maxSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "maxSpeedDifference": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+       "fmt": ".6f",
+       "pre": "",
+       "s": "0.000000 km/h",
+       "suf": " km/h",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "rulerDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "131.959 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 131.95867094722394
+      },
+      "samples": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+       "fmt": ",.0f",
+       "pre": "",
+       "s": "66,143",
+       "suf": "",
+       "tier": "DERIVED",
+       "v": 66143.0
+      }
+     },
+     "shortLabel": "V2 · VOLT-REG · nominal",
+     "sourceFile": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv"
+    },
+    {
+     "bsfcMap": null,
+     "headerLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "V2 pure series (mode b) / VOLT-REG / climb_10km_6pct / seed 23",
+      "mass 6600 kg, payload 2461 kg; delivered pack 11.083608 kWh usable; R16 acceptance 130.752 kW bus; WS2 r4 662 V map chain; all electrical quantities bus-side (R12)"
+     ],
+     "id": "pair-v2-reg-climb",
+     "kind": "paired",
+     "label": "V2 Trucker vs stock NPR-HD · VOLT-REG · 10 km 6% climb · seed 23 · V2's governing corner",
+     "lanes": [
+      {
+       "name": "V2 Trucker",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V2_on_VOLT-REG",
+         "climb_10km_6pct",
+         "payload_kg_candidate"
+        ],
+        "pathText": "results → V2_on_VOLT-REG → climb_10km_6pct → payload_kg_candidate",
+        "pre": "",
+        "s": "2,461 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2461.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "candidate",
+       "roleLabel": "CANDIDATE",
+       "statusBadge": "FROZEN-KILL",
+       "traceId": "ws11-V2_VOLT-REG_climb_10km_6pct_seed23",
+       "vehicle": "V2",
+       "verdict": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": "str",
+        "path": [
+         "interface_ws11",
+         "verdicts",
+         "V2_on_VOLT-REG",
+         "verdict"
+        ],
+        "pathText": "interface_ws11 → verdicts → V2_on_VOLT-REG → verdict",
+        "pre": "",
+        "s": "KILL",
+        "suf": "",
+        "tier": "RECORD",
+        "v": "KILL"
+       }
+      },
+      {
+       "name": "Stock NPR-HD",
+       "payload": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ",.0f",
+        "path": [
+         "results",
+         "V2_on_VOLT-REG",
+         "climb_10km_6pct",
+         "payload_kg_ruler"
+        ],
+        "pathText": "results → V2_on_VOLT-REG → climb_10km_6pct → payload_kg_ruler",
+        "pre": "",
+        "s": "2,900 kg",
+        "suf": " kg",
+        "tier": "RECORD",
+        "v": 2900.0
+       },
+       "positionBasis": "integrated from the trace's own v_kmh at its own 0.1 s step; this file predates TRACE_SCHEMA and carries no x_m column",
+       "positionSource": "v_kmh",
+       "role": "ruler",
+       "roleLabel": "INCUMBENT - NO VERDICT OF RECORD",
+       "traceId": "ws11-ruler_VOLT-REG_climb_10km_6pct_seed23",
+       "vehicle": "ruler"
+      }
+     ],
+     "meta": {},
+     "missingSchemaElements": [
+      "N_eng_rpm",
+      "P_comp_brake_kW",
+      "P_friction_brake_kW",
+      "P_heater_kW",
+      "P_motor_bus_kW",
+      "P_motor_mech_kW",
+      "P_regen_pack_kW",
+      "P_resistor_kW",
+      "T_eng_Nm",
+      "T_motor_C",
+      "T_pack_C",
+      "engine_state",
+      "fuel_cum_g",
+      "gear",
+      "genset_state",
+      "lockup",
+      "motor_disconnect",
+      "soc_pct",
+      "trip_time_flag",
+      "x_m",
+      "z_m"
+     ],
+     "preR34Note": "This is a pre-R34 file. It carries speed, grade, wheel power, fuel rate and the bus columns, and nothing else the schema names. The lane view and the route strip run on what it has; every panel below that needs a column it does not have says so instead of drawing one.",
+     "racePairId": "v2-reg-climb",
+     "rulerHeaderLines": [
+      "Project Volt WS11 - R34 10 Hz trace",
+      "RULER (stock NPR-HD) / VOLT-REG / climb_10km_6pct / seed 23",
+      "mass 6600 kg, payload 2900 kg, engine 4HK1-TC-ref-W, A465id 6-speed + 4.555 axle"
+     ],
+     "rulerSourceFile": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+     "schemaClass": "PRE-R34",
+     "separation": {
+      "body": "Both files carry the same demanded speed at every one of their samples, so both vehicles cover the same distance at the same instant for the whole run. The race between them is in energy, not in position, and the lane view would be lying if it drew a gap. No offset, no easing and no scaling is applied to either lane.",
+      "candDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "141.957 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 141.95743344721234
+      },
+      "capabilityNote": {
+       "body": "On the 10 km 6% climb the record has the stock truck capability-limited for the seconds below, unable to hold the demanded speed, and books the work it could not do as unserved energy. The speed column carries the DEMAND for both vehicles, so the shortfall never reaches the position axis. The honest place to read it is the energy ledger beside it, and this is the clearest single reason the exhibit does not treat a trace as a picture of what happened.",
+       "headline": "This is the corner where the ruler cannot keep up — and the trace still does not show it.",
+       "infeasibleSeconds": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ".1f",
+        "path": [
+         "interface_ws11",
+         "capability_and_limit_worst_case",
+         "V2_on_VOLT-REG",
+         "ruler_worst_capability_infeasible_s"
+        ],
+        "pathText": "interface_ws11 → capability_and_limit_worst_case → V2_on_VOLT-REG → ruler_worst_capability_infeasible_s",
+        "pre": "",
+        "s": "555.6 s",
+        "suf": " s",
+        "tier": "RECORD",
+        "v": 555.5999999994947
+       },
+       "unservedWheel": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ".4f",
+        "path": [
+         "interface_ws11",
+         "capability_and_limit_worst_case",
+         "V2_on_VOLT-REG",
+         "ruler_worst_unserved_wheel_kWh"
+        ],
+        "pathText": "interface_ws11 → capability_and_limit_worst_case → V2_on_VOLT-REG → ruler_worst_unserved_wheel_kWh",
+        "pre": "",
+        "s": "3.2582 kWh",
+        "suf": " kWh",
+        "tier": "RECORD",
+        "v": 3.2581836361968852
+       }
+      },
+      "finalSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "headline": "The two trucks never separate, and that is the record, not a simplification.",
+      "identical": true,
+      "maxSeparation": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "0.000 m",
+       "suf": " m",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "maxSpeedDifference": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+       "fmt": ".6f",
+       "pre": "",
+       "s": "0.000000 km/h",
+       "suf": " km/h",
+       "tier": "DERIVED",
+       "v": 0.0
+      },
+      "rulerDistance": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+       "fmt": ".3f",
+       "pre": "",
+       "s": "141.957 km",
+       "suf": " km",
+       "tier": "DERIVED",
+       "v": 141.95743344721234
+      },
+      "samples": {
+       "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+       "fmt": ",.0f",
+       "pre": "",
+       "s": "69,934",
+       "suf": "",
+       "tier": "DERIVED",
+       "v": 69934.0
+      }
+     },
+     "shortLabel": "V2 · VOLT-REG · climb_10km_6pct",
+     "sourceFile": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv"
+    }
+   ],
    "decimation": {
     "badge": "the replay is decimated; the record is not",
     "rule": "Scrub tier is 1 Hz, decimated by strided sample and never by averaging - averaging would invent samples that are not in the record. The detail tier is the full 10 Hz record, fetched one segment at a time for the segment in view."
@@ -5820,6 +6727,12 @@
    },
    "id": "sim",
    "kicker": "RECORD REPLAY · TRACE_SCHEMA (R34)",
+   "lanes": {
+    "kicker": "RECORD-ONLY MOTION",
+    "postClose": "Added after the close-out, on the principal's order, as a visualization of traces already published. It reads no new file, moves no number and changes no status.",
+    "rule": "Each truck's position comes from its own trace of record and from nothing else: a conforming file's own x_m column where the schema carries one, and an integration of the file's own v_kmh where it does not. No synthetic motion, no invented separation, no offset for legibility.",
+    "title": "The route, both lanes"
+   },
    "lede": "A trace file on disk, played back. Elevation from z_m, the R15 blend cascade from the four braking channels, the engine dot on the map it was actually run against. Nothing here is simulated in the browser.",
    "payloadNote": {
     "body": "Both WS5 trace headers declare `payload_kg: 2900.0` at `mass_kg: 6600.0`. That is the stock NPR-HD's payload at gross weight. WS11's ratified mass ledger gives V1 2,712 kg and V2 2,461 kg at the same gross weight, because both candidates carry powertrain mass the ruler does not. Both figures are shown; neither is quietly substituted for the other.",

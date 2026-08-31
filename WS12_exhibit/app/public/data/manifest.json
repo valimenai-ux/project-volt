@@ -62,6 +62,26 @@
    "key": "$.screens.rounds.kx.statusBadge"
   },
   {
+   "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
+   "key": "$.screens.sim.datasets[2].lanes[0].statusBadge"
+  },
+  {
+   "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
+   "key": "$.screens.sim.datasets[3].lanes[0].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "isStatus": true,
+   "key": "$.screens.sim.datasets[4].lanes[0].statusBadge"
+  },
+  {
+   "badge": "FROZEN-KILL",
+   "isStatus": true,
+   "key": "$.screens.sim.datasets[5].lanes[0].statusBadge"
+  },
+  {
    "badge": "the replay is decimated; the record is not",
    "isStatus": false,
    "key": "$.screens.sim.decimation.badge"
@@ -123,13 +143,13 @@
   }
  ],
  "counts": {
-  "cite": 249,
-  "derived": 152,
+  "cite": 263,
+  "derived": 176,
   "file": 53,
   "fileref": 1,
   "quote": 47,
   "srcline": 10,
-  "total": 512
+  "total": 550
  },
  "entries": [
   {
@@ -5360,6 +5380,508 @@
    "suf": " kJ/g",
    "tier": "RECORD",
    "v": 42.8
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[2].lanes[0].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,712 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2712.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.sim.datasets[2].lanes[0].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V1_on_VOLT-SUB",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "ADVANCE",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[2].lanes[1].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "nominal",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[2].separation.candDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "19.820 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[2].separation.finalSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[2].separation.maxSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "fmt": ".6f",
+   "key": "$.screens.sim.datasets[2].separation.maxSpeedDifference",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000000 km/h",
+   "suf": " km/h",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[2].separation.rulerDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "19.820 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[2].separation.samples",
+   "kind": "derived",
+   "pre": "",
+   "s": "34,852",
+   "suf": "",
+   "tier": "DERIVED",
+   "v": 34852.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[3].lanes[0].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,712 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2712.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.sim.datasets[3].lanes[0].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V1_on_VOLT-SUB",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "ADVANCE",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ADVANCE"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[3].lanes[1].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V1_on_VOLT-SUB",
+    "cold_-10C",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[3].separation.candDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "19.820 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[3].separation.finalSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[3].separation.maxSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "fmt": ".6f",
+   "key": "$.screens.sim.datasets[3].separation.maxSpeedDifference",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000000 km/h",
+   "suf": " km/h",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[3].separation.rulerDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "19.820 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 19.819519761111376
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[3].separation.samples",
+   "kind": "derived",
+   "pre": "",
+   "s": "34,852",
+   "suf": "",
+   "tier": "DERIVED",
+   "v": 34852.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[4].lanes[0].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,461 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2461.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.sim.datasets[4].lanes[0].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V2_on_VOLT-REG",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[4].lanes[1].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "nominal",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[4].separation.candDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "131.959 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 131.95867094722394
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[4].separation.finalSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[4].separation.maxSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "fmt": ".6f",
+   "key": "$.screens.sim.datasets[4].separation.maxSpeedDifference",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000000 km/h",
+   "suf": " km/h",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[4].separation.rulerDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "131.959 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 131.95867094722394
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[4].separation.samples",
+   "kind": "derived",
+   "pre": "",
+   "s": "66,143",
+   "suf": "",
+   "tier": "DERIVED",
+   "v": 66143.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[5].lanes[0].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "payload_kg_candidate"
+   ],
+   "pre": "",
+   "s": "2,461 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2461.0
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.sim.datasets[5].lanes[0].verdict",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "verdicts",
+    "V2_on_VOLT-REG",
+    "verdict"
+   ],
+   "pre": "",
+   "s": "KILL",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "KILL"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[5].lanes[1].payload",
+   "kind": "cite",
+   "path": [
+    "results",
+    "V2_on_VOLT-REG",
+    "climb_10km_6pct",
+    "payload_kg_ruler"
+   ],
+   "pre": "",
+   "s": "2,900 kg",
+   "suf": " kg",
+   "tier": "RECORD",
+   "v": 2900.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[5].separation.candDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "141.957 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 141.95743344721234
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".1f",
+   "key": "$.screens.sim.datasets[5].separation.capabilityNote.infeasibleSeconds",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "capability_and_limit_worst_case",
+    "V2_on_VOLT-REG",
+    "ruler_worst_capability_infeasible_s"
+   ],
+   "pre": "",
+   "s": "555.6 s",
+   "suf": " s",
+   "tier": "RECORD",
+   "v": 555.5999999994947
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".4f",
+   "key": "$.screens.sim.datasets[5].separation.capabilityNote.unservedWheel",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "capability_and_limit_worst_case",
+    "V2_on_VOLT-REG",
+    "ruler_worst_unserved_wheel_kWh"
+   ],
+   "pre": "",
+   "s": "3.2582 kWh",
+   "suf": " kWh",
+   "tier": "RECORD",
+   "v": 3.2581836361968852
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[5].separation.finalSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[5].separation.maxSeparation",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000 m",
+   "suf": " m",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "fmt": ".6f",
+   "key": "$.screens.sim.datasets[5].separation.maxSpeedDifference",
+   "kind": "derived",
+   "pre": "",
+   "s": "0.000000 km/h",
+   "suf": " km/h",
+   "tier": "DERIVED",
+   "v": 0.0
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "fmt": ".3f",
+   "key": "$.screens.sim.datasets[5].separation.rulerDistance",
+   "kind": "derived",
+   "pre": "",
+   "s": "141.957 km",
+   "suf": " km",
+   "tier": "DERIVED",
+   "v": 141.95743344721234
+  },
+  {
+   "derivedFrom": "sample-by-sample comparison of the two traces' own v_kmh columns, integrated at the files' own 0.1 s step: WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv vs WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv",
+   "fmt": ",.0f",
+   "key": "$.screens.sim.datasets[5].separation.samples",
+   "kind": "derived",
+   "pre": "",
+   "s": "69,934",
+   "suf": "",
+   "tier": "DERIVED",
+   "v": 69934.0
   },
   {
    "file": "WS5_controls/results_ws5.json",

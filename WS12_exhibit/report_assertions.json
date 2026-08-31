@@ -53,7 +53,7 @@
     "entries_total"
    ],
    "pre": "",
-   "s": "512",
+   "s": "550",
    "suf": ""
   },
   {
@@ -65,7 +65,7 @@
     "cite"
    ],
    "pre": "",
-   "s": "249",
+   "s": "263",
    "suf": ""
   },
   {
@@ -125,7 +125,7 @@
     "derived"
    ],
    "pre": "",
-   "s": "152",
+   "s": "176",
    "suf": ""
   },
   {
@@ -158,7 +158,7 @@
     "status_positions_total"
    ],
    "pre": "",
-   "s": "19",
+   "s": "23",
    "suf": ""
   },
   {
@@ -169,7 +169,81 @@
     "positions_total"
    ],
    "pre": "",
-   "s": "24",
+   "s": "28",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "post_close_additions",
+    0,
+    "moves"
+   ],
+   "pre": "",
+   "s": "no number, no status, no verdict. It reads only trace files this exhibit already published and results fields it already cited.",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "post_close_additions",
+    0,
+    "position_source",
+    "R34"
+   ],
+   "pre": "",
+   "s": "the trace's own x_m cumulative-distance column, read directly",
+   "suf": ""
+  },
+  {
+   "fmt": "str",
+   "path": [
+    "interface_ws12",
+    "post_close_additions",
+    0,
+    "position_source",
+    "PRE-R34"
+   ],
+   "pre": "",
+   "s": "integrated from the trace's own v_kmh at its own 0.1 s step, because the file predates TRACE_SCHEMA and carries no x_m",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "post_close_additions",
+    0,
+    "datasets_total"
+   ],
+   "pre": "",
+   "s": "6",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "post_close_additions",
+    0,
+    "datasets_paired"
+   ],
+   "pre": "",
+   "s": "4",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "post_close_additions",
+    0,
+    "datasets_single"
+   ],
+   "pre": "",
+   "s": "2",
    "suf": ""
   },
   {
@@ -356,7 +430,7 @@
     "cite"
    ],
    "pre": "",
-   "s": "249",
+   "s": "263",
    "suf": ""
   },
   {
@@ -543,5 +617,5 @@
    "suf": ""
   }
  ],
- "n": 45
+ "n": 51
 }

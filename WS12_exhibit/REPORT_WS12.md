@@ -8,16 +8,16 @@ Workstream WS12 · bound to `../BASELINE_v7_FREEZE.md` · entry point
 TypeScript, static, no server), Vite `base` set to `/project-volt/`,
 deployable to GitHub Pages at a repo subpath. 6 screens, front door
 `verdict`. Every number of record on every screen resolves to a file and an
-explicit key path, and clicking it opens that provenance. 512 renderable
-strings are enumerated in a build-time manifest; 249 of them are numbers of
+explicit key path, and clicking it opens that provenance. 550 renderable
+strings are enumerated in a build-time manifest; 263 of them are numbers of
 record resolved from a results file, 47 are verbatim quotations lifted from
 documents of record, 53 are file identities pinned by sha256, 10 are program
 constants resolved by file and line out of Python source and re-parsed by
 the verifier, 1 is a reference to a living log that is deliberately not
-hash-pinned, and 152 are derived values that name what they were computed
+hash-pinned, and 176 are derived values that name what they were computed
 from and claim no key path.
 
-**Verification.** `exhibit_verify.py` runs 13 checks and 1187 assertions
+**Verification.** `exhibit_verify.py` runs 13 checks and 1298 assertions
 with its own resolver, its own formatter and its own findings-file parser,
 written separately from the builder's so that a shared bug cannot agree with
 itself. Result: **PASS**.
@@ -25,8 +25,8 @@ itself. Result: **PASS**.
 **The two guard rails hold.** The method claim is "catches internal
 inconsistency" and never "catches wrong physics"; no hardware was built and
 the ruler is uncalibrated, and the exhibit says so on the front door, in the
-rail, and on the Method screen. No status is promoted: 19 status badge
-positions render only the labels `BASELINE_v7_FREEZE.md` uses, out of 24
+rail, and on the Method screen. No status is promoted: 23 status badge
+positions render only the labels `BASELINE_v7_FREEZE.md` uses, out of 28
 badge-keyed strings in the bundle; the build refuses to emit any other, and
 the verifier fails on a bare `RATIFIED` or `PROVISIONAL` in a badge position
 **or in a section label**. Badge render sites are harvested by key SUFFIX,
@@ -89,6 +89,80 @@ and the Method screen claim:
 
 Both are for `LIMITATIONS.md` via WS13 if the lead wants them carried
 further. Neither moves a number, a status or a verdict.
+
+---
+
+## 0b. Post-close addition — the lane view (principal-ordered)
+
+Added **after** the close-out, on the principal's order, and recorded here
+so the record shows what changed and when. **Scope: visualization only.**
+The freeze is untouched, both CLOSEOUT §0 guard rails still bind, and the
+whole verifier still runs. It moves no number, no status, no verdict. It
+reads only trace files this exhibit already published and results fields it
+already cited.
+
+**Where it lives.** On the **simulator** screen, directly beneath the
+transport controls and the verbatim decimation badge, above the elevation
+profile. It is driven by the screen's existing play / pause / scrub / speed
+transport — one transport, one position, every panel in step — and it obeys
+the decimation rules unchanged: the lanes run on the 1 Hz scrub tier with
+the badge displayed, and the 10 Hz detail tier is still fetched one segment
+at a time for the segment in view.
+
+**How position is derived.** From the record and from nothing else:
+
+- **R34-conforming file:** the trace's own x_m cumulative-distance column,
+  read directly
+- **Pre-R34 file:** integrated from the trace's own v_kmh at its own 0.1 s
+  step, because the file predates TRACE_SCHEMA and carries no x_m
+
+No offset separates the lanes, no easing smooths a truck, and no scale is
+stretched to make a gap visible.
+
+**How the pairing is resolved.** The simulator's selector now carries 6
+datasets: 4 WS11 **paired** sets — candidate and ruler at the identical
+duty, corner and seed, resolved from the same pair table race mode already
+uses — and 2 WS5 duty traces with **no** paired incumbent, which render one
+lane and a dashed empty second lane carrying the reason. Lanes are labelled
+with the vehicle and, for a candidate, the status badge read from the record
+through the existing badge machinery; the ruler is labelled `INCUMBENT - NO
+VERDICT OF RECORD`, because it has none and inventing one would be exactly
+the promotion R52 forbids.
+
+**Where the trucks separate in the actual record: nowhere.** Measured at
+build time and re-measured independently by verifier check 5, sample by
+sample over both files of every pair:
+
+| paired set | samples compared | largest speed difference | largest separation | distance, candidate / incumbent |
+|---|---|---|---|---|
+| `V1 · VOLT-SUB · nominal` | 34,852 | 0.000000 km/h | 0.000 m | 19.820 km / 19.820 km |
+| `V1 · VOLT-SUB · cold_-10C` | 34,852 | 0.000000 km/h | 0.000 m | 19.820 km / 19.820 km |
+| `V2 · VOLT-REG · nominal` | 66,143 | 0.000000 km/h | 0.000 m | 131.959 km / 131.959 km |
+| `V2 · VOLT-REG · climb_10km_6pct` | 69,934 | 0.000000 km/h | 0.000 m | 141.957 km / 141.957 km |
+
+**The climb is the sharpest case and it separates least.** On `V2 · VOLT-REG
+· climb_10km_6pct` the record has the stock truck capability-limited and
+unable to hold the demanded speed, and books the work it could not do as
+unserved energy. Both trace files still carry the same demanded speed at
+every sample, so the shortfall never reaches the position axis at all. The
+lane view says so on the panel, prints the unserved energy and the
+capability-limited seconds beside it, and points the reader at the energy
+ledger. That is the whole lesson of this screen: **the race is in energy,
+not in position, and a trace is not a picture of what happened.**
+
+**Pre-R34 honesty.** The four paired sets are WS11 files, which predate
+TRACE_SCHEMA. They drive the lane view and the route strip, which need only
+columns they carry. Every panel that needs a column they do not have — the
+elevation profile, the R15 blend cascade, the engine dot, SOC and pack
+temperature, the cumulative-fuel counter — is **absent** for those datasets,
+with the missing column list printed in its place. The R34 refusal gate is
+unchanged and still applies to R34 files.
+
+**Verification.** Every rendered number on the panel is run-time DERIVED and
+the panel carries the DERIVED tier badge; no numeral of record is hard-coded
+in app source or in the built bundle (check 7). The build-time separation
+figures are in the manifest and are recomputed from the two trace files by
+check 5.
 
 ---
 
@@ -239,7 +313,7 @@ Quotations, all lifted from the file and re-lifted by the verifier:
 | `WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md` | 1 |
 | `WS9_vehicle_one_wave2/data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv` | 1 |
 
-The full binding table — 249 rows, screen element → file → key path →
+The full binding table — 263 rows, screen element → file → key path →
 rendered string — is in **Appendix A**.
 
 ---
@@ -446,20 +520,20 @@ validated by it.
 
 | check | assertions | failures | result |
 |---|---|---|---|
-| 1 MANIFEST/BUNDLE | 512 | 0 | PASS |
-| 2 CITATIONS | 249 | 0 | PASS |
+| 1 MANIFEST/BUNDLE | 550 | 0 | PASS |
+| 2 CITATIONS | 263 | 0 | PASS |
 | 3 QUOTES | 47 | 0 | PASS |
 | 4 FILE FACTS | 64 | 0 | PASS |
-| 5 DERIVED | 162 | 0 | PASS |
-| 6 BADGES | 26 | 0 | PASS |
-| 7 APP SOURCE | 15 | 0 | PASS |
+| 5 DERIVED | 210 | 0 | PASS |
+| 6 BADGES | 30 | 0 | PASS |
+| 7 APP SOURCE | 16 | 0 | PASS |
 | 8 DECIMATION | 10 | 0 | PASS |
 | 9 SUBSEQUENCE | 10 | 0 | PASS |
 | 10 DECIMATION BADGE | 3 | 0 | PASS |
 | 11 SANDBOX | 27 | 0 | PASS |
 | 12 SEVERITIES | 17 | 0 | PASS |
-| 13 REPORT | 45 | 0 | PASS |
-| **total** | **1187** | **0** | **PASS** |
+| 13 REPORT | 51 | 0 | PASS |
+| **total** | **1298** | **0** | **PASS** |
 
 Determinism: `check_determinism_ws12.py --with-app` builds the data pipeline
 twice and the app twice and compares every emitted artifact by sha256.
@@ -642,8 +716,8 @@ verbatim.
  "badges": {
   "_rule": "every key in the bundle named `badge` or ending `Badge` is a badge render site and is enumerated here. Status positions carry one of v7's five labels; the non-status ones are the decimation badge, which is a sentence and not a status.",
   "by_label": {
-   "FROZEN-KILL": 8,
-   "FROZEN-PROVISIONAL": 9,
+   "FROZEN-KILL": 10,
+   "FROZEN-PROVISIONAL": 11,
    "FROZEN-RATIFIED": 1,
    "NOT CONVERGED": 1
   },
@@ -654,8 +728,8 @@ verbatim.
    "$.screens.method.tiers[2].tag",
    "$.screens.sim.decimation.badge"
   ],
-  "positions_total": 24,
-  "status_positions_total": 19
+  "positions_total": 28,
+  "status_positions_total": 23
  },
  "cut_elements": [
   {
@@ -808,22 +882,61 @@ verbatim.
  },
  "manifest": {
   "by_kind": {
-   "cite": 249,
-   "derived": 152,
+   "cite": 263,
+   "derived": 176,
    "file": 53,
    "fileref": 1,
    "quote": 47,
    "srcline": 10
   },
   "by_tier": {
-   "DERIVED": 98,
-   "RECORD": 414
+   "DERIVED": 122,
+   "RECORD": 428
   },
-  "entries_total": 512
+  "entries_total": 550
  },
  "maps_published": [
   "bsfc_map_V1_candidate.csv",
   "bsfc_map_V2_candidate.csv"
+ ],
+ "post_close_additions": [
+  {
+   "datasets_paired": 4,
+   "datasets_single": 2,
+   "datasets_total": 6,
+   "finding": "every WS11 paired set carries byte-identical speed columns, so the two vehicles never separate on any of the four datasets - including the capability-limited climb, where the record books the ruler's shortfall as unserved energy and not as a slower speed. The lanes render that lockstep.",
+   "id": "sim-lane-view",
+   "moves": "no number, no status, no verdict. It reads only trace files this exhibit already published and results fields it already cited.",
+   "ordered_by": "the principal, after the close-out",
+   "position_source": {
+    "PRE-R34": "integrated from the trace's own v_kmh at its own 0.1 s step, because the file predates TRACE_SCHEMA and carries no x_m",
+    "R34": "the trace's own x_m cumulative-distance column, read directly"
+   },
+   "scope": "visualization only",
+   "separation_measured": {
+    "v1-sub-cold": {
+     "max_abs_separation_m": 0.0,
+     "max_abs_speed_difference_kmh": 0.0,
+     "samples_compared": 34852.0
+    },
+    "v1-sub-nominal": {
+     "max_abs_separation_m": 0.0,
+     "max_abs_speed_difference_kmh": 0.0,
+     "samples_compared": 34852.0
+    },
+    "v2-reg-climb": {
+     "max_abs_separation_m": 0.0,
+     "max_abs_speed_difference_kmh": 0.0,
+     "samples_compared": 69934.0
+    },
+    "v2-reg-nominal": {
+     "max_abs_separation_m": 0.0,
+     "max_abs_speed_difference_kmh": 0.0,
+     "samples_compared": 66143.0
+    }
+   },
+   "what": "a side-by-side lane view on the simulator screen: each vehicle drawn on its own lane, moving along the route, driven by the existing play / pause / scrub / speed transport"
+  }
  ],
  "published_payload_bytes": 34602996,
  "published_payload_scope": "app/public/traces + app/public/maps",
@@ -1026,7 +1139,7 @@ allowed to pass.
 | `s3.ratioNeeded` | `WS8_semi_architecture/results_ws8.json` | `interface_ws8 → S3_fixed_ratio_feasibility → ratio_needed_to_hold_6pct → ratio` | `6.88:1` |
 | `s3.spanNeeded` | `WS9_vehicle_one_wave2/results_ws9.json` | `two_walls → single_ratio_closed_form → ENG-11L → span_needed` | `1.91:1` |
 
-#### sim — 11 bound values
+#### sim — 25 bound values
 
 | screen element | file | key path | renders |
 |---|---|---|---|
@@ -1036,6 +1149,20 @@ allowed to pass.
 | `controlConstants.pinnedBsfc` | `WS5_controls/results_ws5.json` | `interface_ws5 → dispatch_v2_r22b → pinned_point → bsfc` | `203.62 g/kWh` |
 | `controlConstants.v1FixedPoint` | `WS5_controls/results_ws5.json` | `interface_ws5 → dispatch_v1_r19 → fixed_point_bus_kW` | `35.0 kW` |
 | `controlConstants.v2Strategy` | `WS5_controls/results_ws5.json` | `interface_ws5 → dispatch_v2_r22b → recommended` | `load_follow` |
+| `datasets[2].lanes[0].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V1_on_VOLT-SUB → nominal → payload_kg_candidate` | `2,712 kg` |
+| `datasets[2].lanes[0].verdict` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → verdicts → V1_on_VOLT-SUB → verdict` | `ADVANCE` |
+| `datasets[2].lanes[1].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V1_on_VOLT-SUB → nominal → payload_kg_ruler` | `2,900 kg` |
+| `datasets[3].lanes[0].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V1_on_VOLT-SUB → cold_-10C → payload_kg_candidate` | `2,712 kg` |
+| `datasets[3].lanes[0].verdict` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → verdicts → V1_on_VOLT-SUB → verdict` | `ADVANCE` |
+| `datasets[3].lanes[1].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V1_on_VOLT-SUB → cold_-10C → payload_kg_ruler` | `2,900 kg` |
+| `datasets[4].lanes[0].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V2_on_VOLT-REG → nominal → payload_kg_candidate` | `2,461 kg` |
+| `datasets[4].lanes[0].verdict` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → verdicts → V2_on_VOLT-REG → verdict` | `KILL` |
+| `datasets[4].lanes[1].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V2_on_VOLT-REG → nominal → payload_kg_ruler` | `2,900 kg` |
+| `datasets[5].lanes[0].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V2_on_VOLT-REG → climb_10km_6pct → payload_kg_candidate` | `2,461 kg` |
+| `datasets[5].lanes[0].verdict` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → verdicts → V2_on_VOLT-REG → verdict` | `KILL` |
+| `datasets[5].lanes[1].payload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V2_on_VOLT-REG → climb_10km_6pct → payload_kg_ruler` | `2,900 kg` |
+| `datasets[5].separation.capabilityNote.infeasibleSeconds` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → capability_and_limit_worst_case → V2_on_VOLT-REG → ruler_worst_capability_infeasible_s` | `555.6 s` |
+| `datasets[5].separation.capabilityNote.unservedWheel` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → capability_and_limit_worst_case → V2_on_VOLT-REG → ruler_worst_unserved_wheel_kWh` | `3.2582 kWh` |
 | `disposition.text` | `WS5_controls/results_ws5.json` | `_meta → adjudication` | `CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one.` |
 | `payloadNote.ledgerRuler` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → masses → payload_at_gvw_kg → ruler` | `2,900 kg` |
 | `payloadNote.ledgerV1` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → masses → payload_at_gvw_kg → V1` | `2,712 kg` |

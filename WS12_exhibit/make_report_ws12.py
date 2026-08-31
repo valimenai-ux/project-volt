@@ -52,6 +52,23 @@ def N(path, fmt="d", pre="", suf=""):
 
 
 I = ("interface_ws12",)
+PC = ("post_close_additions", 0)
+
+
+def sep_table():
+    rows = ["| paired set | samples compared | largest speed difference | "
+            "largest separation | distance, candidate / incumbent |",
+            "|---|---|---|---|---|"]
+    for x in BUNDLE["screens"]["sim"]["datasets"]:
+        if x["kind"] != "paired":
+            continue
+        sp = x["separation"]
+        rows.append("| `%s` | %s | %s | %s | %s / %s |"
+                    % (x["shortLabel"], sp["samples"]["s"],
+                       sp["maxSpeedDifference"]["s"],
+                       sp["maxSeparation"]["s"],
+                       sp["candDistance"]["s"], sp["rulerDistance"]["s"]))
+    return "\n".join(rows)
 
 
 def bindings_table():
@@ -330,6 +347,74 @@ and the Method screen claim:
 
 Both are for `LIMITATIONS.md` via WS13 if the lead wants them carried
 further. Neither moves a number, a status or a verdict.
+
+---
+
+## 0b. Post-close addition — the lane view (principal-ordered)
+
+Added **after** the close-out, on the principal's order, and recorded here
+so the record shows what changed and when. **Scope: visualization only.**
+The freeze is untouched, both CLOSEOUT §0 guard rails still bind, and the
+whole verifier still runs. It moves {N(I + PC + ("moves",), "str")}
+
+**Where it lives.** On the **simulator** screen, directly beneath the
+transport controls and the verbatim decimation badge, above the elevation
+profile. It is driven by the screen's existing play / pause / scrub /
+speed transport — one transport, one position, every panel in step — and
+it obeys the decimation rules unchanged: the lanes run on the 1 Hz scrub
+tier with the badge displayed, and the 10 Hz detail tier is still fetched
+one segment at a time for the segment in view.
+
+**How position is derived.** From the record and from nothing else:
+
+- **R34-conforming file:** {N(I + PC + ("position_source", "R34"), "str")}
+- **Pre-R34 file:** {N(I + PC + ("position_source", "PRE-R34"), "str")}
+
+No offset separates the lanes, no easing smooths a truck, and no scale is
+stretched to make a gap visible.
+
+**How the pairing is resolved.** The simulator's selector now carries
+{N(I + PC + ("datasets_total",))} datasets:
+{N(I + PC + ("datasets_paired",))} WS11 **paired** sets — candidate and
+ruler at the identical duty, corner and seed, resolved from the same pair
+table race mode already uses — and {N(I + PC + ("datasets_single",))} WS5
+duty traces with **no** paired incumbent, which render one lane and a
+dashed empty second lane carrying the reason. Lanes are labelled with the
+vehicle and, for a candidate, the status badge read from the record
+through the existing badge machinery; the ruler is labelled
+`INCUMBENT - NO VERDICT OF RECORD`, because it has none and inventing one
+would be exactly the promotion R52 forbids.
+
+**Where the trucks separate in the actual record: nowhere.** Measured at
+build time and re-measured independently by verifier check 5, sample by
+sample over both files of every pair:
+
+{sep_table()}
+
+**The climb is the sharpest case and it separates least.** On
+`V2 · VOLT-REG · climb_10km_6pct` the record has the stock truck
+capability-limited and unable to hold the demanded speed, and books the
+work it could not do as unserved energy. Both trace files still carry the
+same demanded speed at every sample, so the shortfall never reaches the
+position axis at all. The lane view says so on the panel, prints the
+unserved energy and the capability-limited seconds beside it, and points
+the reader at the energy ledger. That is the whole lesson of this screen:
+**the race is in energy, not in position, and a trace is not a picture of
+what happened.**
+
+**Pre-R34 honesty.** The four paired sets are WS11 files, which predate
+TRACE_SCHEMA. They drive the lane view and the route strip, which need
+only columns they carry. Every panel that needs a column they do not have
+— the elevation profile, the R15 blend cascade, the engine dot, SOC and
+pack temperature, the cumulative-fuel counter — is **absent** for those
+datasets, with the missing column list printed in its place. The R34
+refusal gate is unchanged and still applies to R34 files.
+
+**Verification.** Every rendered number on the panel is run-time DERIVED
+and the panel carries the DERIVED tier badge; no numeral of record is
+hard-coded in app source or in the built bundle (check 7). The build-time
+separation figures are in the manifest and are recomputed from the two
+trace files by check 5.
 
 ---
 

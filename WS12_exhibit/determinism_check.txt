@@ -2,11 +2,11 @@ WS12 DETERMINISM CHECK
 ====================================================================
 pass 1 snapshot: 192 artifacts
 build_exhibit_data.py exit 0
-    exhibit_data.json     323406 bytes
-    manifest.json         174766 bytes, 512 entries
+    exhibit_data.json     363495 bytes
+    manifest.json         191785 bytes, 550 entries
     traces published    10, 34.36 MB
     maps published      2
-    badges checked      24
+    badges checked      28
 data + traces + maps           192 files,     0 differing, 0 only-before, 0 only-after
 npm run build exits: 0, 0
 app bundle                     194 files,     0 differing, 0 only-before, 0 only-after

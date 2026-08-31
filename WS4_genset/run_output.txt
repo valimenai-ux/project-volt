@@ -117,6 +117,37 @@ G1-R map-vintage robustness: 749 V map ...
   [vmap749] seed 7: a=19.61kg, b=19.20kg
   [vmap749] seed 8: a=19.60kg, b=19.17kg
   [vmap749] seed 9: a=19.67kg, b=19.22kg
+R22a series_duty_v2: nominal (delivered pack 11.084 kWh usable, R16 accept 130.8 kW bus) ...
+  [nominal] seed 23: b=18.88kg, unserved=0.000 kWh, above-pin demand 1215s, starts 5, SOC 0.257-0.755
+  [nominal] seed 3: b=19.08kg, unserved=0.000 kWh, above-pin demand 1260s, starts 5, SOC 0.250-0.753
+  [nominal] seed 4: b=19.03kg, unserved=0.000 kWh, above-pin demand 1202s, starts 5, SOC 0.250-0.754
+  [nominal] seed 5: b=19.18kg, unserved=0.000 kWh, above-pin demand 1275s, starts 6, SOC 0.228-0.751
+  [nominal] seed 6: b=19.05kg, unserved=0.000 kWh, above-pin demand 1248s, starts 6, SOC 0.248-0.755
+  [nominal] seed 7: b=18.99kg, unserved=0.000 kWh, above-pin demand 1259s, starts 5, SOC 0.257-0.755
+  [nominal] seed 8: b=19.00kg, unserved=0.000 kWh, above-pin demand 1275s, starts 5, SOC 0.250-0.752
+  [nominal] seed 9: b=19.05kg, unserved=0.000 kWh, above-pin demand 1250s, starts 5, SOC 0.262-0.755
+R22a series_duty_v2: cda_5.4 (delivered pack 11.084 kWh usable, R16 accept 130.8 kW bus) ...
+  [cda_5.4] seed 23: b=22.41kg, unserved=0.000 kWh, above-pin demand 1847s, starts 4, SOC 0.183-0.768
+  [cda_5.4] seed 3: b=22.62kg, unserved=0.000 kWh, above-pin demand 1938s, starts 4, SOC 0.210-0.767
+  [cda_5.4] seed 4: b=22.55kg, unserved=0.000 kWh, above-pin demand 1953s, starts 4, SOC 0.207-0.756
+  [cda_5.4] seed 5: b=22.61kg, unserved=0.000 kWh, above-pin demand 1979s, starts 4, SOC 0.214-0.764
+  [cda_5.4] seed 6: b=22.51kg, unserved=0.000 kWh, above-pin demand 1984s, starts 4, SOC 0.193-0.766
+  [cda_5.4] seed 7: b=22.52kg, unserved=0.000 kWh, above-pin demand 1930s, starts 4, SOC 0.222-0.769
+  [cda_5.4] seed 8: b=22.56kg, unserved=0.000 kWh, above-pin demand 1965s, starts 4, SOC 0.190-0.770
+  [cda_5.4] seed 9: b=22.60kg, unserved=0.000 kWh, above-pin demand 1944s, starts 4, SOC 0.212-0.758
+R22a series_duty_v2: alt2000m_45C (delivered pack 11.084 kWh usable, R16 accept 129.1 kW bus) ...
+  [alt2000m_45C] seed 23: b=15.68kg, unserved=0.000 kWh, above-pin demand 701s, starts 6, SOC 0.247-0.803
+  [alt2000m_45C] seed 3: b=15.83kg, unserved=0.000 kWh, above-pin demand 739s, starts 6, SOC 0.248-0.798
+  [alt2000m_45C] seed 4: b=15.79kg, unserved=0.000 kWh, above-pin demand 703s, starts 6, SOC 0.246-0.804
+  [alt2000m_45C] seed 5: b=15.82kg, unserved=0.000 kWh, above-pin demand 691s, starts 6, SOC 0.247-0.798
+  [alt2000m_45C] seed 6: b=15.74kg, unserved=0.000 kWh, above-pin demand 716s, starts 6, SOC 0.250-0.801
+  [alt2000m_45C] seed 7: b=15.77kg, unserved=0.000 kWh, above-pin demand 717s, starts 6, SOC 0.249-0.809
+  [alt2000m_45C] seed 8: b=15.75kg, unserved=0.000 kWh, above-pin demand 692s, starts 6, SOC 0.250-0.803
+  [alt2000m_45C] seed 9: b=15.81kg, unserved=0.000 kWh, above-pin demand 742s, starts 6, SOC 0.248-0.803
+R22a bracket: R8 bus-side power envelope enforced (125 kW discharge / 110 kW charge) ...
+  [nominal] unserved 0.000-0.002 kWh, discharge clipped 2.8 s
+  [cda_5.4] unserved 0.000-0.015 kWh, discharge clipped 8.9 s
+  [alt2000m_45C] unserved 0.519-0.613 kWh, discharge clipped 94.2 s
 building VOLT-SUB ensemble ...
 V1 start-stop sweeps ...
 
@@ -136,3 +167,18 @@ G1-R alt2000m_45C: min -5.90% median -5.66%
 G1-R reference_curve: min -2.23% median -2.02%
 V1 starts/8h shift at R8 floor (0.8 kWh hyst): 57-74
 V1 fuel saving vs continuous: 6.2%
+
+==== KX (R23 errata + R22a verification) ====
+F1 CdA 5.4 positive seeds: 4 of 8 [4, 7, 8, 9]
+F2 boundary exposure nominal 22.7-31.3 s/cycle, CdA 5.4 27.8-46.4 s/cycle; one-sided at CdA 5.4 <= 0.016 pp
+F3 map-vintage spread: 0.51 pp (432-749 V window) / 0.63 pp (incl. r3-interim, as printed)
+F4 interface traction map path: ../WS2_traction_motor/data/effmap_motor_inverter_662V.csv
+F5 chain weighting: WS2 cycle-share 0.9005 (237.6 g/kWh) vs series-duty 0.9160 (233.5 g/kWh)
+R22a series_duty_v2 at 11.084 kWh usable: unserved bus energy worst case 0.0000 kWh (no governing case - every ordered case is exactly zero on all 8 seeds) - all cases zero: True
+  [nominal] fuel energy 1.701-1.728 kWh/km; above-pin demand 1202-1275 s; starts/h 2.7-3.3; SOC 0.228-0.755; pack peak 184.5 kW dis / 147.6 kW chg
+  [cda_5.4] fuel energy 2.019-2.038 kWh/km; above-pin demand 1847-1984 s; starts/h 2.2-2.2; SOC 0.183-0.770; pack peak 142.2 kW dis / 147.6 kW chg
+  [alt2000m_45C] fuel energy 1.413-1.426 kWh/km; above-pin demand 691-742 s; starts/h 3.3-3.3; SOC 0.246-0.809; pack peak 192.5 kW dis / 147.5 kW chg
+R16 curve binding in this run: False (peak regen-to-pack 69.1 kW bus; binds below -9.4 C and above 53.9 C cells)
+R8 power-envelope bracket (125/110 kW bus enforced): worst unserved 0.613 kWh [alt2000m_45C] - the ordered run's pack discharge peaks at 192.5 kW bus
+R22d true-coast spin member (reported, not charged): up to 0.000 pp of cycle fuel
+R34 10 Hz trace: data/trace_series_duty_v2_nominal_seed23_10Hz.csv (66,143 rows)

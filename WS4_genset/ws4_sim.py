@@ -148,7 +148,11 @@ def pinned_point(engine, gen, derate):
 
 def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                 veh=VEH, m=None, derate=1.0, regen_cap_kw=75.0,
-                chain=None, spin_shaft_kw=0.0, spin_bus_kw=0.0):
+                chain=None, spin_shaft_kw=0.0, spin_bus_kw=0.0,
+                chg_accept_bus_kw=None, ser_band=None,
+                dis_cap_bus_kw=None, chg_cap_bus_kw=None,
+                spin_coast_shaft_kw_85=None, spin_coast_bus_kw_85=None,
+                trace=False, soc_trace_stride=None):
     """Simulate one mode over one cycle realisation. Returns totals.
 
     G1-R additions (both default OFF so the ratified r2 configuration is
@@ -163,6 +167,43 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                       samples only (WS2's measured lockup-only tax,
                       directive 1b). Modes (b)/(b') never lock, so they
                       carry no spin member by construction.
+
+    KX additions (all default OFF - with every KX argument at its
+    default this function is bit-identical to the G1-R version):
+      chg_accept_bus_kw : R16 pack charge-acceptance cap [kW, bus-side]
+                      on the regen path, from WS3's regen_acceptance.csv
+                      at the case's declared cell temperature. Regen
+                      above it is shed to the friction/resistor column
+                      per the R15 blend order. None -> uncapped (the
+                      G1-R behaviour, where only the energy headroom and
+                      the wheel-side regen_cap_kw bound the flow).
+      dis_cap_bus_kw : R8 bus-side pack POWER envelope, enforced. When
+      chg_cap_bus_kw   set, discharge above the cap cannot be served and
+                      is booked as unserved bus energy; charge above the
+                      cap is shed. Default None = the ratified
+                      behaviour, in which only the pack's ENERGY is a
+                      constraint and its power envelope is measured and
+                      reported (pack_*_peak_kw / pack_*_over_r8_*_s) but
+                      not enforced. Used for the KX R8-envelope bracket.
+      ser_band      : (lo, hi) series start-stop hysteresis as SOC
+                      fractions, overriding SER_LO/SER_HI. Used for the
+                      KX hysteresis sensitivity (WS3's allocated
+                      genset-hysteresis band on the delivered pack).
+      spin_coast_*  : R22d operational member. WS2's 85 km/h PM spin
+                      drag (shaft / bus), scaled LINEARLY with road
+                      speed [WS4-DECLARED], accumulated over TRUE-COAST
+                      samples (moving, non-positive wheel demand, zero
+                      regen capture) where the permanently-geared
+                      machine turns at zero torque and the measured maps
+                      therefore do not carry it. REPORTED, never charged
+                      to fuel: the fuel totals are unchanged by it and
+                      the member is exported separately so the direction
+                      of the omission is on the record.
+      trace         : collect the full per-sample 10 Hz trace (R34).
+      soc_trace_stride : if set, collect a decimated SOC trajectory
+                      (every Nth sample) - the per-seed SOC export the
+                      KX directive orders, at a size that fits a
+                      committed CSV.
     """
     m = veh.m_gvw if m is None else m
     t = cyc["t"]; v = cyc["v"]
@@ -204,6 +245,8 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                                loc["trq"][okm])
     p_min_bp = 25.0
 
+    ser_lo, ser_hi = (SER_LO, SER_HI) if ser_band is None \
+        else (float(ser_band[0]), float(ser_band[1]))
     e_cap = usable_kwh * 3.6e6
     e = e_cap * SOC_START
     ser_on = False
@@ -217,7 +260,21 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                e_dl_loss_kwh=0.0, eng_kwh=0.0, eng_on_s=0.0, locked_s=0.0,
                bank_kwh=0.0, over_rating_s=0.0, e_bus_kwh=0.0,
                eng_reject_kwh=0.0, e_dir_wheel_kwh=0.0, emerg_s=0.0,
-               unserved_kwh=0.0, e_spin_shaft_kwh=0.0, e_spin_bus_kwh=0.0)
+               unserved_kwh=0.0, e_spin_shaft_kwh=0.0, e_spin_bus_kwh=0.0,
+               # --- KX exports (R22a): above-pin duty, pack-power
+               # envelope diagnostics, R16 shedding, R22d coast member
+               above_pin_demand_s=0.0, above_pin_demand_kwh=0.0,
+               above_pin_engine_s=0.0, above_pin_transitions=0.0,
+               eng_stops=0.0, pack_chg_peak_kw=0.0, pack_dis_peak_kw=0.0,
+               pack_chg_over_r8_110kW_s=0.0, pack_dis_over_r8_125kW_s=0.0,
+               regen_shed_r16_kwh=0.0, regen_bus_peak_kw=0.0,
+               r8_dis_clip_s=0.0, r8_chg_clip_s=0.0, r8_chg_shed_kwh=0.0,
+               coast_no_regen_s=0.0,
+               coast_spin_shaft_kwh_r22d=0.0, coast_spin_bus_kwh_r22d=0.0)
+    soc_min, soc_max = SOC_START, SOC_START
+    above_pin_prev = False
+    tr = ([], [], [], [], [], [], [], [], [], [], []) if trace else None
+    sc = ([], [], [], [], []) if soc_trace_stride else None
 
     for i in range(v.size):
         pw = float(p_wheel[i])
@@ -229,9 +286,9 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                 agg["over_rating_s"] += dt
 
         # series on/off hysteresis (SOC), evolves continuously
-        if e < SER_LO * e_cap:
+        if e < ser_lo * e_cap:
             ser_on = True
-        elif e > SER_HI * e_cap:
+        elif e > ser_hi * e_cap:
             ser_on = False
         # emergency band (all modes): below EMERG_LO the series engine may
         # leave the pin / continuous cap and follow load up to the full-
@@ -337,10 +394,25 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                 p_rg_bus = float(p_capt0[i] * eta_rg[i])
                 p_fric = -pw - float(p_capt0[i])
                 head_rate = max(0.0, (e_cap - e)) / dt / 1e3 / BATT_ETA_CHG
-                spill = max(0.0, p_rg_bus - max(0.0, head_rate - p_aux_kw))
+                allow = max(0.0, head_rate - p_aux_kw)
+                spill = max(0.0, p_rg_bus - allow)
+                if chg_accept_bus_kw is not None:
+                    # R16: the pack's published charge-acceptance curve
+                    # at the case's declared cell temperature caps the
+                    # regen-to-pack leg; the overflow goes down the R15
+                    # blend order (resistor/friction column). The shed
+                    # energy attributed to R16 is the INCREMENT over
+                    # what the energy headroom alone already shed.
+                    allow = min(allow, chg_accept_bus_kw)
+                    spill_r16 = max(0.0, p_rg_bus - allow)
+                    agg["regen_shed_r16_kwh"] += (spill_r16 - spill) \
+                        * dt / 3600.0
+                    spill = spill_r16
                 p_rg_bus -= spill
                 p_fric += spill / float(eta_rg[i]) if eta_rg[i] > 0 else 0.0
                 p_bus_load -= p_rg_bus
+                if p_rg_bus > agg["regen_bus_peak_kw"]:
+                    agg["regen_bus_peak_kw"] = p_rg_bus
                 if eta_rg[i] > 0:
                     agg["e_chain_loss_kwh"] += p_rg_bus \
                         * (1 - eta_rg[i]) / eta_rg[i] * dt / 3600.0
@@ -398,6 +470,17 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                         * dt / 3600.0
 
         p_batt_bus = p_gen_elec - p_bus_load          # + = charge
+        p_batt_raw = p_batt_bus     # pre-envelope, for the diagnostics
+        if dis_cap_bus_kw is not None and p_batt_bus < -dis_cap_bus_kw:
+            agg["unserved_kwh"] += (-p_batt_bus - dis_cap_bus_kw) \
+                * dt / 3600.0
+            agg["r8_dis_clip_s"] += dt
+            p_batt_bus = -dis_cap_bus_kw
+        if chg_cap_bus_kw is not None and p_batt_bus > chg_cap_bus_kw:
+            agg["r8_chg_shed_kwh"] += (p_batt_bus - chg_cap_bus_kw) \
+                * dt / 3600.0
+            agg["r8_chg_clip_s"] += dt
+            p_batt_bus = chg_cap_bus_kw
         if locked_arr[i]:
             agg["bank_kwh"] += max(0.0, p_batt_bus) * dt / 3600.0
 
@@ -424,6 +507,8 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
                 sync_starts += 1
             else:
                 fuel_g += START_FUEL_G      # genset load-acceptance ramp
+        if eng_running_prev and not eng_running:
+            agg["eng_stops"] += 1.0
         eng_running_prev = eng_running
         agg["e_fric_kwh"] += p_fric * dt / 3600.0
         agg["e_gen_loss_kwh"] += p_gen_loss * dt / 3600.0
@@ -431,6 +516,60 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
         agg["eng_on_s"] += dt if eng_running else 0.0
         agg["locked_s"] += dt if locked_arr[i] else 0.0
         agg["e_bus_kwh"] += max(0.0, p_bus_load) * dt / 3600.0
+
+        # ---- KX (R22a) per-sample exports ---------------------------
+        # above-pin DEMAND: bus load the pinned genset point cannot
+        # cover on its own (what WS5's dispatch question is about);
+        # above-pin ENGINE: the genset actually running past the pin.
+        if p_bus_load > pin["p_bus_kw"]:
+            agg["above_pin_demand_s"] += dt
+            agg["above_pin_demand_kwh"] += (p_bus_load - pin["p_bus_kw"]) \
+                * dt / 3600.0
+        above_pin_now = p_shaft_eng > pin["p_shaft_kw"] + 1e-9
+        if above_pin_now:
+            agg["above_pin_engine_s"] += dt
+        if above_pin_now != above_pin_prev:
+            agg["above_pin_transitions"] += 1.0
+        above_pin_prev = above_pin_now
+        # pack-power envelope diagnostics against R8 (bus-side,
+        # 125 kW discharge / 110 kW charge). REPORTED, not enforced -
+        # the ordered run's dispatch is not altered by them.
+        if p_batt_raw >= 0.0:
+            if p_batt_raw > agg["pack_chg_peak_kw"]:
+                agg["pack_chg_peak_kw"] = p_batt_raw
+            if p_batt_raw > 110.0:
+                agg["pack_chg_over_r8_110kW_s"] += dt
+        else:
+            if -p_batt_raw > agg["pack_dis_peak_kw"]:
+                agg["pack_dis_peak_kw"] = -p_batt_raw
+            if -p_batt_raw > 125.0:
+                agg["pack_dis_over_r8_125kW_s"] += dt
+        # R22d true-coast spin member (reported, never charged)
+        if spin_coast_shaft_kw_85 is not None:
+            if (v[i] > 1.0 / 3.6 and pw <= 0.0
+                    and float(p_capt0[i]) <= 1e-9 and not locked_arr[i]):
+                k_v = float(v[i]) / (85.0 / 3.6)
+                agg["coast_no_regen_s"] += dt
+                agg["coast_spin_shaft_kwh_r22d"] += \
+                    spin_coast_shaft_kw_85 * k_v * dt / 3600.0
+                agg["coast_spin_bus_kwh_r22d"] += \
+                    (spin_coast_bus_kw_85 or 0.0) * k_v * dt / 3600.0
+        soc = e / e_cap
+        if soc < soc_min:
+            soc_min = soc
+        if soc > soc_max:
+            soc_max = soc
+        if sc is not None and (i % soc_trace_stride) == 0:
+            sc[0].append(float(t[i])); sc[1].append(soc)
+            sc[2].append(p_bus_load); sc[3].append(p_batt_bus)
+            sc[4].append(1.0 if eng_running else 0.0)
+        if tr is not None:
+            tr[0].append(float(t[i])); tr[1].append(float(v[i]) * 3.6)
+            tr[2].append(float(cyc["grade"][i]) * 100.0); tr[3].append(pw)
+            tr[4].append(p_bus_load); tr[5].append(p_gen_elec)
+            tr[6].append(p_batt_bus); tr[7].append(soc)
+            tr[8].append(p_shaft_eng); tr[9].append(f_gps)
+            tr[10].append(1.0 if eng_running else 0.0)
 
     # SOC-drift correction at the pinned point's marginal rate
     drift_kwh_cells = (e - e_cap * SOC_START) / 3.6e6
@@ -460,6 +599,24 @@ def run_g1_mode(cyc, mode, engine, gen, usable_kwh, p_aux_kw=2.0,
     out["l_per_100km"] = out["fuel_l"] / out["distance_km"] * 100.0
     out["mean_bsfc_eff_g_per_kwh"] = (fuel_corr_g / agg["eng_kwh"]
                                       if agg["eng_kwh"] > 0 else float("inf"))
+    # KX: SOC envelope, cycling rates and the per-km fuel-energy metric
+    hours = out["duration_s"] / 3600.0
+    out["soc_min"] = soc_min
+    out["soc_max"] = soc_max
+    out["soc_end"] = e / e_cap
+    out["starts_per_h"] = starts / hours
+    out["above_pin_transitions_per_h"] = agg["above_pin_transitions"] / hours
+    out["fuel_energy_kWh_per_km"] = out["fuel_energy_kwh"] / out["distance_km"]
+    out["eng_on_frac"] = agg["eng_on_s"] / out["duration_s"]
+    if tr is not None:
+        out["trace"] = dict(
+            t_s=tr[0], v_kmh=tr[1], grade_pct=tr[2], P_wheel_kW=tr[3],
+            P_bus_load_kW=tr[4], P_gen_bus_kW=tr[5], P_batt_bus_kW=tr[6],
+            SOC=tr[7], P_shaft_eng_kW=tr[8], fuel_g_per_s=tr[9],
+            engine_on=tr[10])
+    if sc is not None:
+        out["soc_trace"] = dict(t_s=sc[0], SOC=sc[1], P_bus_load_kW=sc[2],
+                                P_batt_bus_kW=sc[3], engine_on=sc[4])
     return out
 
 

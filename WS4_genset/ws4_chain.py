@@ -119,14 +119,26 @@ class WS2TractionChain:
     over (rpm, signed torque); infeasible cells are filled from the
     nearest feasible neighbour and query coordinates are clamped to the
     grid, so demands beyond the map's FEASIBLE ENVELOPE reuse the
-    boundary loss. Measured exposure of that convention is a few
-    seconds per VOLT-REG cycle, on unlocked launch samples that both
-    G1 modes drive identically through this same chain - mode-neutral
-    and negligible (~0.001 kWh understated). Note the R3 over-RATING
-    counter (>150 kW motor shaft) is a different, stricter boundary:
-    those samples lie INSIDE the map envelope (feasible to ~175-185 kW
-    at cruise rpm) and receive true interpolated losses; they stay
-    counted and energy-bookkept, not clipped.
+    boundary loss.
+
+    KX/R23 erratum F2: that convention is NOT mode-neutral in general.
+    It is mode-neutral at the reference seed (where the exposure is all
+    unlocked launch samples both G1 modes drive identically), but at
+    CdA 5.4 the exposure sits predominantly on ~94-98 km/h cruise
+    samples, which are LOCKED in mode (a) (served by the engine) and
+    clamp-served only in mode (b) - i.e. one-sided in (b)'s favour.
+    `boundary_exposure()` below measures it per condition and
+    `boundary_excess_loss_kw()` bounds the understated loss by
+    extrapolating the loss surface past the feasible boundary with its
+    own one-sided torque gradient [WS4-DECLARED extrapolation]. The
+    measured magnitudes are exported in results_ws4.json ->
+    chain_boundary_exposure and rendered in REPORT_WS4.md s4.1.
+
+    Note the R3 over-RATING counter (>150 kW motor shaft) is a
+    different, stricter boundary: those samples lie INSIDE the map
+    envelope (feasible to ~175-185 kW at cruise rpm) and receive true
+    interpolated losses; they stay counted and energy-bookkept, not
+    clipped.
     """
 
     def __init__(self, map_path, ratio, r_dyn, eta_red=0.97):
@@ -159,6 +171,105 @@ class WS2TractionChain:
                 fill = np.nanmean(neigh, axis=0)
             loss[nan] = fill[nan]
         self.rpms, self.trqs, self.loss = rpms, trqs, loss
+        # --- KX/F2 instrumentation: which grid cells were ORIGINALLY
+        # feasible, and the feasible torque envelope per rpm column.
+        # Pure bookkeeping - it touches no interpolated value, so every
+        # ratified number is reproduced bit-identically.
+        feas_grid = np.zeros((rpms.size, trqs.size), dtype=bool)
+        feas_grid[ir[feas], it[feas]] = True
+        self.feas_grid = feas_grid
+        big = float(trqs[-1] - trqs[0]) + 1.0
+        tmax_col = np.where(feas_grid.any(axis=1),
+                            np.max(np.where(feas_grid, trqs[None, :],
+                                            -big), axis=1), 0.0)
+        tmin_col = np.where(feas_grid.any(axis=1),
+                            np.min(np.where(feas_grid, trqs[None, :],
+                                            big), axis=1), 0.0)
+        self.t_feas_max_col, self.t_feas_min_col = tmax_col, tmin_col
+
+    def _cell_index(self, rpm, trq):
+        """Grid cell (i, j) used by the bilinear stencil, plus the
+        clamped coordinates - mirrors _interp_loss exactly."""
+        r = np.clip(np.asarray(rpm, float), self.rpms[0], self.rpms[-1])
+        t = np.clip(np.asarray(trq, float), self.trqs[0], self.trqs[-1])
+        i = np.clip(np.searchsorted(self.rpms, r) - 1, 0, self.rpms.size - 2)
+        j = np.clip(np.searchsorted(self.trqs, t) - 1, 0, self.trqs.size - 2)
+        return i, j, r, t
+
+    def boundary_exposure(self, rpm, trq):
+        """Boolean mask: query used at least one ORIGINALLY-INFEASIBLE
+        grid cell in its bilinear stencil, or had a coordinate clamped
+        to the grid - i.e. it is served at the boundary loss rather than
+        at a measured one (KX/F2)."""
+        i, j, r, t = self._cell_index(rpm, trq)
+        stencil_ok = (self.feas_grid[i, j] & self.feas_grid[i + 1, j]
+                      & self.feas_grid[i, j + 1] & self.feas_grid[i + 1, j + 1])
+        clamped = ((np.asarray(rpm, float) != r)
+                   | (np.asarray(trq, float) != t))
+        return (~stencil_ok) | clamped
+
+    def boundary_exposure_strict(self, rpm, trq):
+        """Stricter boundary test: the query torque lies OUTSIDE the
+        feasible torque envelope of its nearest rpm column (or a
+        coordinate is clamped). This is the criterion the r3 adjudicator
+        measured against; `boundary_exposure` is a superset of it,
+        because a stencil can straddle an infeasible cell while the
+        query itself is still inside the envelope."""
+        rpm = np.asarray(rpm, float)
+        trq = np.asarray(trq, float)
+        k = self._nearest_rpm_col(rpm)
+        clamped = ((rpm < self.rpms[0]) | (rpm > self.rpms[-1])
+                   | (trq < self.trqs[0]) | (trq > self.trqs[-1]))
+        return ((trq > self.t_feas_max_col[k])
+                | (trq < self.t_feas_min_col[k]) | clamped)
+
+    def _nearest_rpm_col(self, rpm):
+        rpm = np.asarray(rpm, float)
+        k = np.clip(np.searchsorted(self.rpms, rpm), 0, self.rpms.size - 1)
+        return np.where((k > 0)
+                        & (np.abs(self.rpms[np.clip(k - 1, 0, None)] - rpm)
+                           <= np.abs(self.rpms[k] - rpm)), k - 1, k)
+
+    def boundary_excess_loss_kw(self, rpm, trq):
+        """[WS4-DECLARED bound] Additional loss [kW] the clamped
+        convention does NOT book, obtained by extending the loss surface
+        past the feasible torque boundary of the nearest rpm column with
+        that column's own one-sided torque gradient. Zero inside the
+        envelope. Copper loss grows as T^2, so a linear extension is a
+        LOWER bound on the true understatement; the hostile variant in
+        run_ws4.py doubles the gradient."""
+        rpm = np.asarray(rpm, float)
+        trq = np.asarray(trq, float)
+        k = self._nearest_rpm_col(rpm)
+        t_hi = self.t_feas_max_col[k]
+        t_lo = self.t_feas_min_col[k]
+        dt = float(self.trqs[1] - self.trqs[0])
+        # one-sided gradients at each column's feasible boundary
+        j_hi = np.clip(np.searchsorted(self.trqs, t_hi), 1, self.trqs.size - 1)
+        j_lo = np.clip(np.searchsorted(self.trqs, t_lo), 0,
+                       self.trqs.size - 2)
+        g_hi = np.maximum((self.loss[k, j_hi] - self.loss[k, j_hi - 1]) / dt,
+                          0.0)
+        g_lo = np.maximum((self.loss[k, j_lo] - self.loss[k, j_lo + 1]) / dt,
+                          0.0)
+        over_hi = np.clip(trq - t_hi, 0.0, None)
+        over_lo = np.clip(t_lo - trq, 0.0, None)
+        return g_hi * over_hi + g_lo * over_lo
+
+    def motor_rpm_and_torque(self, v, p_wheel_kw, motoring=True):
+        """The (rpm, signed torque) the chain actually queries for a
+        wheel-power demand - exposed so the boundary diagnostics use the
+        identical coordinates as the loss lookup."""
+        v = np.asarray(v, float)
+        p = np.asarray(p_wheel_kw, float)
+        w, rpm = self._motor_speed(v)
+        if motoring:
+            p_ms = np.where(p > 0.0, p, 0.0) / self.eta_red
+            trq = np.where(w > 1e-6, p_ms * 1e3 / np.maximum(w, 1e-6), 0.0)
+        else:
+            p_ms = np.where(p > 1e-9, p, 0.0) * self.eta_red
+            trq = np.where(w > 1e-6, -p_ms * 1e3 / np.maximum(w, 1e-6), 0.0)
+        return rpm, trq
 
     def _interp_loss(self, rpm, trq):
         """Bilinear interpolation of the loss surface [kW], coordinates

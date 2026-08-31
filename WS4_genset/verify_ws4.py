@@ -210,6 +210,118 @@ CHECKS = [
     ("sanity/series_fuel_to_wheel_g_per_kWh", "{:.0f} g/kWh",
      "series fuel-to-wheel"),
     ("sanity/motoring_drag_1706rpm_kW", "{:.1f} kW", "motoring drag"),
+
+    # =====================================================================
+    # KX — R23 errata pins (F1-F5) and the R22a series_duty_v2 run
+    # =====================================================================
+    # F1: the CdA 5.4 positive-seed count, rendered from the export.
+    # (The four-occurrence pin that stops a partial correction is the
+    # structural check below, not this rendering.)
+    ("gate_g1/cda_5.4/ensemble/seeds_margin_positive_n",
+     "{:.0f} of 8 seeds marginally positive", "F1 CdA 5.4 positive count"),
+    ("gate_g1/cda_5.4/ensemble/seeds_total", "{:.0f} seeds marginally",
+     "F1 seed-set size"),
+    ("interface_ws4/gate_g1/verdict/condition_dependence/"
+     "seeds_margin_positive_n_CdA_5.4", "{:.0f} of 8 seeds",
+     "F1 interface mirror"),
+    # F2: measured boundary exposure and the one-sided bound
+    ("chain_boundary_exposure/cases/nominal/envelope/"
+     "exposure_s_motoring_min", "{:.1f}–", "F2 nominal exposure min"),
+    ("chain_boundary_exposure/cases/nominal/envelope/"
+     "exposure_s_motoring_max", "{:.1f} s/cycle", "F2 nominal exposure max"),
+    ("chain_boundary_exposure/cases/nominal/envelope/"
+     "exposure_s_motoring_on_locked_samples_max", "{:.1f} s are locked",
+     "F2 nominal locked exposure max"),
+    ("chain_boundary_exposure/cases/cda_5.4/envelope/"
+     "exposure_s_motoring_min", "{:.1f}–", "F2 CdA exposure min"),
+    ("chain_boundary_exposure/cases/cda_5.4/envelope/"
+     "exposure_s_motoring_max", "{:.1f}", "F2 CdA exposure max"),
+    ("chain_boundary_exposure/cases/cda_5.4/envelope/"
+     "exposure_s_motoring_on_locked_samples_max", "{:.1f} s of it on",
+     "F2 CdA locked exposure max"),
+    ("chain_boundary_exposure/cases/cda_5.4/envelope/"
+     "one_sided_pp_locked_linear_max", "**{:.4f} pp**", "F2 one-sided pp"),
+    ("chain_boundary_exposure/cases/cda_5.4/envelope/"
+     "one_sided_pp_locked_hostile_2x_max", "{:.4f} pp on a hostile",
+     "F2 one-sided pp hostile"),
+    ("chain_boundary_exposure/cases/cda_5.4/envelope/"
+     "over_boundary_wheel_kWh_max", "{:.4f} kWh", "F2 over-boundary energy"),
+    # F3: the printed vintage spread, both spans
+    ("gate_g1_map_vintage_spread/spread_pp_432_749V_window",
+     "**{:.2f} pp**", "F3 window spread"),
+    ("gate_g1_map_vintage_spread/spread_pp_incl_r3_interim",
+     "**{:.2f} pp**", "F3 spread incl. r3-interim"),
+    # F4: the WS4-relative traction-map path (structural check below too)
+    ("ws2_chain_of_record/map_file_ws4_relative", "{}", "F4 map path"),
+    ("interface_ws4/gate_g1/traction_chain_of_record/map_file", "{}",
+     "F4 interface map path"),
+    # F5: both chain weightings and both fuel-to-wheel rates
+    ("sanity/eta_chain_bus_to_wheel_series_duty_weighted", "**{:.4f}**",
+     "F5 series-duty chain eta"),
+    ("sanity/series_fuel_to_wheel_g_per_kWh_series_duty", "**{:.1f} g/kWh**",
+     "F5 series-duty fuel-to-wheel"),
+    ("chain_weighting_convention/series_duty_weighted/eta_bus_to_wheel_min",
+     "{:.4f}–", "F5 series-duty eta min"),
+    ("chain_weighting_convention/series_duty_weighted/eta_bus_to_wheel_max",
+     "{:.4f}", "F5 series-duty eta max"),
+    # --- interface archival status (KX item 3)
+    ("interface_ws4/gate_g1/status", "{}", "gate archival status"),
+    # --- R22a series_duty_v2 headlines
+    ("series_duty_v2/_inputs/usable_bus_kWh", "{:.2f} kWh",
+     "delivered pack usable"),
+    ("series_duty_v2/_inputs/usable_bus_kWh", "{:.6f} kWh",
+     "delivered pack usable, full precision"),
+    ("series_duty_v2/_inputs/superseded_floor_kWh", "R8 {:.1f} kWh",
+     "superseded R8 floor"),
+    ("series_duty_v2/unserved_energy_verdict/worst_case_kWh",
+     "{:.4f}\n> kWh", "R22a unserved worst case"),
+    ("series_duty_v2/unserved_energy_verdict/worst_case_governing_case",
+     "{}", "R22a unserved governing case"),
+    ("series_duty_v2/r22d_coast_spin_member/unbooked_pp_max",
+     "**{:.4f} pp**", "R22d unbooked pp"),
+    ("series_duty_v2/r16_binding_analysis/peak_regen_to_pack_kW_bus",
+     "**{:.1f} kW bus**", "R16 peak regen"),
+    ("series_duty_v2/r16_binding_analysis/cold_side_binding_cell_C",
+     "**{:.1f} °C**", "R16 cold-side binding temperature"),
+    ("series_duty_v2/r16_binding_analysis/hot_side_binding_cell_C",
+     "**{:.1f} °C**", "R16 hot-side binding temperature"),
+    ("series_duty_v2/r16_binding_analysis/"
+     "accept_at_ws3_loop_ceiling_55C_kW", "**{:.1f} kW**",
+     "R16 acceptance at the WS3 loop ceiling"),
+    ("series_duty_v2/soc_window_check/gate_soc_usable_equivalent",
+     "SOC {:.4f} of *usable*", "SOC gate in usable terms"),
+    ("series_duty_v2/soc_window_check/gate_soc_nameplate",
+     "SOC {:.2f} nameplate", "SOC gate in nameplate terms"),
+    *[(f"series_duty_v2/soc_window_check/cases/{c}/{k}", fmt,
+       f"SOC window {c} {k}")
+      for c in ("nominal", "cda_5.4", "alt2000m_45C")
+      for k, fmt in (("t_below_gate_s_min", "{:.1f}–"),
+                     ("t_below_gate_s_max", "{:.1f}"),
+                     ("soc_nameplate_min", "{:.4f}"))],
+    ("series_duty_v2/r8_power_envelope_bracket/worst_unserved_kWh",
+     "**{:.3f} kWh**", "R8 bracket worst unserved"),
+    ("series_duty_v2/r8_power_envelope_bracket/"
+     "worst_unserved_governing_case", "{}", "R8 bracket governing case"),
+    ("series_duty_v2/_trace_files/trace_10Hz", "{}", "R34 trace file"),
+    ("series_duty_v2/_trace_files/trace_10Hz_rows", "{:,.0f} rows",
+     "R34 trace rows"),
+    ("series_duty_v2/_trace_files/soc_trajectories", "{}",
+     "SOC trajectory file"),
+    # per-case ordered exports rendered in the s4-KX table
+    *[(f"series_duty_v2/cases/{c}/ensemble/{k}", fmt, f"R22a {c} {k}")
+      for c in ("nominal", "cda_5.4", "alt2000m_45C")
+      for k, fmt in (("fuel_energy_kWh_per_km_min", "{:.3f}–"),
+                     ("fuel_energy_kWh_per_km_max", "{:.3f}"),
+                     ("unserved_bus_kWh_max", "{:.4f}"),
+                     ("above_pin_demand_s_min", "{:,.1f}–"),
+                     ("above_pin_demand_s_max", "{:,.1f}"),
+                     ("genset_starts_per_h_min", "{:.1f}–"),
+                     ("genset_starts_per_h_max", "{:.1f}"),
+                     ("soc_min_min", "{:.3f}–"),
+                     ("soc_max_max", "{:.3f}"),
+                     ("pack_dis_peak_kW_max", "{:.1f}"),
+                     ("motor_over_rating_s_max", "{:.1f}"),
+                     ("fuel_energy_kWh_per_payload_tonne_km_max", "{:.4f}"))],
 ]
 
 fails = []
@@ -225,9 +337,158 @@ if iface not in REPORT:
     fails.append("  MISSING: interface block is not byte-identical to "
                  "results_ws4.json -> interface_ws4")
 
+# ===========================================================================
+# KX structural pins. The r3 defect class was a HAND-TRANSCRIBED current
+# number corrected in three places out of four, and an interface path that
+# resolved against nobody's folder. A rendering check cannot catch either,
+# so these are counted and resolved, not merely matched.
+# ===========================================================================
+STRUCT = len(CHECKS) + 1
+FLAT = " ".join(REPORT.split())          # whitespace-collapsed report
+
+
+def _flat(s):
+    return " ".join(s.split())
+
+
+# --- R23/F1: the corrected phrase must appear in ALL FOUR places the
+# adjudicator named (headline, s0-R, s6 table, ESC-2), and no superseded
+# wording may survive anywhere.
+_n_pos = get("gate_g1/cda_5.4/ensemble/seeds_margin_positive_n")
+_phrase = _flat(f"{_n_pos:.0f} of 8 seeds marginally positive")
+_occ = FLAT.count(_phrase)
+STRUCT += 1
+if _occ != 4:
+    fails.append(f"  F1 OCCURRENCE PIN: '{_phrase}' appears {_occ} times, "
+                 "expected 4 (headline, s0-R, s6 table, ESC-2) - a partial "
+                 "correction is exactly the r3 defect")
+_SUPERSEDED = {
+    "F1": ["two seeds marginally positive", "two marginally positive seeds",
+           "two of eight seeds marginally positive"],
+    "F2": ["so the convention is mode-neutral and negligible",
+           "mode-neutral and negligible, ~seconds per cycle",
+           "the convention is mode-neutral and negligible"],
+    "F3": ["the spread is under 0.6 pp"],
+}
+for _fid, _bad_list in _SUPERSEDED.items():
+    for _bad in _bad_list:
+        STRUCT += 1
+        if _flat(_bad) in FLAT:
+            fails.append(f"  {_fid} SUPERSEDED WORDING still present: "
+                         f"'{_bad}'")
+
+# --- R23/F4: EVERY file path exported by the interface must resolve
+# against THIS workstream's folder (the one exception is the field
+# explicitly labelled as the owner's own relative path).
+_FILE_KEYS_EXTRA = {"trace_10Hz", "soc_trajectories"}
+_OWNER_RELATIVE = {"map_file_as_exported_by_owner"}
+
+
+def _is_hash(v):
+    return len(v) == 64 and all(c in "0123456789abcdef" for c in v)
+
+
+def _walk_files(o, path=""):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if "sha256" in k:
+                continue                     # hash tables, not file fields
+            if (isinstance(v, str) and k not in _OWNER_RELATIVE
+                    and not _is_hash(v)
+                    and (k.endswith("_file") or k in _FILE_KEYS_EXTRA)):
+                yield f"{path}/{k}", v
+            else:
+                yield from _walk_files(v, f"{path}/{k}")
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            yield from _walk_files(v, f"{path}/{i}")
+
+
+_seen_files = 0
+for _jp, _fp in _walk_files(R["interface_ws4"], "interface_ws4"):
+    _seen_files += 1
+    STRUCT += 1
+    if not os.path.exists(os.path.join(HERE, _fp)):
+        fails.append(f"  F4 PATH PIN: {_jp} = '{_fp}' does not resolve "
+                     "against the WS4 folder (every interface *_file must)")
+if _seen_files < 8:
+    fails.append(f"  F4 PATH PIN: only {_seen_files} interface file fields "
+                 "found - the walker is not seeing the block")
+
+# --- KX item 3: the archived gate must be labelled as archived and must
+# not be presented as a live requirement.
+STRUCT += 1
+if get("interface_ws4/gate_g1/status") != "executed_kill_2026-08-30":
+    fails.append("  ARCHIVAL PIN: interface_ws4 -> gate_g1 -> status is not "
+                 "executed_kill_2026-08-30")
+STRUCT += 1
+if "NO FIELD OF THIS BLOCK MAY BE CONSUMED AS A LIVE REQUIREMENT" not in \
+        get("interface_ws4/gate_g1/_archival_notice"):
+    fails.append("  ARCHIVAL PIN: the gate_g1 archival notice is missing its "
+                 "no-live-consumption clause")
+STRUCT += 1
+for _member in ("verdict", "attribution_rows", "bracket_result",
+                "provenance_hashes"):
+    if _member not in R["interface_ws4"]["gate_g1"]:
+        fails.append(f"  ARCHIVAL PIN: gate_g1 is missing the '{_member}' "
+                     "member the KX directive names")
+STRUCT += 1
+if "spin_drag_operational_note_r22d" not in R["interface_ws4"]:
+    fails.append("  R22d PIN: the spin-drag operational note is not a named "
+                 "interface member")
+
+# --- KX item 2: the ordered per-seed export set must actually be present
+# for every seed of every ordered case.
+_ORDERED = ("unserved_bus_kWh", "above_pin_demand_s", "above_pin_engine_s",
+            "soc_min", "soc_max", "soc_end", "genset_starts",
+            "genset_starts_per_h", "above_pin_transitions_per_h",
+            "fuel_energy_kWh_per_km")
+for _c, _cb in R["interface_ws4"]["series_duty_v2"]["cases"].items():
+    _ps = _cb["per_seed_ordered_exports"]
+    STRUCT += 1
+    if len(_ps) != 8:
+        fails.append(f"  R22a EXPORT PIN: case {_c} exports {len(_ps)} "
+                     "seeds, expected 8 (R9)")
+    for _sd, _row in _ps.items():
+        for _k in _ORDERED:
+            STRUCT += 1
+            if _k not in _row:
+                fails.append(f"  R22a EXPORT PIN: {_c}/seed {_sd} is "
+                             f"missing the ordered export '{_k}'")
+
+# --- R9/R14: every exported extremum in the R22a envelopes carries its
+# governing case inline.
+for _c, _cb in R["interface_ws4"]["series_duty_v2"]["cases"].items():
+    for _k in list(_cb["ensemble"]):
+        if _k.endswith("_min") or _k.endswith("_max"):
+            STRUCT += 1
+            if _k + "_governing_case" not in _cb["ensemble"]:
+                fails.append(f"  R14 PIN: {_c}/{_k} has no inline "
+                             "governing-case label")
+
+# --- R34: the 10 Hz trace must exist and actually be at 10 Hz.
+STRUCT += 1
+_tr = os.path.join(HERE, get("series_duty_v2/_trace_files/trace_10Hz"))
+if not os.path.exists(_tr):
+    fails.append("  R34 PIN: the 10 Hz trace file is missing")
+else:
+    with open(_tr) as _f:
+        _rows = [ln for ln in _f if not ln.startswith("#")]
+    STRUCT += 1
+    if len(_rows) - 1 != int(get("series_duty_v2/_trace_files/"
+                                 "trace_10Hz_rows")):
+        fails.append("  R34 PIN: trace row count does not match the "
+                     "exported trace_10Hz_rows")
+    _t0 = float(_rows[1].split(",")[0])
+    _t1 = float(_rows[2].split(",")[0])
+    STRUCT += 1
+    if abs((_t1 - _t0) - 0.1) > 1e-9:
+        fails.append(f"  R34 PIN: trace step is {_t1-_t0:.4f} s, not 0.1 s")
+
 if fails:
-    print(f"VERIFY FAILED ({len(fails)} of {len(CHECKS)+1} checks):")
+    print(f"VERIFY FAILED ({len(fails)} of {STRUCT} checks):")
     print("\n".join(fails))
     sys.exit(1)
-print(f"VERIFIED: {len(CHECKS)} headline renderings + interface block "
-      "match results_ws4.json verbatim.")
+print(f"VERIFIED: {len(CHECKS)} headline renderings + interface block + "
+      f"{STRUCT - len(CHECKS) - 1} structural/errata pins match "
+      "results_ws4.json and the artefacts on disk.")

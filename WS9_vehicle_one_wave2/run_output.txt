@@ -1,0 +1,67 @@
+== DUTIES (R29) ==
+   GH-REG-165: 165 km, climb 1748 m (10.6 m/km), grade max +0.1074, 20.6% of distance at >=2%
+   LH-520: 520 km, climb 3704 m (7.1 m/km), grade max +0.0605, 11.9% of distance at >=2%
+== THE TWO WALLS ==
+   ENG-11L: Rh 3.608 / Rl 7.425  feasible True  cruise 1914 rpm at 100 km/h  holds 6% True
+   ENG-13L: Rh 2.737 / Rl 5.632  feasible True  cruise 1452 rpm at 100 km/h  holds 6% True
+== TRIAL ==
+  corner nominal
+    S0R     : payload  20655.0 kg   design 0.9196   control 0.8116 MJ_primary/payload-tkm
+    S5      : payload  19970.0 kg   design 0.8863   control 0.8387 MJ_primary/payload-tkm
+    S5-13L  : payload  19706.3 kg   design 0.8544   control 0.8145 MJ_primary/payload-tkm
+    S6      : payload  20655.0 kg   design 0.8506   control 0.7518 MJ_primary/payload-tkm
+    S7      : payload  19845.5 kg   design 0.8644   control 0.8133 MJ_primary/payload-tkm
+    S4p     : payload  20134.4 kg   design 0.7741   control 0.8351 MJ_primary/payload-tkm
+  corner payload_plus20
+    S0R     : payload  24786.0 kg   design 0.8355   control 0.7203 MJ_primary/payload-tkm
+    S5      : payload  23964.1 kg   design 0.8052   control 0.7370 MJ_primary/payload-tkm
+    S5-13L  : payload  23647.6 kg   design 0.7841   control 0.7165 MJ_primary/payload-tkm
+    S6      : payload  24786.0 kg   design 0.7715   control 0.6669 MJ_primary/payload-tkm
+    S7      : payload  23814.6 kg   design 0.7860   control 0.7196 MJ_primary/payload-tkm
+    S4p     : payload  24161.2 kg   design 0.7123   control 0.7410 MJ_primary/payload-tkm
+  corner payload_minus20
+    S0R     : payload  16524.0 kg   design 1.0454   control 0.9446 MJ_primary/payload-tkm
+    S5      : payload  15976.0 kg   design 1.0030   control 0.9938 MJ_primary/payload-tkm
+    S5-13L  : payload  15765.1 kg   design 0.9817   control 0.9652 MJ_primary/payload-tkm
+    S6      : payload  16524.0 kg   design 0.9687   control 0.8755 MJ_primary/payload-tkm
+    S7      : payload  15876.4 kg   design 0.9833   control 0.9496 MJ_primary/payload-tkm
+    S4p     : payload  16107.5 kg   design 0.8717   control 0.9783 MJ_primary/payload-tkm
+  corner grade_heavy
+    S0R     : payload  20655.0 kg   design 0.9196   control 0.8921 MJ_primary/payload-tkm
+    S5      : payload  19970.0 kg   design 0.8863   control 0.8882 MJ_primary/payload-tkm
+    S5-13L  : payload  19706.3 kg   design 0.8544   control 0.8842 MJ_primary/payload-tkm
+    S6      : payload  20655.0 kg   design 0.8506   control 0.8273 MJ_primary/payload-tkm
+    S7      : payload  19845.5 kg   design 0.8644   control 0.8661 MJ_primary/payload-tkm
+    S4p     : payload  20134.4 kg   design 0.7741   control 0.8726 MJ_primary/payload-tkm
+  corner cold_minus10C
+    S0R     : payload  20655.0 kg   design 0.9505   control 0.8616 MJ_primary/payload-tkm
+    S5      : payload  19970.0 kg   design 0.9315   control 0.8927 MJ_primary/payload-tkm
+    S5-13L  : payload  19706.3 kg   design 0.9042   control 0.8678 MJ_primary/payload-tkm
+    S6      : payload  20655.0 kg   design 0.8791   control 0.7980 MJ_primary/payload-tkm
+    S7      : payload  19845.5 kg   design 0.9031   control 0.8683 MJ_primary/payload-tkm
+    S4p     : payload  20134.4 kg   design 0.8510   control 0.9105 MJ_primary/payload-tkm
+  corner hot_alt_2000m_45C
+    S0R     : payload  20655.0 kg   design 0.9103   control 0.7634 MJ_primary/payload-tkm
+    S5      : payload  19970.0 kg   design 0.8850   control 0.7826 MJ_primary/payload-tkm
+    S5-13L  : payload  19706.3 kg   design 0.8496   control 0.7499 MJ_primary/payload-tkm
+    S6      : payload  20655.0 kg   design 0.8412   control 0.7063 MJ_primary/payload-tkm
+    S7      : payload  19845.5 kg   design 0.8554   control 0.7500 MJ_primary/payload-tkm
+    S4p     : payload  20143.7 kg   design 0.7574   control 0.7629 MJ_primary/payload-tkm
+== BRACKETS (informative, nominal corner) ==
+    S5-P2   : payload  20198.1 kg   design 0.8612   control 0.8248 MJ_primary/payload-tkm
+    S5-GH   : payload  19804.4 kg   design 0.9139   control 0.8699 MJ_primary/payload-tkm
+    S0R-PCC : payload  20655.0 kg   design 0.9205   control 0.8135 MJ_primary/payload-tkm
+== ELECTRIC TURBOCOMPOUND GATE (design duty, R31) ==
+   design duty net min +1.67% vs gate >= 2.5% -> DROPPED
+== F7 CROSS-CHECK (ensemble) ==
+   S0R grade-zeroed: min 29.82 / median 33.08 / max 39.36 L/100 km vs band 29.9-33.1
+== PRIME MOVER AT THE PIN ==
+== ADVANCE / KILL (design duty) ==
+   S4p     : ADVANCE  design nominal min +11.95%, worst corner +7.40% @ cold_minus10C, control duty -6.81%
+   S5      : KILL     design nominal min +1.90%, worst corner +0.27% @ cold_minus10C, control duty -5.75%
+   S5-13L  : ADVANCE  design nominal min +5.36%, worst corner +3.93% @ cold_minus10C, control duty -1.38%
+   S6      : ADVANCE  design nominal min +7.50%, worst corner +7.29% @ payload_minus20, control duty +7.26%
+   S7      : ADVANCE  design nominal min +4.51%, worst corner +3.58% @ cold_minus10C, control duty -1.45%
+   S6 break-even peak BTE for +3.0% (ensemble-min): 0.4688 against a claimed 0.4920
+== HEAT LEDGER (rule 7, for WS6) ==
+== wrote /Users/valimenai/Documents/Project Volt/WS9_vehicle_one_wave2/results_ws9.json (4.07 MB, 5078 s) ==

@@ -1,0 +1,5 @@
+prime_mover,fuel,displacement_L,peak_power_kW,peak_BTE,eta_at_pin,eta_at_duty,engine_kg,aftertreatment_kg,fuel_kg,fuel_plus_tank_kg,TOTAL_CHARGED_kg,g_CO2e_per_bus_kWh
+diesel,diesel,7,225.146,0.429144,0.406399,0.406306,640,90,187.902,216.088,946.088,656.582
+petrol,petrol,9.07571,225.146,0.41,0.386425,0.384629,803.849,30,195.748,230.983,1064.83,683.005
+natural gas (CNG),natural gas (CNG, 250 bar),8.16814,225.146,0.405,0.381791,0.380097,723.464,35,171.935,2866.15,3624.62,570.881
+natural gas (LNG),natural gas (LNG),8.16814,225.146,0.405,0.381791,0.380097,723.464,35,171.935,447.031,1205.49,570.881

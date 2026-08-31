@@ -1,0 +1,40 @@
+{
+ "half_1_simulation": {
+  "job": "cold_minus10C/S5",
+  "seeds": [
+   8101,
+   8102,
+   8103,
+   8104,
+   8105,
+   8106,
+   8107,
+   8108
+  ],
+  "values_compared": 160,
+  "tolerance": "exact (0 ulp)",
+  "mismatches": [],
+  "n_mismatches": 0,
+  "matches_committed_run": true,
+  "payload_matches": true
+ },
+ "half_2_derived_blocks": {
+  "command": "run_ws9.py --from-checkpoint",
+  "returncode": 0,
+  "files": {
+   "mass_ledger.csv": true,
+   "candidate_runs.csv": true,
+   "duty_stats.csv": true,
+   "heat_ledger_ws6.csv": true,
+   "two_walls_sweep.csv": true,
+   "margins.csv": true,
+   "prime_mover_at_the_pin.csv": true,
+   "results_ws9.json": true
+  },
+  "results_json_byte_identical": true,
+  "all_csv_exports_byte_identical": true,
+  "note": "the checkpoint is a byte copy of the committed results_ws9.json, so this regenerates every derived block and every export from the committed trial and diffs the result byte for byte"
+ },
+ "not_checked": "the other five corners are not re-simulated; the jobs are independent and identically constructed, and a full re-run costs hours. Half 1 is evidence for the construction, not for each corner's arithmetic.",
+ "status": "PASS"
+}

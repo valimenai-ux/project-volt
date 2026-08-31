@@ -51,3 +51,10 @@ WS2/WS3/WS4 packets ready for lead ratification.
 - PM_PACKET_WS3.md — READY (2 rounds)
 - PM_PACKET_WS4.md — READY (2 rounds)
 Foreman stopping per mandate. The lead takes it from here.
+
+## NIGHT SHIFT — 2026-08-31 (NIGHT_SHIFT.md tasking)
+
+- 2026-08-31 00:44 PDT | -- | NIGHT-SHIFT-START | foreman resumed under NIGHT_SHIFT.md (lead-issued 2026-08-31); PM_COWORK.md authority rules bind verbatim
+- 2026-08-31 00:44 PDT | WS11 | FILES-CREATED | WS11_vehicle_zero_ruler/ASSIGNMENT.md and NIGHT_SHIFT.md written verbatim from lead-supplied blocks; commit ae425b6
+- 2026-08-31 00:44 PDT | WS9 | COMMIT-NOOP | NIGHT_SHIFT conditional commit of WS9_vehicle_one_wave2/ not required: folder already committed clean at dbc7985 ("WS9 wave two, round 1: first ADVANCE verdicts"); R40's two-commit discipline already satisfied for WS9
+- 2026-08-31 00:45 PDT | WS8 | A1-POLL-1 | NOT COMPLETE — FINDINGS_WS8_r3.md absent; `pgrep -f run_ws8` returns 7 live PIDs (62810,62812-62816,62842). Track A held; nothing in WS8_semi_architecture/ read or written by foreman

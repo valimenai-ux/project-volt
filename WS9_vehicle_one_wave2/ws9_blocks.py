@@ -27,6 +27,7 @@ import ws8_whr as WHR8
 from ws8_params import VEH, ADH, AUX, DL, ML, G, LHV_KJ_PER_G
 
 import ws9_candidates as CD9
+import ws9_concordance as CN9
 import ws9_corrections as CR9
 import ws9_duty as DY9
 import ws9_engines as E9
@@ -294,7 +295,10 @@ def sanity_checks(R, ns):
     # would make the claim false is CONSUMING one: a line that both names an
     # artifact and opens, loads or parses it. That is what is tested.
     reads = []
-    ART = ("results_ws8.json", "REPORT_WS8.md")
+    # The artifact list FOLLOWS THE PIN rather than being typed here, so a
+    # round that adds an artifact to the pin also adds it to this check.
+    ART = tuple(R["inherited_vintage"]
+                ["ws8_artifacts_hashed_but_not_read"].keys())
     OPENERS = ("open(", "json.load", ".read()", "genfromtxt", "loadtxt",
                "read_csv", "readlines")
     for fn in sorted(n for n in os.listdir(_HERE) if n.endswith(".py")):
@@ -309,10 +313,23 @@ def sanity_checks(R, ns):
         rule="a line that NAMES a WS8 artifact and also opens, loads or "
              "parses it; a bare mention in prose is not a read",
         passes=bool(not reads),
-        note=("WS9 imports WS8's MODELS and reads none of its NUMBERS. "
-              "run_ws9.py names both artifacts in one place only - the "
-              "vintage block, where they are hashed and not opened. So "
-              "WS8's r1/r2 artifact split cannot move a WS9 number."))
+        ws8_source_read_as_text=dict(
+            files=list(CN9.WS8_TEXT_FILES),
+            by="ws9_concordance, for the ESC-WS9-8 field-by-field "
+               "comparison",
+            why_this_is_not_a_contradiction=(
+                "these are WS8 SOURCE FILES - code, not numbers - and six "
+                "of the eight are already imported. `run_ws8.py` is read "
+                "as TEXT and never imported, because WS9 re-implements its "
+                "correction rule and must be able to compare against it "
+                "without executing WS8's entry point. No line above reads "
+                "a WS8 numeric artifact, which is what the claim is.")),
+        note=(f"WS9 imports WS8's MODELS and reads none of its NUMBERS. "
+              f"The {len(ART)} pinned artifacts are named in one place "
+              f"only - the vintage block, where they are hashed and not "
+              f"opened. So WS8's r1/r2/r3 artifact rounds cannot move a "
+              f"WS9 number, and the r3 re-run's measured zero movement is "
+              f"the demonstration of that rather than the assumption."))
 
     # --- 11b. R22(d): what the one spin rule actually costs -------------
     # WS8 r2 makes the same disclosure and WS9 inherits the obligation with
@@ -355,20 +372,55 @@ def sanity_checks(R, ns):
             [r["duration_s"] for r in
              blob[CD9.RULER]["per_duty"][d]["per_seed"]]))
             for d in DY9.DUTIES}
+        # the ruler's own per-seed durations, for the PAIRED statistic -
+        # the same convention every margin in this report uses (WS8
+        # finding F10: one margin statistic, per-seed paired, then
+        # enveloped). R38 does not name a statistic, so both are exported
+        # and the lead picks: `delta_pct` is the median-of-medians the
+        # round-1 table carried, `paired_pct` is the 8-seed envelope of
+        # the per-seed paired ratio (rule 4).
+        pair = {d: {x["seed"]: x["duration_s"]
+                    for x in blob[CD9.RULER]["per_duty"][d]["per_seed"]}
+                for d in DY9.DUTIES}
         for cname, r in blob.items():
             for duty in DY9.DUTIES:
-                med = float(np.median([x["duration_s"]
-                                       for x in r["per_duty"][duty]
-                                       ["per_seed"]]))
+                rows = r["per_duty"][duty]["per_seed"]
+                med = float(np.median([x["duration_s"] for x in rows]))
+                pd_ = sorted((x["duration_s"] - pair[duty][x["seed"]])
+                             / pair[duty][x["seed"]] * 100.0
+                             for x in rows if x["seed"] in pair[duty])
                 tt[f"{cname}/{corner}/{duty}"] = dict(
                     duration_s_median=med,
                     ruler_duration_s_median=base[duty],
-                    delta_pct=(med - base[duty]) / base[duty] * 100.0)
+                    delta_pct=(med - base[duty]) / base[duty] * 100.0,
+                    paired_pct=dict(
+                        n=len(pd_),
+                        min=(pd_[0] if pd_ else None),
+                        median=(float(np.median(pd_)) if pd_ else None),
+                        max=(pd_[-1] if pd_ else None)))
     worst = max(tt, key=lambda k: tt[k]["delta_pct"])
+    worst_p = max(tt, key=lambda k: (tt[k]["paired_pct"]["max"]
+                                     if tt[k]["paired_pct"]["max"]
+                                     is not None else -1e9))
     ck["trip_time_the_metric_cannot_see"] = dict(
         rule="max over the enumerated (candidate, corner, duty) case set "
              "of the trip-time penalty against the ruler on the same duty",
+        statistic_note=(
+            "TWO STATISTICS, both exported, because R38 names a bar and "
+            "not a statistic. `cases` / `value` are the median-of-medians "
+            "the round-1 table carried. `paired_cases_max` / "
+            "`value_paired_max` are the 8-seed envelope of the PER-SEED "
+            "PAIRED ratio - candidate against the ruler on the SAME seed, "
+            "then enveloped - which is the convention every margin in this "
+            "report uses and which rule 4 asks of a stochastic extremum. "
+            "The lead applies R38 on whichever it rules is meant; WS9 "
+            "applies neither."),
         cases={k: v["delta_pct"] for k, v in tt.items()},
+        paired_cases_max={k: v["paired_pct"]["max"] for k, v in tt.items()},
+        paired_cases_median={k: v["paired_pct"]["median"]
+                             for k, v in tt.items()},
+        value_paired_max=tt[worst_p]["paired_pct"]["max"],
+        governing_case_paired_max=worst_p,
         detail=tt, value=tt[worst]["delta_pct"], governing_case=worst,
         note=("the metric of record is energy per payload tonne-km and it "
               "is BLIND TO TIME. A candidate that completes the same "
@@ -533,8 +585,51 @@ def sanity_checks(R, ns):
         grid_dv_ms=tb["dv"], worst_relative_error=err,
         acceptable=bool(err < 5e-3))
 
+    # --- 19. ESC-WS9-8: no UNDECLARED difference from WS8 r3 -------------
+    cc = R.get("concordance_ws8_r3") or {}
+    ck["concordance_with_ws8_r3_ESC_WS9_8"] = dict(
+        pinned_round=(R["inherited_vintage"]["ws8_code_round_fingerprint"]
+                      ["code_round"]),
+        per_implementation={k: v["result"]
+                            for k, v in (cc.get("summary") or {}).items()},
+        any_undeclared_difference=cc.get("any_undeclared_difference"),
+        undeclared_fields=cc.get("undeclared_fields", []),
+        import_surface_symbols=(cc.get("import_surface_r2_to_r3") or {})
+        .get("n_symbols"),
+        import_surface_symbols_changed_r2_to_r3=(
+            (cc.get("import_surface_r2_to_r3") or {}).get("n_changed")),
+        every_imported_symbol_identical_r2_to_r3=(
+            (cc.get("import_surface_r2_to_r3") or {})
+            .get("every_imported_symbol_identical")),
+        passes=bool(cc and cc.get("any_undeclared_difference") is False),
+        note=("ESC-WS9-8 asked for a field-by-field comparison of WS9's "
+              "three own implementations against the closed round's. The "
+              "comparison is computed by `ws9_concordance` from WS8's "
+              "source on disk, and this is its gate: any field where the "
+              "two differ AND WS9 did not declare the difference in "
+              "advance fails the run. `import_surface_symbols_changed_"
+              "r2_to_r3` is the separate, stronger statement - how many of "
+              "the WS8 symbols WS9 actually imports moved between the "
+              "round it was pinned to and the round it is pinned to now."))
+
+    # --- 20. R34: the 10 Hz traces are on disk ---------------------------
+    tr34 = R.get("traces_r34") or {}
+    ck["traces_r34_exported"] = dict(
+        n_files=tr34.get("n_files", 0),
+        all_present=tr34.get("all_present", False),
+        all_unchanged_since_written=tr34.get("all_unchanged_since_written",
+                                             False),
+        selection_rule=tr34.get("selection_rule"),
+        passes=bool(tr34.get("all_present") and
+                    tr34.get("all_unchanged_since_written")),
+        note=("R34 names WS9 RE-RUNS explicitly and this is WS9's next "
+              "artifact after that ruling. The files are re-hashed off "
+              "disk rather than trusted from the writer."))
+
     ck["all_pass"] = bool(
-        ck["road_load_95kmh_flat"]["agree"]
+        ck["concordance_with_ws8_r3_ESC_WS9_8"]["passes"]
+        and ck["traces_r34_exported"]["passes"]
+        and ck["road_load_95kmh_flat"]["agree"]
         and ck["two_walls_closed_form"]["all_pass"]
         and ck["mass_closure"]["all_close"]
         and ck["S6_mass_neutral_with_ruler"]["neutral"]
@@ -879,9 +974,162 @@ def escalations(R):
               "temperature as a STATE rather than the corner's ambient - "
               "are consistent with r2's. If any differs, WS9 re-runs "
               "against r2: the pin makes that a one-flag operation."),
+        execution=_esc8_execution(R),
         materiality="medium for the record, low for the numbers"))
 
+    fp = v["ws8_code_round_fingerprint"]
+    out.append(dict(
+        id="ESC-WS9-10",
+        title=("the WS8 round WS9 is now pinned to was itself adjudicated "
+               "NOT CLEAN, and WS9 pinned it anyway because it was ordered "
+               "to"),
+        cites=("BASELINE_v5 R39/ESC-8 ('WS9 re-runs against WS8 r3 sources "
+               "when they land'); R35 (WS8 r2 numbers PROVISIONAL until r3 "
+               "closes); FINDINGS_WS8_r3.md; CLAUDE.md rule 10 (never "
+               "modify another workstream's artifacts or findings)"),
+        finding=(
+            "WS9 is now pinned to WS8 code round "
+            f"`{fp['code_round']}`. FINDINGS_WS8_r3.md returns, verbatim: "
+            "'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 "
+            "verdict moved and `all_unchanged = True`, and the adjudicator "
+            "places BOTH blocking findings in the round's account of "
+            "itself rather than its physics - B1, that the changelog's "
+            "central claim about what moved is wrong for S3 by 24% of S3's "
+            "movement; B2, that a new R14 export names a statistic it does "
+            "not carry. WS9's exposure to both is nil on the numbers, and "
+            "that is measured rather than argued: every one of the "
+            f"{(R.get('concordance_ws8_r3') or {}).get('import_surface_r2_to_r3', {}).get('n_symbols', 0)} "
+            "WS8 symbols on WS9's import surface is byte-identical between "
+            "r2 and r3 (`concordance_ws8_r3.import_surface_r2_to_r3`), and "
+            "WS9 reads no WS8 numeric artifact at all. But the RECORD now "
+            "says WS9 is pinned to an adjudicated-NOT-CLEAN round, and "
+            "that is a fact about the record the lead has to hold."),
+        why_not_self_resolved=(
+            "WS9 cannot dispose of another workstream's findings, cannot "
+            "judge whether r3's blocking findings are answerable inside r3, "
+            "and cannot decide whether WS8 goes to an r4. WS9 also declines "
+            "to soften the statement: the order was to pin r3, so r3 is "
+            "pinned, and the adjudication status travels with it."),
+        asks=("Note that this pin is to an adjudicated-NOT-CLEAN round. IF "
+              "THE LEAD BOUNCES WS8 TO AN r4, THIS PIN IS STALE AGAIN and "
+              "WS9 must re-run - the same one-flag operation, and this "
+              "round is the evidence that it is one. Rule on whether a WS9 "
+              "ratification may proceed on a WS8 round that has open "
+              "blocking findings, given that none of them reaches a WS9 "
+              "number."),
+        materiality=("high for the record, nil for the numbers - and the "
+                     "second half is measured, not asserted")))
+
+    sib = v.get("sibling_workstream_sources_reached_through_ws8", {})
+    out.append(dict(
+        id="ESC-WS9-11",
+        title=("WS9's round-1 pin did not cover the sibling-workstream "
+               "sources its numbers depend on, and one of them changed "
+               "under it"),
+        cites=("ESC-WS9-8 (the pin as a hot-swap signal); CLAUDE.md rule 1 "
+               "(byte-stable regeneration) and rule 10 (read other "
+               "workstreams read-only); FINDINGS_WS8_r3.md M6, the same "
+               "class of finding against WS8's own pin"),
+        finding=(
+            "WS9 imports WS8's models, and WS8's models in turn import "
+            "WS4's `derate_factor` from `ws4_models.py`, WS4's "
+            "`WS2TractionChain` and `load_ws2_exports` from "
+            "`ws4_chain.py`, and WS3's `CELLS` from `ws3_cells.py`; that "
+            "loader then reads three WS2 export files off disk. WS9's "
+            "round-1 pin covered WS8's seven files and none of those, so "
+            "a change in a sibling workstream could move a WS9 number with "
+            "nothing in the record able to say so. This is not "
+            "hypothetical: `ws4_chain.py` CHANGED between WS9's round-1 "
+            "run and this one, because WS4's KX rounds landed overnight in "
+            "the same tree. This round pins all six "
+            f"({len(sib)} rows in "
+            "`inherited_vintage.sibling_workstream_sources_reached_through"
+            "_ws8`), and `verify_ws9.py` reports drift on them exactly as "
+            "it does for WS8's own files."),
+        why_not_self_resolved=(
+            "Whether WS9 may be re-run against a WS4 tree that is itself "
+            "mid-adjudication is a sequencing decision for the lead, not "
+            "for WS9. WS9 also cannot rule on whether the WS4 change is "
+            "admissible - it can only measure whether it moved anything, "
+            "which it does."),
+        asks=("Note that this artifact was produced against a WS4 tree "
+              "that changed after WS9's round-1 run and that is itself "
+              "under adjudication. Rule on whether Vehicle One's pin "
+              "should be a whole-tree pin. If WS4's KX round is bounced "
+              "again, WS9's pin goes stale for the same reason ESC-WS9-10 "
+              "describes, and from a different direction."),
+        materiality=("high for the record; the measured effect on the "
+                     "numbers is in the re-run's own comparison")))
+
+    tr34 = R.get("traces_r34") or {}
+    out.append(dict(
+        id="ESC-WS9-12",
+        title="R34's 'per run' is read as a declared subset, and WS9 says "
+              "so rather than quietly deciding it",
+        cites=("BASELINE_v5 R34 ('Every pipeline exports a 10 Hz trace "
+               "file per run (feeds the WS10 exhibit/simulator). WS5, WS9 "
+               "re-runs, and all later work comply from their next "
+               "artifact.'); the WS4, WS5 and WS11 precedents under the "
+               "same ruling"),
+        finding=(
+            "WS9's trial is 6 corners x 6 candidates x 2 duties x 8 seeds "
+            "= 576 runs of roughly 74,000 samples each. A literal reading "
+            "of 'per run' is some gigabytes of CSV in a git repository. "
+            f"WS9 exports {tr34.get('n_files', 0)} traces on a declared "
+            "rule - every candidate including the ruler, on the DESIGN "
+            "duty, at the NOMINAL corner, on the first seed - which is the "
+            "full candidate set on the duty that gates, and which follows "
+            "what WS4, WS5 and WS11 each did under this same ruling. "
+            "`check_determinism_ws9.py` re-simulates one of these traces "
+            "from a fresh process and diffs it byte for byte, so the "
+            "unexported runs are reproducible rather than lost."),
+        why_not_self_resolved=(
+            "R34 is a program-hygiene ruling and its scope is the lead's "
+            "to set. WS9 has taken the reading the program's other three "
+            "R34-compliant workstreams took; if that reading is wrong it "
+            "is wrong for all four, which is a program decision."),
+        asks=("Confirm the declared-subset reading of R34, or order the "
+              "literal one and WS9 will export all 576 (and the repository "
+              "will need to say where they live). Note that the WS10 "
+              "exhibit is the consumer R34 names, so the right answer may "
+              "be whatever WS10 actually needs."),
+        materiality="low for the numbers, medium for WS10's inputs"))
+
     return out
+
+
+def _esc8_execution(R):
+    """What THIS round did about ESC-WS9-8, stated without disposing of
+    it. The escalation stays open: rule 8 says an escalation goes to the
+    lead and is never self-resolved, and executing the comparison an
+    escalation asks for is not the same as ruling on it."""
+    cc = R.get("concordance_ws8_r3") or {}
+    d = cc.get("import_surface_r2_to_r3") or {}
+    return dict(
+        status="EXECUTED, NOT RESOLVED",
+        round_compared="WS8 r3 (r2 is superseded - BASELINE_v5 R35, R39/"
+                       "ESC-8)",
+        what_was_done=(
+            "the field-by-field comparison this escalation asks for was "
+            "run against WS8 r3's source, computed rather than written "
+            "(`ws9_concordance`), and the whole trial was re-run against "
+            "r3 - all corners, all candidates, both duties, 8 seeds - "
+            "because an unexercised hot-swap is not evidence that the pin "
+            "makes it a one-flag operation."),
+        per_implementation={k: v["result"]
+                            for k, v in (cc.get("summary") or {}).items()},
+        any_undeclared_difference=cc.get("any_undeclared_difference"),
+        imported_symbols_compared=d.get("n_symbols"),
+        imported_symbols_changed_r2_to_r3=d.get("n_changed"),
+        still_for_the_lead=(
+            "whether WS9's three declared differences from WS8 - the spin "
+            "rule on the machine's shaft, the correction pricing on WS9's "
+            "own energy keys, and the pack temperature as a state - are "
+            "ACCEPTED is the lead's ruling, not WS9's. WS9 has measured "
+            "that each is a difference it declared in advance with an "
+            "authority cited; it has not ruled that any of them is right. "
+            "See also ESC-WS9-10 on the adjudication status of the round "
+            "now pinned."))
 
 
 # =====================================================================
@@ -905,6 +1153,90 @@ def interface_block(R):
     iface["vehicle"] = dict(CdA_m2=VEH.CdA, Crr=VEH.Crr, r_dyn_m=VEH.r_dyn,
                             provisional_per_E13_precedent=True)
     iface["inherited_vintage"] = R["inherited_vintage"]
+
+    # ---- R38's gate input, machine-readable ---------------------------
+    # BASELINE_v5 R38: "an ADVANCE additionally requires design-duty trip
+    # time <= +5% of S0R. The metric of record stays energy per payload
+    # tonne-km; trip time is a gate, not a term. Applied at ratification
+    # from the exported `trip_time_the_metric_cannot_see` table."
+    #
+    # R38 was pre-committed AFTER WS9 ran and it says the LEAD applies it.
+    # WS9 therefore exports the input and DOES NOT APPLY THE GATE: no
+    # verdict in this artifact reads this block, `verdict` is absent from
+    # it by construction, and the advance/kill block is unchanged. What
+    # this adds over round 1 is that the gate's input is now in the R14
+    # interface instead of only in `sanity`, which is where a consumer
+    # looks for a gate quantity - WS8's own r3 adjudication (M4) records
+    # what it costs when a gate quantity is missing from the export.
+    tt = R["sanity"]["trip_time_the_metric_cannot_see"]
+    design_rows = OrderedDict()
+    for cname in R["trial"]["nominal"]:
+        key = f"{cname}/nominal/{design}"
+        if key in tt["cases"]:
+            design_rows[cname] = tt["cases"][key]
+    over = OrderedDict(
+        (k, v) for k, v in sorted(tt["cases"].items())
+        if f"/{design}" in k and v > P9.R38_TRIP_TIME_GATE_PCT)
+    over_p = OrderedDict(
+        (k, v) for k, v in sorted(tt["paired_cases_max"].items())
+        if f"/{design}" in k and v is not None
+        and v > P9.R38_TRIP_TIME_GATE_PCT)
+    design_rows_p = OrderedDict()
+    for cname in R["trial"]["nominal"]:
+        key = f"{cname}/nominal/{design}"
+        if key in tt["paired_cases_max"]:
+            design_rows_p[cname] = tt["detail"][key]["paired_pct"]
+    iface["trip_time_R38_gate_input"] = dict(
+        ruling="BASELINE_v5 R38 (pre-committed before the table was read)",
+        gate="design-duty trip time <= +5% of S0R, in addition to the "
+             "pre-committed ADVANCE criteria",
+        gate_pct=P9.R38_TRIP_TIME_GATE_PCT,
+        applied_by="THE LEAD, at ratification. NOT APPLIED IN THIS "
+                   "ARTIFACT and not read by any verdict in it.",
+        statistic="median trip time over the 8-seed ensemble, against the "
+                  "ruler S0R on the SAME duty, corner and seed set",
+        design_duty=design,
+        design_duty_nominal_pct_vs_ruler=design_rows,
+        design_duty_nominal_paired_pct_vs_ruler=design_rows_p,
+        statistic_note=tt["statistic_note"],
+        rule="max/min over the enumerated (candidate, corner, duty) case "
+             "set; the full table is `all_cases_pct` and the detail with "
+             "absolute seconds is sanity."
+             "trip_time_the_metric_cannot_see.detail",
+        worst_case_pct=tt["value"], governing_case=tt["governing_case"],
+        design_duty_cases_above_gate=over,
+        n_design_duty_cases_above_gate=len(over),
+        design_duty_cases_above_gate_paired_max=over_p,
+        n_design_duty_cases_above_gate_paired_max=len(over_p),
+        worst_case_paired_max_pct=tt["value_paired_max"],
+        governing_case_paired_max=tt["governing_case_paired_max"],
+        all_cases_pct=tt["cases"],
+        all_cases_paired_max_pct=tt["paired_cases_max"],
+        note=("this block is the gate's INPUT. It is exported so the lead "
+              "can apply R38 in one read; WS9 neither applies it nor "
+              "adjusts a verdict for it (R37 keeps WS9's verdicts "
+              "PROVISIONAL and its adjudication is the lead-designated "
+              "Fable seat). `design_duty_cases_above_gate` is a "
+              "measurement, not a verdict."))
+
+    # ---- ESC-WS9-8's answer, machine-readable -------------------------
+    cc = R.get("concordance_ws8_r3") or {}
+    iface["concordance_with_ws8_r3"] = dict(
+        escalation="ESC-WS9-8", ruling="BASELINE_v5 R39/ESC-8",
+        pinned_round=(R["inherited_vintage"]["ws8_code_round_fingerprint"]
+                      ["code_round"]),
+        pinned_round_adjudication=(
+            R["inherited_vintage"]["ws8_code_round_fingerprint"]
+            .get("r3_adjudication")),
+        per_implementation=cc.get("summary"),
+        any_undeclared_difference=cc.get("any_undeclared_difference"),
+        import_surface_r2_to_r3={
+            k: v for k, v in (cc.get("import_surface_r2_to_r3") or {}).items()
+            if k != "rows"},
+        conclusion=cc.get("conclusion"))
+
+    # ---- R34 ----------------------------------------------------------
+    iface["traces_r34"] = R.get("traces_r34")
 
     cands = OrderedDict()
     for cname, blob in R["trial"]["nominal"].items():
@@ -1277,6 +1609,57 @@ def write_csvs(R, data_dir):
     _w(data_dir, "two_walls_sweep.csv",
        ["engine", "ratio_high", "ratio_low", "grade", "status", "gear",
         "v_hold_kmh", "F_available_kN", "F_required_kN"], rows)
+
+    # --- R38's gate input. The gate is the LEAD's to apply (R38); this
+    # file carries the measurement and the bar side by side and says so in
+    # the column name, and it contains no verdict column.
+    tt = R["sanity"]["trip_time_the_metric_cannot_see"]["detail"]
+    rows = []
+    for key in sorted(tt):
+        cname, corner, duty = key.split("/")
+        v = tt[key]
+        p = v["paired_pct"]
+        rows.append([cname, corner, duty, v["duration_s_median"],
+                     v["ruler_duration_s_median"], v["delta_pct"],
+                     p["min"], p["median"], p["max"],
+                     P9.R38_TRIP_TIME_GATE_PCT,
+                     duty == DY9.DESIGN_DUTY,
+                     "LEAD_APPLIES_R38"])
+    _w(data_dir, "trip_time_r38.csv",
+       ["candidate", "corner", "duty", "trip_time_s_median",
+        "ruler_trip_time_s_median", "pct_vs_ruler_median_of_medians",
+        "paired_pct_min", "paired_pct_median", "paired_pct_max",
+        "r38_gate_pct", "is_design_duty", "gate_applied_by"], rows)
+
+    # --- ESC-WS9-8's answer, one row per compared field.
+    cc = R.get("concordance_ws8_r3") or {}
+    rows = []
+    for impl, blob in (cc.get("implementations") or {}).items():
+        for fld in blob["fields"]:
+            rows.append([impl, fld["field"], fld["verdict"],
+                         (fld.get("declared_in") or "").replace(",", ";"),
+                         str(fld["ws8_r3"]).replace(",", ";")[:180],
+                         str(fld["ws9"]).replace(",", ";")[:180]])
+    _w(data_dir, "concordance_ws8_r3.csv",
+       ["implementation", "field", "verdict", "declared_in",
+        "ws8_r3", "ws9"], rows)
+
+    # --- the import surface, and what moved between r2 and r3.
+    d = cc.get("import_surface_r2_to_r3") or {}
+    surf = cc.get("import_surface") or {}
+    rows = []
+    for key in sorted(surf):
+        v = surf[key]
+        dr = (d.get("rows") or {}).get(key, {})
+        rows.append([key, v["module"], v["symbol"], v.get("resolved_in"),
+                     v["found"], v["source_bytes"],
+                     (v["source_sha256"] or "")[:16],
+                     dr.get("status", "NOT_COMPARED"),
+                     ";".join(v["used_by"])])
+    _w(data_dir, "ws8_import_surface.csv",
+       ["key", "ws8_module", "symbol", "resolved_in", "found",
+        "source_bytes", "source_sha256_16", "status_r2_to_r3", "used_by"],
+       rows)
 
 
 def rebuild_derived(R, ns):

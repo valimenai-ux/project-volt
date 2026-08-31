@@ -125,6 +125,36 @@ def main():
               "result byte for byte"))
     shutil.rmtree(tmp, ignore_errors=True)
 
+    # ---- half 3: the R34 traces, re-simulated and diffed byte for byte -
+    # R34's traces are SIMULATION output, so `--from-checkpoint` cannot
+    # regenerate them and half 2 only proves they were not touched. This
+    # half re-simulates the declared set from scratch into a temp
+    # directory and diffs the bytes, which is what rule 1 asks of a
+    # committed artifact.
+    t3 = tempfile.mkdtemp(prefix="ws9trace_")
+    t34 = R.get("traces_r34") or {}
+    sel = tuple((r["corner"], r["candidate"], r["duty"], r["seed"])
+                for r in t34.get("files", []))
+    files = {}
+    if sel:
+        run_ws9.export_traces_r34(t3, selection=sel, verbose=False)
+        for r in t34["files"]:
+            base = os.path.basename(r["file"])
+            a, b = os.path.join(DATA, base), os.path.join(t3, base)
+            files[base] = bool(os.path.exists(a) and os.path.exists(b)
+                               and filecmp.cmp(a, b, shallow=False))
+    rec["half_3_r34_traces"] = dict(
+        rule="BASELINE_v5 R34",
+        n_traces=len(files),
+        files=files,
+        all_byte_identical=bool(files and all(files.values())),
+        note=("each declared trace re-simulated FROM SCRATCH into a "
+              "temporary directory and compared byte for byte against the "
+              "committed file. `--from-checkpoint` cannot regenerate a "
+              "trace, so half 2 only shows the traces were not disturbed; "
+              "this is the regeneration evidence."))
+    shutil.rmtree(t3, ignore_errors=True)
+
     rec["not_checked"] = (
         "the other five corners are not re-simulated; the jobs are "
         "independent and identically constructed, and a full re-run costs "
@@ -135,7 +165,9 @@ def main():
                                 and rec["half_2_derived_blocks"]
                                 ["results_json_byte_identical"]
                                 and rec["half_2_derived_blocks"]
-                                ["all_csv_exports_byte_identical"])
+                                ["all_csv_exports_byte_identical"]
+                                and rec["half_3_r34_traces"]
+                                ["all_byte_identical"])
                      else "FAIL")
     with open(OUT, "w") as f:
         json.dump(rec, f, indent=1)
@@ -146,7 +178,10 @@ def main():
           f"half 2: results byte-identical "
           f"{rec['half_2_derived_blocks']['results_json_byte_identical']}, "
           f"csv byte-identical "
-          f"{rec['half_2_derived_blocks']['all_csv_exports_byte_identical']})")
+          f"{rec['half_2_derived_blocks']['all_csv_exports_byte_identical']}"
+          f"; half 3: {rec['half_3_r34_traces']['n_traces']} R34 traces "
+          f"byte-identical "
+          f"{rec['half_3_r34_traces']['all_byte_identical']})")
     sys.exit(0 if rec["status"] == "PASS" else 1)
 
 

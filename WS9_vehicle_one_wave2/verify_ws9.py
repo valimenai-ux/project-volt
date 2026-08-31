@@ -7,7 +7,7 @@ data file (a verify_*.py asserts this; nothing is transcribed by hand)").
 
     ../.venv/bin/python verify_ws9.py
 
-Four families of check, and the fourth is new to WS9:
+Five families of check; D and E are WS9's own:
 
   A  the report's JSON interface block is byte-identical to
      results_ws9.json['interface_ws9']
@@ -17,11 +17,21 @@ Four families of check, and the fourth is new to WS9:
   C  the results are internally consistent - margins recomputed from the
      per-seed data, mass closure, the advance/kill verdicts re-derived
      against the pre-committed criteria
-  D  THE VINTAGE PIN STILL HOLDS. WS9 inherits WS8's models read-only while
-     WS8's round 2 is in flight. Every inherited source file was
-     sha256-pinned at run time; this re-hashes them and reports DRIFT. That
-     is the hot-swap signal the assignment asks for: if WS8's code has moved
-     since this run, the record says so instead of pretending it has not.
+  D  THE VINTAGE PIN STILL HOLDS. WS9 inherits WS8's models read-only, and
+     WS8's rounds land under it. Every pinned file - WS8's seven models,
+     `run_ws8.py` as a hashed-but-not-imported rule source, and the six
+     SIBLING-WORKSTREAM sources WS9 reaches through WS8 - was sha256-pinned
+     at run time; this re-hashes them and reports DRIFT. That is the
+     hot-swap signal the assignment asks for.
+  E  THE r3 RE-PIN AND WHAT IT CLAIMS. The pin reports r3 and every r3
+     fingerprint feature is present; ESC-WS9-8's concordance has no
+     UNDECLARED difference and every declared one carries a declaration;
+     R38's gate input is exported, agrees with the sanity table, its paired
+     envelope recomputes from the per-seed data, and NO VERDICT HAS BEEN
+     ADJUSTED FOR IT - every verdict is still exactly what the
+     pre-committed criteria give; R34's traces are on disk and match their
+     recorded hashes; and the ordered changelog entry exists and is the
+     same lines as the report's section 17.
 
 Exit code 0 if every check passes and the pin holds; 1 otherwise. A pin
 DRIFT is reported as a WARNING and does not on its own fail the run - the
@@ -249,7 +259,9 @@ def main():
     iv = R["inherited_vintage"]
     drift = []
     for name, rec in iv["ws8_source_files"].items():
-        now = sha(os.path.join(WS8, name))
+        # a key may carry a trailing role marker, e.g.
+        # "run_ws8.py [rule source, NOT imported]"
+        now = sha(os.path.join(WS8, name.split(" [")[0]))
         if now != rec["sha256"]:
             drift.append(name)
     if drift:
@@ -259,6 +271,17 @@ def main():
               "against; re-run `run_ws9.py` to hot-swap onto the new "
               "vintage. This is information for the lead, not an error in "
               "this artifact.")
+    sib = iv.get("sibling_workstream_sources_reached_through_ws8", {})
+    sib_drift = [n for n, rec in sib.items()
+                 if sha(os.path.join(HERE, n)) != rec["sha256"]]
+    if sib_drift:
+        WARNS.append(
+            "D: SIBLING-WORKSTREAM SOURCE DRIFT since this run - "
+            + ", ".join(sib_drift)
+            + ". WS9 reaches these THROUGH WS8's models (ESC-WS9-11); a "
+              "change in one of them can move a WS9 number with nothing "
+              "in WS8's own pin able to say so, which is why they are "
+              "pinned here.")
     own_drift = [n for n, rec in iv["ws9_own_files"].items()
                  if rec["sha256"] is not None
                  and sha(os.path.join(HERE, n)) != rec["sha256"]]
@@ -266,7 +289,146 @@ def main():
         WARNS.append("D: WS9 OWN-SOURCE DRIFT since this run - "
                      + ", ".join(own_drift)
                      + ". Re-run `run_ws9.py` to re-pin.")
-    N_extra = len(iv["ws8_source_files"]) + len(iv["ws9_own_files"])
+    N_extra = (len(iv["ws8_source_files"]) + len(sib)
+               + len(iv["ws9_own_files"]))
+
+    # ---------------------------------------------------------- E
+    # ESC-WS9-8's concordance, R38's gate input, R34's traces. Everything
+    # here is a check on THIS artifact's own claims about the re-pin; none
+    # of it reads or applies a verdict.
+    fp = iv["ws8_code_round_fingerprint"]
+    check(fp["code_round"] == "r3",
+          f"E: the pin reports code round '{fp['code_round']}', not r3")
+    check(all(fp["r3_features"].values()),
+          "E: the r3 fingerprint has a feature missing while claiming r3")
+    check(all(fp["r2_features"].values()),
+          "E: the r2 fingerprint has a feature missing")
+    # the r3 features must be REAL r3 features, not r2 names relabelled:
+    # every one of them must be absent from the r2 import surface's home
+    # module fingerprint file, which records the r2 tree.
+    r2surf = os.path.join(HERE, "sources", "ws8_import_surface_r2.json")
+    check(os.path.exists(r2surf),
+          "E: sources/ws8_import_surface_r2.json is missing - the r2 -> r3 "
+          "delta cannot be checked")
+    infile(txt, f"WS8 code round detected: `{fp['code_round']}`",
+           "E/report_round")
+
+    cc = R["concordance_ws8_r3"]
+    check(cc["any_undeclared_difference"] is False,
+          f"E: the concordance reports UNDECLARED differences from WS8 r3: "
+          f"{cc['undeclared_fields']}")
+    for k, v in cc["summary"].items():
+        check(v["n_differs_undeclared"] == 0,
+              f"E: {k} has {v['n_differs_undeclared']} undeclared "
+              f"difference(s) from WS8 r3")
+        infile(txt, k, f"E/concordance_impl/{k}")
+    for k, blob in cc["implementations"].items():
+        for fld in blob["fields"]:
+            check(fld["verdict"] in ("CONSISTENT", "DIFFERS_BY_DESIGN",
+                                     "DIFFERS"),
+                  f"E: {k}.{fld['field']} has an unknown verdict")
+            if fld["verdict"] == "DIFFERS_BY_DESIGN":
+                check(bool(fld.get("declared_in")),
+                      f"E: {k}.{fld['field']} is a declared difference "
+                      f"with no declaration")
+            infile(txt, fld["field"], f"E/concordance_field/{fld['field']}")
+    d = cc["import_surface_r2_to_r3"]
+    check(d is not None, "E: no r2 -> r3 import-surface delta computed")
+    if d:
+        check(d["n_changed"] == len(d["changed"]),
+              "E: the import-surface delta miscounts its own changes")
+        infile(txt, str(d["n_symbols"]), "E/surface_n_symbols")
+    check(R["sanity"]["concordance_with_ws8_r3_ESC_WS9_8"]["passes"] is True,
+          "E: sanity.concordance_with_ws8_r3_ESC_WS9_8 does not pass")
+
+    # R38: exported, and NOT applied.
+    tg = R["interface_ws9"]["trip_time_R38_gate_input"]
+    tt = R["sanity"]["trip_time_the_metric_cannot_see"]
+    check(len(tt["cases"]) > 0,
+          "E: trip_time_the_metric_cannot_see is empty - R38 cannot be "
+          "applied by the lead from this artifact")
+    check(set(tg["all_cases_pct"]) == set(tt["cases"]),
+          "E: the R38 gate input and the sanity trip-time table disagree "
+          "on their case set")
+    check(all(abs(tg["all_cases_pct"][k] - tt["cases"][k]) < 1e-12
+              for k in tt["cases"]),
+          "E: the R38 gate input is not the sanity trip-time table")
+    for cname, v in AK.items():
+        key = f"{cname}/nominal/{design}"
+        check(key in tt["cases"],
+              f"E: no design-duty trip time exported for {cname}")
+    # the gate must NOT have been applied: every verdict must still be
+    # exactly what the pre-committed criteria give, with no trip-time term
+    for cname, v in AK.items():
+        pn = v["nominal_margin_pct_min"] >= R["advance_kill"]["criteria"][
+            "nominal_pct"]
+        wc = v["worst_corner_margin_pct_min"]
+        pc = wc is None or wc >= R["advance_kill"]["criteria"][
+            "every_corner_pct"]
+        check(v["verdict"] == ("ADVANCE" if (pn and pc) else "KILL"),
+              f"E: {cname}'s verdict is not the pre-committed criteria's "
+              f"answer - has a trip-time gate been applied here? R38 says "
+              f"the LEAD applies it.")
+    check("verdict" not in tg,
+          "E: the R38 gate-input block carries a verdict; it must carry "
+          "only the measurement and the bar")
+    infile(txt, "EXPORTED, NOT APPLIED", "E/r38_not_applied")
+    for cname, val in tg["design_duty_nominal_pct_vs_ruler"].items():
+        infile(txt, f"{val:+.3f}%", f"E/r38_design_pct/{cname}")
+    check(set(tg["all_cases_paired_max_pct"]) == set(tt["cases"]),
+          "E: the paired R38 statistic does not cover the same case set")
+    # the paired envelope must be an ENVELOPE of the per-seed paired
+    # ratios, recomputed here independently of ws9_blocks
+    for key, det in tt["detail"].items():
+        cname, corner, duty = key.split("/")
+        base = {x["seed"]: x["duration_s"] for x in
+                R["trial"][corner][ruler]["per_duty"][duty]["per_seed"]}
+        vals = sorted((x["duration_s"] - base[x["seed"]])
+                      / base[x["seed"]] * 100.0
+                      for x in R["trial"][corner][cname]["per_duty"][duty]
+                      ["per_seed"])
+        p = det["paired_pct"]
+        check(p["n"] == len(vals)
+              and abs(p["min"] - vals[0]) < 1e-9
+              and abs(p["max"] - vals[-1]) < 1e-9,
+              f"E: the R38 paired trip-time envelope for {key} does not "
+              f"recompute from the per-seed data")
+
+    # R34
+    t34 = R["traces_r34"]
+    check(t34["n_files"] >= 1, "E: no R34 10 Hz trace exported")
+    check(t34["all_present"] is True,
+          "E: an R34 trace named in the record is not on disk")
+    for r in t34["files"]:
+        p = os.path.join(HERE, r["file"])
+        check(os.path.exists(p), f"E: missing R34 trace {r['file']}")
+        if os.path.exists(p):
+            check(sha(p) == r["sha256"],
+                  f"E: R34 trace {r['file']} does not match its recorded "
+                  f"sha256")
+            with open(p) as fh:
+                head = [next(fh) for _ in range(6)]
+            check(head[-1].strip() == ",".join(t34["columns"]),
+                  f"E: R34 trace {r['file']} header is not the declared "
+                  f"column set")
+        infile(txt, r["file"], f"E/trace_listed/{r['file']}")
+    check(R["sanity"]["traces_r34_exported"]["passes"] is True,
+          "E: sanity.traces_r34_exported does not pass")
+
+    # the changelog the order asks for, emitted from the report's own lines
+    clog = os.path.join(HERE, "CHANGELOG_WS9_r3.md")
+    check(os.path.exists(clog), "E: CHANGELOG_WS9_r3.md was not written")
+    if os.path.exists(clog):
+        ctxt = open(clog).read()
+        check("r3-concordant re-run" in ctxt,
+              "E: the changelog does not carry the ordered entry "
+              "'r3-concordant re-run'")
+        check(ctxt.strip() and ctxt.strip() in txt,
+              "E: the changelog and the report's section 17 are not the "
+              "same lines")
+        check("NOT CLEAN" in ctxt,
+              "E: the changelog does not state that the pinned WS8 round "
+              "was adjudicated NOT CLEAN")
 
     # ---------------------------------------------------------- out
     print(f"verify_ws9: {N + N_extra} checks "

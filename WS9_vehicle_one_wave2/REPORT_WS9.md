@@ -1,6 +1,8 @@
 # REPORT WS9 - VEHICLE ONE, WAVE TWO: THE TWO WALLS AND THE COLD WALL
 
-Workstream WS9, Vehicle One. Executes `WS9_vehicle_one_wave2/ASSIGNMENT.md` against `BASELINE_v4.md`.
+Workstream WS9, Vehicle One. Executes `WS9_vehicle_one_wave2/ASSIGNMENT.md` (written against `BASELINE_v4.md`, whose R25-R33 and D13-D15 govern the trial unchanged) with `BASELINE_v5.md` as the baseline of record. Round: **r3-concordant re-run**.
+
+ASSIGNMENT.md was written against BASELINE_v4 and its rulings R25-R33 / D13-D15 govern the trial unchanged. BASELINE_v5 is the baseline of record for THIS artifact: it receives WS9 at R37-R39, it adds R34 (the 10 Hz trace export, which names WS9 RE-RUNS explicitly and which this artifact complies with) and R38 (the trip-time gate, pre-committed AFTER WS9 ran, applied BY THE LEAD at ratification from `sanity.trip_time_the_metric_cannot_see` - NOT applied here), and R39/ESC-8 is the order this re-run executes. WS9's verdicts are PROVISIONAL under R37 and this round reopens none of them.
 
 **Nothing here is ratified.** The lead ratifies (CLAUDE.md rule 11). This report states what the physics gave and what it cost; the execute-or-spare decision is the lead's.
 
@@ -9,12 +11,14 @@ Workstream WS9, Vehicle One. Executes `WS9_vehicle_one_wave2/ASSIGNMENT.md` agai
 | | |
 |---|---|
 | Entry point | `run_ws9.py` (fixed seeds 8101..8108, 8 seeds) |
-| Baseline of record | BASELINE_v4.md |
+| Round | **r3-concordant re-run** |
+| Baseline of record | BASELINE_v5.md (assignment written against BASELINE_v4.md) |
+| Verdicts | PROVISIONAL under BASELINE_v5 R37; this round reopens none of them |
 | Python / numpy | 3.14.3 / 2.5.2 |
 | Metric of record | **primary energy per PAYLOAD tonne-km** [MJ/(t.km)] |
 | Design duty (R29) | **GH-REG-165** - gates the verdicts |
 | Control duty (R29) | LH-520 - reported alongside, never gates |
-| Inherited WS8 code round | `r2` (SHA-pinned in section 12) |
+| Inherited WS8 code round | `r3` (SHA-pinned in section 12) |
 
 ---
 
@@ -614,7 +618,7 @@ Criteria, pre-committed. assignment, quoted verbatim: 'ADVANCE only if >=3% bett
 
 **The ambient/altitude derate is exercised (finding F11).** WS4's ruled factor at 2,000 m / +45 C is 0.9312. WS9's own ISA computation of the air density gives 0.8705 kg/m3 against the inherited 0.8710: agree **True**.
 
-**No WS8 numeric artifact is read.** WS9 imports WS8's MODELS and reads none of its NUMBERS. run_ws9.py names both artifacts in one place only - the vintage block, where they are hashed and not opened. So WS8's r1/r2 artifact split cannot move a WS9 number. Passes: **True**.
+**No WS8 numeric artifact is read.** WS9 imports WS8's MODELS and reads none of its NUMBERS. The 9 pinned artifacts are named in one place only - the vintage block, where they are hashed and not opened. So WS8's r1/r2/r3 artifact rounds cannot move a WS9 number, and the r3 re-run's measured zero movement is the demonstration of that rather than the assumption. Passes: **True**.
 
 **Envelope tabulation.** The integrator interpolates each candidate's envelope on a 0.05 m/s grid; worst relative error against direct evaluation 1.20e-03.
 
@@ -633,9 +637,30 @@ Criteria, pre-committed. assignment, quoted verbatim: 'ADVANCE only if >=3% bett
 
 ## 12. Inherited vintage, and the r2 concordance
 
-WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from. If WS8's round 2 regenerates its artifacts after this run, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8's round 2 changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for.
+WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from, which round the code is at, and - new in the r3-concordant re-run - the sibling-workstream sources WS9 reaches THROUGH WS8, which the round-1 pin did not cover. If WS8 regenerates its ARTIFACTS, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8 or a pinned sibling changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for, and ESC-WS9-8's 'one-flag' claim is what this re-run exercised.
 
-**WS8 code round detected: `r2`.** Fingerprints: cold_charge_acceptance_wired = `True`, derated_engine_present = `True`, one_spin_rule_present = `True`, errata_switches_present = `True`, hot_altitude_corner_present = `True`, heat_split_in_params = `True`.
+**WS8 code round detected: `r3`.** r1 -> r2 -> r3. The round reported is the highest one ALL of whose features are present; a partial r3 reports r2, which is the conservative direction.
+
+| feature | round it first exists in | present |
+|---|---|---|
+| `cold_charge_acceptance_wired` | r2 | `True` |
+| `derated_engine_present` | r2 | `True` |
+| `one_spin_rule_present` | r2 | `True` |
+| `errata_switches_present` | r2 | `True` |
+| `hot_altitude_corner_present` | r2 | `True` |
+| `heat_split_in_params` | r2 | `True` |
+| `overrun_rule_present` | r3 | `True` |
+| `overrun_thresholds_present` | r3 | `True` |
+| `braking_mask_present` | r3 | `True` |
+| `exclusivity_report_present` | r3 | `True` |
+| `run_closure_present` | r3 | `True` |
+| `resistor_overcommitment_present` | r3 | `True` |
+| `b1_errata_switch_present` | r3 | `True` |
+| `s0_launch_fuel_errata_switch_present` | r3 | `True` |
+
+Every r3 row above is a NEW top-level object round three introduced - the overrun rule and its two thresholds, the braking mask it is tested against, the per-run exclusivity assertion, the per-sample run closure, the resistor overcommitment booking, and the two r3 errata switches. None of them is an r2 name relabelled: the r2 tree has none of these names at top level in `ws8_candidates.py`, and r2's errata tuple has two entries where r3's has four.
+
+**NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`; the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 finding (ESC-WS9-10).**
 
 | inherited WS8 source | bytes | sha256 |
 |---|---|---|
@@ -644,15 +669,32 @@ WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted i
 | `ws8_cycles.py` | 14,784 | `bd5b444294b5034b...` |
 | `ws8_engine.py` | 18,002 | `61cc29d04c6a56a3...` |
 | `ws8_electric.py` | 18,592 | `74a932dbc7956989...` |
-| `ws8_candidates.py` | 106,340 | `e3a741f4097f13d8...` |
+| `ws8_candidates.py` | 141,034 | `66ec2ec831c735bc...` |
 | `ws8_whr.py` | 5,986 | `674f91016f31cd29...` |
+| `run_ws8.py [rule source, NOT imported]` | 229,070 | `3b667eb825164299...` |
+
+| sibling-workstream source reached THROUGH WS8 | bytes | sha256 |
+|---|---|---|
+| `../WS4_genset/ws4_models.py` | 16,676 | `33d9b498ec5bb59d...` |
+| `../WS4_genset/ws4_chain.py` | 18,763 | `5ee6b02df36903b5...` |
+| `../WS3_battery/ws3_cells.py` | 7,173 | `4253ec9d29df101a...` |
+| `../WS2_traction_motor/results.json` | 31,834 | `78266ce69cf6485e...` |
+| `../WS2_traction_motor/data/effmap_motor_inverter_662V.csv` | 330,413 | `e0f617eafbcead33...` |
+| `../WS2_traction_motor/data/cycle_loss_summary.csv` | 574 | `280f2549950abe39...` |
+
+Those six rows are new in the r3-concordant re-run. WS9's round-1 pin covered WS8's own files and stopped there, and one of these - `../WS4_genset/ws4_chain.py` - changed under WS9 between the two runs (ESC-WS9-11).
 
 | WS8 artifact - hashed, NOT read | bytes | sha256 |
 |---|---|---|
-| `results_ws8.json` | 3,036,230 | `c1b21b0b91b14d4d...` |
-| `REPORT_WS8.md` | 176,516 | `9cbfa9336075d6dd...` |
+| `results_ws8.json` | 4,000,786 | `de125deb97bdb9d8...` |
+| `REPORT_WS8.md` | 300,474 | `1677e7e680f4959b...` |
 | `R2_DIRECTIVE.md` | 2,179 | `e3040204e8f70f0f...` |
+| `R3_DIRECTIVE.md` | 1,925 | `a55b093776ab6a05...` |
+| `CHANGELOG_WS8_r2.md` | 7,922 | `db8ed7fdb2ff9557...` |
+| `CHANGELOG_WS8_r3.md` | 16,536 | `b67ee6ed57387f76...` |
 | `FINDINGS_WS8_r1.md` | 28,937 | `b3db6878367b39f1...` |
+| `FINDINGS_WS8_r2.md` | 21,242 | `08924729469d8d71...` |
+| `FINDINGS_WS8_r3.md` | 43,575 | `2f4b95b65b53c896...` |
 
 ### 12.1 What WS9 inherits from round 2, and what it implements itself
 
@@ -671,6 +713,152 @@ WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted i
 | F11 - `derate_factor` imported and never called | `derated_engine` added and a 2,000 m / +45 C corner added | INHERITED - WS9 calls r2's function and carries an independent ISA computation of the air density as a check |
 | F12 - a swept-grid property reported as a physics bound | the ratio ceiling solved in closed form | INHERITED as the practice: every ratio bound in section 3 is closed form, with the sweep kept as the illustration |
 | F13 - a literal climb figure at the top of its ensemble | formatted from the data | every duty statistic in section 1 is an 8-seed envelope formatted from `duties` |
+
+The table above is WS9's round-1 statement of its position, carried unchanged. It is PROSE, and prose inside a generated artifact is the class of defect WS8's own r2 and r3 adjudications found three times. Section 12.2 is the same claim MEASURED.
+
+### 12.2 ESC-WS9-8 executed: the field-by-field concordance against WS8 r3, computed
+
+ESC-WS9-8's ask, executed field by field against WS8 ROUND THREE (r2 is superseded; BASELINE_v5 R35 and R39/ESC-8). Every field is extracted from source by `ast` and every verdict is computed by comparing the two extractions - nothing here is a hand-written concordance claim, which is the defect WS8's own r2 and r3 adjudications found three times.
+
+**THE r3 PINNED HERE IS AN ADJUDICATED-NOT-CLEAN r3. FINDINGS_WS8_r3.md returns 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`, and the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins r3 because BASELINE_v5 R39/ESC-8 orders it. If the lead bounces WS8 to an r4, THIS PIN IS STALE AGAIN and WS9 must re-run. WS9 does not resolve, soften or dispose of any WS8 finding - see ESC-WS9-10.**
+
+| implementation | fields | consistent | declared differences | UNDECLARED | result |
+|---|---|---|---|---|---|
+| `spin_rule_on_the_machines_shaft` | 5 | 4 | 1 | 0 | **CONSISTENT WITH WS8 r3 (no undeclared difference)** |
+| `correction_pricing_on_ws9_own_energy_keys` | 9 | 6 | 3 | 0 | **CONSISTENT WITH WS8 r3 (no undeclared difference)** |
+| `pack_temperature_as_a_state` | 5 | 3 | 2 | 0 | **CONSISTENT WITH WS8 r3 (no undeclared difference)** |
+
+**Any undeclared difference: `False`.** ESC-WS9-8 asked whether WS9's three own implementations are consistent with the closed round's. All three are: every field is either CONSISTENT or a DIFFERENCE WS9 DECLARED BEFORE THE COMPARISON, each citing the ruling or finding that authorises it. There is no undeclared difference. The re-run against r3 was performed anyway, because ESC-WS9-8's premise is that the pin makes it a one-flag operation and an unexercised hot-swap is not evidence of one.
+
+#### `spin_rule_on_the_machines_shaft`
+
+ESC-WS9-8 calls this "the spin rule applied to the machine's shaft rather than the vehicle's force channels". WS8 r3 side: ws8_candidates.machine_idle_mask + its two constants. WS9 side: ws9_candidates.spin_drag_kw and the S5 inline site.
+
+| field | WS8 r3 | WS9 | verdict |
+|---|---|---|---|
+| `unloaded_force_threshold_N` | `1.0` | `1.0` | **CONSISTENT** |
+| `minimum_speed_threshold_m_per_s` | `0.5` | `0.5` | **CONSISTENT** |
+| `channels_tested_for_unloaded` | `F_regen; F_retard; F_trac` | `<argument> f_machine_cmd_N` | **DIFFERS_BY_DESIGN** |
+| `charged_only_when_geared_and_unloaded` | `True` | `True` | **CONSISTENT** |
+| `threshold_application_sites_in_ws9` | `one rule, one threshold, every candidate (r1 finding F5)` | `constant=SPIN_IDLE_FORCE_N; op=LtE; text=np.abs(f_machine_cmd_N) <= SPIN_IDLE_FORCE_N; constant=SPIN_IDLE_V_MIN_MS; op=Gt; text=v > SPIN_IDLE_V_MIN...` | **CONSISTENT** |
+
+- **`unloaded_force_threshold_N` - CONSISTENT.** WS9 binds WS8's own constant rather than restating it
+- **`minimum_speed_threshold_m_per_s` - CONSISTENT.** WS9 binds WS8's own constant rather than restating it
+- **`channels_tested_for_unloaded` - DIFFERS_BY_DESIGN.** Declared in: REPORT_WS9 section 12.1 row F5; ESC-WS9-8 names this as one of WS9's three own implementations. WS8 tests the VEHICLE's three commanded force channels; WS9 tests the MACHINE's own commanded force, because in S5 and S7 the machine is not the only traction path and a vehicle channel can be non-zero while the machine itself is unloaded. Same rule, evaluated on the shaft that pays the drag.
+- **`charged_only_when_geared_and_unloaded` - CONSISTENT.** the geared/disconnected test is the candidate's own in both (WS8's docstring says so explicitly); the UNLOADED test is the shared rule. Charging nothing while loaded is what stops the WS2 map's loss being counted twice - WS8 r1 finding F5.
+- **`threshold_application_sites_in_ws9` - CONSISTENT.** every WS9 site that applies the rule, extracted by ast: all of them compare against the same two inherited constants, which is what 'one rule, one threshold' means, measured.
+
+#### `correction_pricing_on_ws9_own_energy_keys`
+
+ESC-WS9-8 calls this "the correction pricing on WS9's own energy keys". WS8 r3 side: run_ws8.genset_eta_for_correction + run_ws8.apply_energy_corrections (read as text, not imported). WS9 side: ws9_corrections.correction_eta + ws9_corrections.apply_energy_corrections.
+
+| field | WS8 r3 | WS9 | verdict |
+|---|---|---|---|
+| `eta_sanity_bounds` | `0.1; 0.5` | `0.1; 0.5` | **CONSISTENT** |
+| `priority_ladder_basis_strings` | `FALLBACK: default; FALLBACK: genset best point (the path did not run on this cycle, so there is no duty average); FALLBACK: island BSFC x axle-A dr...` | `duty-averaged ENGINE fuel-to-wheel over this run (no genset ran; a bus-side shortfall priced on the wheel-side path, the generous direction); duty-...` | **CONSISTENT** |
+| `energy_keys_read_to_price_the_correction` | `e_genset_bus_kWh; e_mech_wheel_kWh; fuel_g; fuel_g_genset` | `e_engine_wheel_kWh; e_genset_bus_kWh; e_wheel_tractive_kWh; fuel_g` | **DIFFERS_BY_DESIGN** |
+| `corrected_fuel_formula` | `acc['fuel_g'] + g_soc + g_uns` | `a['fuel_g'] + g_soc + g_uns` | **CONSISTENT** |
+| `credit_free_variant_formula` | `acc['fuel_g'] + g_soc_def + g_uns` | `a['fuel_g'] + max(g_soc, 0.0) + g_uns` | **CONSISTENT** |
+| `kWh_to_grams_conversion` | `3600.0 / max(eta * LHV_KJ_PER_G, 1e-09)` | `3600.0 / max(eta * LHV_KJ_PER_G, 1e-09)` | **CONSISTENT** |
+| `correction_share_of_fuel` | `(g_soc + g_uns) / acc['fuel_g_corrected'] if acc['fuel_g_corrected'] > 0 else 0.0` | `(g_soc + g_uns) / a['fuel_g_corrected'] if a['fuel_g_corrected'] > 0 else 0.0` | **CONSISTENT** |
+| `charge_sustaining_is_symmetric` | `-d_soc * usable, unconditionally (F4 convention)` | `0.0 if is_plug_in else -d_soc * usable` | **DIFFERS_BY_DESIGN** |
+| `exported_field_names` | `charge_sustain_deficit_kWh; correction_eta_basis; correction_eta_clipped; correction_eta_fuel_to_bus; correction_eta_r1_basis; correction_eta_r1_pe...` | `charge_sustain_deficit_kWh; correction_eta; correction_eta_basis; correction_eta_clipped; correction_share_of_fuel; e_fuel_MJ_corrected; e_fuel_MJ_...` | **DIFFERS_BY_DESIGN** |
+
+- **`eta_sanity_bounds` - CONSISTENT.** carried verbatim; the clip flag is exported in both
+- **`priority_ladder_basis_strings` - CONSISTENT.** both ladders are: (1) a genset that ran -> duty-averaged fuel-to-BUS; (2) otherwise the mechanical path that ran -> duty-averaged fuel-to-WHEEL, declared as the generous direction; (3) a declared fallback. Same rule, same priority, same declared direction of error.
+- **`energy_keys_read_to_price_the_correction` - DIFFERS_BY_DESIGN.** Declared in: ws9_corrections module docstring; REPORT_WS9 section 12.1 rows F4/F6; ESC-WS9-8 names this as one of WS9's three own implementations. WS9's candidates have energy paths WS8 has no name for, so the KEYS differ while the RULE does not. The two substantive differences are: WS8 divides genset bus energy by `fuel_g_genset` where WS9 divides it by `fuel_g` (equal whenever the only fuel burned is the genset's - measured in `measured` below, not assumed); and WS8's mechanical basis is `e_mech_wheel_kWh` where WS9's is `e_engine_wheel_kWh` with `e_wheel_tractive_kWh` as a declared fallback, which is the stricter of the two because it refuses to credit the engine with regenerated wheel work.
+- **`corrected_fuel_formula` - CONSISTENT.** raw fuel + charge-sustaining correction + unserved correction
+- **`credit_free_variant_formula` - CONSISTENT.** F4's credit-free variant. WS8 assigns `g_soc_def = max(g_soc, 0.0)` first and WS9 inlines the same max; both suppress the credit and keep the deficit make-up.
+- **`kWh_to_grams_conversion` - CONSISTENT.** same guard against a degenerate denominator
+- **`charge_sustaining_is_symmetric` - DIFFERS_BY_DESIGN.** Declared in: ESC-3 as ruled in R27 (the electricity term); ws9_corrections.apply_energy_corrections docstring; REPORT_WS9 section 12.1 row F4. identical for every charge-sustaining candidate. WS9 adds ONE exemption WS8 has no candidate for: a PLUG-IN's spent state of charge is grid energy it was bought to use and is metered as grid energy, not charged back as fuel. Charging it back would be the accounting ESC-WS8-3 escalated and R27/ESC-3 ruled out.
+- **`exported_field_names` - DIFFERS_BY_DESIGN.** Declared in: REPORT_WS9 section 12.1 rows F4/F6. the common set is what a consumer reads. WS8-only names are its r1-pricing one-factor carriers (`*_r1_pricing`), which exist so WS8 can report the F6 one-factor row; WS9 never had r1 pricing, so it carries no such row. WS9-only names are the plug-in flag and the primary-energy terms ESC-3 adds.
+
+*Measured, not argued.* relative difference between WS8's denominator (`fuel_g_genset`) and WS9's (`fuel_g`) on every run that takes the genset branch of the ladder.
+
+Runs on that branch: 96; worst relative difference between the two denominators 0 at `S4p/nominal/GH-REG-165/seed8101`. zero means the two denominators are the same number on every run that uses them, so the key difference is a NAMING difference and not a pricing difference. Any candidate in WS9 that runs a genset burns fuel for nothing else.
+
+#### `pack_temperature_as_a_state`
+
+ESC-WS9-8 calls this "the pack temperature as a STATE rather than the corner's ambient". WS8 r3 side: ws8_candidates.Candidate (the ceiling call site) + ws8_electric.Pack8. WS9 side: ws9_thermal.PackThermal + ws9_storage.WS9Pack.
+
+| field | WS8 r3 | WS9 | verdict |
+|---|---|---|---|
+| `charge_ceiling_evaluation_point` | `self.ctx.t_amb_c` | `self.t; self.t_amb` | **DIFFERS_BY_DESIGN** |
+| `cold_factor_interpolation_breakpoints_C` | `-10.0; 15.0` | `-10.0; 15.0` | **CONSISTENT** |
+| `clamped_to_warm_value_above_target` | `True` | `True` | **CONSISTENT** |
+| `discharge_limit_derated_in_the_cold` | `False` | `False` | **CONSISTENT** |
+| `cold_factor_source` | `Pack8.COLD_CHG_FACTOR[chem] - WS3's own cells` | `the cited external cell's declared cold factor (ESC-1(c))` | **DIFFERS_BY_DESIGN** |
+
+- **`charge_ceiling_evaluation_point` - DIFFERS_BY_DESIGN.** Declared in: R30 (THE COLD WALL) as executed in ws9_thermal; REPORT_WS9 section 12.1 row F2; sanity.cold_wall_exercised_R30; ESC-WS9-8 names this as one of WS9's three own implementations. WS8 r3 evaluates the ceiling at the CORNER'S AMBIENT, one constant per run. WS9 evaluates it at the pack's MODELLED TEMPERATURE, integrated at 10 Hz from a cold-soaked start. Stricter than WS8 at the start of a cold trip - the pack is at ambient and has not been warmed - and kinder once coolant or ohmic heat has raised it. The direction is MEASURED per candidate in `measured` below.
+- **`cold_factor_interpolation_breakpoints_C` - CONSISTENT.** the same -10 C / +15 C interpolation shape WS3 gave WS8
+- **`clamped_to_warm_value_above_target` - CONSISTENT.** both clamp the factor at 1.0, so no corner at or above +15 C is touched by the cold model
+- **`discharge_limit_derated_in_the_cold` - CONSISTENT.** neither derates DISCHARGE: WS3 characterised charge acceptance only, and inventing a cold discharge derate would be writing WS3's trade study. WS8 states this in `Pack8.p_cont_chg_kw_at`; WS9 inherits it.
+- **`cold_factor_source` - DIFFERS_BY_DESIGN.** Declared in: ESC-1(c) as ruled in R39/ESC-1; ws9_storage.WS9Pack spec `basis` field, which states 'CITED EXTERNAL cell, explicitly NOT a WS3 cell'. this is the S4' bracket the assignment ordered, not a silent substitution: the pack that uses it is labelled as non-WS3 in its own spec block. WS9's packs built on WS3 cells use WS8's Pack8 unchanged.
+
+*Measured, not argued.* WS8 r3 would hold the charge ceiling at the corner-ambient value for the whole run; WS9 starts there and lets the modelled pack temperature move it.
+
+| candidate | pack start [C] | pack end [C] | WS8 r3 ceiling at corner ambient [kW] | warm ceiling [kW] | collapse factor | seconds below target |
+|---|---|---|---|---|---|---|
+| **S5** | -10.0 | 39.2 | 136.3 | 136.3 | 1.000 | 847 |
+| **S5-13L** | -10.0 | 35.2 | 176.1 | 176.1 | 1.000 | 887 |
+| **S7** | -10.0 | 58.6 | 72.4 | 72.4 | 1.000 | 584 |
+| **S4p** | -10.0 | 38.4 | 22.5 | 150.0 | 0.150 | 1948 |
+
+*Scope.* the difference between the two conventions can only bite where the cold derate bites at all. For the LTO buffers the -10 C factor clamps to 1.0, so WS8 r3's convention and WS9's give the SAME ceiling at every sample and the difference is exactly zero. It is a real difference for one candidate: S4', whose cited external cell (ESC-1(c)) collapses to 0.15 of its warm ceiling at ambient and recovers as the modelled pack warms. That is the whole measured extent of this declared difference.
+
+start temperature equals the corner ambient for every candidate, which is the cold-soaked start R30 asks for, so WS9 and WS8 r3 agree exactly at t=0 and WS9 is kinder afterwards by exactly as much as the modelled warming earns. `seconds_below_target` is how long that has not happened yet.
+
+#### The import surface, and what moved between r2 and r3
+
+ESC-WS9-8's premise is that "the pin makes that a one-flag operation". That premise is only worth something if it is checkable, so the surface is DERIVED rather than typed: every `ALIAS.name` and every `from ws8_* import name` in WS9's own source is collected by `ast`, resolved to the top-level definition in WS8's tree, and fingerprinted by the sha256 of that definition's SOURCE TEXT. The r2 fingerprints are in `sources/ws8_import_surface_r2.json`, generated once from the WS8 tree whose seven files reproduce this report's round-1 pin byte for byte.
+
+**62 WS8 symbols are on WS9's import surface. 0 of them changed between r2 and r3. `every_imported_symbol_identical = True`.**
+
+That is the whole answer to "can r3 move a WS9 number": no symbol WS9 imports moved, so no WS9 number can move through the import boundary. r3's changes to `ws8_candidates.py` are eight NEW top-level objects (the overrun rule and its thresholds, the braking mask, the exclusivity report, the run closure, the resistor overcommitment booking, and two errata switches) plus edits inside `S0`, `S2` and `S3` - candidates WS9 does not instantiate. The re-run below MEASURES that rather than resting on it.
+
+The full surface is exported at `data/ws8_import_surface.csv`, and the two names it cannot resolve inside WS8's own tree - `ws8_electric:CELLS` and `ws8_engine:derate_factor` - are how the gap in the round-1 pin was FOUND rather than assumed: they come from WS3 and WS4 through WS8, and they are pinned from this round onwards (ESC-WS9-11).
+
+---
+
+## 12.3 R38's gate input - EXPORTED, NOT APPLIED
+
+**Ruling:** BASELINE_v5 R38 (pre-committed before the table was read). **Gate:** design-duty trip time <= +5% of S0R, in addition to the pre-committed ADVANCE criteria. **Applied by:** THE LEAD, at ratification. NOT APPLIED IN THIS ARTIFACT and not read by any verdict in it.
+
+Statistic: median trip time over the 8-seed ensemble, against the ruler S0R on the SAME duty, corner and seed set. Design duty: `GH-REG-165`.
+
+**Two statistics, both exported.** TWO STATISTICS, both exported, because R38 names a bar and not a statistic. `cases` / `value` are the median-of-medians the round-1 table carried. `paired_cases_max` / `value_paired_max` are the 8-seed envelope of the PER-SEED PAIRED ratio - candidate against the ruler on the SAME seed, then enveloped - which is the convention every margin in this report uses and which rule 4 asks of a stochastic extremum. The lead applies R38 on whichever it rules is meant; WS9 applies neither.
+
+| candidate | median-of-medians vs S0R | 8-seed paired min | paired median | paired max | against the +5% bar |
+|---|---|---|---|---|---|
+| **S0R** | +0.000% | +0.000% | +0.000% | +0.000% | at or under on both |
+| **S5** | +12.757% | +7.696% | +11.060% | +14.680% | **OVER on both** |
+| **S5-13L** | +6.072% | +2.809% | +4.949% | +7.936% | **OVER on both** |
+| **S6** | +0.223% | +0.077% | +0.224% | +0.370% | at or under on both |
+| **S7** | -0.319% | -0.397% | -0.275% | -0.252% | at or under on both |
+| **S4p** | -2.517% | -2.981% | -2.649% | -1.892% | at or under on both |
+
+Worst case over the whole enumerated (candidate, corner, duty) set: **+15.735%** at `S5/payload_plus20/GH-REG-165` on the median-of-medians, and **+17.151%** at `S5/payload_plus20/GH-REG-165` on the paired envelope. Design-duty cases above the bar: **11** on the median-of-medians (`S5-13L/cold_minus10C/GH-REG-165` at +6.627%, `S5-13L/grade_heavy/GH-REG-165` at +6.072%, `S5-13L/hot_alt_2000m_45C/GH-REG-165` at +6.482%, `S5-13L/nominal/GH-REG-165` at +6.072%, `S5-13L/payload_plus20/GH-REG-165` at +7.704%, `S5/cold_minus10C/GH-REG-165` at +13.840%, `S5/grade_heavy/GH-REG-165` at +12.757%, `S5/hot_alt_2000m_45C/GH-REG-165` at +13.657%, `S5/nominal/GH-REG-165` at +12.757%, `S5/payload_minus20/GH-REG-165` at +7.691%, `S5/payload_plus20/GH-REG-165` at +15.735%), **12** on the paired envelope (`S5-13L/cold_minus10C/GH-REG-165` at +8.379%, `S5-13L/grade_heavy/GH-REG-165` at +7.936%, `S5-13L/hot_alt_2000m_45C/GH-REG-165` at +7.873%, `S5-13L/nominal/GH-REG-165` at +7.936%, `S5-13L/payload_minus20/GH-REG-165` at +5.742%, `S5-13L/payload_plus20/GH-REG-165` at +9.223%, `S5/cold_minus10C/GH-REG-165` at +15.708%, `S5/grade_heavy/GH-REG-165` at +14.680%, `S5/hot_alt_2000m_45C/GH-REG-165` at +15.100%, `S5/nominal/GH-REG-165` at +14.680%, `S5/payload_minus20/GH-REG-165` at +11.430%, `S5/payload_plus20/GH-REG-165` at +17.151%).
+
+this block is the gate's INPUT. It is exported so the lead can apply R38 in one read; WS9 neither applies it nor adjusts a verdict for it (R37 keeps WS9's verdicts PROVISIONAL and its adjudication is the lead-designated Fable seat). `design_duty_cases_above_gate` is a measurement, not a verdict. The full table is `data/trip_time_r38.csv` and `sanity.trip_time_the_metric_cannot_see`.
+
+---
+
+## 12.4 R34 - the 10 Hz trace export
+
+R34 (BASELINE_v5 program hygiene): every pipeline exports a 10 Hz trace file per run, feeding the WS10 exhibit and simulator; WS5, WS9 RE-RUNS and all later work comply from their next artifact. This is WS9's next artifact.
+
+**Selection rule.** every candidate INCLUDING THE RULER, on the DESIGN duty (the duty that gates), at the NOMINAL corner, on the FIRST seed of the ensemble - the full candidate set on the gating duty. A declared subset, following WS4's, WS5's and WS11's precedent under this same ruling; the literal reading is 576 files and some gigabytes. Escalated as ESC-WS9-12 rather than decided here.
+
+| file | candidate | duty | corner | seed | rows | distance [km] | duration [s] |
+|---|---|---|---|---|---|---|---|
+| `data/trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv` | S0R | GH-REG-165 | nominal | 8101 | 99,417 | 165.0 | 9,941.6 |
+| `data/trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv` | S5 | GH-REG-165 | nominal | 8101 | 110,535 | 165.0 | 11,053.4 |
+| `data/trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv` | S5-13L | GH-REG-165 | nominal | 8101 | 103,823 | 165.0 | 10,382.2 |
+| `data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv` | S6 | GH-REG-165 | nominal | 8101 | 99,655 | 165.0 | 9,965.4 |
+| `data/trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv` | S7 | GH-REG-165 | nominal | 8101 | 99,138 | 165.0 | 9,913.7 |
+| `data/trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv` | S4p | GH-REG-165 | nominal | 8101 | 96,453 | 165.0 | 9,645.2 |
+
+Columns: `t`, `v`, `s`, `grade`, `F_trac`, `F_regen`, `F_retard`, `F_friction` at 10 Hz. All present: `True`; all unchanged since written: `True`. Total on disk: 41.2 MB - a figure the lead may want when ruling on ESC-WS9-12, because the literal reading of R34 is this number times ninety-six.
 
 ---
 
@@ -778,13 +966,59 @@ Escalations cite the ruling they challenge and are never self-resolved (CLAUDE.m
 
 **Cites:** R26 (errata order: WS8_semi_architecture/R2_DIRECTIVE.md); assignment ('its r2 outputs when they land (build to hot-swap; state vintages)')
 
-**Finding.** When WS9 ran, WS8's round-2 corrections were present in its CODE - the cold-charge-acceptance wiring (F2), the ambient derate (F11), the one spin rule (F5), the duty-averaged correction pricing (F6), the errata switches - but results_ws8.json and REPORT_WS8.md were still at their round-1 vintage, so round 2 had not regenerated. WS9 therefore inherits r2's MODELS and none of its NUMBERS, which is sufficient because WS9 reads no WS8 numeric artifact at all and re-derives its own ruler (sanity.no_ws8_artifact_read). Every inherited source file is sha256-pinned in `inherited_vintage`, and the r2 fingerprint records the code round as 'r2'.
+**Finding.** When WS9 ran, WS8's round-2 corrections were present in its CODE - the cold-charge-acceptance wiring (F2), the ambient derate (F11), the one spin rule (F5), the duty-averaged correction pricing (F6), the errata switches - but results_ws8.json and REPORT_WS8.md were still at their round-1 vintage, so round 2 had not regenerated. WS9 therefore inherits r2's MODELS and none of its NUMBERS, which is sufficient because WS9 reads no WS8 numeric artifact at all and re-derives its own ruler (sanity.no_ws8_artifact_read). Every inherited source file is sha256-pinned in `inherited_vintage`, and the r2 fingerprint records the code round as 'r3'.
 
 **Why this is not self-resolved.** Whether WS9's implementations of the r2 rules match r2's own is r2's adjudication to settle, not WS9's.
 
 **Asks.** When r2 closes, compare the r2 concordance table in section 12 field by field and confirm that WS9's three own implementations - the spin rule applied to the machine's shaft rather than the vehicle's force channels, the correction pricing on WS9's own energy keys, and the pack temperature as a STATE rather than the corner's ambient - are consistent with r2's. If any differs, WS9 re-runs against r2: the pin makes that a one-flag operation.
 
+**What the r3-concordant re-run did about it: EXECUTED, NOT RESOLVED.** the field-by-field comparison this escalation asks for was run against WS8 r3's source, computed rather than written (`ws9_concordance`), and the whole trial was re-run against r3 - all corners, all candidates, both duties, 8 seeds - because an unexercised hot-swap is not evidence that the pin makes it a one-flag operation.
+
+- `spin_rule_on_the_machines_shaft` -> CONSISTENT WITH WS8 r3 (no undeclared difference)
+- `correction_pricing_on_ws9_own_energy_keys` -> CONSISTENT WITH WS8 r3 (no undeclared difference)
+- `pack_temperature_as_a_state` -> CONSISTENT WITH WS8 r3 (no undeclared difference)
+
+Undeclared differences: `False`. WS8 symbols on WS9's import surface compared: 62, of which 0 changed between r2 and r3.
+
+**Still for the lead.** whether WS9's three declared differences from WS8 - the spin rule on the machine's shaft, the correction pricing on WS9's own energy keys, and the pack temperature as a state - are ACCEPTED is the lead's ruling, not WS9's. WS9 has measured that each is a difference it declared in advance with an authority cited; it has not ruled that any of them is right. See also ESC-WS9-10 on the adjudication status of the round now pinned.
+
 **Materiality:** medium for the record, low for the numbers
+
+### ESC-WS9-10 - the WS8 round WS9 is now pinned to was itself adjudicated NOT CLEAN, and WS9 pinned it anyway because it was ordered to
+
+**Cites:** BASELINE_v5 R39/ESC-8 ('WS9 re-runs against WS8 r3 sources when they land'); R35 (WS8 r2 numbers PROVISIONAL until r3 closes); FINDINGS_WS8_r3.md; CLAUDE.md rule 10 (never modify another workstream's artifacts or findings)
+
+**Finding.** WS9 is now pinned to WS8 code round `r3`. FINDINGS_WS8_r3.md returns, verbatim: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`, and the adjudicator places BOTH blocking findings in the round's account of itself rather than its physics - B1, that the changelog's central claim about what moved is wrong for S3 by 24% of S3's movement; B2, that a new R14 export names a statistic it does not carry. WS9's exposure to both is nil on the numbers, and that is measured rather than argued: every one of the 62 WS8 symbols on WS9's import surface is byte-identical between r2 and r3 (`concordance_ws8_r3.import_surface_r2_to_r3`), and WS9 reads no WS8 numeric artifact at all. But the RECORD now says WS9 is pinned to an adjudicated-NOT-CLEAN round, and that is a fact about the record the lead has to hold.
+
+**Why this is not self-resolved.** WS9 cannot dispose of another workstream's findings, cannot judge whether r3's blocking findings are answerable inside r3, and cannot decide whether WS8 goes to an r4. WS9 also declines to soften the statement: the order was to pin r3, so r3 is pinned, and the adjudication status travels with it.
+
+**Asks.** Note that this pin is to an adjudicated-NOT-CLEAN round. IF THE LEAD BOUNCES WS8 TO AN r4, THIS PIN IS STALE AGAIN and WS9 must re-run - the same one-flag operation, and this round is the evidence that it is one. Rule on whether a WS9 ratification may proceed on a WS8 round that has open blocking findings, given that none of them reaches a WS9 number.
+
+**Materiality:** high for the record, nil for the numbers - and the second half is measured, not asserted
+
+### ESC-WS9-11 - WS9's round-1 pin did not cover the sibling-workstream sources its numbers depend on, and one of them changed under it
+
+**Cites:** ESC-WS9-8 (the pin as a hot-swap signal); CLAUDE.md rule 1 (byte-stable regeneration) and rule 10 (read other workstreams read-only); FINDINGS_WS8_r3.md M6, the same class of finding against WS8's own pin
+
+**Finding.** WS9 imports WS8's models, and WS8's models in turn import WS4's `derate_factor` from `ws4_models.py`, WS4's `WS2TractionChain` and `load_ws2_exports` from `ws4_chain.py`, and WS3's `CELLS` from `ws3_cells.py`; that loader then reads three WS2 export files off disk. WS9's round-1 pin covered WS8's seven files and none of those, so a change in a sibling workstream could move a WS9 number with nothing in the record able to say so. This is not hypothetical: `ws4_chain.py` CHANGED between WS9's round-1 run and this one, because WS4's KX rounds landed overnight in the same tree. This round pins all six (6 rows in `inherited_vintage.sibling_workstream_sources_reached_through_ws8`), and `verify_ws9.py` reports drift on them exactly as it does for WS8's own files.
+
+**Why this is not self-resolved.** Whether WS9 may be re-run against a WS4 tree that is itself mid-adjudication is a sequencing decision for the lead, not for WS9. WS9 also cannot rule on whether the WS4 change is admissible - it can only measure whether it moved anything, which it does.
+
+**Asks.** Note that this artifact was produced against a WS4 tree that changed after WS9's round-1 run and that is itself under adjudication. Rule on whether Vehicle One's pin should be a whole-tree pin. If WS4's KX round is bounced again, WS9's pin goes stale for the same reason ESC-WS9-10 describes, and from a different direction.
+
+**Materiality:** high for the record; the measured effect on the numbers is in the re-run's own comparison
+
+### ESC-WS9-12 - R34's 'per run' is read as a declared subset, and WS9 says so rather than quietly deciding it
+
+**Cites:** BASELINE_v5 R34 ('Every pipeline exports a 10 Hz trace file per run (feeds the WS10 exhibit/simulator). WS5, WS9 re-runs, and all later work comply from their next artifact.'); the WS4, WS5 and WS11 precedents under the same ruling
+
+**Finding.** WS9's trial is 6 corners x 6 candidates x 2 duties x 8 seeds = 576 runs of roughly 74,000 samples each. A literal reading of 'per run' is some gigabytes of CSV in a git repository. WS9 exports 6 traces on a declared rule - every candidate including the ruler, on the DESIGN duty, at the NOMINAL corner, on the first seed - which is the full candidate set on the duty that gates, and which follows what WS4, WS5 and WS11 each did under this same ruling. `check_determinism_ws9.py` re-simulates one of these traces from a fresh process and diffs it byte for byte, so the unexported runs are reproducible rather than lost.
+
+**Why this is not self-resolved.** R34 is a program-hygiene ruling and its scope is the lead's to set. WS9 has taken the reading the program's other three R34-compliant workstreams took; if that reading is wrong it is wrong for all four, which is a program decision.
+
+**Asks.** Confirm the declared-subset reading of R34, or order the literal one and WS9 will export all 576 (and the repository will need to say where they live). Note that the WS10 exhibit is the consumer R34 names, so the right answer may be whatever WS10 actually needs.
+
+**Materiality:** low for the numbers, medium for WS10's inputs
 
 ---
 
@@ -881,47 +1115,117 @@ Every worst-case field below is an explicit max/min over an enumerated case set 
     "bytes": 18592
    },
    "ws8_candidates.py": {
-    "sha256": "e3a741f4097f13d8d79545e9196e660ccec829646431d133f5ddaecce0a07c67",
-    "bytes": 106340
+    "sha256": "66ec2ec831c735bc2e001a4fdb309b48d5c984eef09d0ae1830ae048fc1910fa",
+    "bytes": 141034
    },
    "ws8_whr.py": {
     "sha256": "674f91016f31cd29cac55cfdd71a6470d079b5699532809def2682dea49fdf5f",
     "bytes": 5986
+   },
+   "run_ws8.py [rule source, NOT imported]": {
+    "sha256": "3b667eb825164299bb19c43dd0461e4424c079763476d29666de2d3be2174f5d",
+    "bytes": 229070
+   }
+  },
+  "sibling_workstream_sources_reached_through_ws8": {
+   "../WS4_genset/ws4_models.py": {
+    "sha256": "33d9b498ec5bb59da92330ad25da7ce3d8899c2e80b1e937b92394e0dc5f9716",
+    "bytes": 16676
+   },
+   "../WS4_genset/ws4_chain.py": {
+    "sha256": "5ee6b02df36903b5c5b5c4b97071bedf7aa8d5f0a5646ae0557806c966b2722a",
+    "bytes": 18763
+   },
+   "../WS3_battery/ws3_cells.py": {
+    "sha256": "4253ec9d29df101ac2107df469e1b62b710564bef429ddfda7e501a39b0c7f6e",
+    "bytes": 7173
+   },
+   "../WS2_traction_motor/results.json": {
+    "sha256": "78266ce69cf6485e471b4e04d2f01c7c085f44730203d5a7a90aeaada1a69beb",
+    "bytes": 31834
+   },
+   "../WS2_traction_motor/data/effmap_motor_inverter_662V.csv": {
+    "sha256": "e0f617eafbcead33a8bb5edc07b95174826bd300be3b43b78b1593aa93c8ba4c",
+    "bytes": 330413
+   },
+   "../WS2_traction_motor/data/cycle_loss_summary.csv": {
+    "sha256": "280f2549950abe3951ff4d9f5ffcd85a44d354f62591c3c6e5a14262ca15d7b9",
+    "bytes": 574
    }
   },
   "ws8_artifacts_hashed_but_not_read": {
    "results_ws8.json": {
-    "sha256": "c1b21b0b91b14d4d4c25dc25e501bc4afe1a332b31bcfd8b211e74a7e87d706f",
-    "bytes": 3036230
+    "sha256": "de125deb97bdb9d8b61c378206493adeaf22d294ca8005a8d9817c4ab03fa3d5",
+    "bytes": 4000786
    },
    "REPORT_WS8.md": {
-    "sha256": "9cbfa9336075d6dd50187585d0f1f8e46c6013ebabef7f8199e1b4f69af04106",
-    "bytes": 176516
+    "sha256": "1677e7e680f4959b4c03601377583b8469a71b666bd6bcb3f8ca035d2b45ad4e",
+    "bytes": 300474
    },
    "R2_DIRECTIVE.md": {
     "sha256": "e3040204e8f70f0fa431ad4cfdb2af3514a22b4df7dee49a296aece00f25da3d",
     "bytes": 2179
    },
+   "R3_DIRECTIVE.md": {
+    "sha256": "a55b093776ab6a053bc677524c13dd80a64659026f23e698ee1e5a829ead9a5b",
+    "bytes": 1925
+   },
+   "CHANGELOG_WS8_r2.md": {
+    "sha256": "db8ed7fdb2ff9557e35cd7dd1051aa013bdee013c588bc7642d6e19b971f3eab",
+    "bytes": 7922
+   },
+   "CHANGELOG_WS8_r3.md": {
+    "sha256": "b67ee6ed57387f76b7ae8d767f2a9dd4d2204de7cec1b9bc69c11ad5d7b4e296",
+    "bytes": 16536
+   },
    "FINDINGS_WS8_r1.md": {
     "sha256": "b3db6878367b39f13ce2d430181ffcccd6e8c078308caf5d534b40c8656c3ce8",
     "bytes": 28937
+   },
+   "FINDINGS_WS8_r2.md": {
+    "sha256": "08924729469d8d719bc94348c7636dce15d3031d7950aa8f36381c96e52dfd56",
+    "bytes": 21242
+   },
+   "FINDINGS_WS8_r3.md": {
+    "sha256": "2f4b95b65b53c89695aab4276c9651418a3b975c6820804fc87022bb6b58da69",
+    "bytes": 43575
    }
   },
   "ws8_code_round_fingerprint": {
+   "r2_features": {
+    "cold_charge_acceptance_wired": true,
+    "derated_engine_present": true,
+    "one_spin_rule_present": true,
+    "errata_switches_present": true,
+    "hot_altitude_corner_present": true,
+    "heat_split_in_params": true
+   },
+   "r3_features": {
+    "overrun_rule_present": true,
+    "overrun_thresholds_present": true,
+    "braking_mask_present": true,
+    "exclusivity_report_present": true,
+    "run_closure_present": true,
+    "resistor_overcommitment_present": true,
+    "b1_errata_switch_present": true,
+    "s0_launch_fuel_errata_switch_present": true
+   },
+   "code_round": "r3",
+   "ladder": "r1 -> r2 -> r3. The round reported is the highest one ALL of whose features are present; a partial r3 reports r2, which is the conservative direction.",
+   "r3_adjudication": "NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`; the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 finding (ESC-WS9-10).",
    "cold_charge_acceptance_wired": true,
    "derated_engine_present": true,
    "one_spin_rule_present": true,
    "errata_switches_present": true,
    "hot_altitude_corner_present": true,
-   "heat_split_in_params": true,
-   "code_round": "r2"
+   "heat_split_in_params": true
   },
   "ws9_own_files": {
    "run_ws9.py": {
-    "sha256": "23c7d3c4b344eb0f930e969aaeb781f8b96bf0a285c6953fcada5cc9addc4c2f"
+    "sha256": "eb06e2edd80d8cdd58846b7776ed83341314351d67dad0878d0b4b7b609e837e"
    },
    "ws9_params.py": {
-    "sha256": "927e8584f5c46dbc8b8350e6c6fc8b4ca3f0c99f0a4be6bf6980a395e6f76fb5"
+    "sha256": "fc5921beffc31650131fd9a255f1f512360e5653732befcfc390274edfe35a13"
    },
    "ws9_duty.py": {
     "sha256": "86e9d6c18c7b70cc63d66d775d3678220d7e843e04f6979b9b87403127dadc11"
@@ -951,19 +1255,414 @@ Every worst-case field below is an explicit max/min over an enumerated case set 
     "sha256": "532f152c1232fa3fadb8ec0943a7a85fec8f4ea01597ae21656056149990bd8e"
    },
    "ws9_blocks.py": {
-    "sha256": "15c2dc9e548accd0bfe5138364caae289e042cd256421ad667740e7f6bb5deb1"
+    "sha256": "36e6ae8ac2111949bc7b1672ccf326b7aa96ad2c7272d178f2de3d8481111c68"
+   },
+   "ws9_concordance.py": {
+    "sha256": "52ad33f2eeb93120700dc868ff487e3abcf4e719910e6f1424dfdaf60885c75d"
    },
    "make_report_ws9.py": {
-    "sha256": "326dff4180de3f928996293b70227f7f3d9005bf9508b66c2ddf4b83aced15a2"
+    "sha256": "c6e996b2f5a1993a09570514c9024ac627207e63d38a9a9ac5348c87df8afb21"
    },
    "verify_ws9.py": {
-    "sha256": "8c9789e294333def164dad804f31d71f326000baefae02ec788d0705b9e28727"
+    "sha256": "7af33e0753c03e34cd1d925aab4914524594508f0bb2188e5ea936d235d2c53d"
    },
    "check_determinism_ws9.py": {
-    "sha256": "ffcb0dc03e36efaff5c92ab38f2c4fc387abfbcf3b9f8b9683a3e2c12b1fe86a"
+    "sha256": "73f4e536fcd2c5a4777cffcd7b45317e37c9082f4dffb51fb9add755fe4dbaa1"
    }
   },
-  "statement": "WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from. If WS8's round 2 regenerates its artifacts after this run, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8's round 2 changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for."
+  "statement": "WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from, which round the code is at, and - new in the r3-concordant re-run - the sibling-workstream sources WS9 reaches THROUGH WS8, which the round-1 pin did not cover. If WS8 regenerates its ARTIFACTS, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8 or a pinned sibling changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for, and ESC-WS9-8's 'one-flag' claim is what this re-run exercised."
+ },
+ "trip_time_R38_gate_input": {
+  "ruling": "BASELINE_v5 R38 (pre-committed before the table was read)",
+  "gate": "design-duty trip time <= +5% of S0R, in addition to the pre-committed ADVANCE criteria",
+  "gate_pct": 5.0,
+  "applied_by": "THE LEAD, at ratification. NOT APPLIED IN THIS ARTIFACT and not read by any verdict in it.",
+  "statistic": "median trip time over the 8-seed ensemble, against the ruler S0R on the SAME duty, corner and seed set",
+  "design_duty": "GH-REG-165",
+  "design_duty_nominal_pct_vs_ruler": {
+   "S0R": 0.0,
+   "S5": 12.757197436592504,
+   "S5-13L": 6.0724934917477045,
+   "S6": 0.22299394949904194,
+   "S7": -0.31863584985753773,
+   "S4p": -2.5168651960658885
+  },
+  "design_duty_nominal_paired_pct_vs_ruler": {
+   "S0R": {
+    "n": 8,
+    "min": 0.0,
+    "median": 0.0,
+    "max": 0.0
+   },
+   "S5": {
+    "n": 8,
+    "min": 7.695664370538922,
+    "median": 11.06042079455387,
+    "max": 14.68015501535056
+   },
+   "S5-13L": {
+    "n": 8,
+    "min": 2.809379837712615,
+    "median": 4.9487500412857655,
+    "max": 7.935980673410856
+   },
+   "S6": {
+    "n": 8,
+    "min": 0.07653295509046194,
+    "median": 0.22404583150789878,
+    "max": 0.3701652926459166
+   },
+   "S7": {
+    "n": 8,
+    "min": -0.3965977150334655,
+    "median": -0.2754734020379579,
+    "max": -0.2524701555340759
+   },
+   "S4p": {
+    "n": 8,
+    "min": -2.9814114428261007,
+    "median": -2.649315339040456,
+    "max": -1.8919677087554005
+   }
+  },
+  "statistic_note": "TWO STATISTICS, both exported, because R38 names a bar and not a statistic. `cases` / `value` are the median-of-medians the round-1 table carried. `paired_cases_max` / `value_paired_max` are the 8-seed envelope of the PER-SEED PAIRED ratio - candidate against the ruler on the SAME seed, then enveloped - which is the convention every margin in this report uses and which rule 4 asks of a stochastic extremum. The lead applies R38 on whichever it rules is meant; WS9 applies neither.",
+  "rule": "max/min over the enumerated (candidate, corner, duty) case set; the full table is `all_cases_pct` and the detail with absolute seconds is sanity.trip_time_the_metric_cannot_see.detail",
+  "worst_case_pct": 15.734933187891986,
+  "governing_case": "S5/payload_plus20/GH-REG-165",
+  "design_duty_cases_above_gate": {
+   "S5-13L/cold_minus10C/GH-REG-165": 6.62749022290751,
+   "S5-13L/grade_heavy/GH-REG-165": 6.0724934917477045,
+   "S5-13L/hot_alt_2000m_45C/GH-REG-165": 6.4824741010959155,
+   "S5-13L/nominal/GH-REG-165": 6.0724934917477045,
+   "S5-13L/payload_plus20/GH-REG-165": 7.703845104990455,
+   "S5/cold_minus10C/GH-REG-165": 13.83956378340296,
+   "S5/grade_heavy/GH-REG-165": 12.757197436592504,
+   "S5/hot_alt_2000m_45C/GH-REG-165": 13.657448570543067,
+   "S5/nominal/GH-REG-165": 12.757197436592504,
+   "S5/payload_minus20/GH-REG-165": 7.691353109374918,
+   "S5/payload_plus20/GH-REG-165": 15.734933187891986
+  },
+  "n_design_duty_cases_above_gate": 11,
+  "design_duty_cases_above_gate_paired_max": {
+   "S5-13L/cold_minus10C/GH-REG-165": 8.378625463386209,
+   "S5-13L/grade_heavy/GH-REG-165": 7.935980673410856,
+   "S5-13L/hot_alt_2000m_45C/GH-REG-165": 7.87285770027313,
+   "S5-13L/nominal/GH-REG-165": 7.935980673410856,
+   "S5-13L/payload_minus20/GH-REG-165": 5.741519598358394,
+   "S5-13L/payload_plus20/GH-REG-165": 9.222896584553135,
+   "S5/cold_minus10C/GH-REG-165": 15.708415796823338,
+   "S5/grade_heavy/GH-REG-165": 14.68015501535056,
+   "S5/hot_alt_2000m_45C/GH-REG-165": 15.100399195605856,
+   "S5/nominal/GH-REG-165": 14.68015501535056,
+   "S5/payload_minus20/GH-REG-165": 11.430084422131017,
+   "S5/payload_plus20/GH-REG-165": 17.150620810028162
+  },
+  "n_design_duty_cases_above_gate_paired_max": 12,
+  "worst_case_paired_max_pct": 17.150620810028162,
+  "governing_case_paired_max": "S5/payload_plus20/GH-REG-165",
+  "all_cases_pct": {
+   "S0R/nominal/GH-REG-165": 0.0,
+   "S0R/nominal/LH-520": 0.0,
+   "S5/nominal/GH-REG-165": 12.757197436592504,
+   "S5/nominal/LH-520": 3.361283133300451,
+   "S5-13L/nominal/GH-REG-165": 6.0724934917477045,
+   "S5-13L/nominal/LH-520": -0.11508741162931224,
+   "S6/nominal/GH-REG-165": 0.22299394949904194,
+   "S6/nominal/LH-520": 0.43728649458358454,
+   "S7/nominal/GH-REG-165": -0.31863584985753773,
+   "S7/nominal/LH-520": -0.2872618329953848,
+   "S4p/nominal/GH-REG-165": -2.5168651960658885,
+   "S4p/nominal/LH-520": -2.600199119489955,
+   "S0R/payload_plus20/GH-REG-165": 0.0,
+   "S0R/payload_plus20/LH-520": 0.0,
+   "S5/payload_plus20/GH-REG-165": 15.734933187891986,
+   "S5/payload_plus20/LH-520": 4.389289313436624,
+   "S5-13L/payload_plus20/GH-REG-165": 7.703845104990455,
+   "S5-13L/payload_plus20/LH-520": 0.20403240169809067,
+   "S6/payload_plus20/GH-REG-165": 0.31259784464037516,
+   "S6/payload_plus20/LH-520": 0.3983704461884366,
+   "S7/payload_plus20/GH-REG-165": -0.4065286994111646,
+   "S7/payload_plus20/LH-520": -0.4747980530123328,
+   "S4p/payload_plus20/GH-REG-165": -3.1042632487955673,
+   "S4p/payload_plus20/LH-520": -3.2890924954402574,
+   "S0R/payload_minus20/GH-REG-165": 0.0,
+   "S0R/payload_minus20/LH-520": 0.0,
+   "S5/payload_minus20/GH-REG-165": 7.691353109374918,
+   "S5/payload_minus20/LH-520": 2.5176552042465006,
+   "S5-13L/payload_minus20/GH-REG-165": 2.48346682247581,
+   "S5-13L/payload_minus20/LH-520": -0.2665589660743134,
+   "S6/payload_minus20/GH-REG-165": 0.18149008009347795,
+   "S6/payload_minus20/LH-520": 0.39095315024232963,
+   "S7/payload_minus20/GH-REG-165": -0.2435379707237294,
+   "S7/payload_minus20/LH-520": -0.20124624971150956,
+   "S4p/payload_minus20/GH-REG-165": -2.0734336785609027,
+   "S4p/payload_minus20/LH-520": -2.0200784675744354,
+   "S0R/grade_heavy/GH-REG-165": 0.0,
+   "S0R/grade_heavy/LH-520": 0.0,
+   "S5/grade_heavy/GH-REG-165": 12.757197436592504,
+   "S5/grade_heavy/LH-520": 5.449857335332364,
+   "S5-13L/grade_heavy/GH-REG-165": 6.0724934917477045,
+   "S5-13L/grade_heavy/LH-520": -0.08781082910851432,
+   "S6/grade_heavy/GH-REG-165": 0.22299394949904194,
+   "S6/grade_heavy/LH-520": 0.5072024989219154,
+   "S7/grade_heavy/GH-REG-165": -0.31863584985753773,
+   "S7/grade_heavy/LH-520": -0.4343619638344378,
+   "S4p/grade_heavy/GH-REG-165": -2.5168651960658885,
+   "S4p/grade_heavy/LH-520": -4.240168203542367,
+   "S0R/cold_minus10C/GH-REG-165": 0.0,
+   "S0R/cold_minus10C/LH-520": 0.0,
+   "S5/cold_minus10C/GH-REG-165": 13.83956378340296,
+   "S5/cold_minus10C/LH-520": 4.031942218012234,
+   "S5-13L/cold_minus10C/GH-REG-165": 6.62749022290751,
+   "S5-13L/cold_minus10C/LH-520": 0.1507395802972828,
+   "S6/cold_minus10C/GH-REG-165": 0.2848886483616499,
+   "S6/cold_minus10C/LH-520": 0.38755100553773747,
+   "S7/cold_minus10C/GH-REG-165": -0.2139217628378474,
+   "S7/cold_minus10C/LH-520": -0.21700123870592325,
+   "S4p/cold_minus10C/GH-REG-165": -2.5823777480522176,
+   "S4p/cold_minus10C/LH-520": -2.7577145875837914,
+   "S0R/hot_alt_2000m_45C/GH-REG-165": 0.0,
+   "S0R/hot_alt_2000m_45C/LH-520": 0.0,
+   "S5/hot_alt_2000m_45C/GH-REG-165": 13.657448570543067,
+   "S5/hot_alt_2000m_45C/LH-520": 4.11330502525237,
+   "S5-13L/hot_alt_2000m_45C/GH-REG-165": 6.4824741010959155,
+   "S5-13L/hot_alt_2000m_45C/LH-520": 0.05339004037197472,
+   "S6/hot_alt_2000m_45C/GH-REG-165": 0.2550514929657463,
+   "S6/hot_alt_2000m_45C/LH-520": 0.35419179974420206,
+   "S7/hot_alt_2000m_45C/GH-REG-165": -0.35310913866773697,
+   "S7/hot_alt_2000m_45C/LH-520": -0.24513980238867994,
+   "S4p/hot_alt_2000m_45C/GH-REG-165": -3.029117531995774,
+   "S4p/hot_alt_2000m_45C/LH-520": -3.0189227934577625
+  },
+  "all_cases_paired_max_pct": {
+   "S0R/nominal/GH-REG-165": 0.0,
+   "S0R/nominal/LH-520": 0.0,
+   "S5/nominal/GH-REG-165": 14.68015501535056,
+   "S5/nominal/LH-520": 4.126452393179207,
+   "S5-13L/nominal/GH-REG-165": 7.935980673410856,
+   "S5-13L/nominal/LH-520": -0.06330917033332278,
+   "S6/nominal/GH-REG-165": 0.3701652926459166,
+   "S6/nominal/LH-520": 0.4620828292567495,
+   "S7/nominal/GH-REG-165": -0.2524701555340759,
+   "S7/nominal/LH-520": -0.2012568645325544,
+   "S4p/nominal/GH-REG-165": -1.8919677087554005,
+   "S4p/nominal/LH-520": -2.121344237315756,
+   "S0R/payload_plus20/GH-REG-165": 0.0,
+   "S0R/payload_plus20/LH-520": 0.0,
+   "S5/payload_plus20/GH-REG-165": 17.150620810028162,
+   "S5/payload_plus20/LH-520": 5.5828450436026476,
+   "S5-13L/payload_plus20/GH-REG-165": 9.222896584553135,
+   "S5-13L/payload_plus20/LH-520": 0.6093137339574827,
+   "S6/payload_plus20/GH-REG-165": 0.3701306581448823,
+   "S6/payload_plus20/LH-520": 0.4586056122515736,
+   "S7/payload_plus20/GH-REG-165": -0.3224489795918405,
+   "S7/payload_plus20/LH-520": -0.3330557868443027,
+   "S4p/payload_plus20/GH-REG-165": -2.690246956664549,
+   "S4p/payload_plus20/LH-520": -2.683627518080492,
+   "S0R/payload_minus20/GH-REG-165": 0.0,
+   "S0R/payload_minus20/LH-520": 0.0,
+   "S5/payload_minus20/GH-REG-165": 11.430084422131017,
+   "S5/payload_minus20/LH-520": 3.3274298804550684,
+   "S5-13L/payload_minus20/GH-REG-165": 5.741519598358394,
+   "S5-13L/payload_minus20/LH-520": -0.11567829545973789,
+   "S6/payload_minus20/GH-REG-165": 0.3302482977942638,
+   "S6/payload_minus20/LH-520": 0.45615020275898854,
+   "S7/payload_minus20/GH-REG-165": -0.11659463262637998,
+   "S7/payload_minus20/LH-520": -0.13696277343009633,
+   "S4p/payload_minus20/GH-REG-165": -1.4794388407742,
+   "S4p/payload_minus20/LH-520": -1.6210931478977693,
+   "S0R/grade_heavy/GH-REG-165": 0.0,
+   "S0R/grade_heavy/LH-520": 0.0,
+   "S5/grade_heavy/GH-REG-165": 14.68015501535056,
+   "S5/grade_heavy/LH-520": 6.8400339238238725,
+   "S5-13L/grade_heavy/GH-REG-165": 7.935980673410856,
+   "S5-13L/grade_heavy/LH-520": 0.3887436356130515,
+   "S6/grade_heavy/GH-REG-165": 0.3701652926459166,
+   "S6/grade_heavy/LH-520": 0.5833396417136826,
+   "S7/grade_heavy/GH-REG-165": -0.2524701555340759,
+   "S7/grade_heavy/LH-520": -0.3932547691906962,
+   "S4p/grade_heavy/GH-REG-165": -1.8919677087554005,
+   "S4p/grade_heavy/LH-520": -3.281463636955531,
+   "S0R/cold_minus10C/GH-REG-165": 0.0,
+   "S0R/cold_minus10C/LH-520": 0.0,
+   "S5/cold_minus10C/GH-REG-165": 15.708415796823338,
+   "S5/cold_minus10C/LH-520": 5.050534039327113,
+   "S5-13L/cold_minus10C/GH-REG-165": 8.378625463386209,
+   "S5-13L/cold_minus10C/LH-520": 0.1876123606510216,
+   "S6/cold_minus10C/GH-REG-165": 0.39680510528629565,
+   "S6/cold_minus10C/LH-520": 0.45248652345899726,
+   "S7/cold_minus10C/GH-REG-165": -0.18555334658713266,
+   "S7/cold_minus10C/LH-520": -0.1466945836180923,
+   "S4p/cold_minus10C/GH-REG-165": -1.9678831511027273,
+   "S4p/cold_minus10C/LH-520": -2.217855384398959,
+   "S0R/hot_alt_2000m_45C/GH-REG-165": 0.0,
+   "S0R/hot_alt_2000m_45C/LH-520": 0.0,
+   "S5/hot_alt_2000m_45C/GH-REG-165": 15.100399195605856,
+   "S5/hot_alt_2000m_45C/LH-520": 4.925515660809789,
+   "S5-13L/hot_alt_2000m_45C/GH-REG-165": 7.87285770027313,
+   "S5-13L/hot_alt_2000m_45C/LH-520": 0.06478190851152492,
+   "S6/hot_alt_2000m_45C/GH-REG-165": 0.5302598273153846,
+   "S6/hot_alt_2000m_45C/LH-520": 0.37433155080214603,
+   "S7/hot_alt_2000m_45C/GH-REG-165": -0.20307900593851497,
+   "S7/hot_alt_2000m_45C/LH-520": -0.19069604054799688,
+   "S4p/hot_alt_2000m_45C/GH-REG-165": -2.326566892674057,
+   "S4p/hot_alt_2000m_45C/LH-520": -2.4815189851413075
+  },
+  "note": "this block is the gate's INPUT. It is exported so the lead can apply R38 in one read; WS9 neither applies it nor adjusts a verdict for it (R37 keeps WS9's verdicts PROVISIONAL and its adjudication is the lead-designated Fable seat). `design_duty_cases_above_gate` is a measurement, not a verdict."
+ },
+ "concordance_with_ws8_r3": {
+  "escalation": "ESC-WS9-8",
+  "ruling": "BASELINE_v5 R39/ESC-8",
+  "pinned_round": "r3",
+  "pinned_round_adjudication": "NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`; the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 finding (ESC-WS9-10).",
+  "per_implementation": {
+   "spin_rule_on_the_machines_shaft": {
+    "n_fields": 5,
+    "n_consistent": 4,
+    "n_differs_by_design": 1,
+    "n_differs_undeclared": 0,
+    "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+   },
+   "correction_pricing_on_ws9_own_energy_keys": {
+    "n_fields": 9,
+    "n_consistent": 6,
+    "n_differs_by_design": 3,
+    "n_differs_undeclared": 0,
+    "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+   },
+   "pack_temperature_as_a_state": {
+    "n_fields": 5,
+    "n_consistent": 3,
+    "n_differs_by_design": 2,
+    "n_differs_undeclared": 0,
+    "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+   }
+  },
+  "any_undeclared_difference": false,
+  "import_surface_r2_to_r3": {
+   "n_symbols": 62,
+   "changed": [],
+   "n_changed": 0,
+   "every_imported_symbol_identical": true
+  },
+  "conclusion": "ESC-WS9-8 asked whether WS9's three own implementations are consistent with the closed round's. All three are: every field is either CONSISTENT or a DIFFERENCE WS9 DECLARED BEFORE THE COMPARISON, each citing the ruling or finding that authorises it. There is no undeclared difference. The re-run against r3 was performed anyway, because ESC-WS9-8's premise is that the pin makes it a one-flag operation and an unexercised hot-swap is not evidence of one."
+ },
+ "traces_r34": {
+  "rule": "R34 (BASELINE_v5 program hygiene): every pipeline exports a 10 Hz trace file per run, feeding the WS10 exhibit and simulator; WS5, WS9 RE-RUNS and all later work comply from their next artifact. This is WS9's next artifact.",
+  "selection_rule": "every candidate INCLUDING THE RULER, on the DESIGN duty (the duty that gates), at the NOMINAL corner, on the FIRST seed of the ensemble - the full candidate set on the gating duty. A declared subset, following WS4's, WS5's and WS11's precedent under this same ruling; the literal reading is 576 files and some gigabytes. Escalated as ESC-WS9-12 rather than decided here.",
+  "columns": [
+   "t",
+   "v",
+   "s",
+   "grade",
+   "F_trac",
+   "F_regen",
+   "F_retard",
+   "F_friction"
+  ],
+  "sample_rate_Hz": 10.0,
+  "n_files": 6,
+  "total_bytes": 41247291,
+  "all_present": true,
+  "all_unchanged_since_written": true,
+  "files": [
+   {
+    "file": "data/trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S0R",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 99417,
+    "dt_s": 0.1,
+    "distance_m": 165000.91889715116,
+    "duration_s": 9941.6,
+    "sha256": "daae922d3dc1d92a0fdaf2e17c99671679be72dbd2289d8076cf08d6e6499a5e",
+    "present": true,
+    "bytes": 6709983,
+    "sha256_on_disk": "daae922d3dc1d92a0fdaf2e17c99671679be72dbd2289d8076cf08d6e6499a5e",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S5",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 110535,
+    "dt_s": 0.1,
+    "distance_m": 165000.36168950578,
+    "duration_s": 11053.400000000001,
+    "sha256": "5838f3b35a8b8d4ce08c0e972b9a0a8cda34a8ab479f721cf27d0a18d98de170",
+    "present": true,
+    "bytes": 7501557,
+    "sha256_on_disk": "5838f3b35a8b8d4ce08c0e972b9a0a8cda34a8ab479f721cf27d0a18d98de170",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S5-13L",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 103823,
+    "dt_s": 0.1,
+    "distance_m": 165000.97580449746,
+    "duration_s": 10382.2,
+    "sha256": "38ed6e6baa0966737dd60aa21ad719661d1ad526797a9fccf33a58d6e23dd850",
+    "present": true,
+    "bytes": 7031838,
+    "sha256_on_disk": "38ed6e6baa0966737dd60aa21ad719661d1ad526797a9fccf33a58d6e23dd850",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S6",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 99655,
+    "dt_s": 0.1,
+    "distance_m": 165000.66063702386,
+    "duration_s": 9965.400000000001,
+    "sha256": "c5ac3026585e06dc8e5b476ed7346e79470c7c85db6eb6b87faef99ca3104be9",
+    "present": true,
+    "bytes": 6726404,
+    "sha256_on_disk": "c5ac3026585e06dc8e5b476ed7346e79470c7c85db6eb6b87faef99ca3104be9",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S7",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 99138,
+    "dt_s": 0.1,
+    "distance_m": 165000.86690180027,
+    "duration_s": 9913.7,
+    "sha256": "bfda2526d94f81a7d5064fcf9d6b8f42c8212c42491c2e58e528fd679c9976b4",
+    "present": true,
+    "bytes": 6739794,
+    "sha256_on_disk": "bfda2526d94f81a7d5064fcf9d6b8f42c8212c42491c2e58e528fd679c9976b4",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S4p",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 96453,
+    "dt_s": 0.1,
+    "distance_m": 165000.4149060681,
+    "duration_s": 9645.2,
+    "sha256": "ad9daecd70aecf80ffaa77ee0157388fae15207c29b3a3c35a3eb90a64c1cf98",
+    "present": true,
+    "bytes": 6537715,
+    "sha256_on_disk": "ad9daecd70aecf80ffaa77ee0157388fae15207c29b3a3c35a3eb90a64c1cf98",
+    "unchanged": true
+   }
+  ]
  },
  "candidates": {
   "S0R": {
@@ -4307,7 +5006,10 @@ Every worst-case field below is an explicit max/min over an enumerated case set 
   "ESC-WS9-6",
   "ESC-WS9-7",
   "ESC-WS9-9",
-  "ESC-WS9-8"
+  "ESC-WS9-8",
+  "ESC-WS9-10",
+  "ESC-WS9-11",
+  "ESC-WS9-12"
  ],
  "ws2_chain_of_record": {
   "map_file": "data/effmap_motor_inverter_662V.csv",
@@ -4354,12 +5056,13 @@ cd WS9_vehicle_one_wave2
 
 - **Half 1, the simulation.** `cold_minus10C/S5` re-run FROM SCRATCH in a fresh process over all 8 seeds: 160 per-seed values compared at exact (0 ulp), 0 mismatches. Matches the committed run: **True**.
 - **Half 2, the derived blocks and the exports.** `run_ws9.py --from-checkpoint` regenerates every derived block and every CSV from the committed trial. results_ws9.json byte-identical: **True**; all CSV exports byte-identical: **True**.
+- **Half 3, the R34 traces.** 6 10 Hz traces re-simulated FROM SCRATCH into a temporary directory and diffed byte for byte against the committed files: all byte-identical **True**. each declared trace re-simulated FROM SCRATCH into a temporary directory and compared byte for byte against the committed file. `--from-checkpoint` cannot regenerate a trace, so half 2 only shows the traces were not disturbed; this is the regeneration evidence.
 - **Not checked, stated rather than implied.** the other five corners are not re-simulated; the jobs are independent and identically constructed, and a full re-run costs hours. Half 1 is evidence for the construction, not for each corner's arithmetic.
 
 | WS9 file | sha256 |
 |---|---|
-| `run_ws9.py` | `23c7d3c4b344eb0f...` |
-| `ws9_params.py` | `927e8584f5c46dbc...` |
+| `run_ws9.py` | `eb06e2edd80d8cdd...` |
+| `ws9_params.py` | `fc5921beffc31650...` |
 | `ws9_duty.py` | `86e9d6c18c7b70cc...` |
 | `ws9_engines.py` | `407a00ca47413b82...` |
 | `ws9_fuels.py` | `54dd729fe643875a...` |
@@ -4369,8 +5072,91 @@ cd WS9_vehicle_one_wave2
 | `ws9_candidates.py` | `0cd9b1fe33b955c2...` |
 | `ws9_corrections.py` | `8d467421c27e60a3...` |
 | `ws9_primemover.py` | `532f152c1232fa3f...` |
-| `ws9_blocks.py` | `15c2dc9e548accd0...` |
-| `make_report_ws9.py` | `326dff4180de3f92...` |
-| `verify_ws9.py` | `8c9789e294333def...` |
-| `check_determinism_ws9.py` | `ffcb0dc03e36efaf...` |
+| `ws9_blocks.py` | `36e6ae8ac2111949...` |
+| `ws9_concordance.py` | `52ad33f2eeb93120...` |
+| `make_report_ws9.py` | `c6e996b2f5a1993a...` |
+| `verify_ws9.py` | `7af33e0753c03e34...` |
+| `check_determinism_ws9.py` | `73f4e536fcd2c5a4...` |
+
+---
+
+## 17. Changelog - r3-concordant re-run
+
+**Generated**, not written: every figure in this section is formatted out of `results_ws9.json` by `make_report_ws9.py`, which emits this section and `CHANGELOG_WS9_r3.md` from the same lines.
+
+| | |
+|---|---|
+| Entry | **r3-concordant re-run** |
+| Order executed | `NIGHT_SHIFT.md` step A3, under BASELINE_v5 R39/ESC-8 |
+| Escalation executed | ESC-WS9-8 (EXECUTED, NOT RESOLVED) |
+| Baseline of record | BASELINE_v5.md |
+| WS8 code round pinned | **r3** |
+| Seeds | 8101..8108 (8 seeds) |
+| Python / numpy | 3.14.3 / 2.5.2 |
+| Verdicts | PROVISIONAL under R37; **not reopened, not re-derived, not touched** |
+
+### 17.1 What this round was ordered to do, and what it did
+
+| ordered | done |
+|---|---|
+| update the sha256 pin table so it pins r3 | the fingerprint ladder is r1 -> r2 -> r3 on 8 features that exist in WS8's code ONLY after round three; `code_round` reads `r3` |
+| re-run all corners x 8 seeds | 6 corners x 6 candidates x 2 duties x 8 seeds |
+| regenerate report, verify, determinism | this report; `verify_ws9.py`; `check_determinism_ws9.py` -> **PASS** |
+| changelog entry "r3-concordant re-run" | this section, and `CHANGELOG_WS9_r3.md` from the same lines |
+| the concordance ESC-WS9-8 asks for | section 12.2, computed field by field from WS8 r3's source |
+
+### 17.2 THE ROUND PINNED IS AN ADJUDICATED-NOT-CLEAN ROUND
+
+NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`; the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 finding (ESC-WS9-10).
+
+This is stated here and not only in the escalations because a changelog is what a baseline quotes. **If the lead bounces WS8 to an r4, this pin is stale again** and WS9 re-runs - the same operation this round has now demonstrated costs one flag. See ESC-WS9-10.
+
+### 17.3 The concordance, per implementation
+
+| implementation ESC-WS9-8 names | result against WS8 r3 |
+|---|---|
+| `spin_rule_on_the_machines_shaft` | **CONSISTENT WITH WS8 r3 (no undeclared difference)** (4 consistent, 1 declared differences, 0 undeclared) |
+| `correction_pricing_on_ws9_own_energy_keys` | **CONSISTENT WITH WS8 r3 (no undeclared difference)** (6 consistent, 3 declared differences, 0 undeclared) |
+| `pack_temperature_as_a_state` | **CONSISTENT WITH WS8 r3 (no undeclared difference)** (3 consistent, 2 declared differences, 0 undeclared) |
+
+`any_undeclared_difference = False`, and `sanity.concordance_with_ws8_r3_ESC_WS9_8.passes = True` gates the run on it.
+
+### 17.4 What moved, and why almost nothing could
+
+Of the **62** WS8 symbols on WS9's import surface, **0** changed between r2 and r3. r3's edits to `ws8_candidates.py` are eight new top-level objects plus changes inside `S0`, `S2` and `S3` - candidates WS9 does not instantiate - and the correction rule WS9 re-implements is byte-identical between the two rounds. So the structural expectation was that no WS9 number could move through the import boundary. **The re-run measures it rather than resting on it**, which is the whole reason ESC-WS9-8 asked for a re-run and not just a comparison.
+
+| candidate | design-duty nominal ensemble-min | worst corner | control duty | verdict (NOT reopened) |
+|---|---|---|---|---|
+| **S4p** | +11.95% | +7.40% @ `cold_minus10C` | -6.81% | ADVANCE |
+| **S5** | +1.90% | +0.27% @ `cold_minus10C` | -5.75% | KILL |
+| **S5-13L** | +5.36% | +3.93% @ `cold_minus10C` | -1.38% | ADVANCE |
+| **S6** | +7.50% | +7.29% @ `payload_minus20` | +7.26% | ADVANCE |
+| **S7** | +4.51% | +3.58% @ `cold_minus10C` | -1.45% | ADVANCE |
+
+Those verdicts are reproduced from this round's numbers by the pre-committed criteria in `advance_kill.criteria`; they are NOT re-derived judgements. R37 leaves them PROVISIONAL and their adjudication is the lead-designated Fable seat.
+
+### 17.5 What this round added beyond the order, and why
+
+| addition | authority |
+|---|---|
+| the pin now covers 6 sibling-workstream sources WS9 reaches through WS8 | the round-1 pin could not see that `../WS4_genset/ws4_chain.py` changed under WS9 between the two runs; ESC-WS9-11 |
+| `run_ws8.py` pinned as a rule source, hashed and NOT imported | WS9 re-implements WS8's correction pricing rather than calling it, so a restatement of that rule would otherwise be invisible to the pin |
+| 6 10 Hz traces (`data/trace_*_10Hz.csv`) | R34, which names WS9 RE-RUNS explicitly and applies from their next artifact - this one; scope escalated as ESC-WS9-12 |
+| `interface_ws9.trip_time_R38_gate_input` and `data/trip_time_r38.csv` | R38 pre-commits a trip-time gate the LEAD applies at ratification; the gate's input belongs in the R14 block beside the bar. **The gate is not applied here.** |
+| section 12.2 replaces a prose concordance with a computed one | the prose table is the defect class WS8's own r2 and r3 adjudications found three times |
+
+### 17.6 The one thing a reader must not miss
+
+**12 design-duty case(s) sit above R38's +5% trip-time bar on at least one of the two exported statistics:** `S5-13L/cold_minus10C/GH-REG-165` at +8.379%, `S5-13L/grade_heavy/GH-REG-165` at +7.936%, `S5-13L/hot_alt_2000m_45C/GH-REG-165` at +7.873%, `S5-13L/nominal/GH-REG-165` at +7.936%, `S5-13L/payload_minus20/GH-REG-165` at +5.742%, `S5-13L/payload_plus20/GH-REG-165` at +9.223%, `S5/cold_minus10C/GH-REG-165` at +15.708%, `S5/grade_heavy/GH-REG-165` at +14.680%, `S5/hot_alt_2000m_45C/GH-REG-165` at +15.100%, `S5/nominal/GH-REG-165` at +14.680%, `S5/payload_minus20/GH-REG-165` at +11.430%, `S5/payload_plus20/GH-REG-165` at +17.151%.
+
+**Of those, S5-13L currently carries an ADVANCE verdict.** R38 says the lead applies the gate at ratification and WS9 does not; this changelog's job is to make sure the lead sees the number before applying it, not to apply it. Nothing in this artifact has been adjusted for R38.
+
+**And the two exported statistics DISAGREE about S5-13L on 2 of its design-duty corners**, which means R38's answer depends on which statistic the ruling means. R38 names a bar and not a statistic; WS9 exports both and rules on neither:
+
+| case | median-of-medians | 8-seed paired median | which side of the bar |
+|---|---|---|---|
+| `S5-13L/grade_heavy/GH-REG-165` | +6.072% | +4.949% | **over on the median-of-medians, under on the paired median** |
+| `S5-13L/nominal/GH-REG-165` | +6.072% | +4.949% | **over on the median-of-medians, under on the paired median** |
+
+On its other design-duty corners the two agree, so this is not a statistic that rescues the candidate everywhere - it is a statistic that decides two corners. The lead rules.
 

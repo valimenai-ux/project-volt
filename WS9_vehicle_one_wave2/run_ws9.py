@@ -46,6 +46,7 @@ from ws8_params import (VEH, ADH, AUX, DL, ML, G, LHV_KJ_PER_G,
                         ENGINE_HEAT_TO_COOLANT_FRAC)
 
 import ws9_candidates as CD9
+import ws9_concordance as CN9
 import ws9_corrections as CR9
 import ws9_duty as DY9
 import ws9_engines as E9
@@ -69,14 +70,50 @@ INHERITED_FILES = (
     "ws8_params.py", "ws8_physics.py", "ws8_cycles.py", "ws8_engine.py",
     "ws8_electric.py", "ws8_candidates.py", "ws8_whr.py",
 )
-WS8_ARTIFACTS = ("results_ws8.json", "REPORT_WS8.md", "R2_DIRECTIVE.md",
-                 "FINDINGS_WS8_r1.md")
+WS8_RULE_SOURCES = ("run_ws8.py",)
+"""Hashed, NOT imported. WS9 re-implements WS8's correction pricing on its
+own energy keys rather than calling it (ws9_corrections' docstring), so
+`run_ws8.py` is the source of an inherited RULE without being an import. A
+round could restate that rule and the seven-file pin above would not see
+it; this row is what closes that. `ws9_concordance` compares the three
+correction blocks field by field and fingerprints them by source text."""
+
+SIBLING_SOURCES = (
+    "../WS4_genset/ws4_models.py",
+    "../WS4_genset/ws4_chain.py",
+    "../WS3_battery/ws3_cells.py",
+    "../WS2_traction_motor/results.json",
+    "../WS2_traction_motor/data/effmap_motor_inverter_662V.csv",
+    "../WS2_traction_motor/data/cycle_loss_summary.csv",
+)
+"""SIBLING-WORKSTREAM SOURCES WS9'S NUMBERS ACTUALLY DEPEND ON, reached
+THROUGH WS8 and pinned here from the r3-concordant re-run onwards.
+
+The round-1 pin covered WS8's seven files and stopped there, which was
+incomplete: `ws8_engine` imports WS4's `derate_factor` from
+`ws4_models.py`, `ws8_electric` imports WS4's `WS2TractionChain` and
+`load_ws2_exports` from `ws4_chain.py` and WS3's `CELLS` from
+`ws3_cells.py`, and that loader then reads three WS2 export files off
+disk. `ws9_concordance.import_surface()` finds those two names by `ast`
+and reports them as unresolved inside WS8's own tree - which is how the
+gap was found rather than assumed.
+
+This is not hypothetical. `ws4_chain.py` CHANGED between WS9's round-1 run
+and this one (WS4's KX rounds landed overnight), and round 1 had no pin
+that could say so. Raised as ESC-WS9-11; the WS4 change is additive
+instrumentation and the re-run measures whether it moved anything."""
+
+WS8_ARTIFACTS = ("results_ws8.json", "REPORT_WS8.md",
+                 "R2_DIRECTIVE.md", "R3_DIRECTIVE.md",
+                 "CHANGELOG_WS8_r2.md", "CHANGELOG_WS8_r3.md",
+                 "FINDINGS_WS8_r1.md", "FINDINGS_WS8_r2.md",
+                 "FINDINGS_WS8_r3.md")
 OWN_FILES = (
     "run_ws9.py", "ws9_params.py", "ws9_duty.py", "ws9_engines.py",
     "ws9_fuels.py", "ws9_storage.py", "ws9_thermal.py", "ws9_walls.py",
     "ws9_candidates.py", "ws9_corrections.py", "ws9_primemover.py",
-    "ws9_blocks.py", "make_report_ws9.py", "verify_ws9.py",
-    "check_determinism_ws9.py",
+    "ws9_blocks.py", "ws9_concordance.py", "make_report_ws9.py",
+    "verify_ws9.py", "check_determinism_ws9.py",
 )
 
 DETERMINISM_FILE = os.path.join(DATA, "determinism_check.json")
@@ -119,13 +156,24 @@ def inherited_vintage():
         p = os.path.join(_WS8, f)
         src[f] = dict(sha256=_sha(p),
                       bytes=os.path.getsize(p) if os.path.exists(p) else None)
+    for f in WS8_RULE_SOURCES:
+        p = os.path.join(_WS8, f)
+        src[f + " [rule source, NOT imported]"] = dict(
+            sha256=_sha(p),
+            bytes=os.path.getsize(p) if os.path.exists(p) else None)
+    sib = OrderedDict()
+    for rel in SIBLING_SOURCES:
+        p = os.path.join(_HERE, rel)
+        sib[rel] = dict(sha256=_sha(p),
+                        bytes=os.path.getsize(p) if os.path.exists(p)
+                        else None)
     art = OrderedDict()
     for f in WS8_ARTIFACTS:
         p = os.path.join(_WS8, f)
         art[f] = dict(sha256=_sha(p),
                       bytes=os.path.getsize(p) if os.path.exists(p) else None)
     # r2 fingerprints: things that exist in WS8's code ONLY after round 2
-    r2 = dict(
+    r2 = OrderedDict(
         cold_charge_acceptance_wired=hasattr(EL8.Pack8, "cold_chg_factor_at"),
         derated_engine_present=hasattr(EN8, "derated_engine"),
         one_spin_rule_present=hasattr(CD8, "machine_idle_mask"),
@@ -134,22 +182,68 @@ def inherited_vintage():
         heat_split_in_params=("ENGINE_HEAT_TO_COOLANT_FRAC"
                               in dir(sys.modules["ws8_params"])),
     )
-    r2["code_round"] = "r2" if all(r2.values()) else "r1"
+    # r3 fingerprints: things that exist in WS8's code ONLY after ROUND
+    # THREE. Every one of them is a NEW OBJECT r3 introduced to close
+    # FINDINGS_WS8_r2's blocking finding B1 and the run-closure work that
+    # came with it - THE OVERRUN RULE (`overrun_mask` and its two
+    # thresholds), the braking mask it is tested against, the per-run
+    # exclusivity assertion, the per-sample run closure and the resistor
+    # overcommitment booking, and the two r3 errata switches. None of them
+    # is an r2 name re-labelled: `git show 4d29aaa^` has none of these
+    # names at top level in `ws8_candidates.py`, and the r2 errata tuple is
+    # two entries long where r3's is four.
+    r3 = OrderedDict(
+        overrun_rule_present=hasattr(CD8, "overrun_mask"),
+        overrun_thresholds_present=(hasattr(CD8, "OVERRUN_F_TRAC_EPS_N")
+                                    and hasattr(CD8, "OVERRUN_RPM_MARGIN")),
+        braking_mask_present=hasattr(CD8, "braking_mask"),
+        exclusivity_report_present=hasattr(CD8, "exclusivity_report"),
+        run_closure_present=hasattr(CD8, "run_closure"),
+        resistor_overcommitment_present=hasattr(
+            CD8, "resistor_and_overcommitment"),
+        b1_errata_switch_present=("b1_overrun_exclusivity"
+                                  in getattr(CD8, "ERRATA_ALL", ())),
+        s0_launch_fuel_errata_switch_present=(
+            "r3_s0_launch_fuel" in getattr(CD8, "ERRATA_ALL", ())),
+    )
+    fp = OrderedDict(r2_features=r2, r3_features=r3)
+    fp["code_round"] = ("r3" if (all(r2.values()) and all(r3.values()))
+                        else "r2" if all(r2.values()) else "r1")
+    fp["ladder"] = ("r1 -> r2 -> r3. The round reported is the highest one "
+                    "ALL of whose features are present; a partial r3 "
+                    "reports r2, which is the conservative direction.")
+    fp["r3_adjudication"] = (
+        "NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six "
+        "material, twelve minor.' No WS8 verdict moved and "
+        "`all_unchanged = True`; the adjudicator places both blocking "
+        "findings in the round's ACCOUNT OF ITSELF rather than its "
+        "physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders "
+        "it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 "
+        "THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 "
+        "finding (ESC-WS9-10).")
+    # r2 fingerprint values, for the record, unchanged by the ladder above
+    for k, v in r2.items():
+        fp[k] = v
     return OrderedDict(
         ws8_source_files=src,
+        sibling_workstream_sources_reached_through_ws8=sib,
         ws8_artifacts_hashed_but_not_read=art,
-        ws8_code_round_fingerprint=r2,
+        ws8_code_round_fingerprint=fp,
         ws9_own_files={f: dict(sha256=_sha(os.path.join(_HERE, f)))
                        for f in OWN_FILES},
         statement=(
             "WS9 imports WS8's MODELS read-only and reads NO WS8 numeric "
             "artifact (asserted in sanity.no_ws8_artifact_read). The "
-            "hashes above pin exactly which WS8 the models came from. If "
-            "WS8's round 2 regenerates its artifacts after this run, none "
-            "of WS9's numbers move: WS9 re-derives its own ruler from the "
-            "same models. If WS8's round 2 changes its CODE after this "
-            "run, the hashes above will not match and verify_ws9.py says "
-            "so - that is the hot-swap signal the assignment asks for."),
+            "hashes above pin exactly which WS8 the models came from, "
+            "which round the code is at, and - new in the r3-concordant "
+            "re-run - the sibling-workstream sources WS9 reaches THROUGH "
+            "WS8, which the round-1 pin did not cover. If WS8 regenerates "
+            "its ARTIFACTS, none of WS9's numbers move: WS9 re-derives its "
+            "own ruler from the same models. If WS8 or a pinned sibling "
+            "changes its CODE after this run, the hashes above will not "
+            "match and verify_ws9.py says so - that is the hot-swap signal "
+            "the assignment asks for, and ESC-WS9-8's 'one-flag' claim is "
+            "what this re-run exercised."),
     )
 
 
@@ -230,6 +324,136 @@ def ensemble(vals):
     return dict(n=int(a.size), min=float(np.min(a)),
                 median=float(np.median(a)), max=float(np.max(a)),
                 mean=float(np.mean(a)))
+
+
+# =====================================================================
+#  R34 - the 10 Hz trace export (BASELINE_v5 program hygiene)
+# =====================================================================
+TRACE_COLS = ("t", "v", "s", "grade", "F_trac", "F_regen", "F_retard",
+              "F_friction")
+
+TRACE_SELECTION = tuple(
+    ("nominal", c, None, None) for c in
+    ("S0R", "S5", "S5-13L", "S6", "S7", "S4p"))
+"""WHICH RUNS ARE TRACED, and why it is a declared set rather than all of
+them. R34: "Every pipeline exports a 10 Hz trace file per run (feeds the
+WS10 exhibit/simulator). WS5, WS9 re-runs, and all later work comply from
+their next artifact." WS9's trial is 6 corners x 6 candidates x 2 duties x
+8 seeds = 576 runs; at ~74,000 samples each a literal reading is some
+gigabytes of CSV, and the program's own three R34 precedents - WS4, WS5 and
+WS11, all under this same ruling - each export a declared handful. WS9
+follows them and declares its rule: EVERY CANDIDATE INCLUDING THE RULER, on
+the DESIGN DUTY (the duty that gates), at the NOMINAL corner, on the FIRST
+SEED of the ensemble. That is the full candidate set on the gating duty,
+which is what a WS10 exhibit needs to show the trial; the remaining corners
+and seeds are reproducible from `run_ws9.py` at zero tolerance, which
+`check_determinism_ws9.py` half 3 demonstrates on these very files.
+Escalated as ESC-WS9-12 so the lead can order the literal reading if that
+is what R34 means."""
+
+
+def trace_run(corner_name, cname, duty=None, seed=None, whr_name=None):
+    """Re-simulate ONE (corner, candidate, duty, seed) run and return
+    (candidate, cycle, trace). Deterministic and self-contained, exactly as
+    `run_candidate` is, so the determinism checker can call it from a fresh
+    process and diff the bytes."""
+    duty = DY9.DESIGN_DUTY if duty is None else duty
+    seed = int(DY9.seeds()[0]) if seed is None else int(seed)
+    ctx = corners(quick=False)[corner_name]
+    whr = WHR8.SYSTEMS[whr_name] if whr_name else None
+    cand = CD9.CANDIDATES[cname](ctx=ctx, whr=whr)
+    tables = PH8.build_env_tables(cand.envelope, cand.lam)
+    cyc = DY9.build(duty, seed, ctx)
+    if getattr(cand, "predictive", False):
+        cyc = DY9.apply_predictive(cyc)
+    tr = PH8.integrate_achieved(
+        cyc, cand.envelope, candidate_gcw(cand), cand.lam,
+        PH8.DriverParams(), seed, cda=VEH.CdA, crr=cand.ctx.crr,
+        rho=cand.ctx.rho_air, v_wind=cyc["v_wind"], v_cap_fn=cand.v_cap,
+        env_tables=tables)
+    return cand, cyc, tr
+
+
+def write_trace(path, tr, header_lines):
+    cols = [np.asarray(tr[k], float) for k in TRACE_COLS]
+    n = int(cols[0].size)
+    with open(path, "w") as f:
+        for h in header_lines:
+            f.write("# " + h + "\n")
+        f.write(",".join(TRACE_COLS) + "\n")
+        for i in range(n):
+            f.write(",".join(f"{c[i]:.4f}" for c in cols) + "\n")
+    return n
+
+
+def traces_record(recs, outdir=None):
+    """Re-hash every trace on disk and state the R34 position from what is
+    actually there, not from what was written."""
+    outdir = DATA if outdir is None else outdir
+    rows = []
+    for r in recs:
+        p = os.path.join(outdir, os.path.basename(r["file"]))
+        now = _sha(p)
+        rows.append(dict(r, present=bool(now is not None),
+                         bytes=(os.path.getsize(p) if os.path.exists(p)
+                                else None),
+                         sha256_on_disk=now,
+                         unchanged=bool(now == r.get("sha256"))))
+    return OrderedDict(
+        rule=("R34 (BASELINE_v5 program hygiene): every pipeline exports a "
+              "10 Hz trace file per run, feeding the WS10 exhibit and "
+              "simulator; WS5, WS9 RE-RUNS and all later work comply from "
+              "their next artifact. This is WS9's next artifact."),
+        selection_rule=(
+            "every candidate INCLUDING THE RULER, on the DESIGN duty (the "
+            "duty that gates), at the NOMINAL corner, on the FIRST seed of "
+            "the ensemble - the full candidate set on the gating duty. A "
+            "declared subset, following WS4's, WS5's and WS11's precedent "
+            "under this same ruling; the literal reading is 576 files and "
+            "some gigabytes. Escalated as ESC-WS9-12 rather than decided "
+            "here."),
+        columns=list(TRACE_COLS),
+        sample_rate_Hz=10.0,
+        n_files=len(rows),
+        total_bytes=sum(r["bytes"] or 0 for r in rows),
+        all_present=bool(rows and all(r["present"] for r in rows)),
+        all_unchanged_since_written=bool(rows and all(r["unchanged"]
+                                                      for r in rows)),
+        files=rows)
+
+
+def export_traces_r34(outdir, selection=TRACE_SELECTION, verbose=True):
+    """Write the declared R34 set and return one record per file."""
+    out = []
+    for corner_name, cname, duty, seed in selection:
+        duty = DY9.DESIGN_DUTY if duty is None else duty
+        seed = int(DY9.seeds()[0]) if seed is None else int(seed)
+        cand, cyc, tr = trace_run(corner_name, cname, duty, seed)
+        fn = (f"trace_{cname}_{duty}_{corner_name}_seed{seed}_10Hz.csv")
+        n = write_trace(
+            os.path.join(outdir, fn), tr,
+            ["Project Volt WS9 - R34 10 Hz trace",
+             f"{cname} ({cand.spec()['title']}) / duty {duty} / corner "
+             f"{corner_name} / seed {seed}",
+             f"GCW {candidate_gcw(cand):.1f} kg, payload "
+             f"{cand.payload_kg():.1f} kg, powertrain "
+             f"{cand.powertrain_mass_kg():.1f} kg",
+             "columns: t [s], v [m/s], s [m], grade [-], and the four "
+             "commanded force channels at the CONTACT PATCH [N] - "
+             "traction, regenerative braking, retarder, friction brake. "
+             "The integrator never commands traction and a braking "
+             "channel on the same sample.",
+             "electrical quantities are NOT in this file; they are "
+             "per-candidate dispatch and live in results_ws9.json"])
+        rec = dict(file=f"data/{fn}", candidate=cname, duty=duty,
+                   corner=corner_name, seed=seed, rows=n,
+                   dt_s=float(tr["dt"]), distance_m=float(tr["distance_m"]),
+                   duration_s=float(tr["duration_s"]),
+                   sha256=_sha(os.path.join(outdir, fn)))
+        out.append(rec)
+        if verbose:
+            print(f"    R34 trace {fn} ({n:,} rows)", flush=True)
+    return out
 
 
 def run_candidate(corner_name, cname, whr_name, seeds):
@@ -1022,6 +1246,13 @@ def main():
         merged = OrderedDict(R["trial"]["nominal"])
         merged.update(R.get("brackets", {}))
         R["bracket_margins"] = margins_vs_ruler(merged)
+        # R34 traces are SIMULATION output, so they are not re-simulated
+        # here - that is the whole point of --from-checkpoint. They are
+        # RE-HASHED from disk, so a record that claims a trace it does not
+        # have cannot survive this path either.
+        if R.get("traces_r34", {}).get("files"):
+            R["traces_r34"] = traces_record(R["traces_r34"]["files"])
+        R["concordance_ws8_r3"] = CN9.concordance_block(R)
         R = rebuild_derived(R, globals())
         _write(R)
         return
@@ -1051,7 +1282,21 @@ def main():
         workstream="WS9",
         vehicle="Vehicle One (Class 8 6x4 tractor + van trailer)",
         assignment="WS9_vehicle_one_wave2/ASSIGNMENT.md",
-        baseline_of_record="BASELINE_v4.md",
+        assignment_baseline="BASELINE_v4.md",
+        baseline_of_record="BASELINE_v5.md",
+        round="r3-concordant re-run",
+        round_note=(
+            "ASSIGNMENT.md was written against BASELINE_v4 and its rulings "
+            "R25-R33 / D13-D15 govern the trial unchanged. BASELINE_v5 is "
+            "the baseline of record for THIS artifact: it receives WS9 at "
+            "R37-R39, it adds R34 (the 10 Hz trace export, which names WS9 "
+            "RE-RUNS explicitly and which this artifact complies with) and "
+            "R38 (the trip-time gate, pre-committed AFTER WS9 ran, applied "
+            "BY THE LEAD at ratification from "
+            "`sanity.trip_time_the_metric_cannot_see` - NOT applied here), "
+            "and R39/ESC-8 is the order this re-run executes. WS9's "
+            "verdicts are PROVISIONAL under R37 and this round reopens "
+            "none of them."),
         python=platform.python_version(), numpy=np.__version__,
         seeds=[int(s) for s in seeds], n_seeds=len(seeds),
         quick=bool(args.quick),
@@ -1196,6 +1441,22 @@ def main():
 
     print("== HEAT LEDGER (rule 7, for WS6) ==", flush=True)
     R["heat_ledger"] = heat_ledger(cs["nominal"], trial)
+
+    print("== R34 10 Hz TRACES ==", flush=True)
+    R["traces_r34"] = traces_record(export_traces_r34(DATA))
+
+    print("== ESC-WS9-8 CONCORDANCE AGAINST WS8 r3 ==", flush=True)
+    R["concordance_ws8_r3"] = CN9.concordance_block(R)
+    _c = R["concordance_ws8_r3"]
+    for k, v in _c["summary"].items():
+        print(f"   {k}: {v['n_consistent']} consistent, "
+              f"{v['n_differs_by_design']} declared differences, "
+              f"{v['n_differs_undeclared']} undeclared -> {v['result']}",
+              flush=True)
+    _d = _c["import_surface_r2_to_r3"]
+    if _d:
+        print(f"   import surface r2 -> r3: {_d['n_symbols']} symbols, "
+              f"{_d['n_changed']} changed", flush=True)
 
     _save(R)
     R["determinism"] = load_determinism()

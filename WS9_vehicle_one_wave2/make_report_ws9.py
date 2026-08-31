@@ -18,6 +18,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results_ws9.json")
 OUT = os.path.join(HERE, "REPORT_WS9.md")
+CHANGELOG = os.path.join(HERE, "CHANGELOG_WS9_r3.md")
 
 
 def f(x, n=2, plus=False):
@@ -33,6 +34,18 @@ def kg(x):
 
 def pct(x, n=2):
     return "n/a" if x is None else f"{x:+.{n}f}%"
+
+
+def _cell(v, limit=150):
+    """Render an extracted source value inside a markdown table cell."""
+    if isinstance(v, (list, tuple)):
+        s = "; ".join(_cell(x, limit) for x in v) or "(none)"
+    elif isinstance(v, dict):
+        s = "; ".join(f"{k}={v[k]}" for k in v)
+    else:
+        s = str(v)
+    s = s.replace("|", "\\|").replace("\n", " ")
+    return s if len(s) <= limit else s[:limit - 3] + "..."
 
 
 def main():
@@ -53,7 +66,13 @@ def main():
       "WALL")
     w("")
     w("Workstream WS9, Vehicle One. Executes "
-      "`WS9_vehicle_one_wave2/ASSIGNMENT.md` against `BASELINE_v4.md`.")
+      "`WS9_vehicle_one_wave2/ASSIGNMENT.md` (written against "
+      f"`{R['_meta']['assignment_baseline']}`, whose R25-R33 and D13-D15 "
+      f"govern the trial unchanged) with "
+      f"`{R['_meta']['baseline_of_record']}` as the baseline of record. "
+      f"Round: **{R['_meta']['round']}**.")
+    w("")
+    w(R["_meta"]["round_note"])
     w("")
     w("**Nothing here is ratified.** The lead ratifies (CLAUDE.md rule 11). "
       "This report states what the physics gave and what it cost; the "
@@ -70,7 +89,11 @@ def main():
     w(f"| Entry point | `run_ws9.py` (fixed seeds "
       f"{R['_meta']['seeds'][0]}..{R['_meta']['seeds'][-1]}, "
       f"{R['_meta']['n_seeds']} seeds) |")
-    w("| Baseline of record | BASELINE_v4.md |")
+    w(f"| Round | **{R['_meta']['round']}** |")
+    w(f"| Baseline of record | {R['_meta']['baseline_of_record']} "
+      f"(assignment written against {R['_meta']['assignment_baseline']}) |")
+    w(f"| Verdicts | PROVISIONAL under BASELINE_v5 R37; this round reopens "
+      f"none of them |")
     w(f"| Python / numpy | {R['_meta']['python']} / "
       f"{R['_meta']['numpy']} |")
     w("| Metric of record | **primary energy per PAYLOAD tonne-km** "
@@ -1142,14 +1165,40 @@ def main():
     w(iv["statement"])
     w("")
     fp = iv["ws8_code_round_fingerprint"]
-    w(f"**WS8 code round detected: `{fp['code_round']}`.** Fingerprints: "
-      + ", ".join(f"{k} = `{v}`" for k, v in fp.items()
-                  if k != "code_round") + ".")
+    w(f"**WS8 code round detected: `{fp['code_round']}`.** {fp['ladder']}")
+    w("")
+    w("| feature | round it first exists in | present |")
+    w("|---|---|---|")
+    for k, v in fp["r2_features"].items():
+        w(f"| `{k}` | r2 | `{v}` |")
+    for k, v in fp["r3_features"].items():
+        w(f"| `{k}` | r3 | `{v}` |")
+    w("")
+    w("Every r3 row above is a NEW top-level object round three "
+      "introduced - the overrun rule and its two thresholds, the braking "
+      "mask it is tested against, the per-run exclusivity assertion, the "
+      "per-sample run closure, the resistor overcommitment booking, and "
+      "the two r3 errata switches. None of them is an r2 name relabelled: "
+      "the r2 tree has none of these names at top level in "
+      "`ws8_candidates.py`, and r2's errata tuple has two entries where "
+      "r3's has four.")
+    w("")
+    w(f"**{fp['r3_adjudication']}**")
     w("")
     w("| inherited WS8 source | bytes | sha256 |")
     w("|---|---|---|")
     for k, v in iv["ws8_source_files"].items():
         w(f"| `{k}` | {kg(v['bytes'])} | `{(v['sha256'] or '')[:16]}...` |")
+    w("")
+    w("| sibling-workstream source reached THROUGH WS8 | bytes | sha256 |")
+    w("|---|---|---|")
+    for k, v in iv["sibling_workstream_sources_reached_through_ws8"].items():
+        w(f"| `{k}` | {kg(v['bytes'])} | `{(v['sha256'] or '')[:16]}...` |")
+    w("")
+    w("Those six rows are new in the r3-concordant re-run. WS9's round-1 "
+      "pin covered WS8's own files and stopped there, and one of these - "
+      "`../WS4_genset/ws4_chain.py` - changed under WS9 between the two "
+      "runs (ESC-WS9-11).")
     w("")
     w("| WS8 artifact - hashed, NOT read | bytes | sha256 |")
     w("|---|---|---|")
@@ -1234,6 +1283,211 @@ def main():
     for a, b, c in conc:
         w(f"| {a} | {b} | {c} |")
     w("")
+    w("The table above is WS9's round-1 statement of its position, "
+      "carried unchanged. It is PROSE, and prose inside a generated "
+      "artifact is the class of defect WS8's own r2 and r3 adjudications "
+      "found three times. Section 12.2 is the same claim MEASURED.")
+    w("")
+
+    # ------------------------------------------------------------- 12.2
+    cc = R["concordance_ws8_r3"]
+    w("### 12.2 ESC-WS9-8 executed: the field-by-field concordance "
+      "against WS8 r3, computed")
+    w("")
+    w(cc["_what"])
+    w("")
+    w(f"**{cc['_pinned_round_is_not_clean']}**")
+    w("")
+    w("| implementation | fields | consistent | declared differences | "
+      "UNDECLARED | result |")
+    w("|---|---|---|---|---|---|")
+    for k, v in cc["summary"].items():
+        w(f"| `{k}` | {v['n_fields']} | {v['n_consistent']} | "
+          f"{v['n_differs_by_design']} | {v['n_differs_undeclared']} | "
+          f"**{v['result']}** |")
+    w("")
+    w(f"**Any undeclared difference: `{cc['any_undeclared_difference']}`.** "
+      f"{cc['conclusion']}")
+    w("")
+    for k, blob in cc["implementations"].items():
+        w(f"#### `{k}`")
+        w("")
+        w(f"ESC-WS9-8 calls this \"{blob['esc_ws9_8_name']}\". WS8 r3 side: "
+          f"{blob['ws8_r3_source']}. WS9 side: {blob['ws9_source']}.")
+        w("")
+        w("| field | WS8 r3 | WS9 | verdict |")
+        w("|---|---|---|---|")
+        for fld in blob["fields"]:
+            w(f"| `{fld['field']}` | `{_cell(fld['ws8_r3'])}` | "
+              f"`{_cell(fld['ws9'])}` | **{fld['verdict']}** |")
+        w("")
+        for fld in blob["fields"]:
+            if fld["verdict"] != "CONSISTENT" or fld.get("note"):
+                if fld["verdict"] == "CONSISTENT" and not fld.get("note"):
+                    continue
+                w(f"- **`{fld['field']}` - {fld['verdict']}.** "
+                  + (f"Declared in: {fld['declared_in']}. "
+                     if fld.get("declared_in") else "")
+                  + (fld.get("note") or ""))
+        w("")
+        if blob.get("measured"):
+            m = blob["measured"]
+            w(f"*Measured, not argued.* {m['what']}.")
+            w("")
+            if "worst_case_relative_difference" in m:
+                w(f"Runs on that branch: "
+                  f"{m['n_runs_on_the_genset_branch']}; worst relative "
+                  f"difference between the two denominators "
+                  f"{m['worst_case_relative_difference']:.6g}"
+                  + (f" at `{m['governing_case']}`"
+                     if m['governing_case'] else "")
+                  + f". {m['note']}")
+                w("")
+            if "per_candidate" in m:
+                w("| candidate | pack start [C] | pack end [C] | WS8 r3 "
+                  "ceiling at corner ambient [kW] | warm ceiling [kW] | "
+                  "collapse factor | seconds below target |")
+                w("|---|---|---|---|---|---|---|")
+                for cn, v in m["per_candidate"].items():
+                    w(f"| **{cn}** | {f(v['t_pack_start_C'], 1)} | "
+                      f"{f(v['t_pack_end_C'], 1)} | "
+                      f"{f(v['ws8_r3_ceiling_at_corner_ambient_kW'], 1)} | "
+                      f"{f(v['warm_ceiling_kW'], 1)} | "
+                      f"{f(v['collapse_factor_at_ambient'], 3)} | "
+                      f"{f(v['seconds_below_target'], 0)} |")
+                w("")
+                if m.get("scope"):
+                    w(f"*Scope.* {m['scope']}")
+                    w("")
+                w(m["note"])
+                w("")
+
+    d = cc["import_surface_r2_to_r3"]
+    w("#### The import surface, and what moved between r2 and r3")
+    w("")
+    w("ESC-WS9-8's premise is that \"the pin makes that a one-flag "
+      "operation\". That premise is only worth something if it is "
+      "checkable, so the surface is DERIVED rather than typed: every "
+      "`ALIAS.name` and every `from ws8_* import name` in WS9's own source "
+      "is collected by `ast`, resolved to the top-level definition in "
+      "WS8's tree, and fingerprinted by the sha256 of that definition's "
+      "SOURCE TEXT. The r2 fingerprints are in "
+      "`sources/ws8_import_surface_r2.json`, generated once from the WS8 "
+      "tree whose seven files reproduce this report's round-1 pin byte for "
+      "byte.")
+    w("")
+    if d:
+        w(f"**{d['n_symbols']} WS8 symbols are on WS9's import surface. "
+          f"{d['n_changed']} of them changed between r2 and r3. "
+          f"`every_imported_symbol_identical = "
+          f"{d['every_imported_symbol_identical']}`.**")
+        w("")
+        if d["changed"]:
+            w("| symbol | r2 sha256 | r3 sha256 |")
+            w("|---|---|---|")
+            for k in d["changed"]:
+                r = d["rows"][k]
+                w(f"| `{k}` | `{(r['prev_sha256'] or 'ABSENT')[:16]}` | "
+                  f"`{(r['now_sha256'] or 'ABSENT')[:16]}` |")
+            w("")
+        else:
+            w("That is the whole answer to \"can r3 move a WS9 number\": "
+              "no symbol WS9 imports moved, so no WS9 number can move "
+              "through the import boundary. r3's changes to "
+              "`ws8_candidates.py` are eight NEW top-level objects (the "
+              "overrun rule and its thresholds, the braking mask, the "
+              "exclusivity report, the run closure, the resistor "
+              "overcommitment booking, and two errata switches) plus edits "
+              "inside `S0`, `S2` and `S3` - candidates WS9 does not "
+              "instantiate. The re-run below MEASURES that rather than "
+              "resting on it.")
+            w("")
+    w("The full surface is exported at `data/ws8_import_surface.csv`, and "
+      "the two names it cannot resolve inside WS8's own tree - "
+      "`ws8_electric:CELLS` and `ws8_engine:derate_factor` - are how the "
+      "gap in the round-1 pin was FOUND rather than assumed: they come "
+      "from WS3 and WS4 through WS8, and they are pinned from this round "
+      "onwards (ESC-WS9-11).")
+    w("")
+    w("---")
+    w("")
+
+    # ------------------------------------------------------------- 12.3
+    tg = R["interface_ws9"]["trip_time_R38_gate_input"]
+    w("## 12.3 R38's gate input - EXPORTED, NOT APPLIED")
+    w("")
+    w(f"**Ruling:** {tg['ruling']}. **Gate:** {tg['gate']}. "
+      f"**Applied by:** {tg['applied_by']}")
+    w("")
+    w(f"Statistic: {tg['statistic']}. Design duty: `{tg['design_duty']}`.")
+    w("")
+    w(f"**Two statistics, both exported.** {tg['statistic_note']}")
+    w("")
+    w("| candidate | median-of-medians vs S0R | 8-seed paired min | "
+      "paired median | paired max | against the +5% bar |")
+    w("|---|---|---|---|---|---|")
+    for cn, v in tg["design_duty_nominal_pct_vs_ruler"].items():
+        p = tg["design_duty_nominal_paired_pct_vs_ruler"].get(cn, {})
+        over_m = v > tg["gate_pct"]
+        over_p = (p.get("max") is not None and p["max"] > tg["gate_pct"])
+        flag = ("**OVER on both**" if (over_m and over_p)
+                else "**OVER on the paired envelope only**" if over_p
+                else "**OVER on the median only**" if over_m
+                else "at or under on both")
+        w(f"| **{cn}** | {v:+.3f}% | {f(p.get('min'), 3, plus=True)}% | "
+          f"{f(p.get('median'), 3, plus=True)}% | "
+          f"{f(p.get('max'), 3, plus=True)}% | {flag} |")
+    w("")
+    w(f"Worst case over the whole enumerated (candidate, corner, duty) "
+      f"set: **{tg['worst_case_pct']:+.3f}%** at "
+      f"`{tg['governing_case']}` on the median-of-medians, and "
+      f"**{tg['worst_case_paired_max_pct']:+.3f}%** at "
+      f"`{tg['governing_case_paired_max']}` on the paired envelope. "
+      f"Design-duty cases above the bar: "
+      f"**{tg['n_design_duty_cases_above_gate']}** on the "
+      f"median-of-medians"
+      + (" (" + ", ".join(f"`{k}` at {v:+.3f}%"
+                          for k, v in
+                          tg["design_duty_cases_above_gate"].items())
+         + ")" if tg["design_duty_cases_above_gate"] else "")
+      + f", **{tg['n_design_duty_cases_above_gate_paired_max']}** on the "
+        f"paired envelope"
+      + (" (" + ", ".join(f"`{k}` at {v:+.3f}%"
+                          for k, v in
+                          tg["design_duty_cases_above_gate_paired_max"]
+                          .items()) + ")"
+         if tg["design_duty_cases_above_gate_paired_max"] else "") + ".")
+    w("")
+    w(f"{tg['note']} The full table is `data/trip_time_r38.csv` and "
+      f"`sanity.trip_time_the_metric_cannot_see`.")
+    w("")
+    w("---")
+    w("")
+
+    # ------------------------------------------------------------- 12.4
+    t34 = R["traces_r34"]
+    w("## 12.4 R34 - the 10 Hz trace export")
+    w("")
+    w(t34["rule"])
+    w("")
+    w(f"**Selection rule.** {t34['selection_rule']}")
+    w("")
+    w("| file | candidate | duty | corner | seed | rows | distance [km] | "
+      "duration [s] |")
+    w("|---|---|---|---|---|---|---|---|")
+    for r in t34["files"]:
+        w(f"| `{r['file']}` | {r['candidate']} | {r['duty']} | "
+          f"{r['corner']} | {r['seed']} | {r['rows']:,} | "
+          f"{r['distance_m']/1000.0:,.1f} | {r['duration_s']:,.1f} |")
+    w("")
+    w(f"Columns: {', '.join('`' + c + '`' for c in t34['columns'])} at "
+      f"{t34['sample_rate_Hz']:.0f} Hz. All present: "
+      f"`{t34['all_present']}`; all unchanged since written: "
+      f"`{t34['all_unchanged_since_written']}`. Total on disk: "
+      f"{t34['total_bytes']/1e6:,.1f} MB - a figure the lead may want when "
+      f"ruling on ESC-WS9-12, because the literal reading of R34 is this "
+      f"number times ninety-six.")
+    w("")
     w("---")
     w("")
 
@@ -1254,6 +1508,22 @@ def main():
         w("")
         w(f"**Asks.** {e['asks']}")
         w("")
+        if e.get("execution"):
+            x = e["execution"]
+            w(f"**What the r3-concordant re-run did about it: "
+              f"{x['status']}.** {x['what_was_done']}")
+            w("")
+            for k, v in x["per_implementation"].items():
+                w(f"- `{k}` -> {v}")
+            w("")
+            w(f"Undeclared differences: `{x['any_undeclared_difference']}`. "
+              f"WS8 symbols on WS9's import surface compared: "
+              f"{x['imported_symbols_compared']}, of which "
+              f"{x['imported_symbols_changed_r2_to_r3']} changed between "
+              f"r2 and r3.")
+            w("")
+            w(f"**Still for the lead.** {x['still_for_the_lead']}")
+            w("")
         w(f"**Materiality:** {e['materiality']}")
         w("")
     w("---")
@@ -1390,6 +1660,13 @@ def main():
           f"from the committed trial. results_ws9.json byte-identical: "
           f"**{h2['results_json_byte_identical']}**; all CSV exports "
           f"byte-identical: **{h2['all_csv_exports_byte_identical']}**.")
+        h3 = det.get("half_3_r34_traces")
+        if h3:
+            w(f"- **Half 3, the R34 traces.** {h3['n_traces']} 10 Hz "
+              f"traces re-simulated FROM SCRATCH into a temporary "
+              f"directory and diffed byte for byte against the committed "
+              f"files: all byte-identical **{h3['all_byte_identical']}**. "
+              f"{h3['note']}")
         w(f"- **Not checked, stated rather than implied.** "
           f"{det['not_checked']}")
         w("")
@@ -1398,9 +1675,229 @@ def main():
     for k, v in iv["ws9_own_files"].items():
         w(f"| `{k}` | `{(v['sha256'] or 'ABSENT')[:16]}...` |")
     w("")
+    w("---")
+    w("")
+
+    # -------------------------------------------------------------- 17
+    C = changelog_lines(R)
+    L.extend(C)
 
     open(OUT, "w").write("\n".join(L) + "\n")
+    open(CHANGELOG, "w").write("\n".join(C) + "\n")
     print(f"wrote {OUT} ({os.path.getsize(OUT):,} bytes, {len(L)} lines)")
+    print(f"wrote {CHANGELOG} ({os.path.getsize(CHANGELOG):,} bytes)")
+
+
+def changelog_lines(R):
+    """The changelog NIGHT_SHIFT A3 orders, GENERATED from the results and
+    emitted twice from these same lines - as section 17 of the report and
+    as CHANGELOG_WS9_r3.md - which is the discipline WS8's r3 adopted after
+    its r2 changelog was found to carry hand-written direction cells its
+    own numbers contradicted."""
+    L = []
+    w = L.append
+    iv = R["inherited_vintage"]
+    fp = iv["ws8_code_round_fingerprint"]
+    cc = R["concordance_ws8_r3"]
+    d = cc["import_surface_r2_to_r3"]
+    ak = R["advance_kill"]["candidates"]
+    ck = R["sanity"]
+    det = R.get("determinism", {})
+    design = R["_meta"]["design_duty"]
+    t34 = R["traces_r34"]
+
+    w("## 17. Changelog - r3-concordant re-run")
+    w("")
+    w("**Generated**, not written: every figure in this section is "
+      "formatted out of `results_ws9.json` by `make_report_ws9.py`, which "
+      "emits this section and `CHANGELOG_WS9_r3.md` from the same lines.")
+    w("")
+    w("| | |")
+    w("|---|---|")
+    w(f"| Entry | **r3-concordant re-run** |")
+    w("| Order executed | `NIGHT_SHIFT.md` step A3, under BASELINE_v5 "
+      "R39/ESC-8 |")
+    w("| Escalation executed | ESC-WS9-8 (EXECUTED, NOT RESOLVED) |")
+    w(f"| Baseline of record | {R['_meta']['baseline_of_record']} |")
+    w(f"| WS8 code round pinned | **{fp['code_round']}** |")
+    w(f"| Seeds | {R['_meta']['seeds'][0]}..{R['_meta']['seeds'][-1]} "
+      f"({R['_meta']['n_seeds']} seeds) |")
+    w(f"| Python / numpy | {R['_meta']['python']} / {R['_meta']['numpy']} |")
+    w("| Verdicts | PROVISIONAL under R37; **not reopened, not "
+      "re-derived, not touched** |")
+    w("")
+    w("### 17.1 What this round was ordered to do, and what it did")
+    w("")
+    w("| ordered | done |")
+    w("|---|---|")
+    w(f"| update the sha256 pin table so it pins r3 | the fingerprint "
+      f"ladder is r1 -> r2 -> r3 on "
+      f"{len(fp['r3_features'])} features that exist in WS8's code ONLY "
+      f"after round three; `code_round` reads `{fp['code_round']}` |")
+    w("| re-run all corners x 8 seeds | "
+      f"{len(R['trial'])} corners x {len(R['trial']['nominal'])} "
+      f"candidates x {len(R['duties'])} duties x {R['_meta']['n_seeds']} "
+      f"seeds |")
+    w("| regenerate report, verify, determinism | this report; "
+      f"`verify_ws9.py`; `check_determinism_ws9.py` -> "
+      f"**{det.get('status', 'NOT RUN')}** |")
+    w("| changelog entry \"r3-concordant re-run\" | this section, and "
+      "`CHANGELOG_WS9_r3.md` from the same lines |")
+    w("| the concordance ESC-WS9-8 asks for | section 12.2, computed "
+      "field by field from WS8 r3's source |")
+    w("")
+    w("### 17.2 THE ROUND PINNED IS AN ADJUDICATED-NOT-CLEAN ROUND")
+    w("")
+    w(f"{fp['r3_adjudication']}")
+    w("")
+    w("This is stated here and not only in the escalations because a "
+      "changelog is what a baseline quotes. **If the lead bounces WS8 to "
+      "an r4, this pin is stale again** and WS9 re-runs - the same "
+      "operation this round has now demonstrated costs one flag. See "
+      "ESC-WS9-10.")
+    w("")
+    w("### 17.3 The concordance, per implementation")
+    w("")
+    w("| implementation ESC-WS9-8 names | result against WS8 r3 |")
+    w("|---|---|")
+    for k, v in cc["summary"].items():
+        w(f"| `{k}` | **{v['result']}** ({v['n_consistent']} consistent, "
+          f"{v['n_differs_by_design']} declared differences, "
+          f"{v['n_differs_undeclared']} undeclared) |")
+    w("")
+    w(f"`any_undeclared_difference = "
+      f"{cc['any_undeclared_difference']}`, and `sanity."
+      f"concordance_with_ws8_r3_ESC_WS9_8.passes = "
+      f"{ck['concordance_with_ws8_r3_ESC_WS9_8']['passes']}` gates the "
+      f"run on it.")
+    w("")
+    w("### 17.4 What moved, and why almost nothing could")
+    w("")
+    if d:
+        w(f"Of the **{d['n_symbols']}** WS8 symbols on WS9's import "
+          f"surface, **{d['n_changed']}** changed between r2 and r3. "
+          f"r3's edits to `ws8_candidates.py` are eight new top-level "
+          f"objects plus changes inside `S0`, `S2` and `S3` - candidates "
+          f"WS9 does not instantiate - and the correction rule WS9 "
+          f"re-implements is byte-identical between the two rounds. So the "
+          f"structural expectation was that no WS9 number could move "
+          f"through the import boundary. **The re-run measures it rather "
+          f"than resting on it**, which is the whole reason ESC-WS9-8 "
+          f"asked for a re-run and not just a comparison.")
+        w("")
+    w("| candidate | design-duty nominal ensemble-min | worst corner | "
+      "control duty | verdict (NOT reopened) |")
+    w("|---|---|---|---|---|")
+    for cn, v in ak.items():
+        wc = v["worst_corner_margin_pct_min"]
+        w(f"| **{cn}** | {pct(v['nominal_margin_pct_min'])} | "
+          + (f"{pct(wc)} @ `{v['worst_corner']}`" if wc is not None
+             else "n/a")
+          + f" | {pct(v['control_duty_nominal_margin_pct_min'])} | "
+          f"{v['verdict']} |")
+    w("")
+    w("Those verdicts are reproduced from this round's numbers by the "
+      "pre-committed criteria in `advance_kill.criteria`; they are NOT "
+      "re-derived judgements. R37 leaves them PROVISIONAL and their "
+      "adjudication is the lead-designated Fable seat.")
+    w("")
+    w("### 17.5 What this round added beyond the order, and why")
+    w("")
+    w("| addition | authority |")
+    w("|---|---|")
+    w(f"| the pin now covers "
+      f"{len(iv['sibling_workstream_sources_reached_through_ws8'])} "
+      f"sibling-workstream sources WS9 reaches through WS8 | the round-1 "
+      f"pin could not see that `../WS4_genset/ws4_chain.py` changed under "
+      f"WS9 between the two runs; ESC-WS9-11 |")
+    w(f"| `run_ws8.py` pinned as a rule source, hashed and NOT imported | "
+      f"WS9 re-implements WS8's correction pricing rather than calling it, "
+      f"so a restatement of that rule would otherwise be invisible to the "
+      f"pin |")
+    w(f"| {t34['n_files']} 10 Hz traces (`data/trace_*_10Hz.csv`) | R34, "
+      f"which names WS9 RE-RUNS explicitly and applies from their next "
+      f"artifact - this one; scope escalated as ESC-WS9-12 |")
+    w("| `interface_ws9.trip_time_R38_gate_input` and "
+      "`data/trip_time_r38.csv` | R38 pre-commits a trip-time gate the "
+      "LEAD applies at ratification; the gate's input belongs in the R14 "
+      "block beside the bar. **The gate is not applied here.** |")
+    w("| section 12.2 replaces a prose concordance with a computed one | "
+      "the prose table is the defect class WS8's own r2 and r3 "
+      "adjudications found three times |")
+    w("")
+    w("### 17.6 The one thing a reader must not miss")
+    w("")
+    tg = R["interface_ws9"]["trip_time_R38_gate_input"]
+    tt2 = R["sanity"]["trip_time_the_metric_cannot_see"]
+    over = dict(tg["design_duty_cases_above_gate"])
+    over.update(tg["design_duty_cases_above_gate_paired_max"])
+    if over:
+        w(f"**{len(over)} design-duty case(s) sit above R38's +"
+          f"{tg['gate_pct']:.0f}% trip-time bar on at least one of the two "
+          f"exported statistics:** "
+          + ", ".join(f"`{k}` at {v:+.3f}%"
+                      for k, v in sorted(over.items()))
+          + ".")
+        w("")
+        adv_over = sorted({k.split("/")[0] for k in over}
+                          & {c for c, v in ak.items()
+                             if v["verdict"] == "ADVANCE"})
+        if adv_over:
+            w(f"**Of those, {', '.join(adv_over)} currently carries an "
+              f"ADVANCE verdict.** R38 says the lead applies the gate at "
+              f"ratification and WS9 does not; this changelog's job is to "
+              f"make sure the lead sees the number before applying it, "
+              f"not to apply it. Nothing in this artifact has been "
+              f"adjusted for R38.")
+            w("")
+            # WHERE THE TWO STATISTICS DISAGREE. R38 names a bar and not a
+            # statistic, so for any ADVANCE candidate whose two exported
+            # statistics fall on OPPOSITE sides of the bar, the lead's
+            # choice of statistic decides the verdict. That is generated
+            # here rather than left for a reader to spot in the table.
+            split = []
+            for cn in adv_over:
+                for key, det in sorted(tt2["detail"].items()):
+                    c2, corner2, duty2 = key.split("/")
+                    if c2 != cn or duty2 != design:
+                        continue
+                    m2 = det["delta_pct"]
+                    pm = det["paired_pct"]["median"]
+                    if (m2 > tg["gate_pct"]) != (pm > tg["gate_pct"]):
+                        split.append((key, m2, pm))
+            if split:
+                w(f"**And the two exported statistics DISAGREE about "
+                  f"{', '.join(adv_over)} on "
+                  f"{len(split)} of its design-duty corners**, which means "
+                  f"R38's answer depends on which statistic the ruling "
+                  f"means. R38 names a bar and not a statistic; WS9 "
+                  f"exports both and rules on neither:")
+                w("")
+                w("| case | median-of-medians | 8-seed paired median | "
+                  "which side of the bar |")
+                w("|---|---|---|---|")
+                for key, m2, pm in split:
+                    w(f"| `{key}` | {m2:+.3f}% | {pm:+.3f}% | "
+                      f"**over on the median-of-medians, under on the "
+                      f"paired median** |" if m2 > pm else
+                      f"| `{key}` | {m2:+.3f}% | {pm:+.3f}% | "
+                      f"**under on the median-of-medians, over on the "
+                      f"paired median** |")
+                w("")
+                w("On its other design-duty corners the two agree, so "
+                  "this is not a statistic that rescues the candidate "
+                  "everywhere - it is a statistic that decides two "
+                  "corners. The lead rules.")
+        else:
+            w("None of them carries an ADVANCE verdict, so on this "
+              "round's numbers R38 would not remove one - but that is the "
+              "lead's reading to make, not WS9's.")
+    else:
+        w(f"No design-duty case sits above R38's +{tg['gate_pct']:.0f}% "
+          f"trip-time bar on this round's numbers. The lead still applies "
+          f"the gate; WS9 does not.")
+    w("")
+    return L
 
 
 if __name__ == "__main__":

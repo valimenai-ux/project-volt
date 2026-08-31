@@ -654,6 +654,23 @@ WHR_GATE_PCT = 2.5
 """[BASELINE-v4] R31 / assignment: electric turbocompound is admitted to S6
 "ONLY if it clears the 2.5% net gate on the design duty"."""
 
+R38_TRIP_TIME_GATE_PCT = 5.0
+"""[BASELINE-v5] R38, quoted verbatim: "TRIP-TIME GATE, pre-committed
+before reading the table: an ADVANCE additionally requires design-duty trip
+time <= +5% of S0R. The metric of record stays energy per payload tonne-km;
+trip time is a gate, not a term. Applied at ratification from the exported
+`trip_time_the_metric_cannot_see` table."
+
+THIS CONSTANT IS AN EXPORT, NOT A GATE WS9 APPLIES. R38 says the LEAD
+applies it at ratification, and R37 leaves WS9's verdicts PROVISIONAL
+pending the lead-designated Fable adjudication. Nothing in this pipeline
+reads this number to decide anything: it exists so that the exported
+`interface_ws9.trip_time_R38_gate_input` block carries the bar beside the
+measurement, in one place, and so that a reader cannot mistake WS9's
+advance/kill block for a gate that has been applied. WS9's own ESC-WS9-9
+raised the trip-time question before R38 existed; R38 is the ruling on it
+(BASELINE_v5 R39: "ESC-9: handled by R38")."""
+
 
 def params_dump():
     return dict(
@@ -692,5 +709,7 @@ def params_dump():
                           statistic=ADVANCE_STATISTIC, duty=ADVANCE_DUTY,
                           text=ADVANCE_TEXT),
         whr_gate_pct=WHR_GATE_PCT,
+        r38_trip_time_gate_pct=R38_TRIP_TIME_GATE_PCT,
+        r38_applied_by="THE LEAD, at ratification - not by this pipeline",
         citations=CITATIONS,
     )

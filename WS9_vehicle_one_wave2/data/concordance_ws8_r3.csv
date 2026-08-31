@@ -1,0 +1,20 @@
+implementation,field,verdict,declared_in,ws8_r3,ws9
+spin_rule_on_the_machines_shaft,unloaded_force_threshold_N,CONSISTENT,,1.0,1.0
+spin_rule_on_the_machines_shaft,minimum_speed_threshold_m_per_s,CONSISTENT,,0.5,0.5
+spin_rule_on_the_machines_shaft,channels_tested_for_unloaded,DIFFERS_BY_DESIGN,REPORT_WS9 section 12.1 row F5; ESC-WS9-8 names this as one of WS9's three own implementations,['F_regen'; 'F_retard'; 'F_trac'],['<argument> f_machine_cmd_N']
+spin_rule_on_the_machines_shaft,charged_only_when_geared_and_unloaded,CONSISTENT,,True,True
+spin_rule_on_the_machines_shaft,threshold_application_sites_in_ws9,CONSISTENT,,one rule; one threshold; every candidate (r1 finding F5),[OrderedDict({'constant': 'SPIN_IDLE_FORCE_N'; 'op': 'LtE'; 'text': 'np.abs(f_machine_cmd_N) <= SPIN_IDLE_FORCE_N'}); OrderedDict({'constant': 'SPIN_IDLE_V_MIN_MS'; 'op': 'Gt'; 'te
+correction_pricing_on_ws9_own_energy_keys,eta_sanity_bounds,CONSISTENT,,[0.1; 0.5],[0.1; 0.5]
+correction_pricing_on_ws9_own_energy_keys,priority_ladder_basis_strings,CONSISTENT,,['FALLBACK: default'; 'FALLBACK: genset best point (the path did not run on this cycle; so there is no duty average)'; 'FALLBACK: island BSFC x axle-A driveline (the path did not r,['duty-averaged ENGINE fuel-to-wheel over this run (no genset ran; a bus-side shortfall priced on the wheel-side path; the generous direction)'; 'duty-averaged vehicle fuel-to-whee
+correction_pricing_on_ws9_own_energy_keys,energy_keys_read_to_price_the_correction,DIFFERS_BY_DESIGN,ws9_corrections module docstring; REPORT_WS9 section 12.1 rows F4/F6; ESC-WS9-8 names this as one of WS9's three own implementations,['e_genset_bus_kWh'; 'e_mech_wheel_kWh'; 'fuel_g'; 'fuel_g_genset'],['e_engine_wheel_kWh'; 'e_genset_bus_kWh'; 'e_wheel_tractive_kWh'; 'fuel_g']
+correction_pricing_on_ws9_own_energy_keys,corrected_fuel_formula,CONSISTENT,,acc['fuel_g'] + g_soc + g_uns,a['fuel_g'] + g_soc + g_uns
+correction_pricing_on_ws9_own_energy_keys,credit_free_variant_formula,CONSISTENT,,acc['fuel_g'] + g_soc_def + g_uns,a['fuel_g'] + max(g_soc; 0.0) + g_uns
+correction_pricing_on_ws9_own_energy_keys,kWh_to_grams_conversion,CONSISTENT,,3600.0 / max(eta * LHV_KJ_PER_G; 1e-09),3600.0 / max(eta * LHV_KJ_PER_G; 1e-09)
+correction_pricing_on_ws9_own_energy_keys,correction_share_of_fuel,CONSISTENT,,(g_soc + g_uns) / acc['fuel_g_corrected'] if acc['fuel_g_corrected'] > 0 else 0.0,(g_soc + g_uns) / a['fuel_g_corrected'] if a['fuel_g_corrected'] > 0 else 0.0
+correction_pricing_on_ws9_own_energy_keys,charge_sustaining_is_symmetric,DIFFERS_BY_DESIGN,ESC-3 as ruled in R27 (the electricity term); ws9_corrections.apply_energy_corrections docstring; REPORT_WS9 section 12.1 row F4,-d_soc * usable; unconditionally (F4 convention),0.0 if is_plug_in else -d_soc * usable
+correction_pricing_on_ws9_own_energy_keys,exported_field_names,DIFFERS_BY_DESIGN,REPORT_WS9 section 12.1 rows F4/F6,['charge_sustain_deficit_kWh'; 'correction_eta_basis'; 'correction_eta_clipped'; 'correction_eta_fuel_to_bus'; 'correction_eta_r1_basis'; 'correction_eta_r1_peak_point'; 'correctio,['charge_sustain_deficit_kWh'; 'correction_eta'; 'correction_eta_basis'; 'correction_eta_clipped'; 'correction_share_of_fuel'; 'e_fuel_MJ_corrected'; 'e_fuel_MJ_corrected_deficit_o
+pack_temperature_as_a_state,charge_ceiling_evaluation_point,DIFFERS_BY_DESIGN,R30 (THE COLD WALL) as executed in ws9_thermal; REPORT_WS9 section 12.1 row F2; sanity.cold_wall_exercised_R30; ESC-WS9-8 names this as one of WS9's three own implementations,['self.ctx.t_amb_c'],['self.t'; 'self.t_amb']
+pack_temperature_as_a_state,cold_factor_interpolation_breakpoints_C,CONSISTENT,,[-10.0; 15.0],[-10.0; 15.0]
+pack_temperature_as_a_state,clamped_to_warm_value_above_target,CONSISTENT,,True,True
+pack_temperature_as_a_state,discharge_limit_derated_in_the_cold,CONSISTENT,,False,False
+pack_temperature_as_a_state,cold_factor_source,DIFFERS_BY_DESIGN,ESC-1(c) as ruled in R39/ESC-1; ws9_storage.WS9Pack spec `basis` field; which states 'CITED EXTERNAL cell; explicitly NOT a WS3 cell',Pack8.COLD_CHG_FACTOR[chem] - WS3's own cells,the cited external cell's declared cold factor (ESC-1(c))

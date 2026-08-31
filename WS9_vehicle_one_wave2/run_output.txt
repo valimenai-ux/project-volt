@@ -64,4 +64,16 @@
    S7      : ADVANCE  design nominal min +4.51%, worst corner +3.58% @ cold_minus10C, control duty -1.45%
    S6 break-even peak BTE for +3.0% (ensemble-min): 0.4688 against a claimed 0.4920
 == HEAT LEDGER (rule 7, for WS6) ==
-== wrote /Users/valimenai/Documents/Project Volt/WS9_vehicle_one_wave2/results_ws9.json (4.07 MB, 5078 s) ==
+== R34 10 Hz TRACES ==
+    R34 trace trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv (99,417 rows)
+    R34 trace trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv (110,535 rows)
+    R34 trace trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv (103,823 rows)
+    R34 trace trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv (99,655 rows)
+    R34 trace trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv (99,138 rows)
+    R34 trace trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv (96,453 rows)
+== ESC-WS9-8 CONCORDANCE AGAINST WS8 r3 ==
+   spin_rule_on_the_machines_shaft: 4 consistent, 1 declared differences, 0 undeclared -> CONSISTENT WITH WS8 r3 (no undeclared difference)
+   correction_pricing_on_ws9_own_energy_keys: 6 consistent, 3 declared differences, 0 undeclared -> CONSISTENT WITH WS8 r3 (no undeclared difference)
+   pack_temperature_as_a_state: 3 consistent, 2 declared differences, 0 undeclared -> CONSISTENT WITH WS8 r3 (no undeclared difference)
+   import surface r2 -> r3: 62 symbols, 0 changed
+== wrote /Users/valimenai/Documents/Project Volt/WS9_vehicle_one_wave2/results_ws9.json (4.23 MB, 2398 s) ==

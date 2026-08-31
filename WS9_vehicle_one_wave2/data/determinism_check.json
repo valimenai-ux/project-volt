@@ -23,17 +23,40 @@
   "returncode": 0,
   "files": {
    "mass_ledger.csv": true,
+   "trip_time_r38.csv": true,
+   "trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv": true,
    "candidate_runs.csv": true,
+   "ws8_import_surface.csv": true,
    "duty_stats.csv": true,
+   "trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+   "trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+   "trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv": true,
    "heat_ledger_ws6.csv": true,
+   "trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv": true,
    "two_walls_sweep.csv": true,
+   "trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv": true,
    "margins.csv": true,
    "prime_mover_at_the_pin.csv": true,
+   "concordance_ws8_r3.csv": true,
    "results_ws9.json": true
   },
   "results_json_byte_identical": true,
   "all_csv_exports_byte_identical": true,
   "note": "the checkpoint is a byte copy of the committed results_ws9.json, so this regenerates every derived block and every export from the committed trial and diffs the result byte for byte"
+ },
+ "half_3_r34_traces": {
+  "rule": "BASELINE_v5 R34",
+  "n_traces": 6,
+  "files": {
+   "trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+   "trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+   "trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+   "trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+   "trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+   "trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv": true
+  },
+  "all_byte_identical": true,
+  "note": "each declared trace re-simulated FROM SCRATCH into a temporary directory and compared byte for byte against the committed file. `--from-checkpoint` cannot regenerate a trace, so half 2 only shows the traces were not disturbed; this is the regeneration evidence."
  },
  "not_checked": "the other five corners are not re-simulated; the jobs are independent and identically constructed, and a full re-run costs hours. Half 1 is evidence for the construction, not for each corner's arithmetic.",
  "status": "PASS"

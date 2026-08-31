@@ -3,7 +3,10 @@
   "workstream": "WS9",
   "vehicle": "Vehicle One (Class 8 6x4 tractor + van trailer)",
   "assignment": "WS9_vehicle_one_wave2/ASSIGNMENT.md",
-  "baseline_of_record": "BASELINE_v4.md",
+  "assignment_baseline": "BASELINE_v4.md",
+  "baseline_of_record": "BASELINE_v5.md",
+  "round": "r3-concordant re-run",
+  "round_note": "ASSIGNMENT.md was written against BASELINE_v4 and its rulings R25-R33 / D13-D15 govern the trial unchanged. BASELINE_v5 is the baseline of record for THIS artifact: it receives WS9 at R37-R39, it adds R34 (the 10 Hz trace export, which names WS9 RE-RUNS explicitly and which this artifact complies with) and R38 (the trip-time gate, pre-committed AFTER WS9 ran, applied BY THE LEAD at ratification from `sanity.trip_time_the_metric_cannot_see` - NOT applied here), and R39/ESC-8 is the order this re-run executes. WS9's verdicts are PROVISIONAL under R37 and this round reopens none of them.",
   "python": "3.14.3",
   "numpy": "2.5.2",
   "seeds": [
@@ -55,47 +58,117 @@
     "bytes": 18592
    },
    "ws8_candidates.py": {
-    "sha256": "e3a741f4097f13d8d79545e9196e660ccec829646431d133f5ddaecce0a07c67",
-    "bytes": 106340
+    "sha256": "66ec2ec831c735bc2e001a4fdb309b48d5c984eef09d0ae1830ae048fc1910fa",
+    "bytes": 141034
    },
    "ws8_whr.py": {
     "sha256": "674f91016f31cd29cac55cfdd71a6470d079b5699532809def2682dea49fdf5f",
     "bytes": 5986
+   },
+   "run_ws8.py [rule source, NOT imported]": {
+    "sha256": "3b667eb825164299bb19c43dd0461e4424c079763476d29666de2d3be2174f5d",
+    "bytes": 229070
+   }
+  },
+  "sibling_workstream_sources_reached_through_ws8": {
+   "../WS4_genset/ws4_models.py": {
+    "sha256": "33d9b498ec5bb59da92330ad25da7ce3d8899c2e80b1e937b92394e0dc5f9716",
+    "bytes": 16676
+   },
+   "../WS4_genset/ws4_chain.py": {
+    "sha256": "5ee6b02df36903b5c5b5c4b97071bedf7aa8d5f0a5646ae0557806c966b2722a",
+    "bytes": 18763
+   },
+   "../WS3_battery/ws3_cells.py": {
+    "sha256": "4253ec9d29df101ac2107df469e1b62b710564bef429ddfda7e501a39b0c7f6e",
+    "bytes": 7173
+   },
+   "../WS2_traction_motor/results.json": {
+    "sha256": "78266ce69cf6485e471b4e04d2f01c7c085f44730203d5a7a90aeaada1a69beb",
+    "bytes": 31834
+   },
+   "../WS2_traction_motor/data/effmap_motor_inverter_662V.csv": {
+    "sha256": "e0f617eafbcead33a8bb5edc07b95174826bd300be3b43b78b1593aa93c8ba4c",
+    "bytes": 330413
+   },
+   "../WS2_traction_motor/data/cycle_loss_summary.csv": {
+    "sha256": "280f2549950abe3951ff4d9f5ffcd85a44d354f62591c3c6e5a14262ca15d7b9",
+    "bytes": 574
    }
   },
   "ws8_artifacts_hashed_but_not_read": {
    "results_ws8.json": {
-    "sha256": "c1b21b0b91b14d4d4c25dc25e501bc4afe1a332b31bcfd8b211e74a7e87d706f",
-    "bytes": 3036230
+    "sha256": "de125deb97bdb9d8b61c378206493adeaf22d294ca8005a8d9817c4ab03fa3d5",
+    "bytes": 4000786
    },
    "REPORT_WS8.md": {
-    "sha256": "9cbfa9336075d6dd50187585d0f1f8e46c6013ebabef7f8199e1b4f69af04106",
-    "bytes": 176516
+    "sha256": "1677e7e680f4959b4c03601377583b8469a71b666bd6bcb3f8ca035d2b45ad4e",
+    "bytes": 300474
    },
    "R2_DIRECTIVE.md": {
     "sha256": "e3040204e8f70f0fa431ad4cfdb2af3514a22b4df7dee49a296aece00f25da3d",
     "bytes": 2179
    },
+   "R3_DIRECTIVE.md": {
+    "sha256": "a55b093776ab6a053bc677524c13dd80a64659026f23e698ee1e5a829ead9a5b",
+    "bytes": 1925
+   },
+   "CHANGELOG_WS8_r2.md": {
+    "sha256": "db8ed7fdb2ff9557e35cd7dd1051aa013bdee013c588bc7642d6e19b971f3eab",
+    "bytes": 7922
+   },
+   "CHANGELOG_WS8_r3.md": {
+    "sha256": "b67ee6ed57387f76b7ae8d767f2a9dd4d2204de7cec1b9bc69c11ad5d7b4e296",
+    "bytes": 16536
+   },
    "FINDINGS_WS8_r1.md": {
     "sha256": "b3db6878367b39f13ce2d430181ffcccd6e8c078308caf5d534b40c8656c3ce8",
     "bytes": 28937
+   },
+   "FINDINGS_WS8_r2.md": {
+    "sha256": "08924729469d8d719bc94348c7636dce15d3031d7950aa8f36381c96e52dfd56",
+    "bytes": 21242
+   },
+   "FINDINGS_WS8_r3.md": {
+    "sha256": "2f4b95b65b53c89695aab4276c9651418a3b975c6820804fc87022bb6b58da69",
+    "bytes": 43575
    }
   },
   "ws8_code_round_fingerprint": {
+   "r2_features": {
+    "cold_charge_acceptance_wired": true,
+    "derated_engine_present": true,
+    "one_spin_rule_present": true,
+    "errata_switches_present": true,
+    "hot_altitude_corner_present": true,
+    "heat_split_in_params": true
+   },
+   "r3_features": {
+    "overrun_rule_present": true,
+    "overrun_thresholds_present": true,
+    "braking_mask_present": true,
+    "exclusivity_report_present": true,
+    "run_closure_present": true,
+    "resistor_overcommitment_present": true,
+    "b1_errata_switch_present": true,
+    "s0_launch_fuel_errata_switch_present": true
+   },
+   "code_round": "r3",
+   "ladder": "r1 -> r2 -> r3. The round reported is the highest one ALL of whose features are present; a partial r3 reports r2, which is the conservative direction.",
+   "r3_adjudication": "NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`; the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 finding (ESC-WS9-10).",
    "cold_charge_acceptance_wired": true,
    "derated_engine_present": true,
    "one_spin_rule_present": true,
    "errata_switches_present": true,
    "hot_altitude_corner_present": true,
-   "heat_split_in_params": true,
-   "code_round": "r2"
+   "heat_split_in_params": true
   },
   "ws9_own_files": {
    "run_ws9.py": {
-    "sha256": "23c7d3c4b344eb0f930e969aaeb781f8b96bf0a285c6953fcada5cc9addc4c2f"
+    "sha256": "eb06e2edd80d8cdd58846b7776ed83341314351d67dad0878d0b4b7b609e837e"
    },
    "ws9_params.py": {
-    "sha256": "927e8584f5c46dbc8b8350e6c6fc8b4ca3f0c99f0a4be6bf6980a395e6f76fb5"
+    "sha256": "fc5921beffc31650131fd9a255f1f512360e5653732befcfc390274edfe35a13"
    },
    "ws9_duty.py": {
     "sha256": "86e9d6c18c7b70cc63d66d775d3678220d7e843e04f6979b9b87403127dadc11"
@@ -125,19 +198,22 @@
     "sha256": "532f152c1232fa3fadb8ec0943a7a85fec8f4ea01597ae21656056149990bd8e"
    },
    "ws9_blocks.py": {
-    "sha256": "15c2dc9e548accd0bfe5138364caae289e042cd256421ad667740e7f6bb5deb1"
+    "sha256": "36e6ae8ac2111949bc7b1672ccf326b7aa96ad2c7272d178f2de3d8481111c68"
+   },
+   "ws9_concordance.py": {
+    "sha256": "52ad33f2eeb93120700dc868ff487e3abcf4e719910e6f1424dfdaf60885c75d"
    },
    "make_report_ws9.py": {
-    "sha256": "326dff4180de3f928996293b70227f7f3d9005bf9508b66c2ddf4b83aced15a2"
+    "sha256": "c6e996b2f5a1993a09570514c9024ac627207e63d38a9a9ac5348c87df8afb21"
    },
    "verify_ws9.py": {
-    "sha256": "8c9789e294333def164dad804f31d71f326000baefae02ec788d0705b9e28727"
+    "sha256": "7af33e0753c03e34cd1d925aab4914524594508f0bb2188e5ea936d235d2c53d"
    },
    "check_determinism_ws9.py": {
-    "sha256": "ffcb0dc03e36efaff5c92ab38f2c4fc387abfbcf3b9f8b9683a3e2c12b1fe86a"
+    "sha256": "73f4e536fcd2c5a4777cffcd7b45317e37c9082f4dffb51fb9add755fe4dbaa1"
    }
   },
-  "statement": "WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from. If WS8's round 2 regenerates its artifacts after this run, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8's round 2 changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for."
+  "statement": "WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from, which round the code is at, and - new in the r3-concordant re-run - the sibling-workstream sources WS9 reaches THROUGH WS8, which the round-1 pin did not cover. If WS8 regenerates its ARTIFACTS, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8 or a pinned sibling changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for, and ESC-WS9-8's 'one-flag' claim is what this re-run exercised."
  },
  "params": {
   "inherited_from_ws8": {
@@ -321,6 +397,8 @@
    "text": "assignment, quoted verbatim: 'ADVANCE only if >=3% better than S0 on the DESIGN DUTY at nominal, ensemble-min, AND >=0% at every R28 corner; report the control-duty result alongside without it gating.'"
   },
   "whr_gate_pct": 2.5,
+  "r38_trip_time_gate_pct": 5.0,
+  "r38_applied_by": "THE LEAD, at ratification - not by this pipeline",
   "citations": {
    "ACHATES_OP": {
     "claim": "peak brake thermal efficiency 49.2% for the 10.6 L heavy-duty opposed-piston (OP3) diesel; 'large areas of the speed/load map above 44% BTE'; heat rejection 'on the order of 30% lower' than a four-stroke; 10%+ fuel-economy advantage over a best-in-class reference engine in real-world operation (measured 16% / 4% / 21% on three routes against a Freightliner Cascadia with a Detroit DD15 Gen 5); conventional one-box underfloor DOC+DPF+SCR+ASC aftertreatment only",
@@ -101224,6 +101302,1527 @@
    }
   }
  },
+ "traces_r34": {
+  "rule": "R34 (BASELINE_v5 program hygiene): every pipeline exports a 10 Hz trace file per run, feeding the WS10 exhibit and simulator; WS5, WS9 RE-RUNS and all later work comply from their next artifact. This is WS9's next artifact.",
+  "selection_rule": "every candidate INCLUDING THE RULER, on the DESIGN duty (the duty that gates), at the NOMINAL corner, on the FIRST seed of the ensemble - the full candidate set on the gating duty. A declared subset, following WS4's, WS5's and WS11's precedent under this same ruling; the literal reading is 576 files and some gigabytes. Escalated as ESC-WS9-12 rather than decided here.",
+  "columns": [
+   "t",
+   "v",
+   "s",
+   "grade",
+   "F_trac",
+   "F_regen",
+   "F_retard",
+   "F_friction"
+  ],
+  "sample_rate_Hz": 10.0,
+  "n_files": 6,
+  "total_bytes": 41247291,
+  "all_present": true,
+  "all_unchanged_since_written": true,
+  "files": [
+   {
+    "file": "data/trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S0R",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 99417,
+    "dt_s": 0.1,
+    "distance_m": 165000.91889715116,
+    "duration_s": 9941.6,
+    "sha256": "daae922d3dc1d92a0fdaf2e17c99671679be72dbd2289d8076cf08d6e6499a5e",
+    "present": true,
+    "bytes": 6709983,
+    "sha256_on_disk": "daae922d3dc1d92a0fdaf2e17c99671679be72dbd2289d8076cf08d6e6499a5e",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S5",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 110535,
+    "dt_s": 0.1,
+    "distance_m": 165000.36168950578,
+    "duration_s": 11053.400000000001,
+    "sha256": "5838f3b35a8b8d4ce08c0e972b9a0a8cda34a8ab479f721cf27d0a18d98de170",
+    "present": true,
+    "bytes": 7501557,
+    "sha256_on_disk": "5838f3b35a8b8d4ce08c0e972b9a0a8cda34a8ab479f721cf27d0a18d98de170",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S5-13L",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 103823,
+    "dt_s": 0.1,
+    "distance_m": 165000.97580449746,
+    "duration_s": 10382.2,
+    "sha256": "38ed6e6baa0966737dd60aa21ad719661d1ad526797a9fccf33a58d6e23dd850",
+    "present": true,
+    "bytes": 7031838,
+    "sha256_on_disk": "38ed6e6baa0966737dd60aa21ad719661d1ad526797a9fccf33a58d6e23dd850",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S6",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 99655,
+    "dt_s": 0.1,
+    "distance_m": 165000.66063702386,
+    "duration_s": 9965.400000000001,
+    "sha256": "c5ac3026585e06dc8e5b476ed7346e79470c7c85db6eb6b87faef99ca3104be9",
+    "present": true,
+    "bytes": 6726404,
+    "sha256_on_disk": "c5ac3026585e06dc8e5b476ed7346e79470c7c85db6eb6b87faef99ca3104be9",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S7",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 99138,
+    "dt_s": 0.1,
+    "distance_m": 165000.86690180027,
+    "duration_s": 9913.7,
+    "sha256": "bfda2526d94f81a7d5064fcf9d6b8f42c8212c42491c2e58e528fd679c9976b4",
+    "present": true,
+    "bytes": 6739794,
+    "sha256_on_disk": "bfda2526d94f81a7d5064fcf9d6b8f42c8212c42491c2e58e528fd679c9976b4",
+    "unchanged": true
+   },
+   {
+    "file": "data/trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv",
+    "candidate": "S4p",
+    "duty": "GH-REG-165",
+    "corner": "nominal",
+    "seed": 8101,
+    "rows": 96453,
+    "dt_s": 0.1,
+    "distance_m": 165000.4149060681,
+    "duration_s": 9645.2,
+    "sha256": "ad9daecd70aecf80ffaa77ee0157388fae15207c29b3a3c35a3eb90a64c1cf98",
+    "present": true,
+    "bytes": 6537715,
+    "sha256_on_disk": "ad9daecd70aecf80ffaa77ee0157388fae15207c29b3a3c35a3eb90a64c1cf98",
+    "unchanged": true
+   }
+  ]
+ },
+ "concordance_ws8_r3": {
+  "_what": "ESC-WS9-8's ask, executed field by field against WS8 ROUND THREE (r2 is superseded; BASELINE_v5 R35 and R39/ESC-8). Every field is extracted from source by `ast` and every verdict is computed by comparing the two extractions - nothing here is a hand-written concordance claim, which is the defect WS8's own r2 and r3 adjudications found three times.",
+  "_pinned_round_is_not_clean": "THE r3 PINNED HERE IS AN ADJUDICATED-NOT-CLEAN r3. FINDINGS_WS8_r3.md returns 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`, and the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins r3 because BASELINE_v5 R39/ESC-8 orders it. If the lead bounces WS8 to an r4, THIS PIN IS STALE AGAIN and WS9 must re-run. WS9 does not resolve, soften or dispose of any WS8 finding - see ESC-WS9-10.",
+  "implementations": {
+   "spin_rule_on_the_machines_shaft": {
+    "esc_ws9_8_name": "the spin rule applied to the machine's shaft rather than the vehicle's force channels",
+    "ws8_r3_source": "ws8_candidates.machine_idle_mask + its two constants",
+    "ws9_source": "ws9_candidates.spin_drag_kw and the S5 inline site",
+    "fields": [
+     {
+      "field": "unloaded_force_threshold_N",
+      "ws8_r3": 1.0,
+      "ws9": 1.0,
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "WS9 binds WS8's own constant rather than restating it"
+     },
+     {
+      "field": "minimum_speed_threshold_m_per_s",
+      "ws8_r3": 0.5,
+      "ws9": 0.5,
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "WS9 binds WS8's own constant rather than restating it"
+     },
+     {
+      "field": "channels_tested_for_unloaded",
+      "ws8_r3": [
+       "F_regen",
+       "F_retard",
+       "F_trac"
+      ],
+      "ws9": [
+       "<argument> f_machine_cmd_N"
+      ],
+      "verdict": "DIFFERS_BY_DESIGN",
+      "declared_in": "REPORT_WS9 section 12.1 row F5; ESC-WS9-8 names this as one of WS9's three own implementations",
+      "note": "WS8 tests the VEHICLE's three commanded force channels; WS9 tests the MACHINE's own commanded force, because in S5 and S7 the machine is not the only traction path and a vehicle channel can be non-zero while the machine itself is unloaded. Same rule, evaluated on the shaft that pays the drag."
+     },
+     {
+      "field": "charged_only_when_geared_and_unloaded",
+      "ws8_r3": true,
+      "ws9": true,
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "the geared/disconnected test is the candidate's own in both (WS8's docstring says so explicitly); the UNLOADED test is the shared rule. Charging nothing while loaded is what stops the WS2 map's loss being counted twice - WS8 r1 finding F5."
+     },
+     {
+      "field": "threshold_application_sites_in_ws9",
+      "ws8_r3": "one rule, one threshold, every candidate (r1 finding F5)",
+      "ws9": [
+       {
+        "constant": "SPIN_IDLE_FORCE_N",
+        "op": "LtE",
+        "text": "np.abs(f_machine_cmd_N) <= SPIN_IDLE_FORCE_N"
+       },
+       {
+        "constant": "SPIN_IDLE_V_MIN_MS",
+        "op": "Gt",
+        "text": "v > SPIN_IDLE_V_MIN_MS"
+       },
+       {
+        "constant": "SPIN_IDLE_V_MIN_MS",
+        "op": "Gt",
+        "text": "v > SPIN_IDLE_V_MIN_MS"
+       },
+       {
+        "constant": "SPIN_IDLE_FORCE_N",
+        "op": "LtE",
+        "text": "np.abs(f_machine_cmd) <= SPIN_IDLE_FORCE_N"
+       }
+      ],
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "every WS9 site that applies the rule, extracted by ast: all of them compare against the same two inherited constants, which is what 'one rule, one threshold' means, measured."
+     }
+    ]
+   },
+   "correction_pricing_on_ws9_own_energy_keys": {
+    "esc_ws9_8_name": "the correction pricing on WS9's own energy keys",
+    "ws8_r3_source": "run_ws8.genset_eta_for_correction + run_ws8.apply_energy_corrections (read as text, not imported)",
+    "ws9_source": "ws9_corrections.correction_eta + ws9_corrections.apply_energy_corrections",
+    "fields": [
+     {
+      "field": "eta_sanity_bounds",
+      "ws8_r3": [
+       0.1,
+       0.5
+      ],
+      "ws9": [
+       0.1,
+       0.5
+      ],
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "carried verbatim; the clip flag is exported in both"
+     },
+     {
+      "field": "priority_ladder_basis_strings",
+      "ws8_r3": [
+       "FALLBACK: default",
+       "FALLBACK: genset best point (the path did not run on this cycle, so there is no duty average)",
+       "FALLBACK: island BSFC x axle-A driveline (the path did not run on this cycle)",
+       "duty-averaged genset fuel-to-bus over this run",
+       "duty-averaged mechanical fuel-to-wheel over this run (no genset exists; bus-side shortfall priced on the wheel-side path, the generous direction)"
+      ],
+      "ws9": [
+       "duty-averaged ENGINE fuel-to-wheel over this run (no genset ran; a bus-side shortfall priced on the wheel-side path, the generous direction)",
+       "duty-averaged vehicle fuel-to-wheel over this run (the candidate has no separable engine wheel work)",
+       "FALLBACK: default (no path ran on this cycle)",
+       "duty-averaged genset fuel-to-bus over this run"
+      ],
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "both ladders are: (1) a genset that ran -> duty-averaged fuel-to-BUS; (2) otherwise the mechanical path that ran -> duty-averaged fuel-to-WHEEL, declared as the generous direction; (3) a declared fallback. Same rule, same priority, same declared direction of error."
+     },
+     {
+      "field": "energy_keys_read_to_price_the_correction",
+      "ws8_r3": [
+       "e_genset_bus_kWh",
+       "e_mech_wheel_kWh",
+       "fuel_g",
+       "fuel_g_genset"
+      ],
+      "ws9": [
+       "e_engine_wheel_kWh",
+       "e_genset_bus_kWh",
+       "e_wheel_tractive_kWh",
+       "fuel_g"
+      ],
+      "verdict": "DIFFERS_BY_DESIGN",
+      "declared_in": "ws9_corrections module docstring; REPORT_WS9 section 12.1 rows F4/F6; ESC-WS9-8 names this as one of WS9's three own implementations",
+      "note": "WS9's candidates have energy paths WS8 has no name for, so the KEYS differ while the RULE does not. The two substantive differences are: WS8 divides genset bus energy by `fuel_g_genset` where WS9 divides it by `fuel_g` (equal whenever the only fuel burned is the genset's - measured in `measured` below, not assumed); and WS8's mechanical basis is `e_mech_wheel_kWh` where WS9's is `e_engine_wheel_kWh` with `e_wheel_tractive_kWh` as a declared fallback, which is the stricter of the two because it refuses to credit the engine with regenerated wheel work."
+     },
+     {
+      "field": "corrected_fuel_formula",
+      "ws8_r3": "acc['fuel_g'] + g_soc + g_uns",
+      "ws9": "a['fuel_g'] + g_soc + g_uns",
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "raw fuel + charge-sustaining correction + unserved correction"
+     },
+     {
+      "field": "credit_free_variant_formula",
+      "ws8_r3": "acc['fuel_g'] + g_soc_def + g_uns",
+      "ws9": "a['fuel_g'] + max(g_soc, 0.0) + g_uns",
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "F4's credit-free variant. WS8 assigns `g_soc_def = max(g_soc, 0.0)` first and WS9 inlines the same max; both suppress the credit and keep the deficit make-up."
+     },
+     {
+      "field": "kWh_to_grams_conversion",
+      "ws8_r3": "3600.0 / max(eta * LHV_KJ_PER_G, 1e-09)",
+      "ws9": "3600.0 / max(eta * LHV_KJ_PER_G, 1e-09)",
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "same guard against a degenerate denominator"
+     },
+     {
+      "field": "correction_share_of_fuel",
+      "ws8_r3": "(g_soc + g_uns) / acc['fuel_g_corrected'] if acc['fuel_g_corrected'] > 0 else 0.0",
+      "ws9": "(g_soc + g_uns) / a['fuel_g_corrected'] if a['fuel_g_corrected'] > 0 else 0.0",
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": ""
+     },
+     {
+      "field": "charge_sustaining_is_symmetric",
+      "ws8_r3": "-d_soc * usable, unconditionally (F4 convention)",
+      "ws9": "0.0 if is_plug_in else -d_soc * usable",
+      "verdict": "DIFFERS_BY_DESIGN",
+      "declared_in": "ESC-3 as ruled in R27 (the electricity term); ws9_corrections.apply_energy_corrections docstring; REPORT_WS9 section 12.1 row F4",
+      "note": "identical for every charge-sustaining candidate. WS9 adds ONE exemption WS8 has no candidate for: a PLUG-IN's spent state of charge is grid energy it was bought to use and is metered as grid energy, not charged back as fuel. Charging it back would be the accounting ESC-WS8-3 escalated and R27/ESC-3 ruled out."
+     },
+     {
+      "field": "exported_field_names",
+      "ws8_r3": [
+       "charge_sustain_deficit_kWh",
+       "correction_eta_basis",
+       "correction_eta_clipped",
+       "correction_eta_fuel_to_bus",
+       "correction_eta_r1_basis",
+       "correction_eta_r1_peak_point",
+       "correction_share_of_fuel",
+       "e_fuel_MJ_corrected",
+       "e_fuel_MJ_corrected_deficit_only",
+       "e_fuel_MJ_corrected_r1_pricing",
+       "fuel_g_charge_correction",
+       "fuel_g_charge_correction_is_credit",
+       "fuel_g_corrected",
+       "fuel_g_corrected_deficit_only",
+       "fuel_g_corrected_r1_pricing",
+       "fuel_g_raw",
+       "fuel_g_unserved_correction"
+      ],
+      "ws9": [
+       "charge_sustain_deficit_kWh",
+       "correction_eta",
+       "correction_eta_basis",
+       "correction_eta_clipped",
+       "correction_share_of_fuel",
+       "e_fuel_MJ_corrected",
+       "e_fuel_MJ_corrected_deficit_only",
+       "fuel_g_charge_correction",
+       "fuel_g_charge_correction_is_credit",
+       "fuel_g_corrected",
+       "fuel_g_corrected_deficit_only",
+       "fuel_g_raw",
+       "fuel_g_unserved_correction",
+       "is_plug_in"
+      ],
+      "verdict": "DIFFERS_BY_DESIGN",
+      "declared_in": "REPORT_WS9 section 12.1 rows F4/F6",
+      "note": "the common set is what a consumer reads. WS8-only names are its r1-pricing one-factor carriers (`*_r1_pricing`), which exist so WS8 can report the F6 one-factor row; WS9 never had r1 pricing, so it carries no such row. WS9-only names are the plug-in flag and the primary-energy terms ESC-3 adds."
+     }
+    ],
+    "measured": {
+     "what": "relative difference between WS8's denominator (`fuel_g_genset`) and WS9's (`fuel_g`) on every run that takes the genset branch of the ladder",
+     "n_runs_on_the_genset_branch": 96,
+     "worst_case_relative_difference": 0.0,
+     "governing_case": "S4p/nominal/GH-REG-165/seed8101",
+     "max_by_candidate": {
+      "S4p": 0.0
+     },
+     "note": "zero means the two denominators are the same number on every run that uses them, so the key difference is a NAMING difference and not a pricing difference. Any candidate in WS9 that runs a genset burns fuel for nothing else."
+    }
+   },
+   "pack_temperature_as_a_state": {
+    "esc_ws9_8_name": "the pack temperature as a STATE rather than the corner's ambient",
+    "ws8_r3_source": "ws8_candidates.Candidate (the ceiling call site) + ws8_electric.Pack8",
+    "ws9_source": "ws9_thermal.PackThermal + ws9_storage.WS9Pack",
+    "fields": [
+     {
+      "field": "charge_ceiling_evaluation_point",
+      "ws8_r3": [
+       "self.ctx.t_amb_c"
+      ],
+      "ws9": [
+       "self.t",
+       "self.t_amb"
+      ],
+      "verdict": "DIFFERS_BY_DESIGN",
+      "declared_in": "R30 (THE COLD WALL) as executed in ws9_thermal; REPORT_WS9 section 12.1 row F2; sanity.cold_wall_exercised_R30; ESC-WS9-8 names this as one of WS9's three own implementations",
+      "note": "WS8 r3 evaluates the ceiling at the CORNER'S AMBIENT, one constant per run. WS9 evaluates it at the pack's MODELLED TEMPERATURE, integrated at 10 Hz from a cold-soaked start. Stricter than WS8 at the start of a cold trip - the pack is at ambient and has not been warmed - and kinder once coolant or ohmic heat has raised it. The direction is MEASURED per candidate in `measured` below."
+     },
+     {
+      "field": "cold_factor_interpolation_breakpoints_C",
+      "ws8_r3": [
+       -10.0,
+       15.0
+      ],
+      "ws9": [
+       -10.0,
+       15.0
+      ],
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "the same -10 C / +15 C interpolation shape WS3 gave WS8"
+     },
+     {
+      "field": "clamped_to_warm_value_above_target",
+      "ws8_r3": true,
+      "ws9": true,
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "both clamp the factor at 1.0, so no corner at or above +15 C is touched by the cold model"
+     },
+     {
+      "field": "discharge_limit_derated_in_the_cold",
+      "ws8_r3": false,
+      "ws9": false,
+      "verdict": "CONSISTENT",
+      "declared_in": null,
+      "note": "neither derates DISCHARGE: WS3 characterised charge acceptance only, and inventing a cold discharge derate would be writing WS3's trade study. WS8 states this in `Pack8.p_cont_chg_kw_at`; WS9 inherits it."
+     },
+     {
+      "field": "cold_factor_source",
+      "ws8_r3": "Pack8.COLD_CHG_FACTOR[chem] - WS3's own cells",
+      "ws9": "the cited external cell's declared cold factor (ESC-1(c))",
+      "verdict": "DIFFERS_BY_DESIGN",
+      "declared_in": "ESC-1(c) as ruled in R39/ESC-1; ws9_storage.WS9Pack spec `basis` field, which states 'CITED EXTERNAL cell, explicitly NOT a WS3 cell'",
+      "note": "this is the S4' bracket the assignment ordered, not a silent substitution: the pack that uses it is labelled as non-WS3 in its own spec block. WS9's packs built on WS3 cells use WS8's Pack8 unchanged."
+     }
+    ],
+    "measured": {
+     "what": "WS8 r3 would hold the charge ceiling at the corner-ambient value for the whole run; WS9 starts there and lets the modelled pack temperature move it",
+     "corner": "cold_minus10C",
+     "duty": "GH-REG-165",
+     "per_candidate": {
+      "S5": {
+       "t_pack_start_C": -10.0,
+       "t_pack_end_C": 39.19215979896139,
+       "ws8_r3_ceiling_at_corner_ambient_kW": 136.2704,
+       "warm_ceiling_kW": 136.2704,
+       "collapse_factor_at_ambient": 1.0,
+       "seconds_below_target": 846.7500000001239
+      },
+      "S5-13L": {
+       "t_pack_start_C": -10.0,
+       "t_pack_end_C": 35.17458963434551,
+       "ws8_r3_ceiling_at_corner_ambient_kW": 176.0512,
+       "warm_ceiling_kW": 176.0512,
+       "collapse_factor_at_ambient": 1.0,
+       "seconds_below_target": 886.9500000001331
+      },
+      "S7": {
+       "t_pack_start_C": -10.0,
+       "t_pack_end_C": 58.63608478330286,
+       "ws8_r3_ceiling_at_corner_ambient_kW": 72.3672,
+       "warm_ceiling_kW": 72.3672,
+       "collapse_factor_at_ambient": 1.0,
+       "seconds_below_target": 583.8500000000643
+      },
+      "S4p": {
+       "t_pack_start_C": -10.0,
+       "t_pack_end_C": 38.434381291056,
+       "ws8_r3_ceiling_at_corner_ambient_kW": 22.5,
+       "warm_ceiling_kW": 150.0,
+       "collapse_factor_at_ambient": 0.15,
+       "seconds_below_target": 1947.849999999324
+      }
+     },
+     "n_candidates_with_a_pack": 4,
+     "n_candidates_whose_ceiling_the_cold_actually_moves": 1,
+     "scope": "the difference between the two conventions can only bite where the cold derate bites at all. For the LTO buffers the -10 C factor clamps to 1.0, so WS8 r3's convention and WS9's give the SAME ceiling at every sample and the difference is exactly zero. It is a real difference for one candidate: S4', whose cited external cell (ESC-1(c)) collapses to 0.15 of its warm ceiling at ambient and recovers as the modelled pack warms. That is the whole measured extent of this declared difference.",
+     "note": "start temperature equals the corner ambient for every candidate, which is the cold-soaked start R30 asks for, so WS9 and WS8 r3 agree exactly at t=0 and WS9 is kinder afterwards by exactly as much as the modelled warming earns. `seconds_below_target` is how long that has not happened yet."
+    }
+   }
+  },
+  "summary": {
+   "spin_rule_on_the_machines_shaft": {
+    "n_fields": 5,
+    "n_consistent": 4,
+    "n_differs_by_design": 1,
+    "n_differs_undeclared": 0,
+    "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+   },
+   "correction_pricing_on_ws9_own_energy_keys": {
+    "n_fields": 9,
+    "n_consistent": 6,
+    "n_differs_by_design": 3,
+    "n_differs_undeclared": 0,
+    "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+   },
+   "pack_temperature_as_a_state": {
+    "n_fields": 5,
+    "n_consistent": 3,
+    "n_differs_by_design": 2,
+    "n_differs_undeclared": 0,
+    "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+   }
+  },
+  "any_undeclared_difference": false,
+  "undeclared_fields": [],
+  "import_surface": {
+   "run_ws8[rule-source, not imported]:CORRECTION_ETA_BOUNDS": {
+    "module": "run_ws8[rule-source, not imported]",
+    "symbol": "CORRECTION_ETA_BOUNDS",
+    "found": true,
+    "resolved_in": "run_ws8",
+    "source_bytes": 36,
+    "source_sha256": "7085eeba62e632547879ea3369da104d354dff5f1a5ada8960b976cb5f270034",
+    "used_by": [
+     "ws9_corrections.py"
+    ]
+   },
+   "run_ws8[rule-source, not imported]:apply_energy_corrections": {
+    "module": "run_ws8[rule-source, not imported]",
+    "symbol": "apply_energy_corrections",
+    "found": true,
+    "resolved_in": "run_ws8",
+    "source_bytes": 4308,
+    "source_sha256": "1f46d3a38790ad1e753bda81590b4f362d6b522751f08519ce46026fe1b8345d",
+    "used_by": [
+     "ws9_corrections.py"
+    ]
+   },
+   "run_ws8[rule-source, not imported]:genset_eta_for_correction": {
+    "module": "run_ws8[rule-source, not imported]",
+    "symbol": "genset_eta_for_correction",
+    "found": true,
+    "resolved_in": "run_ws8",
+    "source_bytes": 3308,
+    "source_sha256": "93ae0ff3d932592e6ffb04241885b1862c830b5cf9a0a266d9f1a5a4d166d091",
+    "used_by": [
+     "ws9_corrections.py"
+    ]
+   },
+   "ws8_candidates:Candidate": {
+    "module": "ws8_candidates",
+    "symbol": "Candidate",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 8517,
+    "source_sha256": "6e8abcd0d0d5628add980b52ac1f0ea31c8c6026db64efb09913f9a5ec25038e",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:Ctx": {
+    "module": "ws8_candidates",
+    "symbol": "Ctx",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 2620,
+    "source_sha256": "d21612c9af0a376ad3743ad565b27d16d9e9ef267585ffeec36beca5fc6f88b7",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:EDRIVE_RATIO": {
+    "module": "ws8_candidates",
+    "symbol": "EDRIVE_RATIO",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 19,
+    "source_sha256": "a636bb617ae1e88a726f0656c46f5ede46e09c8ff2dda099095b357b71ef3ac7",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:FRICTION_BRAKE_CONT_ALLOWANCE_KW": {
+    "module": "ws8_candidates",
+    "symbol": "FRICTION_BRAKE_CONT_ALLOWANCE_KW",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 39,
+    "source_sha256": "c25fed85feb94e8b6248ddfd4f6cddb67ed5c5e438f7623facc6e1c3484f1248",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:GensetLine": {
+    "module": "ws8_candidates",
+    "symbol": "GensetLine",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 4043,
+    "source_sha256": "846df5d2a3bc636fca68282805f877166d21efeb63a45a03a978a0c0eed1048e",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_primemover.py"
+    ]
+   },
+   "ws8_candidates:SPIN_IDLE_FORCE_N": {
+    "module": "ws8_candidates",
+    "symbol": "SPIN_IDLE_FORCE_N",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 23,
+    "source_sha256": "cdac2424d51d58842d79be05c1fcae8f6c28b177dbb01b69392f2f0a6967d30c",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_concordance.py"
+    ]
+   },
+   "ws8_candidates:SPIN_IDLE_V_MIN_MS": {
+    "module": "ws8_candidates",
+    "symbol": "SPIN_IDLE_V_MIN_MS",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 24,
+    "source_sha256": "d2c40722ccade81a2cfb2ef72220bd72c0c4383fce737fe1e1480e9c21e06e95",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_concordance.py"
+    ]
+   },
+   "ws8_candidates:SUSTAINED_CLIMB_S": {
+    "module": "ws8_candidates",
+    "symbol": "SUSTAINED_CLIMB_S",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 25,
+    "source_sha256": "4e8dd69748e804ae500fb8d3b10bd2176573619672697980fe8f557464ae7b4c",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:_moving_average": {
+    "module": "ws8_candidates",
+    "symbol": "_moving_average",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 236,
+    "source_sha256": "f8d8b095842ae88781a0efedcc5eed8255ce954a402df193b88d7d012d3d4acb",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:regen_blend": {
+    "module": "ws8_candidates",
+    "symbol": "regen_blend",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 144,
+    "source_sha256": "7511304dd30bf15b62a04cc5ef8be40128fc5db56f9ad30e8cd068b8cd6e965b",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:series_bus_demand": {
+    "module": "ws8_candidates",
+    "symbol": "series_bus_demand",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 1613,
+    "source_sha256": "222a75532c81dc5a4ff5525f2c13db30284190a9a9dcc30d71a56bc0839b7372",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:size_edrive_for_startability": {
+    "module": "ws8_candidates",
+    "symbol": "size_edrive_for_startability",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 333,
+    "source_sha256": "986163ded8fa64bcc1f90219a1fa90c58bfe43acca27091bbd4c5f0606b224d5",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_candidates:startability_force_N": {
+    "module": "ws8_candidates",
+    "symbol": "startability_force_N",
+    "found": true,
+    "resolved_in": "ws8_candidates",
+    "source_bytes": 191,
+    "source_sha256": "1b4faa60450f005c4d755dc8c611fe73238c73098d9460935e9d9ce7cb94ab93",
+    "used_by": [
+     "ws9_blocks.py",
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_cycles:CY": {
+    "module": "ws8_cycles",
+    "symbol": "CY",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 12,
+    "source_sha256": "10fe8ececba805db4579785c1952f1d7255f878fb3f0bc61581eba84a06464f6",
+    "used_by": [
+     "ws9_duty.py"
+    ]
+   },
+   "ws8_cycles:DS_GRID": {
+    "module": "ws8_cycles",
+    "symbol": "DS_GRID",
+    "found": true,
+    "resolved_in": "ws8_cycles",
+    "source_bytes": 14,
+    "source_sha256": "8429a6e258c1f15f2c6bcf77760965312cdb429f6b6c5007e9bddf6ab494b4b3",
+    "used_by": [
+     "ws9_duty.py"
+    ]
+   },
+   "ws8_cycles:build_linehaul": {
+    "module": "ws8_cycles",
+    "symbol": "build_linehaul",
+    "found": true,
+    "resolved_in": "ws8_cycles",
+    "source_bytes": 2311,
+    "source_sha256": "d14c35914d8bc9e17973604ff76ac383507c420a7cc8cd5c23ad354f656f8887",
+    "used_by": [
+     "ws9_duty.py"
+    ]
+   },
+   "ws8_cycles:build_regional": {
+    "module": "ws8_cycles",
+    "symbol": "build_regional",
+    "found": true,
+    "resolved_in": "ws8_cycles",
+    "source_bytes": 2564,
+    "source_sha256": "26f7110a5770d5290f7213570f03755e19818e5dd1a2245a597c8a9c473e7e40",
+    "used_by": [
+     "ws9_duty.py"
+    ]
+   },
+   "ws8_cycles:grade_statistics": {
+    "module": "ws8_cycles",
+    "symbol": "grade_statistics",
+    "found": true,
+    "resolved_in": "ws8_cycles",
+    "source_bytes": 1029,
+    "source_sha256": "2c696713a30fababbe9f1d71fe4c3a3bf2080e9caf11112c88e60c6aebdf26e6",
+    "used_by": [
+     "ws9_duty.py"
+    ]
+   },
+   "ws8_cycles:seeds": {
+    "module": "ws8_cycles",
+    "symbol": "seeds",
+    "found": true,
+    "resolved_in": "ws8_cycles",
+    "source_bytes": 65,
+    "source_sha256": "e0d021e1c5d016daa6b903ababc522658ff87be58187c1542e8517fb830d53e9",
+    "used_by": [
+     "ws9_duty.py"
+    ]
+   },
+   "ws8_electric:CELLS": {
+    "module": "ws8_electric",
+    "symbol": "CELLS",
+    "found": false,
+    "resolved_in": null,
+    "source_bytes": null,
+    "source_sha256": null,
+    "used_by": [
+     "ws9_storage.py"
+    ]
+   },
+   "ws8_electric:Pack8": {
+    "module": "ws8_electric",
+    "symbol": "Pack8",
+    "found": true,
+    "resolved_in": "ws8_electric",
+    "source_bytes": 4422,
+    "source_sha256": "9e224de42b845fcd183617e48901d97c4d18f8c6ce4c3fa91d414402137e23c8",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_storage.py"
+    ]
+   },
+   "ws8_electric:ScaledEDrive": {
+    "module": "ws8_electric",
+    "symbol": "ScaledEDrive",
+    "found": true,
+    "resolved_in": "ws8_electric",
+    "source_bytes": 8416,
+    "source_sha256": "bc3384c80035e0cfab74739184992da29b39d4ada8e9cc238bb209a5ab32a24e",
+    "used_by": [
+     "ws9_blocks.py",
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_electric:resistor_mass_kg": {
+    "module": "ws8_electric",
+    "symbol": "resistor_mass_kg",
+    "found": true,
+    "resolved_in": "ws8_electric",
+    "source_bytes": 89,
+    "source_sha256": "5e964cc33a3bcdaf3d0fe116f7ba6c962175bad79683aff8e8624740a0b528d3",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_storage.py"
+    ]
+   },
+   "ws8_electric:scaled_generator": {
+    "module": "ws8_electric",
+    "symbol": "scaled_generator",
+    "found": true,
+    "resolved_in": "ws8_electric",
+    "source_bytes": 1439,
+    "source_sha256": "398aba04365911f10d53cc21301ac17a5eff6e383b17ca7e0a72972f4b94b5a9",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_primemover.py"
+    ]
+   },
+   "ws8_engine:AMT": {
+    "module": "ws8_engine",
+    "symbol": "AMT",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 6195,
+    "source_sha256": "282b520f98fff4ff89c659fb0ccbb28f184ff462d23e9032a22c092b43073d88",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_engine:BSFC_ISLAND_TARGET": {
+    "module": "ws8_engine",
+    "symbol": "BSFC_ISLAND_TARGET",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 110,
+    "source_sha256": "aa4b7cf8ce898bf58c1560e44551319287b1828c105814b39ddcccf0b4199725",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:ENGINES": {
+    "module": "ws8_engine",
+    "symbol": "ENGINES",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 97,
+    "source_sha256": "238b9c96859281726726d4889856aca8ab1f2dbcaaa16e6b5e684a58e9c57511",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:ENG_11L": {
+    "module": "ws8_engine",
+    "symbol": "ENG_11L",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 207,
+    "source_sha256": "f34205c6d920ec6512b3367e35dc46f845b70c9b51b1d0b9b9103777f7f10600",
+    "used_by": [
+     "run_ws9.py"
+    ]
+   },
+   "ws8_engine:ENG_13L": {
+    "module": "ws8_engine",
+    "symbol": "ENG_13L",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 192,
+    "source_sha256": "c2cc2643af190e2e4d656cfcd7b3f3504eca2c75a8839fcec7312ee003aaa2c7",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:ENG_7L": {
+    "module": "ws8_engine",
+    "symbol": "ENG_7L",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 197,
+    "source_sha256": "04cbf44b2d764cafbe7de2c876ec3b3aad7c414b1abdff8b5eded9afc6184760",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_primemover.py"
+    ]
+   },
+   "ws8_engine:FMEP_HD": {
+    "module": "ws8_engine",
+    "symbol": "FMEP_HD",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 29,
+    "source_sha256": "7f8f7e69d1a9aaca821ebe18900e89d8d5ab76438973418f239c5f7af47888e9",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:HDWillansEngine": {
+    "module": "ws8_engine",
+    "symbol": "HDWillansEngine",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 1068,
+    "source_sha256": "17200fe16f5567aba94c74378d8b1c9ad11d8a9c662f0e03d11e4e4c5558b5e3",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:RPM_13L": {
+    "module": "ws8_engine",
+    "symbol": "RPM_13L",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 103,
+    "source_sha256": "2b99b2be19669b85c9cd34dd0067f03707c3e8dc63d072057417ea4c0d2a5d71",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:RPM_7L": {
+    "module": "ws8_engine",
+    "symbol": "RPM_7L",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 67,
+    "source_sha256": "012449a89d5c1e3af9ccf799ddf657832102f9bcecc1fe3a126e0fd447093bb8",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:TRQ_13L": {
+    "module": "ws8_engine",
+    "symbol": "TRQ_13L",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 104,
+    "source_sha256": "ddcec630bacc7519d7c93e6cefc2f8acd241d1b5075aa32291ec3f1c090f42a1",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:TRQ_7L": {
+    "module": "ws8_engine",
+    "symbol": "TRQ_7L",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 65,
+    "source_sha256": "91ec11e8f4396fef5888291a9023935f0c2ccd5d9cefbaac65be9f304bb4ca06",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:build_engine": {
+    "module": "ws8_engine",
+    "symbol": "build_engine",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 442,
+    "source_sha256": "ea979209a7403bd62c3d13a65822a272d08912edd27a583f862d6f7514c5ffe3",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:derate_factor": {
+    "module": "ws8_engine",
+    "symbol": "derate_factor",
+    "found": false,
+    "resolved_in": null,
+    "source_bytes": null,
+    "source_sha256": null,
+    "used_by": [
+     "ws9_blocks.py",
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:derated_engine": {
+    "module": "ws8_engine",
+    "symbol": "derated_engine",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 748,
+    "source_sha256": "721e6a4430b6c3a713a54432703df79ebd7601ee8df550adf31e0d1e747db3ef",
+    "used_by": [
+     "ws9_engines.py"
+    ]
+   },
+   "ws8_engine:fuel_L_per_100km": {
+    "module": "ws8_engine",
+    "symbol": "fuel_L_per_100km",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 169,
+    "source_sha256": "ffedc022677be95f654667d5b9dec62bb4948dd9f95bed28071c82efef39f7f9",
+    "used_by": [
+     "run_ws9.py"
+    ]
+   },
+   "ws8_engine:fuel_energy_MJ": {
+    "module": "ws8_engine",
+    "symbol": "fuel_energy_MJ",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 69,
+    "source_sha256": "ae22f681a22eeb46cba84cfe70c538e3ba8d9c5f6789327519dde6bbf95cb9fe",
+    "used_by": [
+     "ws9_candidates.py",
+     "ws9_corrections.py"
+    ]
+   },
+   "ws8_engine:idle_fuel_gps": {
+    "module": "ws8_engine",
+    "symbol": "idle_fuel_gps",
+    "found": true,
+    "resolved_in": "ws8_engine",
+    "source_bytes": 715,
+    "source_sha256": "0dfc8690856554602d38e2a193231990b987364e0f5e7a8e09037ac7de5dfcde",
+    "used_by": [
+     "ws9_candidates.py"
+    ]
+   },
+   "ws8_params:ADH": {
+    "module": "ws8_params",
+    "symbol": "ADH",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 16,
+    "source_sha256": "cce66aeefbbb049ffbed89887f5acc1e42e5ecc48435c211036bdec4e55c5e3b",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:AUX": {
+    "module": "ws8_params",
+    "symbol": "AUX",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 11,
+    "source_sha256": "7561f8a4425a1c121d305d44294ac63d684e776221aa88fb3d154caf225261af",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:CY": {
+    "module": "ws8_params",
+    "symbol": "CY",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 12,
+    "source_sha256": "10fe8ececba805db4579785c1952f1d7255f878fb3f0bc61581eba84a06464f6",
+    "used_by": [
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:DIESEL_DENSITY_KG_PER_L": {
+    "module": "ws8_params",
+    "symbol": "DIESEL_DENSITY_KG_PER_L",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 70,
+    "source_sha256": "ff8d8822148194ecbcdc818c98f1e6228773be97359157ff4b2fdfde979f0324",
+    "used_by": [
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:DL": {
+    "module": "ws8_params",
+    "symbol": "DL",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 16,
+    "source_sha256": "90b928d350543a3f411d5dd6d942910d1d43759107e13e1a0300af898ae797e2",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:ENGINE_HEAT_TO_COOLANT_FRAC": {
+    "module": "ws8_params",
+    "symbol": "ENGINE_HEAT_TO_COOLANT_FRAC",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 34,
+    "source_sha256": "06bed5a1692309a8ddf83eddfdb0350bb2b436685492c2900caab917483f1409",
+    "used_by": [
+     "run_ws9.py"
+    ]
+   },
+   "ws8_params:G": {
+    "module": "ws8_params",
+    "symbol": "G",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 17,
+    "source_sha256": "a9b67dfc6f46c5694c471f360d302545459f66208098a2d7d98affc42cd2d6e5",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_params.py",
+     "ws9_storage.py",
+     "ws9_walls.py"
+    ]
+   },
+   "ws8_params:LHV_KJ_PER_G": {
+    "module": "ws8_params",
+    "symbol": "LHV_KJ_PER_G",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 68,
+    "source_sha256": "21290705865df0bdfceadeb33f3c029e4a4265596a8a314ed2445ae38f521097",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_corrections.py",
+     "ws9_engines.py",
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:ML": {
+    "module": "ws8_params",
+    "symbol": "ML",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 17,
+    "source_sha256": "db038f6f6074a0242121ffa4a80bcb08d0f483e0fe164d328760b085ac890da4",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:SC": {
+    "module": "ws8_params",
+    "symbol": "SC",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 14,
+    "source_sha256": "aef099828fcf44903ce2dacc10d076c96e4167650585d4407f20d085eb1489d3",
+    "used_by": [
+     "ws9_params.py"
+    ]
+   },
+   "ws8_params:VEH": {
+    "module": "ws8_params",
+    "symbol": "VEH",
+    "found": true,
+    "resolved_in": "ws8_params",
+    "source_bytes": 15,
+    "source_sha256": "d9945c093d092df1a4a3371dcd34a3b7e271f7e75afc8ab461777d2997ccace3",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_params.py",
+     "ws9_storage.py",
+     "ws9_walls.py"
+    ]
+   },
+   "ws8_physics:DriverParams": {
+    "module": "ws8_physics",
+    "symbol": "DriverParams",
+    "found": true,
+    "resolved_in": "ws8_physics",
+    "source_bytes": 1003,
+    "source_sha256": "bd5ca357af43e6b8b5e0232646f2f17d984084d3254adbcf37f088166828491f",
+    "used_by": [
+     "run_ws9.py"
+    ]
+   },
+   "ws8_physics:build_env_tables": {
+    "module": "ws8_physics",
+    "symbol": "build_env_tables",
+    "found": true,
+    "resolved_in": "ws8_physics",
+    "source_bytes": 1107,
+    "source_sha256": "3bf9c2a435fcbb0256465593a222543a71e53411b90e39270c9ebb3f6508407d",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py"
+    ]
+   },
+   "ws8_physics:integrate_achieved": {
+    "module": "ws8_physics",
+    "symbol": "integrate_achieved",
+    "found": true,
+    "resolved_in": "ws8_physics",
+    "source_bytes": 8309,
+    "source_sha256": "84c7a6e278b4591eee1d7c874a885d636c29fa6017e3ef75dac6ec1f00f91791",
+    "used_by": [
+     "run_ws9.py"
+    ]
+   },
+   "ws8_physics:road_load_force": {
+    "module": "ws8_physics",
+    "symbol": "road_load_force",
+    "found": true,
+    "resolved_in": "ws8_physics",
+    "source_bytes": 1098,
+    "source_sha256": "60d94930b5ee4ead8bff71cabe0ef7e21f9bb8cd7ef9cfaace17641f743b3282",
+    "used_by": [
+     "run_ws9.py",
+     "ws9_blocks.py",
+     "ws9_candidates.py",
+     "ws9_storage.py",
+     "ws9_walls.py"
+    ]
+   },
+   "ws8_physics:trace_metrics": {
+    "module": "ws8_physics",
+    "symbol": "trace_metrics",
+    "found": true,
+    "resolved_in": "ws8_physics",
+    "source_bytes": 1640,
+    "source_sha256": "56497c75ac905274870c1b53952195f03186e93fb3c2b433ee11914c13209c02",
+    "used_by": [
+     "run_ws9.py"
+    ]
+   },
+   "ws8_whr:SYSTEMS": {
+    "module": "ws8_whr",
+    "symbol": "SYSTEMS",
+    "found": true,
+    "resolved_in": "ws8_whr",
+    "source_bytes": 51,
+    "source_sha256": "8c2e9ede298adbd43369ccef8a58e05dbe878e646320d99a663c9c06b8a32ebf",
+    "used_by": [
+     "run_ws9.py"
+    ]
+   }
+  },
+  "import_surface_r2_to_r3": {
+   "n_symbols": 62,
+   "rows": {
+    "run_ws8[rule-source, not imported]:CORRECTION_ETA_BOUNDS": {
+     "status": "SAME",
+     "prev_sha256": "7085eeba62e632547879ea3369da104d354dff5f1a5ada8960b976cb5f270034",
+     "now_sha256": "7085eeba62e632547879ea3369da104d354dff5f1a5ada8960b976cb5f270034"
+    },
+    "run_ws8[rule-source, not imported]:apply_energy_corrections": {
+     "status": "SAME",
+     "prev_sha256": "1f46d3a38790ad1e753bda81590b4f362d6b522751f08519ce46026fe1b8345d",
+     "now_sha256": "1f46d3a38790ad1e753bda81590b4f362d6b522751f08519ce46026fe1b8345d"
+    },
+    "run_ws8[rule-source, not imported]:genset_eta_for_correction": {
+     "status": "SAME",
+     "prev_sha256": "93ae0ff3d932592e6ffb04241885b1862c830b5cf9a0a266d9f1a5a4d166d091",
+     "now_sha256": "93ae0ff3d932592e6ffb04241885b1862c830b5cf9a0a266d9f1a5a4d166d091"
+    },
+    "ws8_candidates:Candidate": {
+     "status": "SAME",
+     "prev_sha256": "6e8abcd0d0d5628add980b52ac1f0ea31c8c6026db64efb09913f9a5ec25038e",
+     "now_sha256": "6e8abcd0d0d5628add980b52ac1f0ea31c8c6026db64efb09913f9a5ec25038e"
+    },
+    "ws8_candidates:Ctx": {
+     "status": "SAME",
+     "prev_sha256": "d21612c9af0a376ad3743ad565b27d16d9e9ef267585ffeec36beca5fc6f88b7",
+     "now_sha256": "d21612c9af0a376ad3743ad565b27d16d9e9ef267585ffeec36beca5fc6f88b7"
+    },
+    "ws8_candidates:EDRIVE_RATIO": {
+     "status": "SAME",
+     "prev_sha256": "a636bb617ae1e88a726f0656c46f5ede46e09c8ff2dda099095b357b71ef3ac7",
+     "now_sha256": "a636bb617ae1e88a726f0656c46f5ede46e09c8ff2dda099095b357b71ef3ac7"
+    },
+    "ws8_candidates:FRICTION_BRAKE_CONT_ALLOWANCE_KW": {
+     "status": "SAME",
+     "prev_sha256": "c25fed85feb94e8b6248ddfd4f6cddb67ed5c5e438f7623facc6e1c3484f1248",
+     "now_sha256": "c25fed85feb94e8b6248ddfd4f6cddb67ed5c5e438f7623facc6e1c3484f1248"
+    },
+    "ws8_candidates:GensetLine": {
+     "status": "SAME",
+     "prev_sha256": "846df5d2a3bc636fca68282805f877166d21efeb63a45a03a978a0c0eed1048e",
+     "now_sha256": "846df5d2a3bc636fca68282805f877166d21efeb63a45a03a978a0c0eed1048e"
+    },
+    "ws8_candidates:SPIN_IDLE_FORCE_N": {
+     "status": "SAME",
+     "prev_sha256": "cdac2424d51d58842d79be05c1fcae8f6c28b177dbb01b69392f2f0a6967d30c",
+     "now_sha256": "cdac2424d51d58842d79be05c1fcae8f6c28b177dbb01b69392f2f0a6967d30c"
+    },
+    "ws8_candidates:SPIN_IDLE_V_MIN_MS": {
+     "status": "SAME",
+     "prev_sha256": "d2c40722ccade81a2cfb2ef72220bd72c0c4383fce737fe1e1480e9c21e06e95",
+     "now_sha256": "d2c40722ccade81a2cfb2ef72220bd72c0c4383fce737fe1e1480e9c21e06e95"
+    },
+    "ws8_candidates:SUSTAINED_CLIMB_S": {
+     "status": "SAME",
+     "prev_sha256": "4e8dd69748e804ae500fb8d3b10bd2176573619672697980fe8f557464ae7b4c",
+     "now_sha256": "4e8dd69748e804ae500fb8d3b10bd2176573619672697980fe8f557464ae7b4c"
+    },
+    "ws8_candidates:_moving_average": {
+     "status": "SAME",
+     "prev_sha256": "f8d8b095842ae88781a0efedcc5eed8255ce954a402df193b88d7d012d3d4acb",
+     "now_sha256": "f8d8b095842ae88781a0efedcc5eed8255ce954a402df193b88d7d012d3d4acb"
+    },
+    "ws8_candidates:regen_blend": {
+     "status": "SAME",
+     "prev_sha256": "7511304dd30bf15b62a04cc5ef8be40128fc5db56f9ad30e8cd068b8cd6e965b",
+     "now_sha256": "7511304dd30bf15b62a04cc5ef8be40128fc5db56f9ad30e8cd068b8cd6e965b"
+    },
+    "ws8_candidates:series_bus_demand": {
+     "status": "SAME",
+     "prev_sha256": "222a75532c81dc5a4ff5525f2c13db30284190a9a9dcc30d71a56bc0839b7372",
+     "now_sha256": "222a75532c81dc5a4ff5525f2c13db30284190a9a9dcc30d71a56bc0839b7372"
+    },
+    "ws8_candidates:size_edrive_for_startability": {
+     "status": "SAME",
+     "prev_sha256": "986163ded8fa64bcc1f90219a1fa90c58bfe43acca27091bbd4c5f0606b224d5",
+     "now_sha256": "986163ded8fa64bcc1f90219a1fa90c58bfe43acca27091bbd4c5f0606b224d5"
+    },
+    "ws8_candidates:startability_force_N": {
+     "status": "SAME",
+     "prev_sha256": "1b4faa60450f005c4d755dc8c611fe73238c73098d9460935e9d9ce7cb94ab93",
+     "now_sha256": "1b4faa60450f005c4d755dc8c611fe73238c73098d9460935e9d9ce7cb94ab93"
+    },
+    "ws8_cycles:CY": {
+     "status": "SAME",
+     "prev_sha256": "10fe8ececba805db4579785c1952f1d7255f878fb3f0bc61581eba84a06464f6",
+     "now_sha256": "10fe8ececba805db4579785c1952f1d7255f878fb3f0bc61581eba84a06464f6"
+    },
+    "ws8_cycles:DS_GRID": {
+     "status": "SAME",
+     "prev_sha256": "8429a6e258c1f15f2c6bcf77760965312cdb429f6b6c5007e9bddf6ab494b4b3",
+     "now_sha256": "8429a6e258c1f15f2c6bcf77760965312cdb429f6b6c5007e9bddf6ab494b4b3"
+    },
+    "ws8_cycles:build_linehaul": {
+     "status": "SAME",
+     "prev_sha256": "d14c35914d8bc9e17973604ff76ac383507c420a7cc8cd5c23ad354f656f8887",
+     "now_sha256": "d14c35914d8bc9e17973604ff76ac383507c420a7cc8cd5c23ad354f656f8887"
+    },
+    "ws8_cycles:build_regional": {
+     "status": "SAME",
+     "prev_sha256": "26f7110a5770d5290f7213570f03755e19818e5dd1a2245a597c8a9c473e7e40",
+     "now_sha256": "26f7110a5770d5290f7213570f03755e19818e5dd1a2245a597c8a9c473e7e40"
+    },
+    "ws8_cycles:grade_statistics": {
+     "status": "SAME",
+     "prev_sha256": "2c696713a30fababbe9f1d71fe4c3a3bf2080e9caf11112c88e60c6aebdf26e6",
+     "now_sha256": "2c696713a30fababbe9f1d71fe4c3a3bf2080e9caf11112c88e60c6aebdf26e6"
+    },
+    "ws8_cycles:seeds": {
+     "status": "SAME",
+     "prev_sha256": "e0d021e1c5d016daa6b903ababc522658ff87be58187c1542e8517fb830d53e9",
+     "now_sha256": "e0d021e1c5d016daa6b903ababc522658ff87be58187c1542e8517fb830d53e9"
+    },
+    "ws8_electric:CELLS": {
+     "status": "SAME",
+     "prev_sha256": null,
+     "now_sha256": null
+    },
+    "ws8_electric:Pack8": {
+     "status": "SAME",
+     "prev_sha256": "9e224de42b845fcd183617e48901d97c4d18f8c6ce4c3fa91d414402137e23c8",
+     "now_sha256": "9e224de42b845fcd183617e48901d97c4d18f8c6ce4c3fa91d414402137e23c8"
+    },
+    "ws8_electric:ScaledEDrive": {
+     "status": "SAME",
+     "prev_sha256": "bc3384c80035e0cfab74739184992da29b39d4ada8e9cc238bb209a5ab32a24e",
+     "now_sha256": "bc3384c80035e0cfab74739184992da29b39d4ada8e9cc238bb209a5ab32a24e"
+    },
+    "ws8_electric:resistor_mass_kg": {
+     "status": "SAME",
+     "prev_sha256": "5e964cc33a3bcdaf3d0fe116f7ba6c962175bad79683aff8e8624740a0b528d3",
+     "now_sha256": "5e964cc33a3bcdaf3d0fe116f7ba6c962175bad79683aff8e8624740a0b528d3"
+    },
+    "ws8_electric:scaled_generator": {
+     "status": "SAME",
+     "prev_sha256": "398aba04365911f10d53cc21301ac17a5eff6e383b17ca7e0a72972f4b94b5a9",
+     "now_sha256": "398aba04365911f10d53cc21301ac17a5eff6e383b17ca7e0a72972f4b94b5a9"
+    },
+    "ws8_engine:AMT": {
+     "status": "SAME",
+     "prev_sha256": "282b520f98fff4ff89c659fb0ccbb28f184ff462d23e9032a22c092b43073d88",
+     "now_sha256": "282b520f98fff4ff89c659fb0ccbb28f184ff462d23e9032a22c092b43073d88"
+    },
+    "ws8_engine:BSFC_ISLAND_TARGET": {
+     "status": "SAME",
+     "prev_sha256": "aa4b7cf8ce898bf58c1560e44551319287b1828c105814b39ddcccf0b4199725",
+     "now_sha256": "aa4b7cf8ce898bf58c1560e44551319287b1828c105814b39ddcccf0b4199725"
+    },
+    "ws8_engine:ENGINES": {
+     "status": "SAME",
+     "prev_sha256": "238b9c96859281726726d4889856aca8ab1f2dbcaaa16e6b5e684a58e9c57511",
+     "now_sha256": "238b9c96859281726726d4889856aca8ab1f2dbcaaa16e6b5e684a58e9c57511"
+    },
+    "ws8_engine:ENG_11L": {
+     "status": "SAME",
+     "prev_sha256": "f34205c6d920ec6512b3367e35dc46f845b70c9b51b1d0b9b9103777f7f10600",
+     "now_sha256": "f34205c6d920ec6512b3367e35dc46f845b70c9b51b1d0b9b9103777f7f10600"
+    },
+    "ws8_engine:ENG_13L": {
+     "status": "SAME",
+     "prev_sha256": "c2cc2643af190e2e4d656cfcd7b3f3504eca2c75a8839fcec7312ee003aaa2c7",
+     "now_sha256": "c2cc2643af190e2e4d656cfcd7b3f3504eca2c75a8839fcec7312ee003aaa2c7"
+    },
+    "ws8_engine:ENG_7L": {
+     "status": "SAME",
+     "prev_sha256": "04cbf44b2d764cafbe7de2c876ec3b3aad7c414b1abdff8b5eded9afc6184760",
+     "now_sha256": "04cbf44b2d764cafbe7de2c876ec3b3aad7c414b1abdff8b5eded9afc6184760"
+    },
+    "ws8_engine:FMEP_HD": {
+     "status": "SAME",
+     "prev_sha256": "7f8f7e69d1a9aaca821ebe18900e89d8d5ab76438973418f239c5f7af47888e9",
+     "now_sha256": "7f8f7e69d1a9aaca821ebe18900e89d8d5ab76438973418f239c5f7af47888e9"
+    },
+    "ws8_engine:HDWillansEngine": {
+     "status": "SAME",
+     "prev_sha256": "17200fe16f5567aba94c74378d8b1c9ad11d8a9c662f0e03d11e4e4c5558b5e3",
+     "now_sha256": "17200fe16f5567aba94c74378d8b1c9ad11d8a9c662f0e03d11e4e4c5558b5e3"
+    },
+    "ws8_engine:RPM_13L": {
+     "status": "SAME",
+     "prev_sha256": "2b99b2be19669b85c9cd34dd0067f03707c3e8dc63d072057417ea4c0d2a5d71",
+     "now_sha256": "2b99b2be19669b85c9cd34dd0067f03707c3e8dc63d072057417ea4c0d2a5d71"
+    },
+    "ws8_engine:RPM_7L": {
+     "status": "SAME",
+     "prev_sha256": "012449a89d5c1e3af9ccf799ddf657832102f9bcecc1fe3a126e0fd447093bb8",
+     "now_sha256": "012449a89d5c1e3af9ccf799ddf657832102f9bcecc1fe3a126e0fd447093bb8"
+    },
+    "ws8_engine:TRQ_13L": {
+     "status": "SAME",
+     "prev_sha256": "ddcec630bacc7519d7c93e6cefc2f8acd241d1b5075aa32291ec3f1c090f42a1",
+     "now_sha256": "ddcec630bacc7519d7c93e6cefc2f8acd241d1b5075aa32291ec3f1c090f42a1"
+    },
+    "ws8_engine:TRQ_7L": {
+     "status": "SAME",
+     "prev_sha256": "91ec11e8f4396fef5888291a9023935f0c2ccd5d9cefbaac65be9f304bb4ca06",
+     "now_sha256": "91ec11e8f4396fef5888291a9023935f0c2ccd5d9cefbaac65be9f304bb4ca06"
+    },
+    "ws8_engine:build_engine": {
+     "status": "SAME",
+     "prev_sha256": "ea979209a7403bd62c3d13a65822a272d08912edd27a583f862d6f7514c5ffe3",
+     "now_sha256": "ea979209a7403bd62c3d13a65822a272d08912edd27a583f862d6f7514c5ffe3"
+    },
+    "ws8_engine:derate_factor": {
+     "status": "SAME",
+     "prev_sha256": null,
+     "now_sha256": null
+    },
+    "ws8_engine:derated_engine": {
+     "status": "SAME",
+     "prev_sha256": "721e6a4430b6c3a713a54432703df79ebd7601ee8df550adf31e0d1e747db3ef",
+     "now_sha256": "721e6a4430b6c3a713a54432703df79ebd7601ee8df550adf31e0d1e747db3ef"
+    },
+    "ws8_engine:fuel_L_per_100km": {
+     "status": "SAME",
+     "prev_sha256": "ffedc022677be95f654667d5b9dec62bb4948dd9f95bed28071c82efef39f7f9",
+     "now_sha256": "ffedc022677be95f654667d5b9dec62bb4948dd9f95bed28071c82efef39f7f9"
+    },
+    "ws8_engine:fuel_energy_MJ": {
+     "status": "SAME",
+     "prev_sha256": "ae22f681a22eeb46cba84cfe70c538e3ba8d9c5f6789327519dde6bbf95cb9fe",
+     "now_sha256": "ae22f681a22eeb46cba84cfe70c538e3ba8d9c5f6789327519dde6bbf95cb9fe"
+    },
+    "ws8_engine:idle_fuel_gps": {
+     "status": "SAME",
+     "prev_sha256": "0dfc8690856554602d38e2a193231990b987364e0f5e7a8e09037ac7de5dfcde",
+     "now_sha256": "0dfc8690856554602d38e2a193231990b987364e0f5e7a8e09037ac7de5dfcde"
+    },
+    "ws8_params:ADH": {
+     "status": "SAME",
+     "prev_sha256": "cce66aeefbbb049ffbed89887f5acc1e42e5ecc48435c211036bdec4e55c5e3b",
+     "now_sha256": "cce66aeefbbb049ffbed89887f5acc1e42e5ecc48435c211036bdec4e55c5e3b"
+    },
+    "ws8_params:AUX": {
+     "status": "SAME",
+     "prev_sha256": "7561f8a4425a1c121d305d44294ac63d684e776221aa88fb3d154caf225261af",
+     "now_sha256": "7561f8a4425a1c121d305d44294ac63d684e776221aa88fb3d154caf225261af"
+    },
+    "ws8_params:CY": {
+     "status": "SAME",
+     "prev_sha256": "10fe8ececba805db4579785c1952f1d7255f878fb3f0bc61581eba84a06464f6",
+     "now_sha256": "10fe8ececba805db4579785c1952f1d7255f878fb3f0bc61581eba84a06464f6"
+    },
+    "ws8_params:DIESEL_DENSITY_KG_PER_L": {
+     "status": "SAME",
+     "prev_sha256": "ff8d8822148194ecbcdc818c98f1e6228773be97359157ff4b2fdfde979f0324",
+     "now_sha256": "ff8d8822148194ecbcdc818c98f1e6228773be97359157ff4b2fdfde979f0324"
+    },
+    "ws8_params:DL": {
+     "status": "SAME",
+     "prev_sha256": "90b928d350543a3f411d5dd6d942910d1d43759107e13e1a0300af898ae797e2",
+     "now_sha256": "90b928d350543a3f411d5dd6d942910d1d43759107e13e1a0300af898ae797e2"
+    },
+    "ws8_params:ENGINE_HEAT_TO_COOLANT_FRAC": {
+     "status": "SAME",
+     "prev_sha256": "06bed5a1692309a8ddf83eddfdb0350bb2b436685492c2900caab917483f1409",
+     "now_sha256": "06bed5a1692309a8ddf83eddfdb0350bb2b436685492c2900caab917483f1409"
+    },
+    "ws8_params:G": {
+     "status": "SAME",
+     "prev_sha256": "a9b67dfc6f46c5694c471f360d302545459f66208098a2d7d98affc42cd2d6e5",
+     "now_sha256": "a9b67dfc6f46c5694c471f360d302545459f66208098a2d7d98affc42cd2d6e5"
+    },
+    "ws8_params:LHV_KJ_PER_G": {
+     "status": "SAME",
+     "prev_sha256": "21290705865df0bdfceadeb33f3c029e4a4265596a8a314ed2445ae38f521097",
+     "now_sha256": "21290705865df0bdfceadeb33f3c029e4a4265596a8a314ed2445ae38f521097"
+    },
+    "ws8_params:ML": {
+     "status": "SAME",
+     "prev_sha256": "db038f6f6074a0242121ffa4a80bcb08d0f483e0fe164d328760b085ac890da4",
+     "now_sha256": "db038f6f6074a0242121ffa4a80bcb08d0f483e0fe164d328760b085ac890da4"
+    },
+    "ws8_params:SC": {
+     "status": "SAME",
+     "prev_sha256": "aef099828fcf44903ce2dacc10d076c96e4167650585d4407f20d085eb1489d3",
+     "now_sha256": "aef099828fcf44903ce2dacc10d076c96e4167650585d4407f20d085eb1489d3"
+    },
+    "ws8_params:VEH": {
+     "status": "SAME",
+     "prev_sha256": "d9945c093d092df1a4a3371dcd34a3b7e271f7e75afc8ab461777d2997ccace3",
+     "now_sha256": "d9945c093d092df1a4a3371dcd34a3b7e271f7e75afc8ab461777d2997ccace3"
+    },
+    "ws8_physics:DriverParams": {
+     "status": "SAME",
+     "prev_sha256": "bd5ca357af43e6b8b5e0232646f2f17d984084d3254adbcf37f088166828491f",
+     "now_sha256": "bd5ca357af43e6b8b5e0232646f2f17d984084d3254adbcf37f088166828491f"
+    },
+    "ws8_physics:build_env_tables": {
+     "status": "SAME",
+     "prev_sha256": "3bf9c2a435fcbb0256465593a222543a71e53411b90e39270c9ebb3f6508407d",
+     "now_sha256": "3bf9c2a435fcbb0256465593a222543a71e53411b90e39270c9ebb3f6508407d"
+    },
+    "ws8_physics:integrate_achieved": {
+     "status": "SAME",
+     "prev_sha256": "84c7a6e278b4591eee1d7c874a885d636c29fa6017e3ef75dac6ec1f00f91791",
+     "now_sha256": "84c7a6e278b4591eee1d7c874a885d636c29fa6017e3ef75dac6ec1f00f91791"
+    },
+    "ws8_physics:road_load_force": {
+     "status": "SAME",
+     "prev_sha256": "60d94930b5ee4ead8bff71cabe0ef7e21f9bb8cd7ef9cfaace17641f743b3282",
+     "now_sha256": "60d94930b5ee4ead8bff71cabe0ef7e21f9bb8cd7ef9cfaace17641f743b3282"
+    },
+    "ws8_physics:trace_metrics": {
+     "status": "SAME",
+     "prev_sha256": "56497c75ac905274870c1b53952195f03186e93fb3c2b433ee11914c13209c02",
+     "now_sha256": "56497c75ac905274870c1b53952195f03186e93fb3c2b433ee11914c13209c02"
+    },
+    "ws8_whr:SYSTEMS": {
+     "status": "SAME",
+     "prev_sha256": "8c2e9ede298adbd43369ccef8a58e05dbe878e646320d99a663c9c06b8a32ebf",
+     "now_sha256": "8c2e9ede298adbd43369ccef8a58e05dbe878e646320d99a663c9c06b8a32ebf"
+    }
+   },
+   "changed": [],
+   "n_changed": 0,
+   "every_imported_symbol_identical": true
+  },
+  "conclusion": "ESC-WS9-8 asked whether WS9's three own implementations are consistent with the closed round's. All three are: every field is either CONSISTENT or a DIFFERENCE WS9 DECLARED BEFORE THE COMPARISON, each citing the ruling or finding that authorises it. There is no undeclared difference. The re-run against r3 was performed anyway, because ESC-WS9-8's premise is that the pin makes it a one-flag operation and an unexercised hot-swap is not evidence of one."
+ },
  "determinism": {
   "half_1_simulation": {
    "job": "cold_minus10C/S5",
@@ -101249,17 +102848,40 @@
    "returncode": 0,
    "files": {
     "mass_ledger.csv": true,
+    "trip_time_r38.csv": true,
+    "trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv": true,
     "candidate_runs.csv": true,
+    "ws8_import_surface.csv": true,
     "duty_stats.csv": true,
+    "trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+    "trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+    "trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv": true,
     "heat_ledger_ws6.csv": true,
+    "trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv": true,
     "two_walls_sweep.csv": true,
+    "trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv": true,
     "margins.csv": true,
     "prime_mover_at_the_pin.csv": true,
+    "concordance_ws8_r3.csv": true,
     "results_ws9.json": true
    },
    "results_json_byte_identical": true,
    "all_csv_exports_byte_identical": true,
    "note": "the checkpoint is a byte copy of the committed results_ws9.json, so this regenerates every derived block and every export from the committed trial and diffs the result byte for byte"
+  },
+  "half_3_r34_traces": {
+   "rule": "BASELINE_v5 R34",
+   "n_traces": 6,
+   "files": {
+    "trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+    "trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+    "trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+    "trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+    "trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv": true,
+    "trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv": true
+   },
+   "all_byte_identical": true,
+   "note": "each declared trace re-simulated FROM SCRATCH into a temporary directory and compared byte for byte against the committed file. `--from-checkpoint` cannot regenerate a trace, so half 2 only shows the traces were not disturbed; this is the regeneration evidence."
   },
   "not_checked": "the other five corners are not re-simulated; the jobs are independent and identically constructed, and a full re-run costs hours. Half 1 is evidence for the construction, not for each corner's arithmetic.",
   "status": "PASS"
@@ -101572,12 +103194,33 @@
   "no_ws8_artifact_read": {
    "artifacts": [
     "results_ws8.json",
-    "REPORT_WS8.md"
+    "REPORT_WS8.md",
+    "R2_DIRECTIVE.md",
+    "R3_DIRECTIVE.md",
+    "CHANGELOG_WS8_r2.md",
+    "CHANGELOG_WS8_r3.md",
+    "FINDINGS_WS8_r1.md",
+    "FINDINGS_WS8_r2.md",
+    "FINDINGS_WS8_r3.md"
    ],
    "lines_that_would_read_one": [],
    "rule": "a line that NAMES a WS8 artifact and also opens, loads or parses it; a bare mention in prose is not a read",
    "passes": true,
-   "note": "WS9 imports WS8's MODELS and reads none of its NUMBERS. run_ws9.py names both artifacts in one place only - the vintage block, where they are hashed and not opened. So WS8's r1/r2 artifact split cannot move a WS9 number."
+   "ws8_source_read_as_text": {
+    "files": [
+     "ws8_candidates.py",
+     "ws8_electric.py",
+     "ws8_engine.py",
+     "ws8_params.py",
+     "ws8_physics.py",
+     "ws8_cycles.py",
+     "ws8_whr.py",
+     "run_ws8.py"
+    ],
+    "by": "ws9_concordance, for the ESC-WS9-8 field-by-field comparison",
+    "why_this_is_not_a_contradiction": "these are WS8 SOURCE FILES - code, not numbers - and six of the eight are already imported. `run_ws8.py` is read as TEXT and never imported, because WS9 re-implements its correction rule and must be able to compare against it without executing WS8's entry point. No line above reads a WS8 numeric artifact, which is what the claim is."
+   },
+   "note": "WS9 imports WS8's MODELS and reads none of its NUMBERS. The 9 pinned artifacts are named in one place only - the vintage block, where they are hashed and not opened. So WS8's r1/r2/r3 artifact rounds cannot move a WS9 number, and the r3 re-run's measured zero movement is the demonstration of that rather than the assumption."
   },
   "spin_drag_R22d_disclosure": {
    "per_candidate": {
@@ -101607,6 +103250,7 @@
   },
   "trip_time_the_metric_cannot_see": {
    "rule": "max over the enumerated (candidate, corner, duty) case set of the trip-time penalty against the ruler on the same duty",
+   "statistic_note": "TWO STATISTICS, both exported, because R38 names a bar and not a statistic. `cases` / `value` are the median-of-medians the round-1 table carried. `paired_cases_max` / `value_paired_max` are the 8-seed envelope of the PER-SEED PAIRED ratio - candidate against the ruler on the SAME seed, then enveloped - which is the convention every margin in this report uses and which rule 4 asks of a stochastic extremum. The lead applies R38 on whichever it rules is meant; WS9 applies neither.",
    "cases": {
     "S0R/nominal/GH-REG-165": 0.0,
     "S0R/nominal/LH-520": 0.0,
@@ -101681,366 +103325,948 @@
     "S4p/hot_alt_2000m_45C/GH-REG-165": -3.029117531995774,
     "S4p/hot_alt_2000m_45C/LH-520": -3.0189227934577625
    },
+   "paired_cases_max": {
+    "S0R/nominal/GH-REG-165": 0.0,
+    "S0R/nominal/LH-520": 0.0,
+    "S5/nominal/GH-REG-165": 14.68015501535056,
+    "S5/nominal/LH-520": 4.126452393179207,
+    "S5-13L/nominal/GH-REG-165": 7.935980673410856,
+    "S5-13L/nominal/LH-520": -0.06330917033332278,
+    "S6/nominal/GH-REG-165": 0.3701652926459166,
+    "S6/nominal/LH-520": 0.4620828292567495,
+    "S7/nominal/GH-REG-165": -0.2524701555340759,
+    "S7/nominal/LH-520": -0.2012568645325544,
+    "S4p/nominal/GH-REG-165": -1.8919677087554005,
+    "S4p/nominal/LH-520": -2.121344237315756,
+    "S0R/payload_plus20/GH-REG-165": 0.0,
+    "S0R/payload_plus20/LH-520": 0.0,
+    "S5/payload_plus20/GH-REG-165": 17.150620810028162,
+    "S5/payload_plus20/LH-520": 5.5828450436026476,
+    "S5-13L/payload_plus20/GH-REG-165": 9.222896584553135,
+    "S5-13L/payload_plus20/LH-520": 0.6093137339574827,
+    "S6/payload_plus20/GH-REG-165": 0.3701306581448823,
+    "S6/payload_plus20/LH-520": 0.4586056122515736,
+    "S7/payload_plus20/GH-REG-165": -0.3224489795918405,
+    "S7/payload_plus20/LH-520": -0.3330557868443027,
+    "S4p/payload_plus20/GH-REG-165": -2.690246956664549,
+    "S4p/payload_plus20/LH-520": -2.683627518080492,
+    "S0R/payload_minus20/GH-REG-165": 0.0,
+    "S0R/payload_minus20/LH-520": 0.0,
+    "S5/payload_minus20/GH-REG-165": 11.430084422131017,
+    "S5/payload_minus20/LH-520": 3.3274298804550684,
+    "S5-13L/payload_minus20/GH-REG-165": 5.741519598358394,
+    "S5-13L/payload_minus20/LH-520": -0.11567829545973789,
+    "S6/payload_minus20/GH-REG-165": 0.3302482977942638,
+    "S6/payload_minus20/LH-520": 0.45615020275898854,
+    "S7/payload_minus20/GH-REG-165": -0.11659463262637998,
+    "S7/payload_minus20/LH-520": -0.13696277343009633,
+    "S4p/payload_minus20/GH-REG-165": -1.4794388407742,
+    "S4p/payload_minus20/LH-520": -1.6210931478977693,
+    "S0R/grade_heavy/GH-REG-165": 0.0,
+    "S0R/grade_heavy/LH-520": 0.0,
+    "S5/grade_heavy/GH-REG-165": 14.68015501535056,
+    "S5/grade_heavy/LH-520": 6.8400339238238725,
+    "S5-13L/grade_heavy/GH-REG-165": 7.935980673410856,
+    "S5-13L/grade_heavy/LH-520": 0.3887436356130515,
+    "S6/grade_heavy/GH-REG-165": 0.3701652926459166,
+    "S6/grade_heavy/LH-520": 0.5833396417136826,
+    "S7/grade_heavy/GH-REG-165": -0.2524701555340759,
+    "S7/grade_heavy/LH-520": -0.3932547691906962,
+    "S4p/grade_heavy/GH-REG-165": -1.8919677087554005,
+    "S4p/grade_heavy/LH-520": -3.281463636955531,
+    "S0R/cold_minus10C/GH-REG-165": 0.0,
+    "S0R/cold_minus10C/LH-520": 0.0,
+    "S5/cold_minus10C/GH-REG-165": 15.708415796823338,
+    "S5/cold_minus10C/LH-520": 5.050534039327113,
+    "S5-13L/cold_minus10C/GH-REG-165": 8.378625463386209,
+    "S5-13L/cold_minus10C/LH-520": 0.1876123606510216,
+    "S6/cold_minus10C/GH-REG-165": 0.39680510528629565,
+    "S6/cold_minus10C/LH-520": 0.45248652345899726,
+    "S7/cold_minus10C/GH-REG-165": -0.18555334658713266,
+    "S7/cold_minus10C/LH-520": -0.1466945836180923,
+    "S4p/cold_minus10C/GH-REG-165": -1.9678831511027273,
+    "S4p/cold_minus10C/LH-520": -2.217855384398959,
+    "S0R/hot_alt_2000m_45C/GH-REG-165": 0.0,
+    "S0R/hot_alt_2000m_45C/LH-520": 0.0,
+    "S5/hot_alt_2000m_45C/GH-REG-165": 15.100399195605856,
+    "S5/hot_alt_2000m_45C/LH-520": 4.925515660809789,
+    "S5-13L/hot_alt_2000m_45C/GH-REG-165": 7.87285770027313,
+    "S5-13L/hot_alt_2000m_45C/LH-520": 0.06478190851152492,
+    "S6/hot_alt_2000m_45C/GH-REG-165": 0.5302598273153846,
+    "S6/hot_alt_2000m_45C/LH-520": 0.37433155080214603,
+    "S7/hot_alt_2000m_45C/GH-REG-165": -0.20307900593851497,
+    "S7/hot_alt_2000m_45C/LH-520": -0.19069604054799688,
+    "S4p/hot_alt_2000m_45C/GH-REG-165": -2.326566892674057,
+    "S4p/hot_alt_2000m_45C/LH-520": -2.4815189851413075
+   },
+   "paired_cases_median": {
+    "S0R/nominal/GH-REG-165": 0.0,
+    "S0R/nominal/LH-520": 0.0,
+    "S5/nominal/GH-REG-165": 11.06042079455387,
+    "S5/nominal/LH-520": 3.3968502388313677,
+    "S5-13L/nominal/GH-REG-165": 4.9487500412857655,
+    "S5-13L/nominal/LH-520": -0.15505973539129048,
+    "S6/nominal/GH-REG-165": 0.22404583150789878,
+    "S6/nominal/LH-520": 0.35788271545034445,
+    "S7/nominal/GH-REG-165": -0.2754734020379579,
+    "S7/nominal/LH-520": -0.28717758711810304,
+    "S4p/nominal/GH-REG-165": -2.649315339040456,
+    "S4p/nominal/LH-520": -2.599922313988781,
+    "S0R/payload_plus20/GH-REG-165": 0.0,
+    "S0R/payload_plus20/LH-520": 0.0,
+    "S5/payload_plus20/GH-REG-165": 14.961786652855775,
+    "S5/payload_plus20/LH-520": 4.6200658759434114,
+    "S5-13L/payload_plus20/GH-REG-165": 6.816454437748244,
+    "S5-13L/payload_plus20/LH-520": 0.14030486015983945,
+    "S6/payload_plus20/GH-REG-165": 0.2788407296184885,
+    "S6/payload_plus20/LH-520": 0.3983962443725504,
+    "S7/payload_plus20/GH-REG-165": -0.43264308964624165,
+    "S7/payload_plus20/LH-520": -0.4235590739593221,
+    "S4p/payload_plus20/GH-REG-165": -3.240355489930964,
+    "S4p/payload_plus20/LH-520": -3.310146147060075,
+    "S0R/payload_minus20/GH-REG-165": 0.0,
+    "S0R/payload_minus20/LH-520": 0.0,
+    "S5/payload_minus20/GH-REG-165": 7.183376436716287,
+    "S5/payload_minus20/LH-520": 2.6527842461684736,
+    "S5-13L/payload_minus20/GH-REG-165": 2.1647412867532303,
+    "S5-13L/payload_minus20/LH-520": -0.275522185425933,
+    "S6/payload_minus20/GH-REG-165": 0.20612848692643515,
+    "S6/payload_minus20/LH-520": 0.26675355304931947,
+    "S7/payload_minus20/GH-REG-165": -0.22651981729809206,
+    "S7/payload_minus20/LH-520": -0.20125037812897467,
+    "S4p/payload_minus20/GH-REG-165": -2.121865855182328,
+    "S4p/payload_minus20/LH-520": -2.020432636325909,
+    "S0R/grade_heavy/GH-REG-165": 0.0,
+    "S0R/grade_heavy/LH-520": 0.0,
+    "S5/grade_heavy/GH-REG-165": 11.06042079455387,
+    "S5/grade_heavy/LH-520": 5.593472525735314,
+    "S5-13L/grade_heavy/GH-REG-165": 4.9487500412857655,
+    "S5-13L/grade_heavy/LH-520": -0.036227893946140906,
+    "S6/grade_heavy/GH-REG-165": 0.22404583150789878,
+    "S6/grade_heavy/LH-520": 0.4203535588940496,
+    "S7/grade_heavy/GH-REG-165": -0.2754734020379579,
+    "S7/grade_heavy/LH-520": -0.4604370443068597,
+    "S4p/grade_heavy/GH-REG-165": -2.649315339040456,
+    "S4p/grade_heavy/LH-520": -4.239856591574783,
+    "S0R/cold_minus10C/GH-REG-165": 0.0,
+    "S0R/cold_minus10C/LH-520": 0.0,
+    "S5/cold_minus10C/GH-REG-165": 12.17357643148196,
+    "S5/cold_minus10C/LH-520": 4.068939314835665,
+    "S5-13L/cold_minus10C/GH-REG-165": 5.484011407185484,
+    "S5-13L/cold_minus10C/LH-520": 0.08312702232875455,
+    "S6/cold_minus10C/GH-REG-165": 0.2885249303666001,
+    "S6/cold_minus10C/LH-520": 0.3690505337717608,
+    "S7/cold_minus10C/GH-REG-165": -0.2189818364828104,
+    "S7/cold_minus10C/LH-520": -0.21115072708644445,
+    "S4p/cold_minus10C/GH-REG-165": -2.707042927093169,
+    "S4p/cold_minus10C/LH-520": -2.757172679381528,
+    "S0R/hot_alt_2000m_45C/GH-REG-165": 0.0,
+    "S0R/hot_alt_2000m_45C/LH-520": 0.0,
+    "S5/hot_alt_2000m_45C/GH-REG-165": 12.811107707790857,
+    "S5/hot_alt_2000m_45C/LH-520": 4.112869603570518,
+    "S5-13L/hot_alt_2000m_45C/GH-REG-165": 5.521112606759225,
+    "S5-13L/hot_alt_2000m_45C/LH-520": -0.05576194682721901,
+    "S6/hot_alt_2000m_45C/GH-REG-165": 0.2550755410901948,
+    "S6/hot_alt_2000m_45C/LH-520": 0.3477632731607079,
+    "S7/hot_alt_2000m_45C/GH-REG-165": -0.2893299177542029,
+    "S7/hot_alt_2000m_45C/LH-520": -0.2941267865386755,
+    "S4p/hot_alt_2000m_45C/GH-REG-165": -3.1413800721191834,
+    "S4p/hot_alt_2000m_45C/LH-520": -3.0187564659225417
+   },
+   "value_paired_max": 17.150620810028162,
+   "governing_case_paired_max": "S5/payload_plus20/GH-REG-165",
    "detail": {
     "S0R/nominal/GH-REG-165": {
      "duration_s_median": 9776.05,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S0R/nominal/LH-520": {
      "duration_s_median": 21896.4,
      "ruler_duration_s_median": 21896.4,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S5/nominal/GH-REG-165": {
      "duration_s_median": 11023.2,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 12.757197436592504
+     "delta_pct": 12.757197436592504,
+     "paired_pct": {
+      "n": 8,
+      "min": 7.695664370538922,
+      "median": 11.06042079455387,
+      "max": 14.68015501535056
+     }
     },
     "S5/nominal/LH-520": {
      "duration_s_median": 22632.4,
      "ruler_duration_s_median": 21896.4,
-     "delta_pct": 3.361283133300451
+     "delta_pct": 3.361283133300451,
+     "paired_pct": {
+      "n": 8,
+      "min": 2.6531689296166543,
+      "median": 3.3968502388313677,
+      "max": 4.126452393179207
+     }
     },
     "S5-13L/nominal/GH-REG-165": {
      "duration_s_median": 10369.7,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 6.0724934917477045
+     "delta_pct": 6.0724934917477045,
+     "paired_pct": {
+      "n": 8,
+      "min": 2.809379837712615,
+      "median": 4.9487500412857655,
+      "max": 7.935980673410856
+     }
     },
     "S5-13L/nominal/LH-520": {
      "duration_s_median": 21871.2,
      "ruler_duration_s_median": 21896.4,
-     "delta_pct": -0.11508741162931224
+     "delta_pct": -0.11508741162931224,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.5257340714802714,
+      "median": -0.15505973539129048,
+      "max": -0.06330917033332278
+     }
     },
     "S6/nominal/GH-REG-165": {
      "duration_s_median": 9797.85,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 0.22299394949904194
+     "delta_pct": 0.22299394949904194,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.07653295509046194,
+      "median": 0.22404583150789878,
+      "max": 0.3701652926459166
+     }
     },
     "S6/nominal/LH-520": {
      "duration_s_median": 21992.15,
      "ruler_duration_s_median": 21896.4,
-     "delta_pct": 0.43728649458358454
+     "delta_pct": 0.43728649458358454,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.18730804593203734,
+      "median": 0.35788271545034445,
+      "max": 0.4620828292567495
+     }
     },
     "S7/nominal/GH-REG-165": {
      "duration_s_median": 9744.900000000001,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": -0.31863584985753773
+     "delta_pct": -0.31863584985753773,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.3965977150334655,
+      "median": -0.2754734020379579,
+      "max": -0.2524701555340759
+     }
     },
     "S7/nominal/LH-520": {
      "duration_s_median": 21833.5,
      "ruler_duration_s_median": 21896.4,
-     "delta_pct": -0.2872618329953848
+     "delta_pct": -0.2872618329953848,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.42809903869689303,
+      "median": -0.28717758711810304,
+      "max": -0.2012568645325544
+     }
     },
     "S4p/nominal/GH-REG-165": {
      "duration_s_median": 9530.0,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": -2.5168651960658885
+     "delta_pct": -2.5168651960658885,
+     "paired_pct": {
+      "n": 8,
+      "min": -2.9814114428261007,
+      "median": -2.649315339040456,
+      "max": -1.8919677087554005
+     }
     },
     "S4p/nominal/LH-520": {
      "duration_s_median": 21327.050000000003,
      "ruler_duration_s_median": 21896.4,
-     "delta_pct": -2.600199119489955
+     "delta_pct": -2.600199119489955,
+     "paired_pct": {
+      "n": 8,
+      "min": -3.2414584163215223,
+      "median": -2.599922313988781,
+      "max": -2.121344237315756
+     }
     },
     "S0R/payload_plus20/GH-REG-165": {
      "duration_s_median": 9900.900000000001,
      "ruler_duration_s_median": 9900.900000000001,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S0R/payload_plus20/LH-520": {
      "duration_s_median": 22177.85,
      "ruler_duration_s_median": 22177.85,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S5/payload_plus20/GH-REG-165": {
      "duration_s_median": 11458.8,
      "ruler_duration_s_median": 9900.900000000001,
-     "delta_pct": 15.734933187891986
+     "delta_pct": 15.734933187891986,
+     "paired_pct": {
+      "n": 8,
+      "min": 9.727382834151054,
+      "median": 14.961786652855775,
+      "max": 17.150620810028162
+     }
     },
     "S5/payload_plus20/LH-520": {
      "duration_s_median": 23151.300000000003,
      "ruler_duration_s_median": 22177.85,
-     "delta_pct": 4.389289313436624
+     "delta_pct": 4.389289313436624,
+     "paired_pct": {
+      "n": 8,
+      "min": 3.4700576744510463,
+      "median": 4.6200658759434114,
+      "max": 5.5828450436026476
+     }
     },
     "S5-13L/payload_plus20/GH-REG-165": {
      "duration_s_median": 10663.650000000001,
      "ruler_duration_s_median": 9900.900000000001,
-     "delta_pct": 7.703845104990455
+     "delta_pct": 7.703845104990455,
+     "paired_pct": {
+      "n": 8,
+      "min": 4.569622072136808,
+      "median": 6.816454437748244,
+      "max": 9.222896584553135
+     }
     },
     "S5-13L/payload_plus20/LH-520": {
      "duration_s_median": 22223.1,
      "ruler_duration_s_median": 22177.85,
-     "delta_pct": 0.20403240169809067
+     "delta_pct": 0.20403240169809067,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.09023893701148138,
+      "median": 0.14030486015983945,
+      "max": 0.6093137339574827
+     }
     },
     "S6/payload_plus20/GH-REG-165": {
      "duration_s_median": 9931.85,
      "ruler_duration_s_median": 9900.900000000001,
-     "delta_pct": 0.31259784464037516
+     "delta_pct": 0.31259784464037516,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.17244897959183303,
+      "median": 0.2788407296184885,
+      "max": 0.3701306581448823
+     }
     },
     "S6/payload_plus20/LH-520": {
      "duration_s_median": 22266.2,
      "ruler_duration_s_median": 22177.85,
-     "delta_pct": 0.3983704461884366
+     "delta_pct": 0.3983704461884366,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.09781529773434364,
+      "median": 0.3983962443725504,
+      "max": 0.4586056122515736
+     }
     },
     "S7/payload_plus20/GH-REG-165": {
      "duration_s_median": 9860.650000000001,
      "ruler_duration_s_median": 9900.900000000001,
-     "delta_pct": -0.4065286994111646
+     "delta_pct": -0.4065286994111646,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.6426276329882112,
+      "median": -0.43264308964624165,
+      "max": -0.3224489795918405
+     }
     },
     "S7/payload_plus20/LH-520": {
      "duration_s_median": 22072.550000000003,
      "ruler_duration_s_median": 22177.85,
-     "delta_pct": -0.4747980530123328
+     "delta_pct": -0.4747980530123328,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.5122799147695283,
+      "median": -0.4235590739593221,
+      "max": -0.3330557868443027
+     }
     },
     "S4p/payload_plus20/GH-REG-165": {
      "duration_s_median": 9593.550000000001,
      "ruler_duration_s_median": 9900.900000000001,
-     "delta_pct": -3.1042632487955673
+     "delta_pct": -3.1042632487955673,
+     "paired_pct": {
+      "n": 8,
+      "min": -3.56717838867072,
+      "median": -3.240355489930964,
+      "max": -2.690246956664549
+     }
     },
     "S4p/payload_plus20/LH-520": {
      "duration_s_median": 21448.4,
      "ruler_duration_s_median": 22177.85,
-     "delta_pct": -3.2890924954402574
+     "delta_pct": -3.2890924954402574,
+     "paired_pct": {
+      "n": 8,
+      "min": -3.9675810355689762,
+      "median": -3.310146147060075,
+      "max": -2.683627518080492
+     }
     },
     "S0R/payload_minus20/GH-REG-165": {
      "duration_s_median": 9669.95,
      "ruler_duration_s_median": 9669.95,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S0R/payload_minus20/LH-520": {
      "duration_s_median": 21665.0,
      "ruler_duration_s_median": 21665.0,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S5/payload_minus20/GH-REG-165": {
      "duration_s_median": 10413.7,
      "ruler_duration_s_median": 9669.95,
-     "delta_pct": 7.691353109374918
+     "delta_pct": 7.691353109374918,
+     "paired_pct": {
+      "n": 8,
+      "min": 2.712479292050252,
+      "median": 7.183376436716287,
+      "max": 11.430084422131017
+     }
     },
     "S5/payload_minus20/LH-520": {
      "duration_s_median": 22210.450000000004,
      "ruler_duration_s_median": 21665.0,
-     "delta_pct": 2.5176552042465006
+     "delta_pct": 2.5176552042465006,
+     "paired_pct": {
+      "n": 8,
+      "min": 1.9991115059973346,
+      "median": 2.6527842461684736,
+      "max": 3.3274298804550684
+     }
     },
     "S5-13L/payload_minus20/GH-REG-165": {
      "duration_s_median": 9910.1,
      "ruler_duration_s_median": 9669.95,
-     "delta_pct": 2.48346682247581
+     "delta_pct": 2.48346682247581,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.11046384393335032,
+      "median": 2.1647412867532303,
+      "max": 5.741519598358394
+     }
     },
     "S5-13L/payload_minus20/LH-520": {
      "duration_s_median": 21607.25,
      "ruler_duration_s_median": 21665.0,
-     "delta_pct": -0.2665589660743134
+     "delta_pct": -0.2665589660743134,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.5735228567183362,
+      "median": -0.275522185425933,
+      "max": -0.11567829545973789
+     }
     },
     "S6/payload_minus20/GH-REG-165": {
      "duration_s_median": 9687.5,
      "ruler_duration_s_median": 9669.95,
-     "delta_pct": 0.18149008009347795
+     "delta_pct": 0.18149008009347795,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.08073479145260479,
+      "median": 0.20612848692643515,
+      "max": 0.3302482977942638
+     }
     },
     "S6/payload_minus20/LH-520": {
      "duration_s_median": 21749.7,
      "ruler_duration_s_median": 21665.0,
-     "delta_pct": 0.39095315024232963
+     "delta_pct": 0.39095315024232963,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.07676687633103858,
+      "median": 0.26675355304931947,
+      "max": 0.45615020275898854
+     }
     },
     "S7/payload_minus20/GH-REG-165": {
      "duration_s_median": 9646.400000000001,
      "ruler_duration_s_median": 9669.95,
-     "delta_pct": -0.2435379707237294
+     "delta_pct": -0.2435379707237294,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.31671028646496696,
+      "median": -0.22651981729809206,
+      "max": -0.11659463262637998
+     }
     },
     "S7/payload_minus20/LH-520": {
      "duration_s_median": 21621.4,
      "ruler_duration_s_median": 21665.0,
-     "delta_pct": -0.20124624971150956
+     "delta_pct": -0.20124624971150956,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.2906808862879543,
+      "median": -0.20125037812897467,
+      "max": -0.13696277343009633
+     }
     },
     "S4p/payload_minus20/GH-REG-165": {
      "duration_s_median": 9469.45,
      "ruler_duration_s_median": 9669.95,
-     "delta_pct": -2.0734336785609027
+     "delta_pct": -2.0734336785609027,
+     "paired_pct": {
+      "n": 8,
+      "min": -2.4664704624377602,
+      "median": -2.121865855182328,
+      "max": -1.4794388407742
+     }
     },
     "S4p/payload_minus20/LH-520": {
      "duration_s_median": 21227.35,
      "ruler_duration_s_median": 21665.0,
-     "delta_pct": -2.0200784675744354
+     "delta_pct": -2.0200784675744354,
+     "paired_pct": {
+      "n": 8,
+      "min": -2.5800334956782978,
+      "median": -2.020432636325909,
+      "max": -1.6210931478977693
+     }
     },
     "S0R/grade_heavy/GH-REG-165": {
      "duration_s_median": 9776.05,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S0R/grade_heavy/LH-520": {
      "duration_s_median": 22377.65,
      "ruler_duration_s_median": 22377.65,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S5/grade_heavy/GH-REG-165": {
      "duration_s_median": 11023.2,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 12.757197436592504
+     "delta_pct": 12.757197436592504,
+     "paired_pct": {
+      "n": 8,
+      "min": 7.695664370538922,
+      "median": 11.06042079455387,
+      "max": 14.68015501535056
+     }
     },
     "S5/grade_heavy/LH-520": {
      "duration_s_median": 23597.200000000004,
      "ruler_duration_s_median": 22377.65,
-     "delta_pct": 5.449857335332364
+     "delta_pct": 5.449857335332364,
+     "paired_pct": {
+      "n": 8,
+      "min": 4.364867504394827,
+      "median": 5.593472525735314,
+      "max": 6.8400339238238725
+     }
     },
     "S5-13L/grade_heavy/GH-REG-165": {
      "duration_s_median": 10369.7,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 6.0724934917477045
+     "delta_pct": 6.0724934917477045,
+     "paired_pct": {
+      "n": 8,
+      "min": 2.809379837712615,
+      "median": 4.9487500412857655,
+      "max": 7.935980673410856
+     }
     },
     "S5-13L/grade_heavy/LH-520": {
      "duration_s_median": 22358.0,
      "ruler_duration_s_median": 22377.65,
-     "delta_pct": -0.08781082910851432
+     "delta_pct": -0.08781082910851432,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.3878338708247119,
+      "median": -0.036227893946140906,
+      "max": 0.3887436356130515
+     }
     },
     "S6/grade_heavy/GH-REG-165": {
      "duration_s_median": 9797.85,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": 0.22299394949904194
+     "delta_pct": 0.22299394949904194,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.07653295509046194,
+      "median": 0.22404583150789878,
+      "max": 0.3701652926459166
+     }
     },
     "S6/grade_heavy/LH-520": {
      "duration_s_median": 22491.15,
      "ruler_duration_s_median": 22377.65,
-     "delta_pct": 0.5072024989219154
+     "delta_pct": 0.5072024989219154,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.1558018315053255,
+      "median": 0.4203535588940496,
+      "max": 0.5833396417136826
+     }
     },
     "S7/grade_heavy/GH-REG-165": {
      "duration_s_median": 9744.900000000001,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": -0.31863584985753773
+     "delta_pct": -0.31863584985753773,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.3965977150334655,
+      "median": -0.2754734020379579,
+      "max": -0.2524701555340759
+     }
     },
     "S7/grade_heavy/LH-520": {
      "duration_s_median": 22280.450000000004,
      "ruler_duration_s_median": 22377.65,
-     "delta_pct": -0.4343619638344378
+     "delta_pct": -0.4343619638344378,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.5913183084656094,
+      "median": -0.4604370443068597,
+      "max": -0.3932547691906962
+     }
     },
     "S4p/grade_heavy/GH-REG-165": {
      "duration_s_median": 9530.0,
      "ruler_duration_s_median": 9776.05,
-     "delta_pct": -2.5168651960658885
+     "delta_pct": -2.5168651960658885,
+     "paired_pct": {
+      "n": 8,
+      "min": -2.9814114428261007,
+      "median": -2.649315339040456,
+      "max": -1.8919677087554005
+     }
     },
     "S4p/grade_heavy/LH-520": {
      "duration_s_median": 21428.800000000003,
      "ruler_duration_s_median": 22377.65,
-     "delta_pct": -4.240168203542367
+     "delta_pct": -4.240168203542367,
+     "paired_pct": {
+      "n": 8,
+      "min": -5.2826613524247685,
+      "median": -4.239856591574783,
+      "max": -3.281463636955531
+     }
     },
     "S0R/cold_minus10C/GH-REG-165": {
      "duration_s_median": 9793.3,
      "ruler_duration_s_median": 9793.3,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S0R/cold_minus10C/LH-520": {
      "duration_s_median": 21958.4,
      "ruler_duration_s_median": 21958.4,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S5/cold_minus10C/GH-REG-165": {
      "duration_s_median": 11148.650000000001,
      "ruler_duration_s_median": 9793.3,
-     "delta_pct": 13.83956378340296
+     "delta_pct": 13.83956378340296,
+     "paired_pct": {
+      "n": 8,
+      "min": 8.57901616216104,
+      "median": 12.17357643148196,
+      "max": 15.708415796823338
+     }
     },
     "S5/cold_minus10C/LH-520": {
      "duration_s_median": 22843.75,
      "ruler_duration_s_median": 21958.4,
-     "delta_pct": 4.031942218012234
+     "delta_pct": 4.031942218012234,
+     "paired_pct": {
+      "n": 8,
+      "min": 3.1612682000422123,
+      "median": 4.068939314835665,
+      "max": 5.050534039327113
+     }
     },
     "S5-13L/cold_minus10C/GH-REG-165": {
      "duration_s_median": 10442.35,
      "ruler_duration_s_median": 9793.3,
-     "delta_pct": 6.62749022290751
+     "delta_pct": 6.62749022290751,
+     "paired_pct": {
+      "n": 8,
+      "min": 3.654640137762186,
+      "median": 5.484011407185484,
+      "max": 8.378625463386209
+     }
     },
     "S5-13L/cold_minus10C/LH-520": {
      "duration_s_median": 21991.5,
      "ruler_duration_s_median": 21958.4,
-     "delta_pct": 0.1507395802972828
+     "delta_pct": 0.1507395802972828,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.16602888240329666,
+      "median": 0.08312702232875455,
+      "max": 0.1876123606510216
+     }
     },
     "S6/cold_minus10C/GH-REG-165": {
      "duration_s_median": 9821.2,
      "ruler_duration_s_median": 9793.3,
-     "delta_pct": 0.2848886483616499
+     "delta_pct": 0.2848886483616499,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.11833832412352463,
+      "median": 0.2885249303666001,
+      "max": 0.39680510528629565
+     }
     },
     "S6/cold_minus10C/LH-520": {
      "duration_s_median": 22043.5,
      "ruler_duration_s_median": 21958.4,
-     "delta_pct": 0.38755100553773747
+     "delta_pct": 0.38755100553773747,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.10775231594345287,
+      "median": 0.3690505337717608,
+      "max": 0.45248652345899726
+     }
     },
     "S7/cold_minus10C/GH-REG-165": {
      "duration_s_median": 9772.35,
      "ruler_duration_s_median": 9793.3,
-     "delta_pct": -0.2139217628378474
+     "delta_pct": -0.2139217628378474,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.2843106721988476,
+      "median": -0.2189818364828104,
+      "max": -0.18555334658713266
+     }
     },
     "S7/cold_minus10C/LH-520": {
      "duration_s_median": 21910.75,
      "ruler_duration_s_median": 21958.4,
-     "delta_pct": -0.21700123870592325
+     "delta_pct": -0.21700123870592325,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.27387670345161014,
+      "median": -0.21115072708644445,
+      "max": -0.1466945836180923
+     }
     },
     "S4p/cold_minus10C/GH-REG-165": {
      "duration_s_median": 9540.400000000001,
      "ruler_duration_s_median": 9793.3,
-     "delta_pct": -2.5823777480522176
+     "delta_pct": -2.5823777480522176,
+     "paired_pct": {
+      "n": 8,
+      "min": -3.0119453067703574,
+      "median": -2.707042927093169,
+      "max": -1.9678831511027273
+     }
     },
     "S4p/cold_minus10C/LH-520": {
      "duration_s_median": 21352.850000000002,
      "ruler_duration_s_median": 21958.4,
-     "delta_pct": -2.7577145875837914
+     "delta_pct": -2.7577145875837914,
+     "paired_pct": {
+      "n": 8,
+      "min": -3.5055272008287184,
+      "median": -2.757172679381528,
+      "max": -2.217855384398959
+     }
     },
     "S0R/hot_alt_2000m_45C/GH-REG-165": {
      "duration_s_median": 9841.150000000001,
      "ruler_duration_s_median": 9841.150000000001,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S0R/hot_alt_2000m_45C/LH-520": {
      "duration_s_median": 22007.85,
      "ruler_duration_s_median": 22007.85,
-     "delta_pct": 0.0
+     "delta_pct": 0.0,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+     }
     },
     "S5/hot_alt_2000m_45C/GH-REG-165": {
      "duration_s_median": 11185.2,
      "ruler_duration_s_median": 9841.150000000001,
-     "delta_pct": 13.657448570543067
+     "delta_pct": 13.657448570543067,
+     "paired_pct": {
+      "n": 8,
+      "min": 8.526955515131469,
+      "median": 12.811107707790857,
+      "max": 15.100399195605856
+     }
     },
     "S5/hot_alt_2000m_45C/LH-520": {
      "duration_s_median": 22913.100000000002,
      "ruler_duration_s_median": 22007.85,
-     "delta_pct": 4.11330502525237
+     "delta_pct": 4.11330502525237,
+     "paired_pct": {
+      "n": 8,
+      "min": 3.118648819118368,
+      "median": 4.112869603570518,
+      "max": 4.925515660809789
+     }
     },
     "S5-13L/hot_alt_2000m_45C/GH-REG-165": {
      "duration_s_median": 10479.100000000002,
      "ruler_duration_s_median": 9841.150000000001,
-     "delta_pct": 6.4824741010959155
+     "delta_pct": 6.4824741010959155,
+     "paired_pct": {
+      "n": 8,
+      "min": 3.6485033901107986,
+      "median": 5.521112606759225,
+      "max": 7.87285770027313
+     }
     },
     "S5-13L/hot_alt_2000m_45C/LH-520": {
      "duration_s_median": 22019.600000000002,
      "ruler_duration_s_median": 22007.85,
-     "delta_pct": 0.05339004037197472
+     "delta_pct": 0.05339004037197472,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.26824618092188085,
+      "median": -0.05576194682721901,
+      "max": 0.06478190851152492
+     }
     },
     "S6/hot_alt_2000m_45C/GH-REG-165": {
      "duration_s_median": 9866.25,
      "ruler_duration_s_median": 9841.150000000001,
-     "delta_pct": 0.2550514929657463
+     "delta_pct": 0.2550514929657463,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.16410424722304845,
+      "median": 0.2550755410901948,
+      "max": 0.5302598273153846
+     }
     },
     "S6/hot_alt_2000m_45C/LH-520": {
      "duration_s_median": 22085.800000000003,
      "ruler_duration_s_median": 22007.85,
-     "delta_pct": 0.35419179974420206
+     "delta_pct": 0.35419179974420206,
+     "paired_pct": {
+      "n": 8,
+      "min": 0.05781301618763392,
+      "median": 0.3477632731607079,
+      "max": 0.37433155080214603
+     }
     },
     "S7/hot_alt_2000m_45C/GH-REG-165": {
      "duration_s_median": 9806.400000000001,
      "ruler_duration_s_median": 9841.150000000001,
-     "delta_pct": -0.35310913866773697
+     "delta_pct": -0.35310913866773697,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.40024034789338403,
+      "median": -0.2893299177542029,
+      "max": -0.20307900593851497
+     }
     },
     "S7/hot_alt_2000m_45C/LH-520": {
      "duration_s_median": 21953.9,
      "ruler_duration_s_median": 22007.85,
-     "delta_pct": -0.24513980238867994
+     "delta_pct": -0.24513980238867994,
+     "paired_pct": {
+      "n": 8,
+      "min": -0.30849802755591826,
+      "median": -0.2941267865386755,
+      "max": -0.19069604054799688
+     }
     },
     "S4p/hot_alt_2000m_45C/GH-REG-165": {
      "duration_s_median": 9543.05,
      "ruler_duration_s_median": 9841.150000000001,
-     "delta_pct": -3.029117531995774
+     "delta_pct": -3.029117531995774,
+     "paired_pct": {
+      "n": 8,
+      "min": -3.4448966531004066,
+      "median": -3.1413800721191834,
+      "max": -2.326566892674057
+     }
     },
     "S4p/hot_alt_2000m_45C/LH-520": {
      "duration_s_median": 21343.450000000004,
      "ruler_duration_s_median": 22007.85,
-     "delta_pct": -3.0189227934577625
+     "delta_pct": -3.0189227934577625,
+     "paired_pct": {
+      "n": 8,
+      "min": -3.679812834224585,
+      "median": -3.0187564659225417,
+      "max": -2.4815189851413075
+     }
     }
    },
    "value": 15.734933187891986,
@@ -102233,6 +104459,29 @@
    "worst_relative_error": 0.0011960607784324631,
    "acceptable": true
   },
+  "concordance_with_ws8_r3_ESC_WS9_8": {
+   "pinned_round": "r3",
+   "per_implementation": {
+    "spin_rule_on_the_machines_shaft": "CONSISTENT WITH WS8 r3 (no undeclared difference)",
+    "correction_pricing_on_ws9_own_energy_keys": "CONSISTENT WITH WS8 r3 (no undeclared difference)",
+    "pack_temperature_as_a_state": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+   },
+   "any_undeclared_difference": false,
+   "undeclared_fields": [],
+   "import_surface_symbols": 62,
+   "import_surface_symbols_changed_r2_to_r3": 0,
+   "every_imported_symbol_identical_r2_to_r3": true,
+   "passes": true,
+   "note": "ESC-WS9-8 asked for a field-by-field comparison of WS9's three own implementations against the closed round's. The comparison is computed by `ws9_concordance` from WS8's source on disk, and this is its gate: any field where the two differ AND WS9 did not declare the difference in advance fails the run. `import_surface_symbols_changed_r2_to_r3` is the separate, stronger statement - how many of the WS8 symbols WS9 actually imports moved between the round it was pinned to and the round it is pinned to now."
+  },
+  "traces_r34_exported": {
+   "n_files": 6,
+   "all_present": true,
+   "all_unchanged_since_written": true,
+   "selection_rule": "every candidate INCLUDING THE RULER, on the DESIGN duty (the duty that gates), at the NOMINAL corner, on the FIRST seed of the ensemble - the full candidate set on the gating duty. A declared subset, following WS4's, WS5's and WS11's precedent under this same ruling; the literal reading is 576 files and some gigabytes. Escalated as ESC-WS9-12 rather than decided here.",
+   "passes": true,
+   "note": "R34 names WS9 RE-RUNS explicitly and this is WS9's next artifact after that ruling. The files are re-hashed off disk rather than trusted from the writer."
+  },
   "all_pass": true
  },
  "escalations": [
@@ -102312,10 +104561,51 @@
    "id": "ESC-WS9-8",
    "title": "WS9 ran against WS8's round-2 CODE before round 2's ARTIFACTS existed",
    "cites": "R26 (errata order: WS8_semi_architecture/R2_DIRECTIVE.md); assignment ('its r2 outputs when they land (build to hot-swap; state vintages)')",
-   "finding": "When WS9 ran, WS8's round-2 corrections were present in its CODE - the cold-charge-acceptance wiring (F2), the ambient derate (F11), the one spin rule (F5), the duty-averaged correction pricing (F6), the errata switches - but results_ws8.json and REPORT_WS8.md were still at their round-1 vintage, so round 2 had not regenerated. WS9 therefore inherits r2's MODELS and none of its NUMBERS, which is sufficient because WS9 reads no WS8 numeric artifact at all and re-derives its own ruler (sanity.no_ws8_artifact_read). Every inherited source file is sha256-pinned in `inherited_vintage`, and the r2 fingerprint records the code round as 'r2'.",
+   "finding": "When WS9 ran, WS8's round-2 corrections were present in its CODE - the cold-charge-acceptance wiring (F2), the ambient derate (F11), the one spin rule (F5), the duty-averaged correction pricing (F6), the errata switches - but results_ws8.json and REPORT_WS8.md were still at their round-1 vintage, so round 2 had not regenerated. WS9 therefore inherits r2's MODELS and none of its NUMBERS, which is sufficient because WS9 reads no WS8 numeric artifact at all and re-derives its own ruler (sanity.no_ws8_artifact_read). Every inherited source file is sha256-pinned in `inherited_vintage`, and the r2 fingerprint records the code round as 'r3'.",
    "why_not_self_resolved": "Whether WS9's implementations of the r2 rules match r2's own is r2's adjudication to settle, not WS9's.",
    "asks": "When r2 closes, compare the r2 concordance table in section 12 field by field and confirm that WS9's three own implementations - the spin rule applied to the machine's shaft rather than the vehicle's force channels, the correction pricing on WS9's own energy keys, and the pack temperature as a STATE rather than the corner's ambient - are consistent with r2's. If any differs, WS9 re-runs against r2: the pin makes that a one-flag operation.",
+   "execution": {
+    "status": "EXECUTED, NOT RESOLVED",
+    "round_compared": "WS8 r3 (r2 is superseded - BASELINE_v5 R35, R39/ESC-8)",
+    "what_was_done": "the field-by-field comparison this escalation asks for was run against WS8 r3's source, computed rather than written (`ws9_concordance`), and the whole trial was re-run against r3 - all corners, all candidates, both duties, 8 seeds - because an unexercised hot-swap is not evidence that the pin makes it a one-flag operation.",
+    "per_implementation": {
+     "spin_rule_on_the_machines_shaft": "CONSISTENT WITH WS8 r3 (no undeclared difference)",
+     "correction_pricing_on_ws9_own_energy_keys": "CONSISTENT WITH WS8 r3 (no undeclared difference)",
+     "pack_temperature_as_a_state": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+    },
+    "any_undeclared_difference": false,
+    "imported_symbols_compared": 62,
+    "imported_symbols_changed_r2_to_r3": 0,
+    "still_for_the_lead": "whether WS9's three declared differences from WS8 - the spin rule on the machine's shaft, the correction pricing on WS9's own energy keys, and the pack temperature as a state - are ACCEPTED is the lead's ruling, not WS9's. WS9 has measured that each is a difference it declared in advance with an authority cited; it has not ruled that any of them is right. See also ESC-WS9-10 on the adjudication status of the round now pinned."
+   },
    "materiality": "medium for the record, low for the numbers"
+  },
+  {
+   "id": "ESC-WS9-10",
+   "title": "the WS8 round WS9 is now pinned to was itself adjudicated NOT CLEAN, and WS9 pinned it anyway because it was ordered to",
+   "cites": "BASELINE_v5 R39/ESC-8 ('WS9 re-runs against WS8 r3 sources when they land'); R35 (WS8 r2 numbers PROVISIONAL until r3 closes); FINDINGS_WS8_r3.md; CLAUDE.md rule 10 (never modify another workstream's artifacts or findings)",
+   "finding": "WS9 is now pinned to WS8 code round `r3`. FINDINGS_WS8_r3.md returns, verbatim: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`, and the adjudicator places BOTH blocking findings in the round's account of itself rather than its physics - B1, that the changelog's central claim about what moved is wrong for S3 by 24% of S3's movement; B2, that a new R14 export names a statistic it does not carry. WS9's exposure to both is nil on the numbers, and that is measured rather than argued: every one of the 62 WS8 symbols on WS9's import surface is byte-identical between r2 and r3 (`concordance_ws8_r3.import_surface_r2_to_r3`), and WS9 reads no WS8 numeric artifact at all. But the RECORD now says WS9 is pinned to an adjudicated-NOT-CLEAN round, and that is a fact about the record the lead has to hold.",
+   "why_not_self_resolved": "WS9 cannot dispose of another workstream's findings, cannot judge whether r3's blocking findings are answerable inside r3, and cannot decide whether WS8 goes to an r4. WS9 also declines to soften the statement: the order was to pin r3, so r3 is pinned, and the adjudication status travels with it.",
+   "asks": "Note that this pin is to an adjudicated-NOT-CLEAN round. IF THE LEAD BOUNCES WS8 TO AN r4, THIS PIN IS STALE AGAIN and WS9 must re-run - the same one-flag operation, and this round is the evidence that it is one. Rule on whether a WS9 ratification may proceed on a WS8 round that has open blocking findings, given that none of them reaches a WS9 number.",
+   "materiality": "high for the record, nil for the numbers - and the second half is measured, not asserted"
+  },
+  {
+   "id": "ESC-WS9-11",
+   "title": "WS9's round-1 pin did not cover the sibling-workstream sources its numbers depend on, and one of them changed under it",
+   "cites": "ESC-WS9-8 (the pin as a hot-swap signal); CLAUDE.md rule 1 (byte-stable regeneration) and rule 10 (read other workstreams read-only); FINDINGS_WS8_r3.md M6, the same class of finding against WS8's own pin",
+   "finding": "WS9 imports WS8's models, and WS8's models in turn import WS4's `derate_factor` from `ws4_models.py`, WS4's `WS2TractionChain` and `load_ws2_exports` from `ws4_chain.py`, and WS3's `CELLS` from `ws3_cells.py`; that loader then reads three WS2 export files off disk. WS9's round-1 pin covered WS8's seven files and none of those, so a change in a sibling workstream could move a WS9 number with nothing in the record able to say so. This is not hypothetical: `ws4_chain.py` CHANGED between WS9's round-1 run and this one, because WS4's KX rounds landed overnight in the same tree. This round pins all six (6 rows in `inherited_vintage.sibling_workstream_sources_reached_through_ws8`), and `verify_ws9.py` reports drift on them exactly as it does for WS8's own files.",
+   "why_not_self_resolved": "Whether WS9 may be re-run against a WS4 tree that is itself mid-adjudication is a sequencing decision for the lead, not for WS9. WS9 also cannot rule on whether the WS4 change is admissible - it can only measure whether it moved anything, which it does.",
+   "asks": "Note that this artifact was produced against a WS4 tree that changed after WS9's round-1 run and that is itself under adjudication. Rule on whether Vehicle One's pin should be a whole-tree pin. If WS4's KX round is bounced again, WS9's pin goes stale for the same reason ESC-WS9-10 describes, and from a different direction.",
+   "materiality": "high for the record; the measured effect on the numbers is in the re-run's own comparison"
+  },
+  {
+   "id": "ESC-WS9-12",
+   "title": "R34's 'per run' is read as a declared subset, and WS9 says so rather than quietly deciding it",
+   "cites": "BASELINE_v5 R34 ('Every pipeline exports a 10 Hz trace file per run (feeds the WS10 exhibit/simulator). WS5, WS9 re-runs, and all later work comply from their next artifact.'); the WS4, WS5 and WS11 precedents under the same ruling",
+   "finding": "WS9's trial is 6 corners x 6 candidates x 2 duties x 8 seeds = 576 runs of roughly 74,000 samples each. A literal reading of 'per run' is some gigabytes of CSV in a git repository. WS9 exports 6 traces on a declared rule - every candidate including the ruler, on the DESIGN duty, at the NOMINAL corner, on the first seed - which is the full candidate set on the duty that gates, and which follows what WS4, WS5 and WS11 each did under this same ruling. `check_determinism_ws9.py` re-simulates one of these traces from a fresh process and diffs it byte for byte, so the unexported runs are reproducible rather than lost.",
+   "why_not_self_resolved": "R34 is a program-hygiene ruling and its scope is the lead's to set. WS9 has taken the reading the program's other three R34-compliant workstreams took; if that reading is wrong it is wrong for all four, which is a program decision.",
+   "asks": "Confirm the declared-subset reading of R34, or order the literal one and WS9 will export all 576 (and the repository will need to say where they live). Note that the WS10 exhibit is the consumer R34 names, so the right answer may be whatever WS10 actually needs.",
+   "materiality": "low for the numbers, medium for WS10's inputs"
   }
  ],
  "interface_ws9": {
@@ -102357,47 +104647,117 @@
      "bytes": 18592
     },
     "ws8_candidates.py": {
-     "sha256": "e3a741f4097f13d8d79545e9196e660ccec829646431d133f5ddaecce0a07c67",
-     "bytes": 106340
+     "sha256": "66ec2ec831c735bc2e001a4fdb309b48d5c984eef09d0ae1830ae048fc1910fa",
+     "bytes": 141034
     },
     "ws8_whr.py": {
      "sha256": "674f91016f31cd29cac55cfdd71a6470d079b5699532809def2682dea49fdf5f",
      "bytes": 5986
+    },
+    "run_ws8.py [rule source, NOT imported]": {
+     "sha256": "3b667eb825164299bb19c43dd0461e4424c079763476d29666de2d3be2174f5d",
+     "bytes": 229070
+    }
+   },
+   "sibling_workstream_sources_reached_through_ws8": {
+    "../WS4_genset/ws4_models.py": {
+     "sha256": "33d9b498ec5bb59da92330ad25da7ce3d8899c2e80b1e937b92394e0dc5f9716",
+     "bytes": 16676
+    },
+    "../WS4_genset/ws4_chain.py": {
+     "sha256": "5ee6b02df36903b5c5b5c4b97071bedf7aa8d5f0a5646ae0557806c966b2722a",
+     "bytes": 18763
+    },
+    "../WS3_battery/ws3_cells.py": {
+     "sha256": "4253ec9d29df101ac2107df469e1b62b710564bef429ddfda7e501a39b0c7f6e",
+     "bytes": 7173
+    },
+    "../WS2_traction_motor/results.json": {
+     "sha256": "78266ce69cf6485e471b4e04d2f01c7c085f44730203d5a7a90aeaada1a69beb",
+     "bytes": 31834
+    },
+    "../WS2_traction_motor/data/effmap_motor_inverter_662V.csv": {
+     "sha256": "e0f617eafbcead33a8bb5edc07b95174826bd300be3b43b78b1593aa93c8ba4c",
+     "bytes": 330413
+    },
+    "../WS2_traction_motor/data/cycle_loss_summary.csv": {
+     "sha256": "280f2549950abe3951ff4d9f5ffcd85a44d354f62591c3c6e5a14262ca15d7b9",
+     "bytes": 574
     }
    },
    "ws8_artifacts_hashed_but_not_read": {
     "results_ws8.json": {
-     "sha256": "c1b21b0b91b14d4d4c25dc25e501bc4afe1a332b31bcfd8b211e74a7e87d706f",
-     "bytes": 3036230
+     "sha256": "de125deb97bdb9d8b61c378206493adeaf22d294ca8005a8d9817c4ab03fa3d5",
+     "bytes": 4000786
     },
     "REPORT_WS8.md": {
-     "sha256": "9cbfa9336075d6dd50187585d0f1f8e46c6013ebabef7f8199e1b4f69af04106",
-     "bytes": 176516
+     "sha256": "1677e7e680f4959b4c03601377583b8469a71b666bd6bcb3f8ca035d2b45ad4e",
+     "bytes": 300474
     },
     "R2_DIRECTIVE.md": {
      "sha256": "e3040204e8f70f0fa431ad4cfdb2af3514a22b4df7dee49a296aece00f25da3d",
      "bytes": 2179
     },
+    "R3_DIRECTIVE.md": {
+     "sha256": "a55b093776ab6a053bc677524c13dd80a64659026f23e698ee1e5a829ead9a5b",
+     "bytes": 1925
+    },
+    "CHANGELOG_WS8_r2.md": {
+     "sha256": "db8ed7fdb2ff9557e35cd7dd1051aa013bdee013c588bc7642d6e19b971f3eab",
+     "bytes": 7922
+    },
+    "CHANGELOG_WS8_r3.md": {
+     "sha256": "b67ee6ed57387f76b7ae8d767f2a9dd4d2204de7cec1b9bc69c11ad5d7b4e296",
+     "bytes": 16536
+    },
     "FINDINGS_WS8_r1.md": {
      "sha256": "b3db6878367b39f13ce2d430181ffcccd6e8c078308caf5d534b40c8656c3ce8",
      "bytes": 28937
+    },
+    "FINDINGS_WS8_r2.md": {
+     "sha256": "08924729469d8d719bc94348c7636dce15d3031d7950aa8f36381c96e52dfd56",
+     "bytes": 21242
+    },
+    "FINDINGS_WS8_r3.md": {
+     "sha256": "2f4b95b65b53c89695aab4276c9651418a3b975c6820804fc87022bb6b58da69",
+     "bytes": 43575
     }
    },
    "ws8_code_round_fingerprint": {
+    "r2_features": {
+     "cold_charge_acceptance_wired": true,
+     "derated_engine_present": true,
+     "one_spin_rule_present": true,
+     "errata_switches_present": true,
+     "hot_altitude_corner_present": true,
+     "heat_split_in_params": true
+    },
+    "r3_features": {
+     "overrun_rule_present": true,
+     "overrun_thresholds_present": true,
+     "braking_mask_present": true,
+     "exclusivity_report_present": true,
+     "run_closure_present": true,
+     "resistor_overcommitment_present": true,
+     "b1_errata_switch_present": true,
+     "s0_launch_fuel_errata_switch_present": true
+    },
+    "code_round": "r3",
+    "ladder": "r1 -> r2 -> r3. The round reported is the highest one ALL of whose features are present; a partial r3 reports r2, which is the conservative direction.",
+    "r3_adjudication": "NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`; the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 finding (ESC-WS9-10).",
     "cold_charge_acceptance_wired": true,
     "derated_engine_present": true,
     "one_spin_rule_present": true,
     "errata_switches_present": true,
     "hot_altitude_corner_present": true,
-    "heat_split_in_params": true,
-    "code_round": "r2"
+    "heat_split_in_params": true
    },
    "ws9_own_files": {
     "run_ws9.py": {
-     "sha256": "23c7d3c4b344eb0f930e969aaeb781f8b96bf0a285c6953fcada5cc9addc4c2f"
+     "sha256": "eb06e2edd80d8cdd58846b7776ed83341314351d67dad0878d0b4b7b609e837e"
     },
     "ws9_params.py": {
-     "sha256": "927e8584f5c46dbc8b8350e6c6fc8b4ca3f0c99f0a4be6bf6980a395e6f76fb5"
+     "sha256": "fc5921beffc31650131fd9a255f1f512360e5653732befcfc390274edfe35a13"
     },
     "ws9_duty.py": {
      "sha256": "86e9d6c18c7b70cc63d66d775d3678220d7e843e04f6979b9b87403127dadc11"
@@ -102427,19 +104787,414 @@
      "sha256": "532f152c1232fa3fadb8ec0943a7a85fec8f4ea01597ae21656056149990bd8e"
     },
     "ws9_blocks.py": {
-     "sha256": "15c2dc9e548accd0bfe5138364caae289e042cd256421ad667740e7f6bb5deb1"
+     "sha256": "36e6ae8ac2111949bc7b1672ccf326b7aa96ad2c7272d178f2de3d8481111c68"
+    },
+    "ws9_concordance.py": {
+     "sha256": "52ad33f2eeb93120700dc868ff487e3abcf4e719910e6f1424dfdaf60885c75d"
     },
     "make_report_ws9.py": {
-     "sha256": "326dff4180de3f928996293b70227f7f3d9005bf9508b66c2ddf4b83aced15a2"
+     "sha256": "c6e996b2f5a1993a09570514c9024ac627207e63d38a9a9ac5348c87df8afb21"
     },
     "verify_ws9.py": {
-     "sha256": "8c9789e294333def164dad804f31d71f326000baefae02ec788d0705b9e28727"
+     "sha256": "7af33e0753c03e34cd1d925aab4914524594508f0bb2188e5ea936d235d2c53d"
     },
     "check_determinism_ws9.py": {
-     "sha256": "ffcb0dc03e36efaff5c92ab38f2c4fc387abfbcf3b9f8b9683a3e2c12b1fe86a"
+     "sha256": "73f4e536fcd2c5a4777cffcd7b45317e37c9082f4dffb51fb9add755fe4dbaa1"
     }
    },
-   "statement": "WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from. If WS8's round 2 regenerates its artifacts after this run, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8's round 2 changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for."
+   "statement": "WS9 imports WS8's MODELS read-only and reads NO WS8 numeric artifact (asserted in sanity.no_ws8_artifact_read). The hashes above pin exactly which WS8 the models came from, which round the code is at, and - new in the r3-concordant re-run - the sibling-workstream sources WS9 reaches THROUGH WS8, which the round-1 pin did not cover. If WS8 regenerates its ARTIFACTS, none of WS9's numbers move: WS9 re-derives its own ruler from the same models. If WS8 or a pinned sibling changes its CODE after this run, the hashes above will not match and verify_ws9.py says so - that is the hot-swap signal the assignment asks for, and ESC-WS9-8's 'one-flag' claim is what this re-run exercised."
+  },
+  "trip_time_R38_gate_input": {
+   "ruling": "BASELINE_v5 R38 (pre-committed before the table was read)",
+   "gate": "design-duty trip time <= +5% of S0R, in addition to the pre-committed ADVANCE criteria",
+   "gate_pct": 5.0,
+   "applied_by": "THE LEAD, at ratification. NOT APPLIED IN THIS ARTIFACT and not read by any verdict in it.",
+   "statistic": "median trip time over the 8-seed ensemble, against the ruler S0R on the SAME duty, corner and seed set",
+   "design_duty": "GH-REG-165",
+   "design_duty_nominal_pct_vs_ruler": {
+    "S0R": 0.0,
+    "S5": 12.757197436592504,
+    "S5-13L": 6.0724934917477045,
+    "S6": 0.22299394949904194,
+    "S7": -0.31863584985753773,
+    "S4p": -2.5168651960658885
+   },
+   "design_duty_nominal_paired_pct_vs_ruler": {
+    "S0R": {
+     "n": 8,
+     "min": 0.0,
+     "median": 0.0,
+     "max": 0.0
+    },
+    "S5": {
+     "n": 8,
+     "min": 7.695664370538922,
+     "median": 11.06042079455387,
+     "max": 14.68015501535056
+    },
+    "S5-13L": {
+     "n": 8,
+     "min": 2.809379837712615,
+     "median": 4.9487500412857655,
+     "max": 7.935980673410856
+    },
+    "S6": {
+     "n": 8,
+     "min": 0.07653295509046194,
+     "median": 0.22404583150789878,
+     "max": 0.3701652926459166
+    },
+    "S7": {
+     "n": 8,
+     "min": -0.3965977150334655,
+     "median": -0.2754734020379579,
+     "max": -0.2524701555340759
+    },
+    "S4p": {
+     "n": 8,
+     "min": -2.9814114428261007,
+     "median": -2.649315339040456,
+     "max": -1.8919677087554005
+    }
+   },
+   "statistic_note": "TWO STATISTICS, both exported, because R38 names a bar and not a statistic. `cases` / `value` are the median-of-medians the round-1 table carried. `paired_cases_max` / `value_paired_max` are the 8-seed envelope of the PER-SEED PAIRED ratio - candidate against the ruler on the SAME seed, then enveloped - which is the convention every margin in this report uses and which rule 4 asks of a stochastic extremum. The lead applies R38 on whichever it rules is meant; WS9 applies neither.",
+   "rule": "max/min over the enumerated (candidate, corner, duty) case set; the full table is `all_cases_pct` and the detail with absolute seconds is sanity.trip_time_the_metric_cannot_see.detail",
+   "worst_case_pct": 15.734933187891986,
+   "governing_case": "S5/payload_plus20/GH-REG-165",
+   "design_duty_cases_above_gate": {
+    "S5-13L/cold_minus10C/GH-REG-165": 6.62749022290751,
+    "S5-13L/grade_heavy/GH-REG-165": 6.0724934917477045,
+    "S5-13L/hot_alt_2000m_45C/GH-REG-165": 6.4824741010959155,
+    "S5-13L/nominal/GH-REG-165": 6.0724934917477045,
+    "S5-13L/payload_plus20/GH-REG-165": 7.703845104990455,
+    "S5/cold_minus10C/GH-REG-165": 13.83956378340296,
+    "S5/grade_heavy/GH-REG-165": 12.757197436592504,
+    "S5/hot_alt_2000m_45C/GH-REG-165": 13.657448570543067,
+    "S5/nominal/GH-REG-165": 12.757197436592504,
+    "S5/payload_minus20/GH-REG-165": 7.691353109374918,
+    "S5/payload_plus20/GH-REG-165": 15.734933187891986
+   },
+   "n_design_duty_cases_above_gate": 11,
+   "design_duty_cases_above_gate_paired_max": {
+    "S5-13L/cold_minus10C/GH-REG-165": 8.378625463386209,
+    "S5-13L/grade_heavy/GH-REG-165": 7.935980673410856,
+    "S5-13L/hot_alt_2000m_45C/GH-REG-165": 7.87285770027313,
+    "S5-13L/nominal/GH-REG-165": 7.935980673410856,
+    "S5-13L/payload_minus20/GH-REG-165": 5.741519598358394,
+    "S5-13L/payload_plus20/GH-REG-165": 9.222896584553135,
+    "S5/cold_minus10C/GH-REG-165": 15.708415796823338,
+    "S5/grade_heavy/GH-REG-165": 14.68015501535056,
+    "S5/hot_alt_2000m_45C/GH-REG-165": 15.100399195605856,
+    "S5/nominal/GH-REG-165": 14.68015501535056,
+    "S5/payload_minus20/GH-REG-165": 11.430084422131017,
+    "S5/payload_plus20/GH-REG-165": 17.150620810028162
+   },
+   "n_design_duty_cases_above_gate_paired_max": 12,
+   "worst_case_paired_max_pct": 17.150620810028162,
+   "governing_case_paired_max": "S5/payload_plus20/GH-REG-165",
+   "all_cases_pct": {
+    "S0R/nominal/GH-REG-165": 0.0,
+    "S0R/nominal/LH-520": 0.0,
+    "S5/nominal/GH-REG-165": 12.757197436592504,
+    "S5/nominal/LH-520": 3.361283133300451,
+    "S5-13L/nominal/GH-REG-165": 6.0724934917477045,
+    "S5-13L/nominal/LH-520": -0.11508741162931224,
+    "S6/nominal/GH-REG-165": 0.22299394949904194,
+    "S6/nominal/LH-520": 0.43728649458358454,
+    "S7/nominal/GH-REG-165": -0.31863584985753773,
+    "S7/nominal/LH-520": -0.2872618329953848,
+    "S4p/nominal/GH-REG-165": -2.5168651960658885,
+    "S4p/nominal/LH-520": -2.600199119489955,
+    "S0R/payload_plus20/GH-REG-165": 0.0,
+    "S0R/payload_plus20/LH-520": 0.0,
+    "S5/payload_plus20/GH-REG-165": 15.734933187891986,
+    "S5/payload_plus20/LH-520": 4.389289313436624,
+    "S5-13L/payload_plus20/GH-REG-165": 7.703845104990455,
+    "S5-13L/payload_plus20/LH-520": 0.20403240169809067,
+    "S6/payload_plus20/GH-REG-165": 0.31259784464037516,
+    "S6/payload_plus20/LH-520": 0.3983704461884366,
+    "S7/payload_plus20/GH-REG-165": -0.4065286994111646,
+    "S7/payload_plus20/LH-520": -0.4747980530123328,
+    "S4p/payload_plus20/GH-REG-165": -3.1042632487955673,
+    "S4p/payload_plus20/LH-520": -3.2890924954402574,
+    "S0R/payload_minus20/GH-REG-165": 0.0,
+    "S0R/payload_minus20/LH-520": 0.0,
+    "S5/payload_minus20/GH-REG-165": 7.691353109374918,
+    "S5/payload_minus20/LH-520": 2.5176552042465006,
+    "S5-13L/payload_minus20/GH-REG-165": 2.48346682247581,
+    "S5-13L/payload_minus20/LH-520": -0.2665589660743134,
+    "S6/payload_minus20/GH-REG-165": 0.18149008009347795,
+    "S6/payload_minus20/LH-520": 0.39095315024232963,
+    "S7/payload_minus20/GH-REG-165": -0.2435379707237294,
+    "S7/payload_minus20/LH-520": -0.20124624971150956,
+    "S4p/payload_minus20/GH-REG-165": -2.0734336785609027,
+    "S4p/payload_minus20/LH-520": -2.0200784675744354,
+    "S0R/grade_heavy/GH-REG-165": 0.0,
+    "S0R/grade_heavy/LH-520": 0.0,
+    "S5/grade_heavy/GH-REG-165": 12.757197436592504,
+    "S5/grade_heavy/LH-520": 5.449857335332364,
+    "S5-13L/grade_heavy/GH-REG-165": 6.0724934917477045,
+    "S5-13L/grade_heavy/LH-520": -0.08781082910851432,
+    "S6/grade_heavy/GH-REG-165": 0.22299394949904194,
+    "S6/grade_heavy/LH-520": 0.5072024989219154,
+    "S7/grade_heavy/GH-REG-165": -0.31863584985753773,
+    "S7/grade_heavy/LH-520": -0.4343619638344378,
+    "S4p/grade_heavy/GH-REG-165": -2.5168651960658885,
+    "S4p/grade_heavy/LH-520": -4.240168203542367,
+    "S0R/cold_minus10C/GH-REG-165": 0.0,
+    "S0R/cold_minus10C/LH-520": 0.0,
+    "S5/cold_minus10C/GH-REG-165": 13.83956378340296,
+    "S5/cold_minus10C/LH-520": 4.031942218012234,
+    "S5-13L/cold_minus10C/GH-REG-165": 6.62749022290751,
+    "S5-13L/cold_minus10C/LH-520": 0.1507395802972828,
+    "S6/cold_minus10C/GH-REG-165": 0.2848886483616499,
+    "S6/cold_minus10C/LH-520": 0.38755100553773747,
+    "S7/cold_minus10C/GH-REG-165": -0.2139217628378474,
+    "S7/cold_minus10C/LH-520": -0.21700123870592325,
+    "S4p/cold_minus10C/GH-REG-165": -2.5823777480522176,
+    "S4p/cold_minus10C/LH-520": -2.7577145875837914,
+    "S0R/hot_alt_2000m_45C/GH-REG-165": 0.0,
+    "S0R/hot_alt_2000m_45C/LH-520": 0.0,
+    "S5/hot_alt_2000m_45C/GH-REG-165": 13.657448570543067,
+    "S5/hot_alt_2000m_45C/LH-520": 4.11330502525237,
+    "S5-13L/hot_alt_2000m_45C/GH-REG-165": 6.4824741010959155,
+    "S5-13L/hot_alt_2000m_45C/LH-520": 0.05339004037197472,
+    "S6/hot_alt_2000m_45C/GH-REG-165": 0.2550514929657463,
+    "S6/hot_alt_2000m_45C/LH-520": 0.35419179974420206,
+    "S7/hot_alt_2000m_45C/GH-REG-165": -0.35310913866773697,
+    "S7/hot_alt_2000m_45C/LH-520": -0.24513980238867994,
+    "S4p/hot_alt_2000m_45C/GH-REG-165": -3.029117531995774,
+    "S4p/hot_alt_2000m_45C/LH-520": -3.0189227934577625
+   },
+   "all_cases_paired_max_pct": {
+    "S0R/nominal/GH-REG-165": 0.0,
+    "S0R/nominal/LH-520": 0.0,
+    "S5/nominal/GH-REG-165": 14.68015501535056,
+    "S5/nominal/LH-520": 4.126452393179207,
+    "S5-13L/nominal/GH-REG-165": 7.935980673410856,
+    "S5-13L/nominal/LH-520": -0.06330917033332278,
+    "S6/nominal/GH-REG-165": 0.3701652926459166,
+    "S6/nominal/LH-520": 0.4620828292567495,
+    "S7/nominal/GH-REG-165": -0.2524701555340759,
+    "S7/nominal/LH-520": -0.2012568645325544,
+    "S4p/nominal/GH-REG-165": -1.8919677087554005,
+    "S4p/nominal/LH-520": -2.121344237315756,
+    "S0R/payload_plus20/GH-REG-165": 0.0,
+    "S0R/payload_plus20/LH-520": 0.0,
+    "S5/payload_plus20/GH-REG-165": 17.150620810028162,
+    "S5/payload_plus20/LH-520": 5.5828450436026476,
+    "S5-13L/payload_plus20/GH-REG-165": 9.222896584553135,
+    "S5-13L/payload_plus20/LH-520": 0.6093137339574827,
+    "S6/payload_plus20/GH-REG-165": 0.3701306581448823,
+    "S6/payload_plus20/LH-520": 0.4586056122515736,
+    "S7/payload_plus20/GH-REG-165": -0.3224489795918405,
+    "S7/payload_plus20/LH-520": -0.3330557868443027,
+    "S4p/payload_plus20/GH-REG-165": -2.690246956664549,
+    "S4p/payload_plus20/LH-520": -2.683627518080492,
+    "S0R/payload_minus20/GH-REG-165": 0.0,
+    "S0R/payload_minus20/LH-520": 0.0,
+    "S5/payload_minus20/GH-REG-165": 11.430084422131017,
+    "S5/payload_minus20/LH-520": 3.3274298804550684,
+    "S5-13L/payload_minus20/GH-REG-165": 5.741519598358394,
+    "S5-13L/payload_minus20/LH-520": -0.11567829545973789,
+    "S6/payload_minus20/GH-REG-165": 0.3302482977942638,
+    "S6/payload_minus20/LH-520": 0.45615020275898854,
+    "S7/payload_minus20/GH-REG-165": -0.11659463262637998,
+    "S7/payload_minus20/LH-520": -0.13696277343009633,
+    "S4p/payload_minus20/GH-REG-165": -1.4794388407742,
+    "S4p/payload_minus20/LH-520": -1.6210931478977693,
+    "S0R/grade_heavy/GH-REG-165": 0.0,
+    "S0R/grade_heavy/LH-520": 0.0,
+    "S5/grade_heavy/GH-REG-165": 14.68015501535056,
+    "S5/grade_heavy/LH-520": 6.8400339238238725,
+    "S5-13L/grade_heavy/GH-REG-165": 7.935980673410856,
+    "S5-13L/grade_heavy/LH-520": 0.3887436356130515,
+    "S6/grade_heavy/GH-REG-165": 0.3701652926459166,
+    "S6/grade_heavy/LH-520": 0.5833396417136826,
+    "S7/grade_heavy/GH-REG-165": -0.2524701555340759,
+    "S7/grade_heavy/LH-520": -0.3932547691906962,
+    "S4p/grade_heavy/GH-REG-165": -1.8919677087554005,
+    "S4p/grade_heavy/LH-520": -3.281463636955531,
+    "S0R/cold_minus10C/GH-REG-165": 0.0,
+    "S0R/cold_minus10C/LH-520": 0.0,
+    "S5/cold_minus10C/GH-REG-165": 15.708415796823338,
+    "S5/cold_minus10C/LH-520": 5.050534039327113,
+    "S5-13L/cold_minus10C/GH-REG-165": 8.378625463386209,
+    "S5-13L/cold_minus10C/LH-520": 0.1876123606510216,
+    "S6/cold_minus10C/GH-REG-165": 0.39680510528629565,
+    "S6/cold_minus10C/LH-520": 0.45248652345899726,
+    "S7/cold_minus10C/GH-REG-165": -0.18555334658713266,
+    "S7/cold_minus10C/LH-520": -0.1466945836180923,
+    "S4p/cold_minus10C/GH-REG-165": -1.9678831511027273,
+    "S4p/cold_minus10C/LH-520": -2.217855384398959,
+    "S0R/hot_alt_2000m_45C/GH-REG-165": 0.0,
+    "S0R/hot_alt_2000m_45C/LH-520": 0.0,
+    "S5/hot_alt_2000m_45C/GH-REG-165": 15.100399195605856,
+    "S5/hot_alt_2000m_45C/LH-520": 4.925515660809789,
+    "S5-13L/hot_alt_2000m_45C/GH-REG-165": 7.87285770027313,
+    "S5-13L/hot_alt_2000m_45C/LH-520": 0.06478190851152492,
+    "S6/hot_alt_2000m_45C/GH-REG-165": 0.5302598273153846,
+    "S6/hot_alt_2000m_45C/LH-520": 0.37433155080214603,
+    "S7/hot_alt_2000m_45C/GH-REG-165": -0.20307900593851497,
+    "S7/hot_alt_2000m_45C/LH-520": -0.19069604054799688,
+    "S4p/hot_alt_2000m_45C/GH-REG-165": -2.326566892674057,
+    "S4p/hot_alt_2000m_45C/LH-520": -2.4815189851413075
+   },
+   "note": "this block is the gate's INPUT. It is exported so the lead can apply R38 in one read; WS9 neither applies it nor adjusts a verdict for it (R37 keeps WS9's verdicts PROVISIONAL and its adjudication is the lead-designated Fable seat). `design_duty_cases_above_gate` is a measurement, not a verdict."
+  },
+  "concordance_with_ws8_r3": {
+   "escalation": "ESC-WS9-8",
+   "ruling": "BASELINE_v5 R39/ESC-8",
+   "pinned_round": "r3",
+   "pinned_round_adjudication": "NOT CLEAN - FINDINGS_WS8_r3.md: 'NOT CLEAN. Two blocking, six material, twelve minor.' No WS8 verdict moved and `all_unchanged = True`; the adjudicator places both blocking findings in the round's ACCOUNT OF ITSELF rather than its physics. WS9 pins this round because BASELINE_v5 R39/ESC-8 orders it, not because it is clean. IF THE LEAD BOUNCES WS8 TO AN r4 THIS PIN IS STALE AGAIN. WS9 neither resolves nor softens any WS8 finding (ESC-WS9-10).",
+   "per_implementation": {
+    "spin_rule_on_the_machines_shaft": {
+     "n_fields": 5,
+     "n_consistent": 4,
+     "n_differs_by_design": 1,
+     "n_differs_undeclared": 0,
+     "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+    },
+    "correction_pricing_on_ws9_own_energy_keys": {
+     "n_fields": 9,
+     "n_consistent": 6,
+     "n_differs_by_design": 3,
+     "n_differs_undeclared": 0,
+     "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+    },
+    "pack_temperature_as_a_state": {
+     "n_fields": 5,
+     "n_consistent": 3,
+     "n_differs_by_design": 2,
+     "n_differs_undeclared": 0,
+     "result": "CONSISTENT WITH WS8 r3 (no undeclared difference)"
+    }
+   },
+   "any_undeclared_difference": false,
+   "import_surface_r2_to_r3": {
+    "n_symbols": 62,
+    "changed": [],
+    "n_changed": 0,
+    "every_imported_symbol_identical": true
+   },
+   "conclusion": "ESC-WS9-8 asked whether WS9's three own implementations are consistent with the closed round's. All three are: every field is either CONSISTENT or a DIFFERENCE WS9 DECLARED BEFORE THE COMPARISON, each citing the ruling or finding that authorises it. There is no undeclared difference. The re-run against r3 was performed anyway, because ESC-WS9-8's premise is that the pin makes it a one-flag operation and an unexercised hot-swap is not evidence of one."
+  },
+  "traces_r34": {
+   "rule": "R34 (BASELINE_v5 program hygiene): every pipeline exports a 10 Hz trace file per run, feeding the WS10 exhibit and simulator; WS5, WS9 RE-RUNS and all later work comply from their next artifact. This is WS9's next artifact.",
+   "selection_rule": "every candidate INCLUDING THE RULER, on the DESIGN duty (the duty that gates), at the NOMINAL corner, on the FIRST seed of the ensemble - the full candidate set on the gating duty. A declared subset, following WS4's, WS5's and WS11's precedent under this same ruling; the literal reading is 576 files and some gigabytes. Escalated as ESC-WS9-12 rather than decided here.",
+   "columns": [
+    "t",
+    "v",
+    "s",
+    "grade",
+    "F_trac",
+    "F_regen",
+    "F_retard",
+    "F_friction"
+   ],
+   "sample_rate_Hz": 10.0,
+   "n_files": 6,
+   "total_bytes": 41247291,
+   "all_present": true,
+   "all_unchanged_since_written": true,
+   "files": [
+    {
+     "file": "data/trace_S0R_GH-REG-165_nominal_seed8101_10Hz.csv",
+     "candidate": "S0R",
+     "duty": "GH-REG-165",
+     "corner": "nominal",
+     "seed": 8101,
+     "rows": 99417,
+     "dt_s": 0.1,
+     "distance_m": 165000.91889715116,
+     "duration_s": 9941.6,
+     "sha256": "daae922d3dc1d92a0fdaf2e17c99671679be72dbd2289d8076cf08d6e6499a5e",
+     "present": true,
+     "bytes": 6709983,
+     "sha256_on_disk": "daae922d3dc1d92a0fdaf2e17c99671679be72dbd2289d8076cf08d6e6499a5e",
+     "unchanged": true
+    },
+    {
+     "file": "data/trace_S5_GH-REG-165_nominal_seed8101_10Hz.csv",
+     "candidate": "S5",
+     "duty": "GH-REG-165",
+     "corner": "nominal",
+     "seed": 8101,
+     "rows": 110535,
+     "dt_s": 0.1,
+     "distance_m": 165000.36168950578,
+     "duration_s": 11053.400000000001,
+     "sha256": "5838f3b35a8b8d4ce08c0e972b9a0a8cda34a8ab479f721cf27d0a18d98de170",
+     "present": true,
+     "bytes": 7501557,
+     "sha256_on_disk": "5838f3b35a8b8d4ce08c0e972b9a0a8cda34a8ab479f721cf27d0a18d98de170",
+     "unchanged": true
+    },
+    {
+     "file": "data/trace_S5-13L_GH-REG-165_nominal_seed8101_10Hz.csv",
+     "candidate": "S5-13L",
+     "duty": "GH-REG-165",
+     "corner": "nominal",
+     "seed": 8101,
+     "rows": 103823,
+     "dt_s": 0.1,
+     "distance_m": 165000.97580449746,
+     "duration_s": 10382.2,
+     "sha256": "38ed6e6baa0966737dd60aa21ad719661d1ad526797a9fccf33a58d6e23dd850",
+     "present": true,
+     "bytes": 7031838,
+     "sha256_on_disk": "38ed6e6baa0966737dd60aa21ad719661d1ad526797a9fccf33a58d6e23dd850",
+     "unchanged": true
+    },
+    {
+     "file": "data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv",
+     "candidate": "S6",
+     "duty": "GH-REG-165",
+     "corner": "nominal",
+     "seed": 8101,
+     "rows": 99655,
+     "dt_s": 0.1,
+     "distance_m": 165000.66063702386,
+     "duration_s": 9965.400000000001,
+     "sha256": "c5ac3026585e06dc8e5b476ed7346e79470c7c85db6eb6b87faef99ca3104be9",
+     "present": true,
+     "bytes": 6726404,
+     "sha256_on_disk": "c5ac3026585e06dc8e5b476ed7346e79470c7c85db6eb6b87faef99ca3104be9",
+     "unchanged": true
+    },
+    {
+     "file": "data/trace_S7_GH-REG-165_nominal_seed8101_10Hz.csv",
+     "candidate": "S7",
+     "duty": "GH-REG-165",
+     "corner": "nominal",
+     "seed": 8101,
+     "rows": 99138,
+     "dt_s": 0.1,
+     "distance_m": 165000.86690180027,
+     "duration_s": 9913.7,
+     "sha256": "bfda2526d94f81a7d5064fcf9d6b8f42c8212c42491c2e58e528fd679c9976b4",
+     "present": true,
+     "bytes": 6739794,
+     "sha256_on_disk": "bfda2526d94f81a7d5064fcf9d6b8f42c8212c42491c2e58e528fd679c9976b4",
+     "unchanged": true
+    },
+    {
+     "file": "data/trace_S4p_GH-REG-165_nominal_seed8101_10Hz.csv",
+     "candidate": "S4p",
+     "duty": "GH-REG-165",
+     "corner": "nominal",
+     "seed": 8101,
+     "rows": 96453,
+     "dt_s": 0.1,
+     "distance_m": 165000.4149060681,
+     "duration_s": 9645.2,
+     "sha256": "ad9daecd70aecf80ffaa77ee0157388fae15207c29b3a3c35a3eb90a64c1cf98",
+     "present": true,
+     "bytes": 6537715,
+     "sha256_on_disk": "ad9daecd70aecf80ffaa77ee0157388fae15207c29b3a3c35a3eb90a64c1cf98",
+     "unchanged": true
+    }
+   ]
   },
   "candidates": {
    "S0R": {
@@ -105783,7 +108538,10 @@
    "ESC-WS9-6",
    "ESC-WS9-7",
    "ESC-WS9-9",
-   "ESC-WS9-8"
+   "ESC-WS9-8",
+   "ESC-WS9-10",
+   "ESC-WS9-11",
+   "ESC-WS9-12"
   ],
   "ws2_chain_of_record": {
    "map_file": "data/effmap_motor_inverter_662V.csv",

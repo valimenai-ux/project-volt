@@ -1,0 +1,47 @@
+# Per-component labels for the `simulated_worst_run` member (r2 findings m3 and m4). `sustained_kW` is the maximum 60-second mean and is the exported figure; `instantaneous_kW` is the maximum single 10 Hz sample of the same component on the same run, computed since r2 and exported since r3 so that what the averaging window hides is visible. `governing_run` is corner/cycle/seed and the road speed at the window.
+ledger_version,candidate,component,sustained_kW,instantaneous_kW,governing_run
+r3,S0,engine_coolant_kW,208.433,208.433,nominal/LH-520/seed8104 @ 85 km/h
+r3,S0,engine_exhaust_kW,302.262,303.688,grade_heavy/REG-165/seed8107 @ 49 km/h
+r3,S0,generator_rectifier_kW,0,0,
+r3,S0,traction_machine_inverter_kW,0,0,
+r3,S0,driveline_kW,29.2292,66.0546,payload_plus20/LH-520/seed8101 @ 44 km/h
+r3,S0,pack_kW,0,0,
+r3,S0,brake_resistor_kW,0,0,
+r3,S0,friction_brake_kW,312.838,834.219,payload_plus20/LH-520/seed8102 @ 65 km/h
+r3,S0,accessory_kW,7,7,hot_alt_2000m_45C/LH-520/seed8107 @ 103 km/h
+r3,S1,engine_coolant_kW,158.571,158.571,nominal/LH-520/seed8101 @ 92 km/h
+r3,S1,engine_exhaust_kW,218.978,218.978,nominal/LH-520/seed8101 @ 92 km/h
+r3,S1,generator_rectifier_kW,16.2016,16.2016,nominal/LH-520/seed8101 @ 92 km/h
+r3,S1,traction_machine_inverter_kW,31.8897,35.5393,grade_heavy/REG-165/seed8106 @ 30 km/h
+r3,S1,driveline_kW,17.4007,17.4008,grade_heavy/REG-165/seed8105 @ 94 km/h
+r3,S1,pack_kW,7.75796,11.6403,grade_heavy/LH-520/seed8108 @ 87 km/h
+r3,S1,brake_resistor_kW,340,340,nominal/LH-520/seed8101 @ 97 km/h
+r3,S1,friction_brake_kW,205.169,685.796,grade_heavy/REG-165/seed8105 @ 94 km/h
+r3,S1,accessory_kW,6.6,6.6,cold_minus10C/LH-520/seed8101 @ 52 km/h
+r3,S2,engine_coolant_kW,196.462,196.462,cold_minus10C/LH-520/seed8102 @ 108 km/h
+r3,S2,engine_exhaust_kW,271.305,271.305,cold_minus10C/LH-520/seed8102 @ 108 km/h
+r3,S2,generator_rectifier_kW,16.2016,16.2016,nominal/LH-520/seed8101 @ 51 km/h
+r3,S2,traction_machine_inverter_kW,31.8897,35.5508,grade_heavy/REG-165/seed8106 @ 30 km/h
+r3,S2,driveline_kW,25.1207,25.1583,payload_plus20/LH-520/seed8102 @ 107 km/h
+r3,S2,pack_kW,10.1828,11.6365,grade_heavy/REG-165/seed8101 @ 53 km/h
+r3,S2,brake_resistor_kW,316.693,340,payload_plus20/LH-520/seed8102 @ 105 km/h
+r3,S2,friction_brake_kW,65.5534,637.087,cold_minus10C/REG-165/seed8106 @ 97 km/h
+r3,S2,accessory_kW,7,7,hot_alt_2000m_45C/LH-520/seed8101 @ 80 km/h
+r3,S3,engine_coolant_kW,162.577,162.577,payload_plus20/LH-520/seed8105 @ 108 km/h
+r3,S3,engine_exhaust_kW,224.511,224.511,payload_plus20/LH-520/seed8105 @ 108 km/h
+r3,S3,generator_rectifier_kW,0,0,
+r3,S3,traction_machine_inverter_kW,24.3951,31.1784,grade_heavy/REG-165/seed8106 @ 5 km/h
+r3,S3,driveline_kW,15.5157,15.5158,nominal/LH-520/seed8107 @ 88 km/h
+r3,S3,pack_kW,6.50783,8.40907,payload_plus20/LH-520/seed8102 @ 107 km/h
+r3,S3,brake_resistor_kW,200,200,nominal/LH-520/seed8103 @ 89 km/h
+r3,S3,friction_brake_kW,147.952,671.777,grade_heavy/REG-165/seed8105 @ 101 km/h
+r3,S3,accessory_kW,6.6,6.6,cold_minus10C/LH-520/seed8101 @ 33 km/h
+r3,S4,engine_coolant_kW,115.746,115.746,nominal/LH-520/seed8101 @ 91 km/h
+r3,S4,engine_exhaust_kW,159.84,159.84,nominal/LH-520/seed8101 @ 91 km/h
+r3,S4,generator_rectifier_kW,9.0015,9.0015,nominal/LH-520/seed8101 @ 91 km/h
+r3,S4,traction_machine_inverter_kW,36.6879,41.4759,grade_heavy/REG-165/seed8105 @ 102 km/h
+r3,S4,driveline_kW,19.3462,19.6789,grade_heavy/REG-165/seed8105 @ 102 km/h
+r3,S4,pack_kW,17.5735,18.0106,payload_plus20/LH-520/seed8102 @ 105 km/h
+r3,S4,brake_resistor_kW,314.506,340,cold_minus10C/LH-520/seed8102 @ 105 km/h
+r3,S4,friction_brake_kW,133.686,703.06,grade_heavy/REG-165/seed8105 @ 102 km/h
+r3,S4,accessory_kW,6.6,6.6,cold_minus10C/LH-520/seed8101 @ 52 km/h

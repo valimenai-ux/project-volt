@@ -127,6 +127,25 @@ def run_one(cand, cycle, seed, tables=None):
         v_wind=cycle["v_wind"], v_cap_fn=cand.v_cap, env_tables=tables)
     met = PH.trace_metrics(tr, m, cda=VEH.CdA, crr=crr, rho=cand.ctx.rho_air)
     acc = cand.account(tr)
+    # THE PER-RUN ASSERTION R3_DIRECTIVE item 1 ORDERS, at the only place
+    # that sees every run before anything aggregates it. It is HARD: on
+    # the run of record a violation is a bug in the control law, not a
+    # number to report. It is skipped only when the B1 errata switch is
+    # deliberately reverted, which is the one-factor row that exists to
+    # measure what the violation was worth.
+    ex = acc.get("exclusivity")
+    if ex is None:
+        raise AssertionError(
+            f"{cand.name}: account() returned no `exclusivity` block - "
+            "the B1 assertion cannot be skipped by omission")
+    if CD.errata_on("b1_overrun_exclusivity") and not ex["holds"]:
+        raise AssertionError(
+            f"{cand.name}: {ex['samples_brake_and_shaft']} samples carry "
+            f"BOTH compression-brake power (max "
+            f"{ex['max_simultaneous_engine_brake_kW']:.1f} kW) and "
+            f"positive engine shaft power (max "
+            f"{ex['max_simultaneous_shaft_kW']:.1f} kW). One crankshaft "
+            "cannot be in both states (finding B1).")
     acc = apply_energy_corrections(cand, acc)
     out = dict(met)
     out.update(acc)
@@ -423,6 +442,10 @@ def margins_vs_s0(corner_result, seeds):
           for f in corner_result["S0"]["fleet"]}
     s0_do = {f["seed"]: f["MJ_per_payload_tkm_deficit_only"]
              for f in corner_result["S0"]["fleet"]}
+    s0_r1 = {f["seed"]: f["MJ_per_payload_tkm_r1_pricing"]
+             for f in corner_result["S0"]["fleet"]}
+    s0_km = {f["seed"]: f["MJ_per_km"] for f in corner_result["S0"]["fleet"]}
+    s0_km_med = float(np.median(list(s0_km.values())))
     out = OrderedDict()
     for cname, r in corner_result.items():
         if cname == "S0":
@@ -437,7 +460,24 @@ def margins_vs_s0(corner_result, seeds):
                     margin_pct_deficit_only=(
                         (s0_do[f["seed"]]
                          - f["MJ_per_payload_tkm_deficit_only"])
-                        / s0_do[f["seed"]] * 100.0)))
+                        / s0_do[f["seed"]] * 100.0),
+                    # r2 finding M2: the per-km headline was a RATIO OF
+                    # MEDIANS while every margin in the report is the
+                    # median of PAIRED PER-SEED margins, and for S3 the
+                    # two differ in SIGN. The paired statistic is
+                    # computed here, on the same seeds and the same rule
+                    # as the metric of record.
+                    margin_pct_per_km=(
+                        (s0_km[f["seed"]] - f["MJ_per_km"])
+                        / s0_km[f["seed"]] * 100.0),
+                    # F6's one-factor variant, available at EVERY corner
+                    # because it is an exact re-pricing of the same run
+                    margin_pct_r1_pricing=(
+                        (s0_r1[f["seed"]]
+                         - f["MJ_per_payload_tkm_r1_pricing"])
+                        / s0_r1[f["seed"]] * 100.0)))
+        km_vals = [p["margin_pct_per_km"] for p in per_seed]
+        cand_km_med = float(np.median([f["MJ_per_km"] for f in r["fleet"]]))
         out[cname] = dict(
             per_seed=per_seed,
             ensemble=ensemble([p["margin_pct"] for p in per_seed]),
@@ -445,7 +485,27 @@ def margins_vs_s0(corner_result, seeds):
             # suppressed (the deficit make-up is kept). Reported
             # alongside, never substituted for the metric of record.
             ensemble_deficit_only=ensemble(
-                [p["margin_pct_deficit_only"] for p in per_seed]))
+                [p["margin_pct_deficit_only"] for p in per_seed]),
+            ensemble_r1_pricing=ensemble(
+                [p["margin_pct_r1_pricing"] for p in per_seed]),
+            per_km=dict(
+                basis=("PAIRED per-seed margin on fleet-mission MJ per "
+                       "KILOMETRE, then the 8-seed envelope - the same "
+                       "statistic as the metric of record, on the other "
+                       "denominator. Per M2, the ratio of medians is "
+                       "exported alongside for disclosure and is NOT the "
+                       "statistic any claim in this report is made on."),
+                ensemble=ensemble(km_vals),
+                n_seeds=len(km_vals),
+                n_seeds_below_zero=int(sum(1 for x in km_vals if x < 0.0)),
+                seeds_below_zero=[p["seed"] for p in per_seed
+                                  if p["margin_pct_per_km"] < 0.0],
+                wins_on_every_seed=bool(all(x > 0.0 for x in km_vals)),
+                ratio_of_medians_pct=((s0_km_med - cand_km_med)
+                                      / s0_km_med * 100.0),
+                ratio_of_medians_sign_differs=bool(
+                    (s0_km_med - cand_km_med) * float(np.median(km_vals))
+                    < 0.0)))
     return out
 
 
@@ -516,8 +576,10 @@ def main():
         workstream="WS8",
         vehicle="Vehicle One (Class 8 6x4 tractor + van trailer)",
         assignment="WS8_semi_architecture/ASSIGNMENT.md",
-        baseline_of_record="BASELINE_v4.md",
-        errata_round="WS8_semi_architecture/R2_DIRECTIVE.md (R26); numbers r2, verdicts executed under R25",
+        baseline_of_record="BASELINE_v5.md",
+        errata_round="WS8_semi_architecture/R3_DIRECTIVE.md (R35); numbers r3, verdicts executed under R25",
+        errata_round_id="r3",
+        supersedes_round="r2 (R2_DIRECTIVE.md under R26)",
         python=platform.python_version(),
         numpy=np.__version__,
         seeds=[int(s) for s in seeds],
@@ -634,6 +696,14 @@ def main():
 
     # ------------------------------------------------- advance / kill
     R["advance_kill"] = advance_kill(R["task3_margins"])
+    R["correction_directions"] = correction_directions(R)
+    R["corner_derate_scope"] = corner_derate_scope()
+    print("== correction directions (r2 finding M1, generated) ==",
+          flush=True)
+    for k, v in R["correction_directions"].items():
+        if k.startswith("_"):
+            continue
+        print(f"   {k:11s} {v['direction']}", flush=True)
     print("== ADVANCE/KILL ==", flush=True)
     for k, v in R["advance_kill"]["candidates"].items():
         wc = v["worst_corner_margin_pct_min"]
@@ -655,21 +725,32 @@ def main():
 
     R["verdict_stability"] = verdict_stability(R)
     _vs = R["verdict_stability"]
-    print("== verdict stability (R2_DIRECTIVE item 3) ==", flush=True)
+    print("== verdict stability (R2_DIRECTIVE item 3, R3_DIRECTIVE item 1) "
+          "==", flush=True)
     for k, v in _vs["candidates"].items():
-        print(f"   {k}: executed {v['executed_verdict']}, r2 on the same "
-              f"criteria {v['r2_verdict_on_same_criteria']} -> "
+        print(f"   {k}: executed {v['executed_verdict']}, r3 on the same "
+              f"criteria {v['verdict_on_same_criteria']} -> "
               f"{'unchanged' if v['unchanged'] else 'CHANGED - STOP'}",
               flush=True)
-    print(f"   WHR on r2 numbers: {_vs['whr_on_r2_numbers']} -> "
+    print(f"   WHR on r3 numbers: {_vs['whr_on_current_numbers']} -> "
           f"{'unchanged' if _vs['whr_unchanged'] else 'CHANGED - STOP'}",
           flush=True)
+    _sc = _vs["r3_stop_condition"]
+    print(f"   R3 trip-wire: S3 nominal min "
+          f"{_sc['S3_nominal_margin_pct_min']:+.2f}% vs "
+          f"+{_sc['bar_pct']:.0f}% bar -> "
+          f"{'CROSSED - STOP' if _sc['crossed'] else 'not crossed'}",
+          flush=True)
     if not _vs["all_unchanged"]:
-        print("!! A VERDICT FLIPPED ON THE r2 NUMBERS. R2_DIRECTIVE item 3 "
-              "says STOP and report; the verdict is NOT touched here and "
-              "the artifacts carry the flag for the lead.", flush=True)
+        print("!! A VERDICT FLIPPED, OR S3 CROSSED THE BAR, ON THE r3 "
+              "NUMBERS. R2_DIRECTIVE item 3 and R3_DIRECTIVE item 1 say "
+              "STOP and report; the verdict is NOT touched here and the "
+              "artifacts carry the flag for the lead.", flush=True)
 
     R["sanity"] = sanity_checks(R)
+    R["retard_overcommitment"] = retard_overcommitment(R)
+    R["s3_ttr_path_status"] = s3_ttr_path_status(R)
+    R["s4_cell_substitution_direction"] = s4_cell_substitution_direction(R)
     R["determinism"] = _load_determinism()
     R["escalations"] = escalations(R)
     R["interface_ws8"] = _clean_nan(interface_block(R))
@@ -734,10 +815,17 @@ def _rebuild_from_checkpoint(args):
           f"({R['task0_prior_art']['bytes']:,} bytes)", flush=True)
     R["task5_s3_specific"] = s3_specific_risks()
     R["two_speed_bracket"] = two_speed_bracket(R["task3_trial"]["nominal"])
+    # margins are a DERIVED block: recompute them from the saved trial so
+    # a rebuild cannot ship a margin block older than the code that
+    # renders it.
+    R["task3_margins"] = OrderedDict(
+        (cn, margins_vs_s0(t, seeds)) for cn, t in R["task3_trial"].items())
     if "one_factor" not in R:
         R["one_factor"] = one_factor_rows(R["task3_trial"]["nominal"],
                                           corners()["nominal"], seeds)
     R["advance_kill"] = advance_kill(R["task3_margins"])
+    R["correction_directions"] = correction_directions(R)
+    R["corner_derate_scope"] = corner_derate_scope()
     for k, v in R["advance_kill"]["candidates"].items():
         wc = v["worst_corner_margin_pct_min"]
         wtxt = (f"{wc:+.2f}% @ {v['worst_corner']}" if wc is not None
@@ -749,6 +837,9 @@ def _rebuild_from_checkpoint(args):
                                    trial=R["task3_trial"])
     R["verdict_stability"] = verdict_stability(R)
     R["sanity"] = sanity_checks(R)
+    R["retard_overcommitment"] = retard_overcommitment(R)
+    R["s3_ttr_path_status"] = s3_ttr_path_status(R)
+    R["s4_cell_substitution_direction"] = s4_cell_substitution_direction(R)
     R["determinism"] = _load_determinism()
     R["escalations"] = escalations(R)
     R["interface_ws8"] = _clean_nan(interface_block(R))
@@ -1307,19 +1398,60 @@ def ratio_needed_for_grade(grade, ratios=None):
     that the ratio the GRADE demands sits far above the ratio the CRUISE
     permits."""
     ratios = np.arange(2.0, 12.001, 0.01) if ratios is None else ratios
-    for ra in ratios:
-        s3 = CD.S3(ratio_a=float(ra))
-        if s3.grade_hold(grade)["status"] == "holds":
-            rpm = float(s3._rpm_at_v(105.0 / 3.6))
-            return dict(grade=grade, ratio=float(ra),
-                        engine_rpm_at_105kmh=rpm,
-                        rpm_ceiling=CD.S3.RPM_MAX,
-                        over_ceiling_by_rpm=rpm - CD.S3.RPM_MAX,
-                        rule=("lowest ratio on a 0.01 grid in [2.0, 12.0] "
-                              "whose axle A balances road load somewhere "
-                              "above its own lugging floor"))
-    return dict(grade=grade, ratio=None,
-                note="no ratio in [2.0, 12.0] holds this grade")
+
+    def _solve(rs, dv):
+        for ra in rs:
+            s3 = CD.S3(ratio_a=float(ra))
+            if s3.grade_hold(grade, dv=dv)["status"] == "holds":
+                return float(ra), float(s3._rpm_at_v(105.0 / 3.6))
+        return None, None
+
+    ra, rpm = _solve(ratios, 0.1)
+    if ra is None:
+        return dict(grade=grade, ratio=None,
+                    note="no ratio in [2.0, 12.0] holds this grade")
+    # r2 minor m1: this half of F12 is NOT closed form - it is the first
+    # hit on a 0.01 ratio grid whose own hold test scans speed on a
+    # 0.1 m/s grid - and r2's report nevertheless said "No swept grid is
+    # doing any work in that conclusion". Rather than restate the claim,
+    # the RESOLUTION SENSITIVITY is solved: the same answer on a grid ten
+    # times finer in BOTH dimensions, so the reader can see how much the
+    # grid is worth instead of being told it is worth nothing.
+    fine_lo = max(2.0, ra - 0.01)
+    ra_f, rpm_f = _solve(np.arange(fine_lo, ra + 1e-9, 0.001), 0.01)
+    if ra_f is None:
+        ra_f, rpm_f = ra, rpm
+    ceiling = CD.S3.RPM_MAX
+    return dict(grade=grade, ratio=float(ra),
+                engine_rpm_at_105kmh=rpm,
+                rpm_ceiling=ceiling,
+                over_ceiling_by_rpm=rpm - ceiling,
+                rule=("lowest ratio on a 0.01 grid in [2.0, 12.0] whose "
+                      "axle A balances road load somewhere above its own "
+                      "lugging floor, with the hold test scanning road "
+                      "speed on a 0.1 m/s grid. This is a SWEPT result, "
+                      "not a closed form - see `resolution_sensitivity`."),
+                resolution_sensitivity=dict(
+                    coarse=dict(ratio_step=0.01, speed_step_ms=0.1,
+                                ratio=float(ra),
+                                engine_rpm_at_105kmh=rpm),
+                    fine=dict(ratio_step=0.001, speed_step_ms=0.01,
+                              ratio=float(ra_f),
+                              engine_rpm_at_105kmh=rpm_f),
+                    d_ratio=float(ra_f - ra),
+                    d_rpm_at_105kmh=float(rpm_f - rpm),
+                    over_ceiling_by_rpm_fine=float(rpm_f - ceiling),
+                    conclusion_unchanged=bool((rpm - ceiling > 0)
+                                              == (rpm_f - ceiling > 0)),
+                    note=(
+                        "the conclusion is that this ratio puts the "
+                        "engine over its rpm ceiling at 105 km/h. Ten "
+                        "times the resolution in both dimensions moves "
+                        f"the ratio by {abs(ra_f - ra):.3f} and the "
+                        f"engine speed by {abs(rpm_f - rpm):.0f} rpm, "
+                        f"against a gap of {rpm - ceiling:,.0f} rpm. The "
+                        "grid decides a decimal place; it does not decide "
+                        "the answer.")))
 
 
 def s3_specific_risks():
@@ -1676,13 +1808,26 @@ def heat_ledger(seeds, ctx, trial=None):
             vals = OrderedDict(
                 (c, rows[c].get(k)) for c in rows if rows[c].get(k) is not None)
             gov = max(vals, key=lambda c: vals[c])
+            sim_row = rows.get("simulated_worst_run", {})
             worst[k] = dict(
                 rule=("max over the enumerated case set "
                       f"{list(rows)}; the simulated member is the maximum "
                       f"{CD.HEAT_SUSTAINED_WINDOW_S:.0f}-second mean over "
                       "every (corner, cycle, seed) run in the trial"),
                 cases=vals, value=vals[gov], governing_case=gov,
-                governing_run=rows[gov].get(k + "_run"))
+                governing_run=rows[gov].get(k + "_run"),
+                # r2 finding m4: what the 60-second window averages away,
+                # exported beside the figure it averages (simulated
+                # member only - the analytic cases ARE instantaneous).
+                simulated_instantaneous_kW=sim_row.get(
+                    k + "_instantaneous_kW"),
+                instantaneous_note=(
+                    "the exported `value` is a SUSTAINED "
+                    f"{CD.HEAT_SUSTAINED_WINDOW_S:.0f}-second mean, which "
+                    "is what sizes a cooling package; "
+                    "`simulated_instantaneous_kW` is the largest single "
+                    "10 Hz sample of the same component anywhere in the "
+                    "trial. A large gap is a snub, not a cooling load."))
         tot = OrderedDict()
         for c in rows:
             if c != "simulated_worst_run":
@@ -1702,9 +1847,11 @@ def heat_ledger(seeds, ctx, trial=None):
         out[cname] = dict(cases=rows, worst_case=worst,
                           ratings_check=heat_rating_check(cand, worst),
                           closure=heat_closure_check(rows))
+    excl = exclusivity_check(trial) if trial else dict(
+        rule="no trial supplied", candidates={}, all_hold=True, note="")
     all_close = all(
         r["closure"]["all_close"] and r["ratings_check"]["all_within_rating"]
-        for r in out.values())
+        for r in out.values()) and excl["all_hold"]
     advisory = {c: r["ratings_check"]["advisory_exceedances"]
                 for c, r in out.items()
                 if r["ratings_check"]["advisory_exceedances"]}
@@ -1719,14 +1866,48 @@ def heat_ledger(seeds, ctx, trial=None):
                     "member is a sustained "
                     f"{CD.HEAT_SUSTAINED_WINDOW_S:.0f}-second mean, not an "
                     "instantaneous spike, and it is a MEASURED PEAK rather "
-                    "than a balanced operating point - only the four "
-                    "analytic cases carry a closure residual, and only "
-                    "they are asserted to close"),
+                    "than a balanced operating point. EVERY member now "
+                    "carries a closure residual and every member is "
+                    "asserted (r3, R3_DIRECTIVE item 1): the four "
+                    "analytic cases are scaled on the case's own wheel "
+                    "power, and the simulated member carries the WORST "
+                    f"{CD.HEAT_SUSTAINED_WINDOW_S:.0f}-second residual of "
+                    "any run of that candidate in the trial, scaled on "
+                    "the accounted energy input at that window. In r2 the "
+                    "simulated member was exempt, and that exemption is "
+                    "what finding B1 came through. The `brake_resistor_kW` "
+                    "row is what the resistor TOOK, capped at the rating "
+                    "whose mass was charged; retarding power the run "
+                    "commanded that no sink could absorb is a CAPABILITY "
+                    "shortfall and is exported separately as "
+                    "`retard_overcommitment`, never as a cooling load"),
         cases=list(cases) + ["simulated_worst_run"],
         components=list(HEAT_ROWS),
         sustained_window_s=CD.HEAT_SUSTAINED_WINDOW_S,
         for_workstream="WS6 heat ledger (CLAUDE.md rule 7)",
+        ledger_version=LEDGER_VERSION,
+        supersedes_ledger_version="r2",
+        consumer_rule=("R3_DIRECTIVE item 7: WS6 consumes ONLY the r3 "
+                       "ledger. The r2 ledger is superseded, not amended: "
+                       "its `simulated_worst_run` member was exempt from "
+                       "the closure assertion and its largest row - S3's "
+                       "396.87 kW exhaust - was a state one crankshaft "
+                       "cannot be in (finding B1). A consumer holding a "
+                       "ledger whose `ledger_version` is not 'r3' is "
+                       "holding numbers this workstream has withdrawn."),
+        overrun_exclusivity=excl,
         all_cases_close_and_within_rating=bool(all_close),
+        what_all_cases_close_and_within_rating_tests=(
+            "TRUE requires all three of: (a) every enumerated case "
+            "closes, INCLUDING the simulated member, which carries the "
+            "worst 60-second residual of any run of that candidate in "
+            "the trial - in r2 the simulated member was exempt and that "
+            "exemption is what finding B1 came through; (b) every "
+            "component stays inside the rating of the hardware whose "
+            "mass was charged, which is one HARD row - the brake "
+            "resistor - the advisory rows being findings rather than "
+            "gates; (c) no run carries a sample with both "
+            "compression-brake power and positive engine shaft power."),
         advisory_exceedances=advisory,
         advisory_note=(
             "an ADVISORY exceedance is a declared policy allowance "
@@ -1864,21 +2045,117 @@ def heat_rating_check(cand, worst):
 
 
 def heat_closure_check(rows):
-    """Every analytic case must close: on a descent the retarding duty at
-    the wheel equals what is stored plus what is rejected; when driving,
-    fuel power in equals wheel power out plus everything rejected. r1's
-    S0 descent case left 83.6 kW with no row at all."""
+    """EVERY case must close - including the simulated one (R3_DIRECTIVE
+    item 1).
+
+    On a descent the retarding duty at the wheel equals what is stored
+    plus what is rejected; when driving, fuel power in equals wheel power
+    out plus everything rejected. r1's S0 descent case left 83.6 kW with
+    no row at all.
+
+    r2 closed only the four ANALYTIC cases: `simulated_worst_run` carried
+    no residual and was skipped by the loop below, and that exemption is
+    what let B1 through - at the window the export named, nine rows
+    summed to 630.5 kW against 1,060.2 kW of accounted input. In r3 the
+    simulated member carries the WORST per-run residual any run of that
+    candidate produced (`ws8_candidates.run_closure`), so the assertion
+    is per run rather than per exported case, and it is scaled on the
+    accounted input at that window rather than on a single operating
+    point's wheel power."""
     out = OrderedDict()
     for case, r in rows.items():
         if "_closure_residual_kW" not in r:
             continue
         res = r["_closure_residual_kW"]
-        scale = max(abs(r.get("case_wheel_power_kW", 0.0)), 1.0)
+        scale = max(abs(r.get("_closure_scale_kW",
+                              r.get("case_wheel_power_kW", 0.0))), 1.0)
         out[case] = dict(residual_kW=res, relative=res / scale,
-                         closes=bool(abs(res) / scale < 0.02))
-    return dict(cases=out,
+                         closes=bool(abs(res) / scale < CD.CLOSURE_TOL),
+                         basis=r.get("_closure_basis", "analytic operating "
+                                     "point; scale = case wheel power"),
+                         governing_run=r.get("_closure_run"))
+    return dict(cases=out, tolerance=CD.CLOSURE_TOL,
                 all_close=bool(all(c["closes"] for c in out.values()))
                 if out else True)
+
+
+def exclusivity_check(trial):
+    """THE ASSERTION R3_DIRECTIVE item 1 ORDERS, aggregated over the whole
+    trial: no sample of any run may carry both compression-brake power
+    and positive engine shaft power.
+
+    Every run of every candidate at every corner is examined - S1 and S4
+    included, where the statement is vacuous because neither has a
+    mechanical path from engine to road, because a check that runs only
+    where the error was already found is not a check.
+
+    `fuel_fraction_while_braking` is REPORTED, not gated, and it is not
+    the same statement: a series genset may legitimately charge a pack
+    while the vehicle brakes, because its crankshaft is not geared to the
+    road. It is the pairing of that fuel with compression-brake power
+    through ONE crankshaft that is impossible, and that is what
+    `samples_brake_and_shaft` counts."""
+    out = OrderedDict()
+    for cname in ("S0", "S1", "S2", "S3", "S4"):
+        worst = None
+        n_bad = 0
+        n_runs = 0
+        f_brake_max = 0.0
+        f_brake_run = None
+        ttr_braking = 0.0
+        for corner, blob in trial.items():
+            if cname not in blob:
+                continue
+            for cy, rows in blob[cname]["per_cycle"].items():
+                for row in rows:
+                    ex = row.get("exclusivity")
+                    if not ex:
+                        continue
+                    n_runs += 1
+                    label = f"{corner}/{cy}/seed{row['seed']}"
+                    n_bad += ex["samples_brake_and_shaft"]
+                    if ex["samples_brake_and_shaft"] and (
+                            worst is None
+                            or ex["samples_brake_and_shaft"] > worst[1]):
+                        worst = (label, ex["samples_brake_and_shaft"])
+                    if ex["fuel_fraction_while_braking"] > f_brake_max:
+                        f_brake_max = ex["fuel_fraction_while_braking"]
+                        f_brake_run = label
+                    ttr_braking += ex.get("ttr_charge_while_braking_kWh",
+                                          0.0)
+        out[cname] = dict(
+            runs_examined=n_runs,
+            # a candidate with NO runs examined FAILS. r2's
+            # `heat_closure_check` passed by skipping what it could not
+            # see (minor m5a); an aggregator that skipped rows without an
+            # `exclusivity` key would do the same thing one level up.
+            examined_every_run=bool(n_runs > 0),
+            samples_brake_and_shaft=int(n_bad),
+            worst_run=worst[0] if worst else None,
+            fuel_fraction_while_braking_max=f_brake_max,
+            fuel_fraction_while_braking_max_run=f_brake_run,
+            ttr_charge_while_braking_kWh_total=ttr_braking,
+            holds=bool(n_bad == 0 and n_runs > 0))
+    return dict(
+        rule=("per run, over every (corner, cycle, seed) in the trial: no "
+              "10 Hz sample may carry both compression-brake power > 1 kW "
+              "and positive engine shaft power > 1 kW. One crankshaft "
+              "cannot be in both states."),
+        candidates=out,
+        all_hold=bool(all(c["holds"] for c in out.values())),
+        note=("`fuel_fraction_while_braking` is reported, not gated, and "
+              "a non-zero value is not by itself a defect. S1 and S4 have "
+              "no mechanical path from engine to road at all, so a genset "
+              "charging the pack while the vehicle brakes is simply a "
+              "legitimate state for them. S2's is legitimate too, on a "
+              "narrower ground: under its declared coupling law the "
+              "lockup clutch is open while regen alone is doing the "
+              "retarding, so the crank is free and the genset may run - "
+              "and the fraction of the band that covers is exported as "
+              "`inband_overrun_no_engine_brake_fraction_moving`. What is "
+              "impossible, and what `samples_brake_and_shaft` counts, is "
+              "an engine carrying compression-brake power and positive "
+              "shaft power at the same instant."))
 
 
 def simulated_heat_peaks(trial):
@@ -1892,6 +2169,13 @@ def simulated_heat_peaks(trial):
     sum, computed inside the run, because the peaks are not simultaneous.
     """
     keys = list(HEAT_ROWS) + ["total_rejected_kW"]
+    # r2 finding m4: `heat_peaks` has always computed the INSTANTANEOUS
+    # maximum beside the 60-second mean - its docstring says it is
+    # "reported alongside so nothing is hidden" - and this function
+    # enumerated only the sustained keys, so it died here and reached
+    # neither the ledger nor the interface. It is enveloped now, on the
+    # same enumerated case set, and exported beside the sustained figure.
+    inst_keys = [k + "_instantaneous_kW" for k in HEAT_ROWS]
     out = {}
     for corner, blob in trial.items():
         for cname, r in blob.items():
@@ -1901,18 +2185,54 @@ def simulated_heat_peaks(trial):
                     if not hp:
                         continue
                     cur = out.setdefault(
-                        cname, OrderedDict((k, 0.0) for k in keys))
+                        cname, OrderedDict((k, 0.0)
+                                           for k in keys + inst_keys))
+                    for k in inst_keys:
+                        if hp.get(k, 0.0) > cur[k]:
+                            cur[k] = hp[k]
                     for k in keys:
                         if hp.get(k, 0.0) > cur[k]:
                             cur[k] = hp[k]
                             cur[k + "_run"] = (
                                 f"{corner}/{cy}/seed{row['seed']}"
                                 f" @ {hp.get(k + '_at_kmh', 0.0):.0f} km/h")
+    # R3_DIRECTIVE item 1: the simulated member is no longer exempt from
+    # the closure. It carries the WORST per-run residual any run of this
+    # candidate produced, so `heat_closure_check` asserts PER RUN rather
+    # than per exported case.
+    worst_res = {}
+    for corner, blob in trial.items():
+        for cname, r in blob.items():
+            for cy, seed_rows in r["per_cycle"].items():
+                for row in seed_rows:
+                    rc = row.get("run_closure")
+                    if not rc or cname not in out:
+                        continue
+                    wc = rc["worst_window"]
+                    prev = worst_res.get(cname)
+                    if prev is None or abs(wc["relative"]) > abs(
+                            prev["relative"]):
+                        worst_res[cname] = dict(
+                            relative=wc["relative"],
+                            residual_kW=wc["residual_kW"],
+                            scale_kW=abs(wc["p_in_kW"]),
+                            run=(f"{corner}/{cy}/seed{row['seed']}"
+                                 f" @ {wc['road_speed_kmh']:.0f} km/h"))
     for cname, cur in out.items():
         gov = max(HEAT_ROWS, key=lambda k: cur[k])
         cur["_governing_run"] = cur.get(gov + "_run")
         cur["road_speed_kmh"] = None
         cur["case_wheel_power_kW"] = None
+        wr = worst_res.get(cname)
+        if wr is not None:
+            cur["_closure_residual_kW"] = wr["residual_kW"]
+            cur["_closure_scale_kW"] = wr["scale_kW"]
+            cur["_closure_run"] = wr["run"]
+            cur["_closure_basis"] = (
+                "WORST 60-second window of ANY run of this candidate in "
+                "the trial; scale = accounted energy input at that "
+                "window. Per run, not per exported case (R3_DIRECTIVE "
+                "item 1).")
     return out
 
 
@@ -2237,9 +2557,258 @@ def _s0_friction_worst(R):
         return float("nan")
 
 
+WS9_S4P_CITATION = dict(
+    source="WS9_vehicle_one_wave2 (Vehicle One wave two), as reported",
+    status=("PROVISIONAL - BASELINE_v5 R37: WS9's verdicts are NOT "
+            "ratified (no findings file exists and its adjudication is "
+            "the lead-designated Fable seat), and R39/ESC-2 keeps S4' at "
+            "PROVISIONAL-ADVANCE with its grid-factor flip point on the "
+            "record"),
+    candidate="S4' (S4p) - RE-BEV re-posed on a CITED EXTERNAL energy cell",
+    cell_basis=("ESC-1(c): a cited external energy-optimised Class 8 "
+                "traction pack, explicitly NOT a WS3 cell"),
+    pack_Wh_per_kg=160.0,
+    pack_mass_kg=937.5,
+    c_cont_chg=1.0,
+    c_cont_dis=2.0,
+    p_cont_chg_kW=150.0,
+    p_cont_dis_kW=300.0,
+    resistor_rating_kW=350.0,
+    payload_delta_vs_ruler_kg=-520.6296906751959,
+    nominal_margin_pct_min=11.953945283686181,
+    control_duty_nominal_margin_pct_min=-6.807699516392367,
+    verdict="ADVANCE (PROVISIONAL)",
+    not_commensurable=("WS9's metric is PRIMARY ENERGY per payload "
+                       "tonne-km with an electricity term (ESC-3), not "
+                       "WS8's fuel-energy metric. S4' +11.95% and WS8's "
+                       "S4 are NOT the same quantity and must not be "
+                       "differenced."),
+    vintage=("WS9's numbers were produced against WS8 r2 sources; "
+             "BASELINE_v5 R39/ESC-8 orders WS9 re-run against WS8 r3 when "
+             "it lands"))
+"""S4' as WS9 reports it, CITED as an external figure the way
+`ICCT_TYPICAL_L_PER_100KM` is cited (r2 finding M4).
+
+DELIBERATELY A DECLARED CONSTANT, NOT A LIVE READ. Reading
+`../WS9_vehicle_one_wave2/results_ws9.json` at run time - or SHA-pinning
+it - would make this workstream's data file change whenever WS9 re-runs,
+and R39/ESC-8 orders exactly that re-run against these very numbers. That
+is a two-way dependency and it would break rule 1's byte-stable
+regeneration in both directions. WS9's folder is read-only to WS8 (rule
+10) and its figures are quoted here, with their provisional status
+attached, the same way any external citation is."""
+
+
+def s3_ttr_path_status(R):
+    """Whether S3's through-the-road charging path fires at all, measured
+    over the whole trial (ESC-WS8-8, raised by r3).
+
+    S3's policy says the buffer pack is refilled by regen OR by
+    through-the-road charging. With R3_DIRECTIVE item 1's gate applied,
+    the second half is measured here rather than assumed."""
+    tot = 0.0
+    blocked = 0.0
+    runs = 0
+    with_ttr = 0
+    for corner, blob in R["task3_trial"].items():
+        r = blob.get("S3")
+        if not r:
+            continue
+        for cy, rows in r["per_cycle"].items():
+            for row in rows:
+                runs += 1
+                e = row.get("e_ttr_charge_bus_kWh", 0.0)
+                tot += e
+                blocked += row.get("e_ttr_blocked_by_load_policy_kWh", 0.0)
+                if e > 1e-9:
+                    with_ttr += 1
+    return dict(
+        runs_examined=runs, runs_with_any_ttr=with_ttr,
+        e_ttr_charge_bus_kWh_total=tot,
+        e_ttr_blocked_by_load_policy_kWh_total=blocked,
+        path_is_inert=bool(with_ttr == 0),
+        rule=("summed over every (corner, cycle, seed) run of S3 in the "
+              "trial; `e_ttr_blocked_by_load_policy_kWh` is what the 0.72 "
+              "BSFC threshold withheld, so the reader can see that the "
+              "threshold is not what makes the path inert"))
+
+
+V_REGEN_BLEND_HI_MS = CD.V_REGEN_BLEND_HI
+"""Road speed above which the low-speed regen blend-out is complete
+[m/s], read from the control constant rather than retyped."""
+
+
+def s4_cell_substitution_direction(R):
+    """r2 finding M4, R3_DIRECTIVE item 5: 'restate ESC-WS8-1 with BOTH
+    halves of the cell-substitution direction'.
+
+    ESC-WS8-1 argued - correctly - that WS3's power-optimised NMC-P-40
+    penalises S4 on MASS. It did not say that the same cell hands S4 a
+    charge ceiling no energy cell would give it, and that S4's descent
+    regen is effectively unconstrained by its pack because of it. The
+    substitution moves S4 BOTH ways, and only the favourable half was on
+    the record - the half WS9's S4' was then sized on under R27/ESC-1(c).
+
+    Every number below is MEASURED here from the same model the margins
+    come from, so the restated escalation is a rendering of data rather
+    than a paragraph."""
+    ctx = corners()["nominal"]
+    cand = make_candidate("S4", ctx)
+    pack = cand.pack
+    v_cruise = 95.0 / 3.6
+    f_machine = min(float(cand.edrive.wheel_force_max(v_cruise)),
+                    float(cand.adhesion_force_N()))
+    f_regen, f_res, f_eb = cand._retard_channels(v_cruise)
+    # THE SPEED ABOVE WHICH THE PACK CEILING BINDS THE MACHINE.
+    # Compared on ONE basis: `_retard_channels` computes
+    # `min(f_gen, chg*1e3/v) * blend`, so the ceiling binds exactly when
+    # `chg*1e3/v < f_gen`, and the low-speed regen blend-out - which
+    # multiplies BOTH sides - cannot decide it. The first cut of this
+    # block compared a blended regen force against an unblended machine
+    # force and so reported "binds nowhere", which is the inverse of the
+    # truth; it is written this way so the two sides are one quantity.
+    chg_kw = float(cand.pack_chg_limit_kw())
+    v_cross = None
+    for x in np.arange(V_REGEN_BLEND_HI_MS, 33.0, 0.01):
+        f_gen_x = min(float(cand.edrive.wheel_force_max(float(x))),
+                      float(cand.adhesion_force_N()))
+        if chg_kw * 1e3 / float(x) < f_gen_x - 1e-6:
+            v_cross = float(x)
+            break
+    hl = R["heat_ledger"]["candidates"]["S4"]["cases"]
+    desc = hl.get("descent_6pct_pack_accepting", {})
+
+    def med(corner, key):
+        rows = (R["task3_trial"].get(corner, {}).get("S4", {})
+                .get("per_cycle", {}).get("LH-520", []))
+        vals = [r.get(key, 0.0) for r in rows]
+        return float(np.median(vals)) if vals else float("nan")
+
+    return dict(
+        rule=("measured at the nominal corner from the same envelope the "
+              "integrator was given; forces are stated AT THE CONTACT "
+              "PATCH on both sides, because the pack ceiling is a "
+              "BUS-SIDE kW applied as a wheel-side force cap (r2 minor "
+              "m6) and comparing it to a wheel-side demand without "
+              "saying so is that same slippage"),
+        cell=pack.cell_name if hasattr(pack, "cell_name")
+        else cand.PACK_CELL,
+        pack_mass_kg=float(pack.mass_kg),
+        p_cont_chg_kW=float(pack.p_cont_chg_kw),
+        p_cont_dis_kW=float(pack.p_cont_dis_kw),
+        c_cont_chg=float(pack.p_cont_chg_kw
+                         / max(pack.nameplate_kwh, 1e-9)),
+        c_cont_dis=float(pack.p_cont_dis_kw
+                         / max(pack.nameplate_kwh, 1e-9)),
+        cruise_speed_kmh=95.0,
+        f_machine_N=f_machine,
+        f_regen_N=float(f_regen),
+        pack_ceiling_cost_pct=float((f_machine - f_regen)
+                                    / max(f_machine, 1e-9) * 100.0),
+        pack_ceiling_binds_above_kmh=(v_cross * 3.6
+                                      if v_cross is not None else None),
+        pack_ceiling_binds_anywhere=bool(v_cross is not None),
+        pack_ceiling_rule=(
+            "the ceiling binds at road speeds where "
+            "`p_cont_chg_kW * 1e3 / v` falls below the machine's own "
+            "wheel-force limit; both sides at the CONTACT PATCH, the "
+            "regen blend-out applied to neither because it multiplies "
+            "both"),
+        descent_resistor_kW=desc.get("brake_resistor_kW"),
+        descent_friction_kW=desc.get("friction_brake_kW"),
+        descent_speed_kmh=desc.get("road_speed_kmh"),
+        retard_needed_6pct_90kmh_kW=R["sanity"]["mountain_6pct"][
+            "retard_needed_at_90kmh_kW"],
+        LH520_regen_kWh_median={
+            "nominal": med("nominal", "e_regen_bus_kWh"),
+            "cold_minus10C": med("cold_minus10C", "e_regen_bus_kWh")},
+        LH520_resistor_kWh_median={
+            "nominal": med("nominal", "e_resistor_kWh"),
+            "cold_minus10C": med("cold_minus10C", "e_resistor_kWh")},
+        cited_energy_cell=WS9_S4P_CITATION,
+        note=("the cold corner is WS8's own in-model measurement of what "
+              "a LOWER charge ceiling does to this candidate: the same "
+              "pack, the same descents, a ceiling cut by "
+              "COLD_CHG_FACTOR, and the harvest transfers from the pack "
+              "to the resistor. It is not the energy cell - it is the "
+              "direction the energy cell points."))
+
+
+def retard_overcommitment(R):
+    """The braking-side capability shortfall, enveloped over the trial.
+
+    Raised inside r3 by review, and it is the same class as B1: a real
+    power flow that had no home. See
+    `ws8_candidates.resistor_and_overcommitment` for why it is exported
+    as a capability shortfall rather than as resistor heat, and
+    ESC-WS8-10 for the envelope limitation behind it."""
+    ov, ove = {}, {}
+    for corner, blob in R["task3_trial"].items():
+        for cname, r in blob.items():
+            for cy, rows in r["per_cycle"].items():
+                for x in rows:
+                    key = f"{cname}/{corner}/{cy}/seed{x.get('seed')}"
+                    pk = x.get("retard_overcommitted_peak_kW", 0.0) or 0.0
+                    e = x.get("e_retard_overcommitted_kWh", 0.0) or 0.0
+                    if pk > 0.0 or e > 0.0:
+                        ov[key], ove[key] = pk, e
+    gov_o = max(ov, key=lambda k: ov[k]) if ov else None
+    return dict(
+        rule=("max over the enumerated (candidate, corner, cycle, seed) "
+              "case set of the sustained "
+              f"{CD.HEAT_SUSTAINED_WINDOW_S:.0f}-second retarding power "
+              "the run COMMANDED and no sink could absorb"),
+        value_kW=(ov[gov_o] if gov_o else 0.0),
+        governing_case=gov_o,
+        energy_kWh_at_governing_case=(ove[gov_o] if gov_o else 0.0),
+        cases_kW=dict(sorted(ov.items())),
+        meaning=(
+            "THE BRAKING-SIDE MIRROR OF `unserved_energy_kWh`, and read "
+            "it the same way: it is a CAPABILITY statement, not a heat "
+            "one. The traction and retard envelope is a function of road "
+            "speed alone and does not re-solve when the buffer pack "
+            "fills, so on a long descent the integrator keeps commanding "
+            "the regen channel at its warm charge ceiling after the pack "
+            "has stopped accepting. `series_dispatch` and S3's SOC loop "
+            "then send that power to the brake resistor - which is where "
+            "it physically goes - and the sum can exceed the resistor "
+            "rating whose mass was charged. What the resistor TOOK is "
+            "booked in `brake_resistor_kW`, capped at that rating; the "
+            "remainder is this field. It is NOT a cooling load and WS6 "
+            "must not size on it. What it measures is that the simulated "
+            "descent lets the candidate retard harder than its hardware "
+            "can, so its simulated descent speed is optimistic by that "
+            "much. The physically correct member for the pack-full state "
+            "is the enumerated `descent_6pct_pack_saturated` analytic "
+            "case, which respects the rating and holds a LOWER speed. "
+            "Escalated as ESC-WS8-10, not self-resolved."),
+        never_absorbed=("no margin reads this field; it is reported raw, "
+                        "on the convention WS4's ESC-5 established"))
+
+
+
+def _n_simulated_runs(R):
+    """Every (candidate, cycle, seed) simulation the pipeline performs,
+    counted rather than estimated - the corner trial, the WHR gate and
+    the one-factor re-runs. Used by ESC-WS8-9, where an undercount would
+    understate what R34 is asking for."""
+    n_seeds = len(R["_meta"]["seeds"])
+    n = len(R["task3_trial"]) * 5 * 2 * n_seeds
+    for label, row in (R.get("one_factor", {}).get("rows") or {}).items():
+        if "Re-simulated" not in (row.get("_note") or ""):
+            continue
+        n += len([c for c in row if c in ("S0", "S1", "S2", "S3", "S4")]) \
+            * 2 * n_seeds
+    for cname, r in (R.get("task4_whr", {}).get("results") or {}).items():
+        n += len(r.get("systems") or {}) * 2 * n_seeds
+    return n
+
+
 def escalations(R):
     trial = R["task3_trial"]["nominal"]
     s4 = trial.get("S4", {}).get("spec", {})
+    csd = R.get("s4_cell_substitution_direction") or {}
+    cec = csd.get("cited_energy_cell", WS9_S4P_CITATION)
     esc = []
 
     esc.append(dict(
@@ -2263,17 +2832,86 @@ def escalations(R):
             "masses "
             f"{s4.get('mass_rows_kg', {}).get('traction_pack', 0):.0f} kg "
             "on WS3's basis, and the payload that mass displaces is "
-            "charged against S4 in the metric of record."),
+            "charged against S4 in the metric of record.\n"
+            "THE SUBSTITUTION MOVES S4 BOTH WAYS, and r2 stated only the "
+            "half that hurts it (finding M4). The same power-optimised "
+            "cell that costs S4 mass also hands it "
+            f"{csd.get('p_cont_chg_kW', 0):.1f} kW continuous CHARGE and "
+            f"{csd.get('p_cont_dis_kW', 0):.1f} kW continuous DISCHARGE on "
+            f"a 150 kWh pack - {csd.get('c_cont_chg', 0):.1f} C and "
+            f"{csd.get('c_cont_dis', 0):.1f} C - and that ceiling is what "
+            "makes S4's descent regen effectively unconstrained by its "
+            "battery. Measured at the contact patch on both sides (the "
+            "ceiling is a bus-side kW applied as a wheel-side force cap, "
+            "r2 minor m6, and the comparison is stated in force so that "
+            "slippage cannot hide in it): at "
+            f"{csd.get('cruise_speed_kmh', 0):.0f} km/h the machine can "
+            f"pull {csd.get('f_machine_N', 0):,.0f} N of retarding force "
+            f"and the pack ceiling allows {csd.get('f_regen_N', 0):,.0f} N "
+            f"of it - the ceiling costs "
+            f"{csd.get('pack_ceiling_cost_pct', 0):.1f}% of the machine's "
+            "capability, and it binds at all only above "
+            f"{csd['pack_ceiling_binds_above_kmh']:.1f} km/h. On "
+            "the enumerated 6% descent with the pack accepting, S4 puts "
+            "the WHOLE mountain into the battery: brake resistor "
+            f"{csd.get('descent_resistor_kW', 0):.1f} kW and foundation "
+            f"brakes {csd.get('descent_friction_kW', 0):.1f} kW, against "
+            f"{csd.get('retard_needed_6pct_90kmh_kW', 0):.0f} kW of "
+            "retarding demand at 90 km/h.\n"
+            "WS8's OWN COLD CORNER MEASURES THE TRANSFER an energy cell's "
+            "lower ceiling would cause. At -10 C the same pack's charge "
+            "acceptance is cut by `COLD_CHG_FACTOR`, and S4's LH-520 "
+            "median regen falls from "
+            f"{csd.get('LH520_regen_kWh_median', {}).get('nominal', 0):.1f}"
+            " to "
+            f"{csd.get('LH520_regen_kWh_median', {}).get('cold_minus10C', 0):.1f}"
+            " kWh while its resistor energy rises from "
+            f"{csd.get('LH520_resistor_kWh_median', {}).get('nominal', 0):.4f}"
+            " to "
+            f"{csd.get('LH520_resistor_kWh_median', {}).get('cold_minus10C', 0):.1f}"
+            " kWh. An energy cell at "
+            f"{cec['c_cont_chg']:.1f} C continuous charge - the rate "
+            f"WS9's cited external cell carries - would give this pack "
+            f"about {cec['p_cont_chg_kW']:.0f} kW, well below what the "
+            "descent demands, and would bind S4 hard where WS3's cell "
+            "does not bind it at all. The mass half of this escalation "
+            "is FOR substituting; the power half is AGAINST, and the "
+            "resistor S4 would then have to grow is part of the price."),
         why_not_self_resolved=(
             "Substituting a cell WS3 never characterised would be WS8 "
             "writing WS3's trade study, which rule 10 forbids and which "
-            "would put an uncorroborated number into the headline."),
+            "would put an uncorroborated number into the headline. That "
+            "applies to the power half as much as to the mass half: the "
+            f"{cec['c_cont_chg']:.1f} C / {cec['c_cont_dis']:.1f} C "
+            "figures above are CITED from WS9's ruled external cell, not "
+            "WS8's own characterisation of an energy cell."),
         asks=("Rule on ONE of: (a) S4's result stands on WS3's cell set as "
               "reported; (b) WS3 is reopened to characterise an "
               "energy-optimised cell and S4 is re-run; (c) WS8 is "
               "authorised to carry a cited external energy cell as an "
-              "explicitly non-WS3 bracket."),
-        materiality="high - it is the difference between S4 advancing or not"))
+              "explicitly non-WS3 bracket.\n"
+              "R27/ESC-1 HAS ALREADY RULED (c), and the ruling is "
+              f"executed: {cec['candidate']} ran in {cec['source']} on "
+              f"{cec['cell_basis']} at {cec['pack_Wh_per_kg']:.0f} Wh/kg "
+              f"({cec['pack_mass_kg']:.0f} kg, "
+              f"{cec['payload_delta_vs_ruler_kg']:+,.0f} kg of payload "
+              f"against its ruler) and returned "
+              f"{cec['nominal_margin_pct_min']:+.2f}% on the design duty "
+              f"and {cec['control_duty_nominal_margin_pct_min']:+.2f}% on "
+              f"the control duty - {cec['verdict']}. This escalation is "
+              "therefore CLOSED for Vehicle One's WS9 work and is carried "
+              "here only because WS8's own numbers were computed before "
+              "that ruling.\n"
+              f"THREE CAVEATS ON THAT CITATION. Status: {cec['status']}. "
+              f"Commensurability: {cec['not_commensurable']} "
+              f"Vintage: {cec['vintage']}."),
+        materiality=("high, and TWO-DIRECTIONAL - it is the difference "
+                     "between S4 advancing or not on mass, and the "
+                     "difference between a descent the pack absorbs and "
+                     "one it does not on power. r2 recorded only the "
+                     "first direction (finding M4), and WS9's S4' was "
+                     "sized under R27/ESC-1(c) on that half of the "
+                     "record.")))
 
     esc.append(dict(
         id="ESC-WS8-2",
@@ -2504,6 +3142,187 @@ def escalations(R):
         materiality="low - affects trip time and accessory energy, not "
                     "tractive work"))
 
+    # ---- raised by r3 -------------------------------------------------
+    ttr = R.get("s3_ttr_path_status") or {}
+    esc.append(dict(
+        id="ESC-WS8-8",
+        title=("Once B1's rule is applied, S3's through-the-road charging "
+               "path never runs - and the reason is a modelling artefact, "
+               "not a control choice"),
+        cites=("R3_DIRECTIVE item 1 (gate through-the-road charging on the "
+               "VEHICLE NOT BRAKING); FINDINGS_WS8_r2.md B1; assignment "
+               "Task 3's S3 specification"),
+        finding=(
+            "S3's declared policy says its buffer pack 'can only be "
+            "refilled by regen or by through-the-road charging (engine "
+            "pushes axle A, e-axle harvests on axle B)'. With R3's gate "
+            "in place that second mechanism is IDENTICALLY INERT: over "
+            "the whole trial S3 takes "
+            f"{ttr.get('e_ttr_charge_bus_kWh_total', 0.0):.3f} kWh of "
+            "through-the-road charge, on "
+            f"{ttr.get('runs_with_any_ttr', 0)} of "
+            f"{ttr.get('runs_examined', 0)} runs.\n"
+            "THE REASON IS NOT THE GATE. The charging headroom is priced "
+            "as `p_chg_head_bus = f_a_head * v * eta_g`, where `eta_g` is "
+            "`ScaledEDrive.eta_wheel_to_bus(v, p_regen_wheel)` - the "
+            "generating efficiency evaluated AT THE REGEN OPERATING "
+            "POINT. That function returns exactly 0.0 when the captured "
+            "power is zero (`ws8_electric.py`: `eta = np.where(gen, ..., "
+            "0.0)`), and the captured power is zero on every sample where "
+            "the integrator is not braking. So the headroom was zero on "
+            "every non-braking sample all along, and in r2 the ONLY "
+            "samples on which through-the-road charging could fire were "
+            "braking samples - which is exactly the impossible state "
+            "finding B1 identified. The B1 gate did not disable a working "
+            "mechanism; it revealed that the mechanism only ever ran in "
+            "the state it must not run in.\n"
+            "The 0.72-of-capacity BSFC policy is NOT what holds it back "
+            "either, and that is measured rather than argued: the energy "
+            "that threshold withheld over the whole trial is "
+            f"{ttr.get('e_ttr_blocked_by_load_policy_kWh_total', 0.0):.3f}"
+            " kWh."),
+        why_not_self_resolved=(
+            "Repricing the headroom at the TTR harvest's own operating "
+            "point would make the mechanism work, and would move S3's "
+            "fuel and unserved energy by an unmeasured amount. "
+            "R3_DIRECTIVE's scope is declared exhaustive and orders the "
+            "GATE, not a re-specification of the charging law; and item 1 "
+            "carries its own STOP condition on S3's nominal ensemble-min. "
+            "Changing the law under that condition is the lead's call."),
+        asks=("Rule on ONE of: (a) S3's through-the-road path stands as "
+              "inert and the record says so - S3 is dead on capability "
+              "either way and this changes no verdict; (b) WS8 is "
+              "directed to reprice the charging headroom at the harvest's "
+              "own operating point and re-run S3 on all corners; (c) the "
+              "finding is carried to WS9/WS10 as a design note against "
+              "any future through-the-road architecture, since the same "
+              "efficiency call would silently disable it there too."),
+        materiality=("medium for WS8's record, high as a design note - it "
+                     "changes no verdict (S3's kill is on capability), but "
+                     "it means half of S3's stated energy policy was never "
+                     "exercised by the model that judged it, and any "
+                     "future candidate that leans on through-the-road "
+                     "charging inherits the same silent zero.")))
+
+    esc.append(dict(
+        id="ESC-WS8-9",
+        title=("R34 orders a 10 Hz trace file per run from 'all later "
+               "work'; R3_DIRECTIVE's scope is declared exhaustive and "
+               "does not include it"),
+        cites=("BASELINE_v5 R34 ('Every pipeline exports a 10 Hz trace "
+               "file per run (feeds the WS10 exhibit/simulator). WS5, WS9 "
+               "re-runs, and all later work comply from their next "
+               "artifact.'); R3_DIRECTIVE.md '## Scope (exhaustive)'; "
+               "CLAUDE.md rule on bounded orders"),
+        finding=(
+            "R34 is a standing program-hygiene ruling and WS8 r3 is a "
+            "next artifact, so it reads as binding here. R3_DIRECTIVE's "
+            "scope is declared EXHAUSTIVE in seven numbered items and "
+            "does not mention traces, and CLAUDE.md says an assignment or "
+            "directive is a bounded order - do what is ordered, nothing "
+            "else. The two cannot both be satisfied by a workstream "
+            "session deciding for itself.\n"
+            "The cost is not incidental. This pipeline runs "
+            f"{_n_simulated_runs(R)} "
+            "simulated runs (the corner trial, the WHR gate and the "
+            "one-factor re-runs, counted); LH-520 is about 520 km at "
+            "10 Hz, so a "
+            "full-fidelity trace set for every run is of the order of "
+            "gigabytes and is not a committable artifact. A bounded "
+            "subset - the governing runs the heat ledger and the "
+            "worst-case exports actually name - would be a few tens of "
+            "megabytes and would serve the WS10 exhibit for the cases "
+            "that matter.\n"
+            "Nothing in this round depends on the answer: no number here "
+            "changes either way."),
+        why_not_self_resolved=(
+            "Choosing which runs to export, and at what fidelity, is a "
+            "program-hygiene decision under R34 and it binds WS5, WS9 and "
+            "WS10 as much as WS8. A workstream session picking its own "
+            "subset would set that convention by default."),
+        asks=("Rule on ONE of: (a) R34 does not reach WS8 r3, whose scope "
+              "R3_DIRECTIVE declares exhaustive, and traces come with the "
+              "next WS8 artifact if there is one; (b) WS8 r3 exports "
+              "traces for a NAMED bounded subset - the ledger's governing "
+              "runs plus one nominal run per candidate - and the "
+              "convention is written down for WS5/WS9/WS10; (c) full "
+              "compliance, with the artifact-size consequence accepted "
+              "and a storage convention ruled."),
+        materiality=("none for this round's numbers; medium for the "
+                     "program, because R34's convention is being set by "
+                     "whoever complies first and no one has yet")))
+
+    _ov = R.get("retard_overcommitment") or dict(
+        value_kW=0.0, governing_case=None,
+        energy_kWh_at_governing_case=0.0)
+    esc.append(dict(
+        id="ESC-WS8-10",
+        title=("The retard envelope does not re-solve when the buffer "
+               "pack fills, so every simulated descent lets a candidate "
+               "brake harder than its resistor can absorb"),
+        cites=("R3_DIRECTIVE item 1 (extend `heat_closure_check` to "
+               "`simulated_worst_run`) - the extended closure is what "
+               "found this; FINDINGS_WS8_r1.md F1(a), which added the "
+               "`descent_6pct_pack_saturated` analytic case for exactly "
+               "this state; CLAUDE.md rule 7"),
+        finding=(
+            "`Candidate.envelope` and `_retard_channels` are functions of "
+            "ROAD SPEED ALONE. The regen channel is capped at the pack's "
+            "charge ceiling at the corner's ambient - a constant - so the "
+            "integrator goes on commanding regen at that ceiling after "
+            "the pack has actually filled. On the 6% mountain descent the "
+            "pack reaches its 0.95 SOC ceiling part-way down and then "
+            "takes nothing, and `series_dispatch` (and S3's SOC loop) "
+            "send the whole harvest to the brake resistor, which is where "
+            "it physically goes. The sum exceeds the resistor rating "
+            "whose mass was charged.\n"
+            "r3 books what the resistor TOOK in `brake_resistor_kW`, "
+            "capped at that rating, and exports the remainder as "
+            f"`retard_overcommitment`: worst case "
+            f"{_ov.get('value_kW', 0.0):.1f} kW sustained at "
+            f"`{_ov.get('governing_case')}`, "
+            f"{_ov.get('energy_kWh_at_governing_case', 0.0):.2f} kWh on "
+            "that run. Booking the whole flow as resistor heat instead "
+            "would have exported a 450+ kW cooling load for a 340 kW "
+            "resistor and told WS6 to size a package for a duty the "
+            "hardware cannot produce; that alternative was considered "
+            "and rejected, and the choice is stated here rather than "
+            "buried.\n"
+            "WHAT IT MEANS FOR THE TRIAL: every candidate with a buffer "
+            "pack holds its simulated descent at a speed its retarder "
+            "cannot actually support once the pack is full, so the "
+            "simulated descent speeds - and therefore trip times, and "
+            "the accessory energy that rides on them - are optimistic. "
+            "The enumerated `descent_6pct_pack_saturated` case is the "
+            "physically correct member for that state and it is in the "
+            "ledger: it holds a LOWER speed precisely because it "
+            "respects the rating. The two members disagreeing IS the "
+            "finding."),
+        why_not_self_resolved=(
+            "Making the envelope re-solve at pack-full changes the "
+            "achieved speed, the trip time and the cycle every candidate "
+            "drives, and therefore every margin in the trial. "
+            "R3_DIRECTIVE's scope is declared exhaustive and orders the "
+            "closure extended, not the integrator re-specified; and "
+            "R38's trip-time gate for Vehicle One depends on exactly "
+            "these speeds. That is a lead decision."),
+        asks=("Rule on ONE of: (a) the record stands as it is - the "
+              "overcommitment is exported, WS6 sizes on the capped "
+              "resistor row and on the analytic pack-saturated case, and "
+              "the optimism in the simulated descent speeds is a stated "
+              "limitation; (b) WS8 is directed to make the retard "
+              "envelope a function of pack state as well as road speed "
+              "and re-run every corner, accepting that every margin and "
+              "every trip time moves; (c) the finding is carried to WS9 "
+              "and WS10 as a design note, since R38 gates ADVANCE on "
+              "trip time and every buffer-pack candidate there inherits "
+              "the same optimism."),
+        materiality=("medium for this round - no verdict depends on it, "
+                     "and the four kills are unchanged - but high for "
+                     "WS9 and WS10, where R38 makes trip time a gate and "
+                     "the trip times all four wave-two candidates were "
+                     "judged on come from the same envelope")))
+
     return sorted(esc, key=lambda e: e["id"])
 
 
@@ -2518,7 +3337,23 @@ def _paired_margin(cand_fleet, s0_fleet, key="MJ_per_payload_tkm"):
 
 
 def one_factor_rows(trial_nominal, ctx, seeds, pool=None):
-    """R2_DIRECTIVE item 3: 'Report the S1-vs-S2 ordering AFTER these
+    """R2_DIRECTIVE item 3 and R3_DIRECTIVE items 1 and 2.
+
+    r3 widens this block from a two-candidate ordering exhibit to the
+    MEASUREMENT every direction statement in the record is now generated
+    from (r2 finding M1: 'delete every hand-written direction string').
+    Two things changed:
+
+      * the candidate set is S1..S4 rather than S1 and S2, so a
+        correction that touches only one candidate PROVES it here -
+        `f3_s2_engine_budget` and `f5_spin_rule` are gated in S2 and S3
+        only, and S1's and S4's rows come back bit-identical rather than
+        being asserted to be unaffected;
+      * a `B1_reverted_brake_and_fuel` row measures R3_DIRECTIVE item 1's
+        own correction, which is what that directive means by 'Report
+        S3's fuel change with a one-factor row'.
+
+    R2_DIRECTIVE item 3: 'Report the S1-vs-S2 ordering AFTER these
     corrections with one-factor rows, since they decide it.'
 
     r1 put S2 ahead of S1 on the nominal median (+1.70 vs +0.75). The
@@ -2531,9 +3366,9 @@ def one_factor_rows(trial_nominal, ctx, seeds, pool=None):
 
     Each row reverts EXACTLY ONE correction and leaves the rest applied.
     F4 and F6 are exact re-pricings of the run of record and need no
-    re-simulation; F3 and F5 change the dispatch and are re-simulated.
+    re-simulation; F3, F5 and B1 change the dispatch and are re-simulated.
     """
-    pair = ["S1", "S2"]
+    pair = ["S1", "S2", "S3", "S4"]
     s0_fleet = trial_nominal["S0"]["fleet"]
     rows = OrderedDict()
 
@@ -2548,8 +3383,8 @@ def one_factor_rows(trial_nominal, ctx, seeds, pool=None):
             else "S1 ahead of S2")
         rows[label] = row
 
-    add("r2_as_reported",
-        "the margin of record: every r2 correction applied",
+    add("r3_as_reported",
+        "the margin of record: every r2 and r3 correction applied",
         lambda c: trial_nominal[c]["fleet"])
     add("F4_reverted_credit_removed",
         "the symmetric charge-sustaining CREDIT suppressed (the deficit "
@@ -2568,6 +3403,10 @@ def one_factor_rows(trial_nominal, ctx, seeds, pool=None):
         s0=[dict(f, MJ_per_payload_tkm=f["MJ_per_payload_tkm_r1_pricing"])
             for f in s0_fleet])
 
+    # rows re-simulated with one switch reverted. `cands` may widen the
+    # set, and `own_s0` says the row must be measured against ITS OWN
+    # re-run ruler - which is what the S0 launch-fuel row needs, because
+    # that correction moves S0 and therefore every margin.
     reruns = OrderedDict([
         ("F3_reverted_engine_dual_use",
          ("S2's single engine run as a locked mechanical drive AND a "
@@ -2579,13 +3418,36 @@ def one_factor_rows(trial_nominal, ctx, seeds, pool=None):
           "the one program-wide rule. Re-simulated.",
           [n for n in CD.ERRATA_ALL if n != "f5_spin_rule"])),
         ("F3_and_F5_reverted",
-         ("both re-simulated corrections reverted; F4 and F6 still "
-          "applied. Re-simulated.", [])),
+         ("both r2 re-simulated corrections reverted; F4, F6 and B1 "
+          "still applied. Re-simulated.",
+          [n for n in CD.ERRATA_ALL
+           if n not in ("f3_s2_engine_budget", "f5_spin_rule")])),
+        ("B1_reverted_brake_and_fuel",
+         ("THE r3 CORRECTION (R3_DIRECTIVE item 1). Reverted: the engine "
+          "may fuel while the same crankshaft is compression-braking - "
+          "S3's through-the-road charging gated on axle-A force being "
+          "small rather than on the vehicle not braking, and S2's "
+          "free-speed genset running while its lockup coupling is "
+          "drawing the compression brake. Everything else r3 corrected "
+          "is UNCONDITIONAL and stays applied in this row, so the row "
+          "isolates the control law and nothing else. Re-simulated.",
+          [n for n in CD.ERRATA_ALL if n != "b1_overrun_exclusivity"])),
     ])
+    reruns["R3_S0_launch_fuel_reverted"] = (
+        ("THE RULER'S OWN r3 CORRECTION. Reverted: S0 is fuelled at the "
+         "idle rate on the first few tenths of a second of every "
+         "pull-away, as it was in r1 and r2, while the model credits it "
+         "with launch torque. This row is measured against ITS OWN "
+         "re-run S0, so the delta against `r3_as_reported` is the effect "
+         "of the RULER moving. Re-simulated, all five candidates.",
+         [n for n in CD.ERRATA_ALL if n != "r3_s0_launch_fuel"]))
+    own_s0 = {"R3_S0_launch_fuel_reverted"}
     for label, (note, errata) in reruns.items():
-        res = run_corner("nominal", ctx, seeds, cand_names=pair,
+        names = (["S0"] + pair) if label in own_s0 else pair
+        res = run_corner("nominal", ctx, seeds, cand_names=names,
                          verbose=False, pool=pool, errata=errata)
-        add(label, note, lambda c, res=res: res[c]["fleet"])
+        add(label, note, lambda c, res=res: res[c]["fleet"],
+            s0=res["S0"]["fleet"] if label in own_s0 else None)
     # restore the run of record in THIS process: everything downstream
     # (the heat ledger, the sanity block) builds candidates directly.
     CD.set_errata(None)
@@ -2593,14 +3455,299 @@ def one_factor_rows(trial_nominal, ctx, seeds, pool=None):
     ordering = OrderedDict((k, v["ordering_on_median"])
                            for k, v in rows.items())
     return dict(
-        rule=("each row reverts EXACTLY ONE r2 correction and leaves the "
+        rule=("each row reverts EXACTLY ONE correction and leaves the "
               "rest applied; margins are the same paired per-seed "
               "ensemble as the headline, at the nominal corner. S0 is "
-              "unaffected by every correction in this set (it has no "
-              "pack, no traction machine and no corrections), so the "
-              "ruler is the same in every row."),
+              "unaffected by every correction in this set (no errata "
+              "switch reaches it), so the ruler is the same in every "
+              "row - which is why a row's DELTA against "
+              "`r3_as_reported` IS the direction that correction moved "
+              "that candidate."),
+        direction_convention=(
+            "margin = (S0 - candidate)/S0 x 100, so HIGHER IS BETTER. "
+            "delta = median(r3_as_reported) - median(row); delta > 0 "
+            "means the correction moved the candidate UP, i.e. it was "
+            "FOR that candidate; delta < 0 means AGAINST. A candidate "
+            "whose delta is exactly 0.0 in a row is that correction "
+            "PROVED not to reach it, not an assertion that it does not."),
         candidates=pair, rows=rows, ordering=ordering,
         ordering_changes=bool(len(set(ordering.values())) > 1))
+
+
+DIRECTION_EPS_PP = 1e-9
+"""Below this a one-factor delta is IDENTICAL, not small [pp]. The
+reverted rows are re-simulations of the same seeds through the same code
+with one switch flipped, so a candidate the switch does not reach comes
+back bit-identical and its delta is exactly 0.0. The threshold exists to
+absorb the last bit of a double, not to define a "negligible" band -
+every non-zero delta is printed with its magnitude and the reader decides
+what is negligible."""
+
+
+def _direction_phrase(deltas, unit="pp", nil_word="re-run bit-identical"):
+    """FOR / AGAINST / PROVED-UNAFFECTED, from measured deltas.
+
+    `nil_word` says HOW a zero delta was obtained, because the rows are
+    not all the same kind of measurement: F3, F5, B1 and the S0
+    launch-fuel row are RE-SIMULATIONS with one switch flipped, so a
+    candidate the switch does not reach comes back bit-identical; F4 and
+    F6 are exact RE-PRICINGS of the same run, where a zero delta means
+    the candidate carries none of that correction. Calling the second
+    kind a bit-identical re-run would describe a run that never
+    happened."""
+    fav = [c for c, v in deltas.items() if v > DIRECTION_EPS_PP]
+    against = [c for c, v in deltas.items() if v < -DIRECTION_EPS_PP]
+    nil = [c for c, v in deltas.items() if abs(v) <= DIRECTION_EPS_PP]
+    parts = []
+    if fav:
+        parts.append("FOR " + ", ".join(
+            f"{c} ({deltas[c]:+.3f} {unit})" for c in fav))
+    if against:
+        parts.append("AGAINST " + ", ".join(
+            f"{c} ({deltas[c]:+.3f} {unit})" for c in against))
+    if nil:
+        parts.append("does not reach " + ", ".join(nil)
+                     + f" ({nil_word})")
+    return "; ".join(parts) if parts else "no candidates measured"
+
+
+def corner_derate_scope():
+    """r2 finding M3, R3_DIRECTIVE item 4: 'state explicitly what the R28
+    corner derates (engine only) and scope any conclusion drawn from it
+    accordingly.'
+
+    MEASURED, not asserted. Every corner's model is probed at the same
+    fixed operating points as the nominal one and the two are compared
+    leaf by leaf, so the scope of a corner's effect is a computed
+    membership list. r2 concluded "the R28 corner did not become the
+    worst one, and that is itself a result" from a corner whose thermal
+    derate reaches the engine's full-load curve and nothing else - no
+    hot-side model exists for the machine, the inverter, the pack or the
+    resistor - and that conclusion has to be scoped by what the corner
+    actually does."""
+    probes = OrderedDict()
+    base = None
+    for corner, ctx in corners().items():
+        row = OrderedDict()
+        for cname in ("S0", "S1", "S2", "S3", "S4"):
+            cand = make_candidate(cname, ctx)
+            p = OrderedDict()
+            p["engine_full_load_torque_at_1300rpm_Nm"] = (
+                float(cand.engine.t_max(np.array([1300.0]))[0])
+                if getattr(cand, "engine", None) is not None else None)
+            p["compression_brake_rating_kW"] = getattr(
+                cand, "p_engine_brake_kw", None)
+            line = getattr(cand, "line", None)
+            p["genset_bus_ceiling_kW"] = (float(line.p_elec_max_kw)
+                                          if line is not None else None)
+            pack = getattr(cand, "pack", None)
+            p["pack_charge_ceiling_kW"] = (float(cand.pack_chg_limit_kw())
+                                           if pack is not None else None)
+            p["pack_discharge_ceiling_kW"] = (float(pack.p_cont_dis_kw)
+                                              if pack is not None else None)
+            p["brake_resistor_rating_kW"] = getattr(cand, "resistor_kw", None)
+            ed = getattr(cand, "edrive", None)
+            if ed is not None:
+                p["machine_wheel_force_at_10ms_N"] = float(
+                    ed.wheel_force_max(10.0))
+                p["machine_eta_bus_to_wheel_at_10ms_200kW"] = float(
+                    ed.eta_bus_to_wheel(np.array([10.0]), np.array([200.0]))[0])
+                p["machine_spin_drag_at_20ms_kW"] = float(
+                    ed.spin_drag_kw(np.array([20.0]))[0])
+            p["accessory_mech_kW"] = float(ctx.aux_mech_kw)
+            p["accessory_bus_kW"] = float(ctx.aux_bus_kw)
+            p["air_density_kg_m3"] = float(ctx.rho_air)
+            row[cname] = p
+        probes[corner] = row
+        if base is None:
+            base = row
+    scope = OrderedDict()
+    for corner, row in probes.items():
+        changed, same = [], []
+        for cname, p in row.items():
+            for k, v in p.items():
+                b = probes["nominal"][cname].get(k)
+                if v is None or b is None:
+                    continue
+                tag = f"{cname}.{k}"
+                if abs(v - b) > 1e-9 * max(1.0, abs(b)):
+                    changed.append(tag)
+                else:
+                    same.append(tag)
+        scope[corner] = dict(
+            quantities_that_move=sorted(changed),
+            quantities_that_do_not=sorted(same),
+            engine_side_moves=sorted(
+                t for t in changed
+                if any(w in t for w in ("engine_", "genset_",
+                                        "compression_brake"))),
+            electric_side_moves=sorted(
+                t for t in changed
+                if any(w in t for w in ("machine_", "pack_",
+                                        "brake_resistor"))))
+    hot = scope.get("hot_alt_2000m_45C", {})
+    return dict(
+        rule=("every corner's model probed at the same fixed operating "
+              "points as nominal and compared leaf by leaf; membership "
+              "is computed, not declared"),
+        probes=probes, scope=scope,
+        R28_corner=dict(
+            corner="hot_alt_2000m_45C",
+            derates=hot.get("engine_side_moves", []),
+            does_not_derate=hot.get("electric_side_moves", []),
+            electric_side_unchanged=bool(
+                not hot.get("electric_side_moves")),
+            statement=(
+                "THE R28 CORNER DERATES THE ENGINE'S FULL-LOAD CURVE AND "
+                "WHAT IS COMPUTED FROM IT, AND NOTHING ELSE. WS4's "
+                "`derate_factor` is applied to every engine in the trial "
+                "(S0's included) and therefore to the R18 continuous "
+                "rating and the genset ceilings behind it. It is NOT "
+                "applied to the traction machine, the inverter, the "
+                "pack's charge or discharge ceiling, the brake resistor, "
+                "or the compression brake - `ws8_electric.py` has no "
+                "hot-side model at all and `Pack8.cold_chg_factor_at()` "
+                "clamps to 1.0 above 15 C. The corner's BENEFIT - about "
+                "27% off the aerodynamic bill at 2,000 m - is shared by "
+                "every candidate; its PENALTY falls only on combustion. "
+                "Any conclusion drawn from this corner is scoped to that: "
+                "it says the thin air outweighs an ENGINE derate, not "
+                "that it outweighs a hot day for the whole vehicle. The "
+                "cab-cooling load IS charged symmetrically (mechanical "
+                "and bus-side both rise), which is the one hot-side "
+                "effect the electric path does pay."),
+            direction_of_error=(
+                "a missing hot-side electric derate FLATTERS the "
+                "electrified candidates at this corner relative to S0; "
+                "the corner is not binding for any of them, so no verdict "
+                "depends on it, but WS9 inherits the statement under "
+                "R28.")))
+
+
+def correction_directions(R):
+    """r2 finding M1, R3_DIRECTIVE item 2: 'delete every hand-written
+    direction string; generate F3/F6 directions from the one-factor
+    table.'
+
+    r2's changelog stated the direction of each correction as a Python
+    literal that `verify_ws8.py` structurally could not reach, and three
+    of the thirteen were contradicted by this file's own numbers: F3 was
+    labelled AGAINST S2 when the one-factor row has it +0.046 pp FOR S2,
+    and F6 was labelled 'slightly FOR S2' when its row has it 0.013 pp
+    AGAINST. That is r1's F9 failure mode - prose inside a generated
+    artifact - recurring in the round that closed F9.
+
+    Every direction cell in the record is now MEASURED here and rendered
+    from this block; a correction with no one-factor row is labelled
+    'not separately measured' with the reason, not given a direction from
+    memory. The verifier asserts the rendered strings verbatim."""
+    of = R.get("one_factor") or {}
+    rows = of.get("rows") or {}
+    cands = list(of.get("candidates") or [])
+    base = rows.get("r3_as_reported")
+
+    def measured(label, stat="median"):
+        row = rows.get(label)
+        if row is None or base is None:
+            return None
+        return OrderedDict((c, base[c][stat] - row[c][stat])
+                           for c in cands if c in row and c in base)
+
+    REPRICED = ("F4_reverted_credit_removed",
+                "F6_reverted_peak_point_pricing")
+
+    def entry(label, note):
+        d = measured(label)
+        if d is None:
+            return dict(measurable=False, one_factor_row=label,
+                        direction=("not separately measured - the "
+                                   f"one-factor row `{label}` is not in "
+                                   "this run"),
+                        why_not=note)
+        return dict(measurable=True, one_factor_row=label,
+                    deltas_pp=d,
+                    direction=_direction_phrase(
+                        d, nil_word=("carries none of this correction"
+                                     if label in REPRICED
+                                     else "re-run bit-identical")),
+                    basis=("median of the paired per-seed margin at the "
+                           "NOMINAL corner; delta = "
+                           "r3_as_reported - this row"),
+                    note=note)
+
+    NOT_REVERSIBLE = (
+        "no one-factor row: reverting it would not be a one-line switch "
+        "on the same run. It either rebuilds an export rather than the "
+        "simulation (F1, F7, F8-F10, F12, F13, and every m-row), or it "
+        "changes what the corner IS rather than how a run is priced "
+        "(F2's cold charge acceptance, F11/R28's added corner), so a "
+        "'reverted' number would not be the same trial. The direction is "
+        "left unstated rather than asserted.")
+
+    out = OrderedDict()
+    out["_rule"] = (
+        "every direction below is computed from `one_factor.rows` by "
+        "`correction_directions()`; nothing here is written by hand "
+        "(r2 finding M1). A correction with no one-factor row is "
+        "labelled not separately measured, with the reason.")
+    out["_convention"] = of.get("direction_convention", "")
+    out["F3"] = entry("F3_reverted_engine_dual_use",
+                      "gated in S2 only (ws8_candidates.py, "
+                      "`f3_s2_engine_budget`)")
+    out["F4"] = entry("F4_reverted_credit_removed",
+                      "exact re-pricing of the same run; applies to every "
+                      "candidate that has a pack")
+    out["F5"] = entry("F5_reverted_spin_rule",
+                      "gated in S2 and S3 (`f5_spin_rule`)")
+    out["F6"] = entry("F6_reverted_peak_point_pricing",
+                      "exact re-pricing of the same run; applies to every "
+                      "candidate that carries a correction")
+    out["F3_and_F5"] = entry("F3_and_F5_reverted",
+                             "both r2 re-simulated corrections together")
+    out["R3_S0_launch_fuel"] = entry(
+        "R3_S0_launch_fuel_reverted",
+        "moves THE RULER, so it moves every margin; measured against its "
+        "own re-run S0")
+    out["B1"] = entry("B1_reverted_brake_and_fuel",
+                      "gated in S2 and S3 (`b1_overrun_exclusivity`); the "
+                      "r3 correction R3_DIRECTIVE item 1 orders")
+    for k in ("F1", "F2", "F7", "F8", "F9", "F10", "F11", "F12", "F13"):
+        out[k] = dict(measurable=False, one_factor_row=None,
+                      direction="not separately measured",
+                      why_not=NOT_REVERSIBLE)
+
+    # F6 is an exact re-pricing, so its direction can be stated at EVERY
+    # corner - and it does not have the same sign at every one, which is
+    # exactly why a single hand-written cell was the wrong shape for it.
+    per_corner = OrderedDict()
+    for corner, mm in R.get("task3_margins", {}).items():
+        d = OrderedDict()
+        for c, blob in mm.items():
+            if "ensemble_r1_pricing" in blob:
+                d[c] = (blob["ensemble"]["median"]
+                        - blob["ensemble_r1_pricing"]["median"])
+        if d:
+            per_corner[corner] = dict(
+                deltas_pp=d,
+                direction=_direction_phrase(
+                    d, nil_word="carries none of this correction"))
+    if per_corner:
+        out["F6"]["per_corner"] = per_corner
+        signs = set()
+        for corner, blob in per_corner.items():
+            for c, v in blob["deltas_pp"].items():
+                signs.add((c, v > 0))
+        flips = sorted({c for c, _ in signs
+                        if (c, True) in signs and (c, False) in signs})
+        out["F6"]["sign_flips_across_corners"] = flips
+        out["F6"]["corner_caveat"] = (
+            ("F6's direction is NOT the same at every corner - it flips "
+             "for " + ", ".join(flips) + " - so the direction cell is "
+             "stated at the nominal corner and the per-corner table is "
+             "exported beside it.")
+            if flips else
+            "F6's direction has the same sign at every corner.")
+    return out
 
 
 def verdict_stability(R):
@@ -2622,33 +3769,60 @@ def verdict_stability(R):
             continue
         rows[cname] = dict(
             executed_verdict=exp,
-            r2_verdict_on_same_criteria=v["verdict"],
+            verdict_on_same_criteria=v["verdict"],
             unchanged=bool(v["verdict"] == exp),
-            r2_nominal_margin_pct_min=v["nominal_margin_pct_min"],
-            r2_worst_corner=v["worst_corner"],
-            r2_worst_corner_margin_pct_min=v["worst_corner_margin_pct_min"],
+            nominal_margin_pct_min=v["nominal_margin_pct_min"],
+            worst_corner=v["worst_corner"],
+            worst_corner_margin_pct_min=v["worst_corner_margin_pct_min"],
             headroom_to_advance_pp=(ADVANCE_NOMINAL_PCT
                                     - v["nominal_margin_pct_min"]))
     whr_now = {k: v["verdict"] for k, v in R["task4_whr"]["results"].items()}
+    # R3_DIRECTIVE item 1's OWN trip-wire, implemented rather than
+    # remembered: "if its nominal ensemble-min crosses +3%, STOP and
+    # report, do not touch the verdict".
+    s3 = rows.get("S3", {})
+    s3_min = s3.get("nominal_margin_pct_min")
+    stop = dict(
+        rule=("R3_DIRECTIVE item 1: S3's fuel correction is expected to "
+              "improve it by several percent and to leave it far below "
+              "the bar. If S3's NOMINAL ENSEMBLE-MIN crosses "
+              f"+{ADVANCE_NOMINAL_PCT:.0f}%, the round STOPS and reports "
+              "and does not touch the verdict."),
+        S3_nominal_margin_pct_min=s3_min,
+        bar_pct=ADVANCE_NOMINAL_PCT,
+        crossed=bool(s3_min is not None and s3_min >= ADVANCE_NOMINAL_PCT),
+        note=("S3 is dead on CAPABILITY regardless of fuel - no fixed "
+              "ratio both cruises at 105 km/h and holds the 6% grade at "
+              "36,300 kg - so this trip-wire is about the fuel number "
+              "the record carries, not about the verdict's reason."))
     return dict(
         criteria=R["advance_kill"]["criteria"],
         ruling="R25 (BASELINE_v4)",
         candidates=rows,
         whr_executed="DROPPED",
-        whr_on_r2_numbers=whr_now,
+        whr_on_current_numbers=whr_now,
         whr_unchanged=bool(all(x == "DROPPED" for x in whr_now.values())),
+        r3_stop_condition=stop,
         all_unchanged=bool(all(r["unchanged"] for r in rows.values())
-                           and all(x == "DROPPED" for x in whr_now.values())),
+                           and all(x == "DROPPED" for x in whr_now.values())
+                           and not stop["crossed"]),
         note=("if `all_unchanged` were false the round would STOP and "
               "report rather than touch a verdict the lead has executed "
-              "(R2_DIRECTIVE item 3)."))
+              "(R2_DIRECTIVE item 3, R3_DIRECTIVE item 1). It carries "
+              "BOTH tests: the four executed verdicts against the "
+              "pre-committed criteria, and R3_DIRECTIVE's own trip-wire "
+              "on S3's nominal ensemble-min."))
 
 
-NUMBERS_VERSION = "r2"
+NUMBERS_VERSION = "r3"
+LEDGER_VERSION = "r3"
 VERDICT_STATUS = "executed_kill_2026-08-30"
-"""R2_DIRECTIVE item 6. The verdicts block carries the EXECUTED status
-from R25; the numbers block is versioned r2 because every number in it
-was regenerated by this round."""
+"""R3_DIRECTIVE item 7. The verdicts block carries the EXECUTED status
+from R25 UNCHANGED - r3 does not reopen a verdict and this string is a
+constant, not a computed value. The numbers block is versioned r3
+because every number in it was regenerated by this round, and the heat
+ledger carries its own version because R3_DIRECTIVE says WS6 consumes
+ONLY the r3 ledger."""
 
 # Inputs that are SHA-PINNED into the interface (R2_DIRECTIVE item 6):
 # every file the NUMBERS depend on - WS8's own model and driver sources,
@@ -2667,9 +3841,15 @@ _SHA_PIN_PATHS = [
     "run_ws8.py", "ws8_params.py", "ws8_physics.py", "ws8_cycles.py",
     "ws8_engine.py", "ws8_electric.py", "ws8_candidates.py", "ws8_whr.py",
     "requirements.txt",
-    "ASSIGNMENT.md", "R2_DIRECTIVE.md", "FINDINGS_WS8_r1.md",
+    "ASSIGNMENT.md",
+    # every order this workstream has executed, and every findings file
+    # it has closed: the r2 corrections are still live in `ERRATA_ALL`
+    # and the verdicts still cite R25/BASELINE_v4, so the numbers depend
+    # on all of them, not only on the newest.
+    "R2_DIRECTIVE.md", "R3_DIRECTIVE.md",
+    "FINDINGS_WS8_r1.md", "FINDINGS_WS8_r2.md",
     "PRIOR_ART_WS8.md",
-    "../BASELINE_v4.md",
+    "../BASELINE_v4.md", "../BASELINE_v5.md",
     "../WS2_traction_motor/data/effmap_motor_inverter_662V.csv",
     "../WS2_traction_motor/data/capability_vs_rpm.csv",
     "../WS3_battery/ws3_cells.py", "../WS3_battery/ws3_pack.py",
@@ -2707,10 +3887,20 @@ def interface_block(R):
     # --- versioning and verdict status (R2_DIRECTIVE item 6) -----------
     iface["numbers_version"] = NUMBERS_VERSION
     iface["numbers_status"] = (
-        "r2 - the errata round ordered by "
-        "WS8_semi_architecture/R2_DIRECTIVE.md under R26. Every number in "
-        "this block is regenerated; r1's numbers are superseded, not "
-        "amended in place.")
+        "r3 - the round ordered by WS8_semi_architecture/R3_DIRECTIVE.md "
+        "under R35, closing FINDINGS_WS8_r2.md (B1 blocking, M1-M4, "
+        "m1-m7). Every number in this block is regenerated; r2's numbers "
+        "are superseded, not amended in place, and r2's heat ledger is "
+        "WITHDRAWN - see `heat_ledger_WS6.ledger_version`.")
+    iface["supersedes"] = dict(
+        numbers_version="r2", ledger_version="r2",
+        why=("r2's control law let an engine fuel while the same "
+             "crankshaft was compression-braking (B1), so r2's S2 and S3 "
+             "fuel numbers and its largest ledger row are withdrawn. S0, "
+             "S1 and S4 are re-run unchanged in control law; their small "
+             "movements are the r3 accounting corrections the extended "
+             "run closure found, and they are measured in "
+             "`one_factor_S1_vs_S2`."))
     iface["verdicts"] = dict(
         status=VERDICT_STATUS,
         ruling="R25 (BASELINE_v4): WS8 verdicts EXECUTED on the "
@@ -2866,6 +4056,8 @@ def interface_block(R):
                  "completes the same mission, and reported here raw because "
                  "a large value is a CAPABILITY finding, not a fuel one."))
 
+    iface["retard_overcommitment"] = R["retard_overcommitment"]
+
     iface["advance_kill"] = R["advance_kill"]["criteria"]
     iface["advance_kill_result"] = {
         k: v["verdict"] for k, v in R["advance_kill"]["candidates"].items()}
@@ -2906,13 +4098,42 @@ def interface_block(R):
         ["e_axle_fault"]["can_launch_from_rest"],
         verdict="TOW (immobile from rest)")
 
-    # --- do the r2 corrections flip anything? (R2_DIRECTIVE item 3) ----
+    # --- r2 finding M2: the per-km statistic, labelled ----------------
+    iface["per_km_margin_paired"] = dict(
+        rule=("PAIRED per-seed margin on fleet-mission MJ per KILOMETRE - "
+              "candidate seed i against S0 seed i - then the 8-seed "
+              "envelope. This is the statistic every per-km claim in the "
+              "report is made on. The RATIO OF MEDIANS is exported "
+              "beside it for disclosure only: r2's headline bullets were "
+              "computed that way while every margin in the report was "
+              "paired, and for S3 the two statistics differ in SIGN."),
+        corners=OrderedDict(
+            (corner, OrderedDict(
+                (c, blob["per_km"]) for c, blob in mm.items()
+                if "per_km" in blob))
+            for corner, mm in R["task3_margins"].items()),
+        every_candidate_wins_per_km_at_nominal=bool(all(
+            blob["per_km"]["wins_on_every_seed"]
+            for blob in R["task3_margins"]["nominal"].values()
+            if "per_km" in blob)))
+
+    # --- r2 finding M1: directions, generated ------------------------
+    iface["correction_directions"] = R.get("correction_directions", {})
+    # --- r2 finding M3: what each corner actually derates -------------
+    iface["corner_derate_scope"] = dict(
+        rule=R["corner_derate_scope"]["rule"],
+        scope=R["corner_derate_scope"]["scope"],
+        R28_corner=R["corner_derate_scope"]["R28_corner"])
+
+    # --- do the corrections flip anything? (R2_DIRECTIVE item 3) ------
     iface["verdict_stability"] = R["verdict_stability"]
     if R.get("one_factor"):
         iface["one_factor_S1_vs_S2"] = dict(
             rule=R["one_factor"]["rule"],
+            direction_convention=R["one_factor"]["direction_convention"],
+            candidates=R["one_factor"]["candidates"],
             ordering=R["one_factor"]["ordering"],
-            rows={k: dict(S1=v.get("S1"), S2=v.get("S2"))
+            rows={k: {c: v.get(c) for c in R["one_factor"]["candidates"]}
                   for k, v in R["one_factor"]["rows"].items()})
 
     iface["heat_ledger_WS6"] = R["heat_ledger"]
@@ -2956,8 +4177,14 @@ def headline(R):
 # =====================================================================
 #  CSV exports
 # =====================================================================
-def _w(path, header, rows):
+def _w(path, header, rows, preamble=None):
+    """Write a CSV. `preamble` is a list of `#`-comment lines written
+    above the header - used by the heat ledger to carry its version and
+    the basis of each row into the file a consumer actually opens
+    (R3_DIRECTIVE item 7, and r2 finding m3)."""
     with open(os.path.join(DATA, path), "w") as f:
+        for line in (preamble or []):
+            f.write("# " + line + "\n")
         f.write(",".join(header) + "\n")
         for r in rows:
             f.write(",".join(
@@ -3013,20 +4240,28 @@ def write_csvs(R):
                     mv = next((p["margin_pct"] for p in mm["per_seed"]
                                if p["seed"] == f["seed"]), "")
                 mv_do = ""
+                mv_km = ""
                 if mm:
                     mv_do = next((p["margin_pct_deficit_only"]
+                                  for p in mm["per_seed"]
+                                  if p["seed"] == f["seed"]), "")
+                    mv_km = next((p["margin_pct_per_km"]
                                   for p in mm["per_seed"]
                                   if p["seed"] == f["seed"]), "")
                 rows.append([corner, cname, f["seed"], f["payload_t"],
                              f["L_per_100km"], f["MJ_per_km"],
                              f["MJ_per_payload_tkm"],
                              f["MJ_per_payload_tkm_deficit_only"], mv,
-                             mv_do])
+                             mv_do, mv_km])
     _w("fleet_mission.csv",
        ["corner", "candidate", "seed", "payload_t", "L_per_100km",
         "MJ_per_km", "MJ_per_payload_tkm",
         "MJ_per_payload_tkm_credit_free", "margin_vs_S0_pct",
-        "margin_vs_S0_pct_credit_free"], rows)
+        "margin_vs_S0_pct_credit_free", "margin_vs_S0_per_km_pct"], rows,
+       preamble=["`margin_vs_S0_per_km_pct` is the PAIRED per-seed per-km "
+                 "margin (r2 finding M2): candidate seed i against S0 seed "
+                 "i. The report's per-km claims are made on the median of "
+                 "this column, never on a ratio of medians."])
 
     # cycle statistics
     rows = []
@@ -3078,10 +4313,16 @@ def write_csvs(R):
         "net_margin_max_pct", "passes_2p5pct_gate"], rows)
 
     # heat ledger for WS6
+    hlv = R["heat_ledger"]["ledger_version"]
     rows = []
+    labels = []
     for cname, blob in R["heat_ledger"]["candidates"].items():
         for case, comp in blob["cases"].items():
-            rows.append([cname, case,
+            sim = case == "simulated_worst_run"
+            csum = sum(comp.get(k) or 0.0 for k in CD.HEAT_ROWS)
+            rows.append([hlv, cname, case,
+                         "envelope_over_runs" if sim
+                         else "single_operating_point",
                          comp.get("road_speed_kmh"),
                          comp.get("case_wheel_power_kW"),
                          comp["engine_coolant_kW"], comp["engine_exhaust_kW"],
@@ -3089,13 +4330,47 @@ def write_csvs(R):
                          comp["generator_rectifier_kW"], comp["pack_kW"],
                          comp["brake_resistor_kW"],
                          comp["friction_brake_kW"], comp["accessory_kW"],
-                         comp["driveline_kW"], comp["total_rejected_kW"]])
+                         comp["driveline_kW"], comp["total_rejected_kW"],
+                         csum, comp.get("_governing_run") or ""])
+            if sim:
+                for k in CD.HEAT_ROWS:
+                    labels.append([hlv, cname, k, comp.get(k) or 0.0,
+                                   comp.get(k + "_instantaneous_kW") or 0.0,
+                                   comp.get(k + "_run") or ""])
     _w("heat_ledger_ws6.csv",
-       ["candidate", "case", "road_speed_kmh", "wheel_power_kW",
+       ["ledger_version", "candidate", "case", "basis", "road_speed_kmh",
+        "wheel_power_kW",
         "engine_coolant_kW", "engine_exhaust_kW", "machine_inverter_kW",
         "generator_rectifier_kW", "pack_kW", "brake_resistor_kW",
         "friction_brake_kW", "accessory_kW", "driveline_kW",
-        "total_rejected_kW"], rows)
+        "total_rejected_kW", "components_sum_kW", "governing_run"], rows,
+       preamble=[
+           f"WS8 heat ledger, version {hlv}. "
+           + R["heat_ledger"]["consumer_rule"],
+           "READ `basis` BEFORE `total_rejected_kW` (r2 finding m3). The "
+           "four analytic cases are SINGLE OPERATING POINTS, so their "
+           "total IS the sum of their component columns. The "
+           "`simulated_worst_run` row is not a case the truck is ever in: "
+           "each component column is that component's own maximum "
+           "60-second mean over every (corner, cycle, seed) run in the "
+           "trial, and its `total_rejected_kW` is the peak of the "
+           "per-sample SUM - a different moment. `components_sum_kW` is "
+           "printed so the difference is visible rather than looking like "
+           "an arithmetic error; per-component run labels are in "
+           "heat_ledger_ws6_simulated_labels.csv."])
+    if labels:
+        _w("heat_ledger_ws6_simulated_labels.csv",
+           ["ledger_version", "candidate", "component", "sustained_kW",
+            "instantaneous_kW", "governing_run"], labels,
+           preamble=[
+               "Per-component labels for the `simulated_worst_run` member "
+               "(r2 findings m3 and m4). `sustained_kW` is the maximum "
+               "60-second mean and is the exported figure; "
+               "`instantaneous_kW` is the maximum single 10 Hz sample of "
+               "the same component on the same run, computed since r2 and "
+               "exported since r3 so that what the averaging window hides "
+               "is visible. `governing_run` is corner/cycle/seed and the "
+               "road speed at the window."])
 
     # the R14 worst case per component, with the governing case named -
     # this is the field WS6 actually consumes (rule 7)
@@ -3110,8 +4385,11 @@ def write_csvs(R):
                          "within_rating" if rc["within_rating"]
                          else "OVER RATING"])
     _w("heat_ledger_ws6_worst_case.csv",
-       ["candidate", "component", "value_kW", "governing_case",
-        "governing_run_or_rating_status"], rows)
+       ["ledger_version", "candidate", "component", "value_kW",
+        "governing_case", "governing_run_or_rating_status"],
+       [[hlv] + r for r in rows],
+       preamble=[f"WS8 heat ledger, version {hlv}. "
+                 + R["heat_ledger"]["consumer_rule"]])
 
     # one-factor rows: which correction decides S1 vs S2 (R2 directive)
     rows = []
@@ -3122,7 +4400,8 @@ def write_csvs(R):
     if rows:
         _w("one_factor_s1_vs_s2.csv",
            ["row", "candidate", "margin_min_pct", "margin_median_pct",
-            "margin_max_pct", "ordering_on_median"], rows)
+            "margin_max_pct", "ordering_on_median"], rows,
+           preamble=[R["one_factor"]["direction_convention"]])
 
     # mass ledgers
     rows = []

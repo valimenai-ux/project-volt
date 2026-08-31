@@ -49,13 +49,30 @@ and is priced here rather than hidden in an unlimited friction brake."""
 V_GRID_ENV = np.arange(0.0, 36.05, 0.05)
 
 # --------------------------------------------------------- r2 errata set
-ERRATA_ALL = ("f3_s2_engine_budget", "f5_spin_rule")
-"""The r2 corrections that MOVE NUMBERS and are not analytically
+ERRATA_ALL = ("f3_s2_engine_budget", "f5_spin_rule",
+              "b1_overrun_exclusivity", "r3_s0_launch_fuel")
+"""The r2 and r3 corrections that MOVE NUMBERS and are not analytically
 reversible after the fact. They are switchable ONLY so that the round can
 report the one-factor rows the directive asks for - the S1-vs-S2 ordering
-is decided by these corrections, so it has to be shown which one did
-what. The run of record has all of them ON; nothing reads these switches
-except the one-factor block.
+is decided by the r2 corrections, and R3_DIRECTIVE item 1 orders S3's
+fuel change reported with a one-factor row of its own - so it has to be
+shown which one did what. The run of record has all of them ON; nothing
+reads these switches except the one-factor block.
+
+r3_s0_launch_fuel - S0 was fuelled at the IDLE rate on the first few
+    tenths of a second of every pull-away, because `stopped` is
+    `v <= 0.1 m/s` and a launch begins inside it: the model credited the
+    engine with ~28 kW of launch shaft power on 13.7 kW of fuel. It is
+    switchable because it moves THE RULER, and therefore every margin in
+    the trial, so the round has to be able to say by how much rather than
+    assert that it is small (r2 finding M1's discipline applied to r3's
+    own corrections).
+b1_overrun_exclusivity - THE OVERRUN RULE (r2 finding B1, blocking). An
+    engine geared to the road burns no fuel and makes no positive shaft
+    power on a sample where the vehicle commands no traction, so
+    combustion and compression braking are mutually exclusive for every
+    candidate. r2 let S3 fuel through-the-road charging and S2 run a
+    free-speed genset while the same crankshaft was compression-braking.
 
 f3_s2_engine_budget - S2's single engine is one crankshaft with one
     speed and one full-load curve while it is locked to the wheels, and
@@ -115,6 +132,129 @@ def machine_idle_mask(tr):
             & (tr["F_regen"] <= SPIN_IDLE_FORCE_N)
             & (tr["F_retard"] <= SPIN_IDLE_FORCE_N)
             & (tr["v"] > SPIN_IDLE_V_MIN_MS))
+
+# ============================================================ THE ONE RULE
+OVERRUN_F_TRAC_EPS_N = 1.0
+"""Commanded tractive force below which the vehicle is asking the engine
+for nothing [N at the contact patch]. Same threshold and same reason as
+`SPIN_IDLE_FORCE_N`: the integrator commands exactly 0.0 when it commands
+nothing, and it never commands traction and braking on the same sample
+(`ws8_physics.integrate_achieved`: `f_dem >= 0` fills `F_trac` and zeroes
+all three brake channels, `f_dem < 0` does the reverse)."""
+
+OVERRUN_RPM_MARGIN = 1.1
+"""How far above idle the road must be turning the engine before the fuel
+is cut rather than the engine allowed to idle [-]. Below it the engine
+would stall, so it idles; this is S0's original margin, unchanged."""
+
+
+def overrun_mask(tr, rpm=None, idle_rpm=None):
+    """THE OVERRUN RULE - ONE RULE FOR EVERY CANDIDATE (r2 finding B1).
+
+    An engine that is GEARED TO THE ROAD is in OVERRUN on every sample
+    where the vehicle is MOVING and commands no positive tractive force.
+    In overrun the wheels turn the engine: it burns NO FUEL and delivers
+    NO POSITIVE SHAFT POWER, and the compression brake - which is nothing
+    but the engine being turned against its own compression - is
+    available only there. Combustion and compression braking are
+    therefore mutually exclusive BY CONSTRUCTION, on one rule, for every
+    candidate; and because the integrator can never command traction and
+    retardation on the same sample, "no traction demanded" contains "the
+    vehicle is braking" as a subset.
+
+    THIS IS S0'S OVERRUN FUEL CUT-OFF, STATED ONCE. r1 and r2 had it
+    inline in `S0.account` and nowhere else, and the two candidates whose
+    engines can also be turned by the road did not have it:
+
+      * S3 permitted through-the-road charging whenever the clutch was
+        closed, the pack was below target and axle A had force headroom.
+        On a descent axle A's traction force is zero, so the guard that
+        was meant to hold charging back (`f_a > 0.72 * f_a_cap`) could
+        never fire, and the engine fuelled at up to +220 kW of shaft
+        power while the same crankshaft was handed 215 kW of compression
+        braking through the same fixed ratio to the same axle.
+      * S2 left the lockup band's `locked` predicate conditioned on
+        traction demand, so on an in-band descent the model ran the
+        engine as a FREE-SPEED genset (a speed the crank cannot be at
+        while it is coupled to the road) at the same time as the retard
+        envelope drew that coupling's compression brake. S2's gate is
+        therefore keyed on the compression-brake share ACTUALLY APPLIED
+        rather than on band membership: that is the sample set on which
+        the clutch must be closed, it is immune to the band-edge
+        interpolation in `retard_split_arrays`, and it is the same
+        quantity `exclusivity_report` tests, so the code and the
+        assertion are one statement. The rest of the band - coasting, or
+        braking that regen alone absorbs - is a clutch-OPEN state under
+        S2's declared coupling law and a free-speed genset is legal
+        there; how much of the band that is gets exported rather than
+        argued.
+
+    S1 and S4 have no mechanical path from engine to road at all, so
+    their compression-brake channel is identically zero and the rule is
+    vacuous for them - which is what `exclusivity_report` measures rather
+    than assumes.
+
+    `rpm` / `idle_rpm` are optional and add S0's stall guard; where the
+    engine's coupling floor already sits above idle (S2's 1,000 rpm
+    lockup floor, S3's 1,000 rpm lugging limit) the guard cannot bite and
+    the mask is the same with or without it."""
+    m = (np.asarray(tr["v"], float) > 0.1) \
+        & (np.asarray(tr["F_trac"], float) <= OVERRUN_F_TRAC_EPS_N)
+    if rpm is not None and idle_rpm is not None:
+        m = m & (np.asarray(rpm, float) > float(idle_rpm)
+                 * OVERRUN_RPM_MARGIN)
+    return m
+
+
+def braking_mask(tr):
+    """Samples on which the vehicle is BRAKING - any retarding channel
+    the integrator actually applied. R3_DIRECTIVE item 1 requires
+    through-the-road charging to be gated on THIS, not on axle-A force
+    being small. `braking_mask` is a strict subset of `overrun_mask`
+    (the integrator zeroes `F_trac` on every braking sample), so gating
+    on overrun gates on braking a fortiori; both are measured and
+    exported so the claim is checkable rather than asserted."""
+    return ((np.asarray(tr["F_regen"], float)
+             + np.asarray(tr["F_retard"], float)
+             + np.asarray(tr["F_friction"], float)) > 0.0)
+
+
+def exclusivity_report(tr, dt, p_eb_kw, p_shaft_kw, fuel_gps,
+                       p_chg_bus_kw=None):
+    """THE ASSERTION R3_DIRECTIVE item 1 ORDERS, per run: no sample may
+    carry both compression-brake power and positive engine shaft power.
+
+    Reported for every candidate on every run - including the three for
+    which it is vacuous - because a check that is only run where the
+    error was already found is not a check. `holds` is the gate; the rest
+    is the evidence the adjudicator measured by hand in r2 (samples
+    carrying both, fuel burned while braking, and for S3 the
+    through-the-road charge taken while braking)."""
+    eb = np.asarray(p_eb_kw, float)
+    sh = np.asarray(p_shaft_kw, float)
+    both = (eb > 1.0) & (sh > 1.0)
+    braking = braking_mask(tr)
+    g = np.asarray(fuel_gps, float) * dt
+    tot_g = float(np.sum(g))
+    out = dict(
+        samples_brake_and_shaft=int(np.count_nonzero(both)),
+        sample_fraction_brake_and_shaft=float(np.mean(both)),
+        max_simultaneous_engine_brake_kW=float(np.max(eb[both]))
+        if both.any() else 0.0,
+        max_simultaneous_shaft_kW=float(np.max(sh[both])) if both.any()
+        else 0.0,
+        fuel_g_while_braking=float(np.sum(g[braking])),
+        fuel_fraction_while_braking=(float(np.sum(g[braking]) / tot_g)
+                                     if tot_g > 0.0 else 0.0),
+        braking_sample_fraction=float(np.mean(braking)),
+        holds=bool(not both.any()))
+    if p_chg_bus_kw is not None:
+        pc = np.asarray(p_chg_bus_kw, float)
+        out["ttr_charge_while_braking_kWh"] = float(
+            np.sum(pc[braking])) * dt / 3600.0
+        out["ttr_charge_total_kWh"] = float(np.sum(pc)) * dt / 3600.0
+    return out
+
 
 # Low-speed regen blend-out, carried from WS1's ratified control
 # constants (volt_params.Control.v_regen_blend_lo/hi = 3 / 8 km/h):
@@ -635,13 +775,30 @@ class S0(Candidate):
         t_aux = aux_kw * 1e3 / np.maximum(w_eng, 1e-6)
         t_tot = t_trac + t_aux
 
-        # overrun fuel cut: wheels drive the engine, no fuel, accessories
-        # are carried by the vehicle's kinetic energy.
-        overrun = (f_trac <= 1.0) & moving & (rpm > self.engine.idle_rpm * 1.1)
+        # THE OVERRUN RULE (r2 finding B1), which S0 has always had and
+        # which is now stated once for every candidate in
+        # `overrun_mask`: the wheels drive the engine, no fuel, and the
+        # accessories are carried by the vehicle's kinetic energy. The
+        # predicate below is `overrun_mask` verbatim, so S0's numbers do
+        # not move by one bit; what changed in r3 is that S2 and S3 are
+        # now held to the same rule.
+        overrun = overrun_mask(tr, rpm, self.engine.idle_rpm)
         t_tot = np.where(overrun, 0.0, t_tot)
         t_tot = np.minimum(t_tot, self.engine.t_max(rpm))
 
         p_shaft_kw = t_tot * w_eng / 1e3
+        # ACCESSORY DUTY THE CRANK CANNOT CARRY (r3, found by the run
+        # closure). `t_tot` is clipped at the full-load curve, and the
+        # traction envelope the integrator was given does NOT reserve
+        # accessory torque, so on samples where traction alone fills the
+        # curve the accessory torque was silently dropped - exactly the
+        # defect r1's finding F3 removed from S2, surviving in the ruler.
+        # No fuel number moves (the clip is unchanged); what moves is
+        # that the accessory row now books what the crank ACTUALLY
+        # carried, and the shortfall is exported instead of vanishing.
+        aux_served_kw = np.clip(t_tot - t_trac, 0.0, None) * w_eng / 1e3
+        aux_served_kw = np.where(overrun, aux_kw, aux_served_kw)
+        aux_spill_kw = np.clip(aux_kw - aux_served_kw, 0.0, None)
         # BSFC is infinite at zero torque, so the map is only queried
         # where there IS torque; elsewhere the fuel is the idle/overrun
         # branch below. Guarding with np.where alone would still evaluate
@@ -661,7 +818,17 @@ class S0(Candidate):
         # idle / stopped
         idle_g = EN.idle_fuel_gps(self.engine)
         stopped = ~moving
-        g_per_s = np.where(stopped, idle_g + AUX.p_hotel_idle_kW * 0.0,
+        # r3, found by the run closure: `stopped` is `v <= 0.1 m/s`, and
+        # the first few tenths of a second of a PULL-AWAY are inside it.
+        # r2 forced the idle rate onto those samples while the model was
+        # simultaneously crediting the engine with launch torque - about
+        # 28 kW of shaft power on 13.7 kW of fuel, an engine with a
+        # negative loss for four seconds a stop. The idle branch belongs
+        # to samples where the truck is standing AND asking for nothing;
+        # a pull-away is fuelled off the map like any other traction.
+        idling = (stopped & (f_trac <= OVERRUN_F_TRAC_EPS_N)
+                  if errata_on("r3_s0_launch_fuel") else stopped)
+        g_per_s = np.where(idling, idle_g + AUX.p_hotel_idle_kW * 0.0,
                            g_per_s)
         g_per_s = np.where(overrun, 0.0, g_per_s)
 
@@ -682,21 +849,37 @@ class S0(Candidate):
              + tr["F_retard"] * v / 1e3),
             ("generator_rectifier_kW", np.zeros_like(v)),
             ("traction_machine_inverter_kW", np.zeros_like(v)),
-            ("driveline_kW", np.clip(p_shaft_kw - aux_kw - p_wheel_kw,
-                                     0.0, None) + p_slip_kw),
+            # r3: `p_shaft - aux - p_wheel` is ALREADY the whole
+            # engine-to-wheel loss on a slipping launch - the engine
+            # turns at `launch_rpm` while the output turns slower, so
+            # the speed difference is inside that difference - and
+            # adding `p_slip_kw` on top booked the clutch's heat twice.
+            # The run closure (`run_closure`) is what found it; the slip
+            # energy is still reported on its own line below.
+            ("driveline_kW", np.clip(p_shaft_kw - aux_served_kw
+                                     - p_wheel_kw, 0.0, None)),
             ("pack_kW", np.zeros_like(v)),
             ("brake_resistor_kW", np.zeros_like(v)),
             ("friction_brake_kW", tr["F_friction"] * v / 1e3),
-            ("accessory_kW", np.asarray(aux_kw, float) * np.ones_like(v)),
+            ("accessory_kW", aux_served_kw * np.ones_like(v)),
         ])
 
         return dict(
             fuel_g=fuel_g,
             e_fuel_MJ=EN.fuel_energy_MJ(fuel_g),
+            exclusivity=exclusivity_report(
+                tr, dt, tr["F_retard"] * v / 1e3, p_shaft_kw, g_per_s),
+            run_closure=run_closure(
+                tr, dt, hr, g_per_s * LHV_KJ_PER_G,
+                p_aux_from_road_kw=np.where(overrun, aux_kw, 0.0)),
             e_engine_shaft_kWh=float(np.sum(p_shaft_kw) * dt) / 3600.0,
             e_mech_wheel_kWh=float(np.sum(np.clip(p_wheel_kw, 0, None))
                                    * dt) / 3600.0,
             e_aux_kWh=float(np.sum(aux_kw) * dt) / 3600.0,
+            e_aux_served_by_crank_kWh=float(np.sum(aux_served_kw)
+                                            * dt) / 3600.0,
+            e_aux_spill_unserved_kWh=float(np.sum(aux_spill_kw)
+                                           * dt) / 3600.0,
             e_clutch_slip_kWh=e_slip_kwh,
             e_regen_bus_kWh=0.0,
             e_resistor_kWh=0.0,
@@ -719,7 +902,7 @@ class S0(Candidate):
                 / max(np.sum(np.clip(p_shaft_kw[~overrun & moving], 0, None)),
                       1e-9)),
             top_gear_fraction=float(np.mean(gear[moving] == 11)),
-            idle_fuel_g=float(np.sum(np.where(stopped, idle_g, 0.0)) * dt),
+            idle_fuel_g=float(np.sum(np.where(idling, idle_g, 0.0)) * dt),
         )
 
 
@@ -804,6 +987,61 @@ def engine_reject_kw(fuel_gps, p_shaft_kw):
                    - np.asarray(p_shaft_kw, float), 0.0, None)
 
 
+def resistor_and_overcommitment(cand, p_rx, p_shed):
+    """Split what the retarder ACTUALLY dissipated from what the run
+    ASKED FOR and no sink could take. Returns (resistor_kW, over_kW).
+
+    RAISED INSIDE r3 BY REVIEW, AND IT IS THE SAME CLASS AS B1. Both
+    `series_dispatch` and S3's SOC loop send regen the pack cannot accept
+    to the brake resistor, each saying so in its own comment - and the
+    first cut of this round's run closure carried that flow as an
+    out-term OUTSIDE the component ledger. A real power flow with no
+    component row is r1's finding F1 and r2's B1 over again, and this one
+    is large: on nominal LH-520 the shed peaks near 217 kW sustained for
+    S1, S2 and S3 alike, because the pack reaches its 0.95 SOC ceiling
+    part-way down the mountain and then takes nothing.
+
+    Booking the whole of it to `brake_resistor_kW` would export a
+    450+ kW cooling load for a 340 kW resistor, and WS6 would size a
+    package for a duty the hardware cannot produce. The reason the sum
+    exceeds the rating is not the resistor. It is that the traction and
+    retard ENVELOPE is a function of road speed alone and does not
+    re-solve when the buffer fills, so the integrator keeps commanding
+    the regen channel at its warm ceiling after the pack has stopped
+    accepting. The enumerated `descent_6pct_pack_saturated` analytic case
+    is the physically correct member for that state - r1's finding F1(a)
+    added it for exactly this reason - and it holds a LOWER descent speed
+    precisely because it respects the rating.
+
+    So the two physically true statements are exported separately:
+
+      brake_resistor_kW        what the resistor took, capped at the
+                               rating whose mass was charged against this
+                               candidate's payload. This is the cooling
+                               load, and it is what WS6 consumes.
+      retard_overcommitted_kW  retarding power the run commanded that no
+                               sink could absorb. A CAPABILITY shortfall,
+                               the braking-side mirror of `unserved_kWh`,
+                               reported raw and never absorbed - the
+                               convention WS4's ESC-5 established and
+                               this workstream already follows on the
+                               traction side.
+
+    NOTHING IS HIDDEN BY THE CAP. The overcommitment is exported per run,
+    enveloped into an R14 worst case with its governing run, rendered in
+    the report beside the unserved-energy table, and the envelope
+    limitation behind it is ESCALATED rather than self-resolved
+    (ESC-WS8-10). The alternative - book it all as resistor heat and let
+    the rating check fail - was considered and rejected because it would
+    publish a heat number that is not a heat number."""
+    rating = float(getattr(cand, "resistor_kw", 0.0) or 0.0)
+    total = np.asarray(p_rx, float) + np.asarray(p_shed, float)
+    if rating <= 0.0:
+        return total * 0.0, total
+    took = np.minimum(total, rating)
+    return took, np.clip(total - took, 0.0, None)
+
+
 def series_heat_rows(cand, tr, aux, p_t, p_rg, p_rx, p_spin, d,
                      pw_t=None, pw_x=None, pw_eb=None):
     """Per-sample heat rejection by component for a series traction path.
@@ -844,7 +1082,8 @@ def series_heat_rows(cand, tr, aux, p_t, p_rg, p_rx, p_spin, d,
          mach_m + mach_g + mach_x + np.asarray(p_spin, float)),
         ("driveline_kW", gear_m + gear_g + gear_x),
         ("pack_kW", pack_heat_kw(d["p_pack_kw"], cand.pack)),
-        ("brake_resistor_kW", np.asarray(p_rx, float)),
+        ("brake_resistor_kW", resistor_and_overcommitment(
+            cand, p_rx, d.get("p_shed_kw", 0.0))[0]),
         ("friction_brake_kW", tr["F_friction"] * v / 1e3),
         ("accessory_kW", np.asarray(aux, float) * np.ones_like(v)),
     ])
@@ -891,6 +1130,116 @@ def heat_peaks(v, rows, dt=0.1, window_s=HEAT_SUSTAINED_WINDOW_S):
     out["total_rejected_kW_at_kmh"] = float(v[jt]) * 3.6
     out["_window_s"] = float(window_s)
     return out
+
+
+def run_closure(tr, dt, rows, p_fuel_kw, p_storage_out_kw=0.0,
+                p_aux_from_road_kw=0.0, p_unserved_kw=0.0,
+                p_retard_overcommitted_kw=0.0,
+                window_s=HEAT_SUSTAINED_WINDOW_S):
+    """ENERGY CLOSURE OF A WHOLE SIMULATED RUN (R3_DIRECTIVE item 1).
+
+    r2 closed only the four ANALYTIC ledger cases; `simulated_worst_run`
+    - which governs most of the exported component worst cases - was
+    exempt, and that exemption is what let B1 through: at the window the
+    export named, nine ledger rows summed to 630.5 kW against 1,060.2 kW
+    of accounted input and nothing looked.
+
+    The balance, declared term by term, per 10 Hz sample:
+
+      IN   fuel chemical power
+         + road-to-driveline power, i.e. every retarding channel the
+           integrator actually applied, (F_regen+F_retard+F_friction)*v -
+           this is the vehicle's kinetic and potential energy arriving at
+           the driveline
+         + net power OUT OF STORAGE, taken at the chemistry: bus-side
+           pack power plus the pack's own loss, which is negative while
+           charging and therefore carries the stored term with the right
+           sign
+         + accessory power carried by the ROAD rather than by fuel or the
+           pack - S0's overrun samples, where the crank is turned by the
+           wheels and the accessory drag is not in the integrator's
+           retarding channels. Declared because it is a modelling
+           approximation, not because it is free.
+         + commanded-but-UNSERVED bus power. The loss rows are built on
+           COMMANDED power, so a sample the pack could not fully serve
+           books losses for power that never flowed; the balance carries
+           it explicitly instead of hiding it in the residual, and the
+           F6 correction charges it back as fuel.
+
+      OUT  tractive power at the contact patch, F_trac*v
+         + every heat row - INCLUDING the regen the pack could not
+           accept, which goes to the brake resistor and is booked in the
+           resistor's own row up to the rating whose mass was charged
+         + RETARD OVERCOMMITMENT: retarding power the run commanded that
+           no sink could absorb, because the envelope does not re-solve
+           when the buffer saturates. It is on the OUT side because the
+           model generated it; it is NOT a heat row because no component
+           dissipated it; and it is exported as a capability shortfall
+           rather than as a cooling load. See
+           `resistor_and_overcommitment`, and ESC-WS8-10.
+
+    Reported on the same 60-second window as `heat_peaks`, so the number
+    is the closure OF THE EXPORTED CASE, plus the worst window anywhere
+    in the run."""
+    v = np.asarray(tr["v"], float)
+    ones = np.ones_like(v)
+
+    def arr(x):
+        a = np.asarray(x, float)
+        return a * ones if a.ndim == 0 else a
+
+    p_fuel = arr(p_fuel_kw)
+    p_store = arr(p_storage_out_kw)
+    p_auxr = arr(p_aux_from_road_kw)
+    p_uns = arr(p_unserved_kw)
+    p_over = arr(p_retard_overcommitted_kw)
+    p_road_in = (np.asarray(tr["F_regen"], float)
+                 + np.asarray(tr["F_retard"], float)
+                 + np.asarray(tr["F_friction"], float)) * v / 1e3
+    p_wheel_out = np.asarray(tr["F_trac"], float) * v / 1e3
+
+    rejected = np.zeros_like(v)
+    for k in HEAT_ROWS:
+        rejected = rejected + arr(rows.get(k, 0.0))
+
+    p_in = p_fuel + p_road_in + p_store + p_auxr + p_uns
+    p_out = p_wheel_out + rejected + p_over
+    resid = p_in - p_out
+
+    n_win = max(1, int(round(window_s / dt)))
+    rej_w = _moving_average(rejected, n_win)
+    res_w = _moving_average(resid, n_win)
+    in_w = _moving_average(p_in, n_win)
+    j = int(np.argmax(rej_w))
+    scale = np.maximum(np.abs(in_w), 1.0)
+    rel = np.abs(res_w) / scale
+    k = int(np.argmax(rel))
+    return dict(
+        window_s=float(window_s),
+        # the window the ledger's simulated member is read at
+        at_peak_rejection_window=dict(
+            road_speed_kmh=float(v[j]) * 3.6,
+            p_in_kW=float(in_w[j]), rejected_kW=float(rej_w[j]),
+            residual_kW=float(res_w[j]), relative=float(rel[j])),
+        worst_window=dict(
+            road_speed_kmh=float(v[k]) * 3.6,
+            p_in_kW=float(in_w[k]), rejected_kW=float(rej_w[k]),
+            residual_kW=float(res_w[k]), relative=float(rel[k])),
+        max_abs_relative_residual=float(rel[k]),
+        e_in_kWh=float(np.sum(p_in)) * dt / 3600.0,
+        e_out_kWh=float(np.sum(p_out)) * dt / 3600.0,
+        e_residual_kWh=float(np.sum(resid)) * dt / 3600.0,
+        e_retard_overcommitted_kWh=float(np.sum(p_over)) * dt / 3600.0,
+        retard_overcommitted_peak_kW=float(
+            np.max(_moving_average(p_over, n_win))),
+        tolerance=CLOSURE_TOL,
+        closes=bool(float(rel[k]) < CLOSURE_TOL))
+
+
+CLOSURE_TOL = 0.02
+"""Relative tolerance on a closure residual [-]. The same 2% the four
+analytic ledger cases have always been held to; stated once so the
+analytic and the simulated members are asserted on one number."""
 
 
 def spin_report(edrive, tr, p_spin, geared=None):
@@ -997,6 +1346,8 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
 
     p_out = np.empty(n)
     p_pack = np.zeros(n)          # + = pack discharging, - = charging
+    p_unserved = np.zeros(n)      # commanded bus power the pack could not
+    p_shed = np.zeros(n)          # regen the FULL pack could not accept
     soc = np.empty(n)
     on = False
     unserved = 0.0
@@ -1031,6 +1382,7 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
                 pd = room * eta_d / h if h > 0 else 0.0
                 de = max(room, 0.0)
             unserved += (net - pd) * h
+            p_unserved[i] = net - pd
             e -= de
             p_pack[i] = pd
         else:                              # pack charges
@@ -1051,6 +1403,7 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
                 p -= cut
                 over -= cut
                 to_resistor += over * h
+                p_shed[i] = over
         p_out[i] = p
         soc[i] = e / usable
 
@@ -1061,6 +1414,7 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
     fuel_g = float(np.sum(fuel_gps) * dt)
     on_mask = p_out > 0.0
     return dict(p_genset_kw=p_out, p_pack_kw=p_pack,
+                p_unserved_kw=p_unserved, p_shed_kw=p_shed,
                 soc=soc, unserved_kWh=unserved,
                 shed_kWh=to_resistor, starts=starts, fuel_g=fuel_g,
                 fuel_gps=fuel_gps,
@@ -1258,14 +1612,32 @@ class S1(Candidate):
         h = dt / 3600.0
         sp = spin_report(self.edrive, tr, p_sp, geared=None)
         hr = series_heat_rows(self, tr, aux, p_t, p_rg, p_rx, p_sp, d)
+        _shed = d["p_shed_kw"]
+        _, _over = resistor_and_overcommitment(self, p_rx, _shed)
         return dict(
             fuel_g=d["fuel_g"], e_fuel_MJ=EN.fuel_energy_MJ(d["fuel_g"]),
+            # S1's genset is not geared to the road, so it HAS no
+            # compression brake and the overrun rule is vacuous - which
+            # is measured on every run rather than asserted (B1).
+            exclusivity=exclusivity_report(
+                tr, dt, np.zeros_like(tr["v"]),
+                np.interp(d["p_genset_kw"], self.line.p_grid,
+                          self.line.p_shaft), d["fuel_gps"]),
+            run_closure=run_closure(
+                tr, dt, hr, d["fuel_gps"] * LHV_KJ_PER_G,
+                p_storage_out_kw=(d["p_pack_kw"]
+                                  + pack_heat_kw(d["p_pack_kw"], self.pack)),
+                p_unserved_kw=d["p_unserved_kw"],
+                p_retard_overcommitted_kw=_over),
             fuel_g_genset=d["fuel_g"],
             e_genset_bus_kWh=d["e_genset_bus_kWh"],
             e_bus_traction_kWh=float(np.sum(p_t)) * h,
             e_aux_kWh=float(np.sum(aux)) * h,
             e_regen_bus_kWh=float(np.sum(p_rg)) * h,
-            e_resistor_kWh=float(np.sum(p_rx)) * h,
+            e_resistor_kWh=float(np.sum(hr["brake_resistor_kW"])) * h,
+            e_retard_overcommitted_kWh=float(np.sum(_over)) * h,
+            retard_overcommitted_peak_kW=float(np.max(_over)),
+            e_shed_to_resistor_kWh=float(np.sum(_shed)) * h,
             e_engine_brake_kWh=0.0,
             e_friction_brake_kWh=float(
                 np.sum(tr["F_friction"] * tr["v"])) * dt / 3.6e6,
@@ -1295,12 +1667,26 @@ class S2(Candidate):
     title = ("Single cruise-ratio + torque-fill, traction machine on a "
              "disconnect")
     policy = (
-        "One fixed reduction (2.60:1 overall) couples the engine to the "
-        "wheels ONLY inside a cruise lockup band; outside it the truck is "
-        "pure series. The traction machine sits behind a DISCONNECT, so "
-        "while locked and not filling it is stationary and its spin drag "
-        "is zero - the G1(b) tax deleted by hardware. Every remaining tax "
-        "is charged: the machine's losses whenever it IS connected "
+        "One fixed reduction (2.60:1 overall) can couple the engine to "
+        "the wheels inside a cruise lockup band; outside that band the "
+        "truck is pure series. THE COUPLING LAW, declared: the lockup "
+        "clutch is CLOSED when the engine is pulling inside the band, "
+        "and when its compression brake is being drawn; it is OPEN "
+        "otherwise, including while coasting or while regen alone is "
+        "doing the retarding. Whenever it is closed and the vehicle asks "
+        "for no traction the engine is in OVERRUN - the wheels turn it, "
+        "the compression brake is what they turn it against, and the "
+        "genset makes nothing and burns nothing, because one crankshaft "
+        "cannot be locked to the road and on a free-speed BSFC locus at "
+        "the same time (the one rule, r2 finding B1). How much of the "
+        "band that leaves alone is measured, not argued: see "
+        "`inband_overrun_no_engine_brake_fraction_moving`. The traction "
+        "machine sits behind "
+        "a DISCONNECT, so while locked and not filling it is stationary "
+        "and its spin drag is zero - which deletes the G1(b) member by "
+        "hardware, a member that costs almost nothing here in any case "
+        "(section 4.2 gives the measured charge and its bracket). Every "
+        "remaining tax is charged: the machine's losses whenever it IS connected "
         "(measured, from WS2's map, not a scalar), and the engine's "
         "off-best-point operation at band edges, where road speed - not "
         "the supervisor - sets engine speed. There is ONE crankshaft and "
@@ -1444,6 +1830,58 @@ class S2(Candidate):
         locked = ((v >= self.v_lock_lo) & (v <= self.v_lock_hi)
                   & (tr["F_trac"] > 0.0))
 
+        # --- THE OVERRUN RULE (r2 finding B1, blocking) ---------------
+        # THE COUPLING LAW, declared with the policy string: the lockup
+        # clutch is CLOSED when the engine is pulling inside the band,
+        # and when its compression brake is being drawn - a jake brake is
+        # engaged by lifting, and engaging it is what ties the crank to
+        # the wheels. It is OPEN otherwise, including while coasting and
+        # while regen alone is doing the retarding, and a free-speed
+        # genset is a legal state there.
+        #
+        # r2 had no such law. It conditioned `locked` on traction demand
+        # alone while `_retard_channels` handed out the 290 kW
+        # compression brake on band membership alone, so on an in-band
+        # descent the model ran this crankshaft as a FREE-SPEED genset on
+        # the BSFC-optimal locus - a speed it cannot be at while it is
+        # coupled - at the same time as the retard envelope drew that
+        # coupling's engine brake. One crankshaft, two speeds, and fuel
+        # burned on 7.75% of the cold corner's samples while braking.
+        #
+        # The rule, identical to S0's and stated once in `overrun_mask`:
+        # on any sample where the vehicle demands no traction AND this
+        # engine's compression brake is being drawn - i.e. the clutch is
+        # closed under the law above - the engine is in OVERRUN. The
+        # wheels turn it, it makes no electrical power and it burns no
+        # fuel. The RETARDING ENVELOPE IS UNTOUCHED, so no achieved
+        # speed, trip time or descent case moves; what moves is that the
+        # genset may no longer be running at the same time.
+        #
+        # WHAT THIS DELIBERATELY LEAVES ALONE, and it is measured rather
+        # than argued: in-band samples with no traction demand on which
+        # the compression brake was NOT drawn, because regen alone
+        # absorbed the deceleration. The clutch is open there under the
+        # law, so the genset is legitimate; the fraction of the band that
+        # is, and the genset energy it carries, are both exported.
+        #
+        # The gate is keyed on the COMPRESSION-BRAKE SHARE ACTUALLY
+        # APPLIED, not on lockup-band membership, and that is deliberate:
+        # `retard_split_arrays` interpolates the engine-brake cap across
+        # the band edge on a 0.05 m/s grid, so a handful of samples just
+        # outside the band still carry a few tens of kW of compression
+        # brake. A band-membership gate leaves those samples fuelling -
+        # 1 to 3 of them per cold-corner run - and the per-run assertion
+        # would then fail on the run of record. Keying the gate on the
+        # same quantity the assertion tests makes the code and the
+        # assertion one statement.
+        overrun = overrun_mask(tr, rpm_lock, self.engine.idle_rpm)
+        # speed-band membership, kept only for the DISCLOSURE in the
+        # export below - it is deliberately NOT the gate; see
+        # `overrun_locked`, which is keyed on the compression brake the
+        # assertion tests.
+        coupled_band_measure = ((v >= self.v_lock_lo)
+                                & (v <= self.v_lock_hi) & moving)
+
         # --- mechanical share while locked ----------------------------
         t_eng_max = self.engine.t_max(rpm_lock)
         f_eng_max = t_eng_max * self.CRUISE_RATIO * self.eta_lock / VEH.r_dyn
@@ -1506,6 +1944,15 @@ class S2(Candidate):
         f_res_applied, f_eb_applied = self.retard_split_arrays(tr)
         p_rx_wheel = f_res_applied * v / 1e3
         p_rx = p_rx_wheel * self.edrive.eta_wheel_to_bus(v, p_rx_wheel)
+        # THE ONE RULE, applied (B1): compression brake drawn AND in
+        # overrun => the crank is tied to the road, so the genset's
+        # electrical ceiling is zero on those samples. `series_dispatch`
+        # already honours a per-sample ceiling (`p_elec_cap_kw`), so no
+        # new mechanism is introduced and the retarding envelope cannot
+        # move.
+        overrun_locked = overrun & (f_eb_applied > 0.0)
+        if errata_on("b1_overrun_exclusivity"):
+            p_gen_cap = np.where(overrun_locked, 0.0, p_gen_cap)
 
         # spin drag: charged where the machine is GEARED and unloaded,
         # on the program-wide rule (F5). While locked the disconnect is
@@ -1584,11 +2031,17 @@ class S2(Candidate):
         g_tot = base_state["g_tot"]
         ok_tot = base_state["ok_tot"]
         p_tot_shaft = base_state["p_tot_shaft"]
-        fuel_g = d["fuel_g"]
         idle_g = EN.idle_fuel_gps(self.engine)
         stopped = ~moving
-        fuel_g += float(np.sum(np.where(stopped & (d["p_genset_kw"] <= 0.0),
-                                        idle_g, 0.0)) * dt)
+        # r3: the standstill idle rate is folded into the fuel SERIES
+        # rather than added to the total afterwards, so the heat rows and
+        # the run closure are built from the same fuel the metric of
+        # record is. In r2 the idle fuel was in `fuel_g` and invisible to
+        # the ledger, which is the class of gap the extended closure
+        # (R3_DIRECTIVE item 1) exists to find.
+        fuel_gps_all = d["fuel_gps"] + np.where(
+            stopped & (d["p_genset_kw"] <= 0.0), idle_g, 0.0)
+        fuel_g = float(np.sum(fuel_gps_all) * dt)
         # fuel attributable to the GENSET, for the correction efficiency
         # (F6): all of it while unlocked, the marginal cost of the extra
         # crank torque while locked.
@@ -1603,7 +2056,13 @@ class S2(Candidate):
         p_shaft_free = np.interp(d["p_genset_kw"], self.line.p_grid,
                                  self.line.p_shaft)
         p_shaft_eng = np.where(locked, p_tot_shaft, p_shaft_free)
-        q_eng = engine_reject_kw(d["fuel_gps"], p_shaft_eng)
+        q_eng = engine_reject_kw(fuel_gps_all, p_shaft_eng)
+        # r3: the generator's own loss on the LOCKED path was booked off
+        # the free-speed locus, which is not the shaft power the crank
+        # actually put into it at the road-imposed speed. Same fix as
+        # F3's, one step further down the chain; found by the run closure.
+        p_shaft_gen = np.where(
+            locked, base_state["t_gen"] * w_eng / 1e3, p_shaft_free)
         hr = series_heat_rows(
             self, tr, aux_bus, p_t, p_rg, p_rx, p_spin, d,
             pw_t=tr_e["F_trac"] * v / 1e3,
@@ -1616,8 +2075,36 @@ class S2(Candidate):
         hr["driveline_kW"] = hr["driveline_kW"] + np.clip(
             f_mech * v / 1e3 * (1.0 / self.eta_lock - 1.0), 0.0, None)
         hr["accessory_kW"] = aux_bus + aux_mech_kw_served
+        hr["generator_rectifier_kW"] = np.clip(
+            p_shaft_gen - d["p_genset_kw"], 0.0, None)
+        _shed = d["p_shed_kw"]
+        _, _over = resistor_and_overcommitment(self, p_rx, _shed)
         return dict(
             fuel_g=fuel_g, e_fuel_MJ=EN.fuel_energy_MJ(fuel_g),
+            exclusivity=exclusivity_report(
+                tr, dt, f_eb_applied * v / 1e3, p_shaft_eng, fuel_gps_all),
+            run_closure=run_closure(
+                tr, dt, hr, fuel_gps_all * LHV_KJ_PER_G,
+                p_storage_out_kw=(d["p_pack_kw"]
+                                  + pack_heat_kw(d["p_pack_kw"], self.pack)),
+                p_unserved_kw=d["p_unserved_kw"],
+                p_retard_overcommitted_kw=_over),
+            locked_overrun_fraction_moving=float(
+                np.mean(overrun_locked[moving])),
+            # The residue the gate deliberately does NOT cover, measured
+            # rather than argued: in-band samples with no traction demand
+            # where the engine brake was NOT drawn. There the lockup
+            # clutch is OPEN under the declared coupling law, so a
+            # free-speed genset is a legal state and not the impossible
+            # one B1 names. Exported so a reader can see how much of the
+            # band the gate leaves alone.
+            inband_overrun_no_engine_brake_fraction_moving=float(
+                np.mean((coupled_band_measure & overrun
+                         & ~(f_eb_applied > 0.0))[moving])),
+            e_genset_bus_kWh_on_inband_overrun=float(np.sum(
+                np.where(coupled_band_measure & overrun
+                         & ~(f_eb_applied > 0.0),
+                         d["p_genset_kw"], 0.0))) * h,
             fuel_g_genset=fuel_g_genset,
             e_genset_bus_kWh=d["e_genset_bus_kWh"],
             e_bus_traction_kWh=float(np.sum(p_t)) * h,
@@ -1636,8 +2123,12 @@ class S2(Candidate):
             e_aux_kWh=(float(np.sum(aux_bus))
                        + float(np.sum(aux_mech_kw_served))) * h,
             e_regen_bus_kWh=float(np.sum(p_rg)) * h,
-            e_resistor_kWh=float(np.sum(p_rx)) * h,
-            e_engine_brake_kWh=float(np.sum(f_eb_applied * v)) * dt / 3.6e6,
+            e_resistor_kWh=float(np.sum(hr["brake_resistor_kW"])) * h,
+            e_retard_overcommitted_kWh=float(np.sum(_over)) * h,
+            retard_overcommitted_peak_kW=float(np.max(_over)),
+            e_shed_to_resistor_kWh=float(np.sum(_shed)) * h,
+            e_engine_brake_kWh=float(
+                np.sum(f_eb_applied * v)) * dt / 3.6e6,
             e_friction_brake_kWh=float(
                 np.sum(tr["F_friction"] * v)) * dt / 3.6e6,
             e_clutch_slip_kWh=0.0,
@@ -1824,7 +2315,7 @@ class S3(Candidate):
         _, f_res, f_eb = self._retard_channels(v, pack_saturated)
         return f_res, f_eb
 
-    def grade_hold(self, grade, mu=None):
+    def grade_hold(self, grade, mu=None, dv=0.1):
         """The fixed-ratio grade-hold question, answered directly.
 
         Scans the road speeds at which the clutch may be CLOSED at all
@@ -1847,7 +2338,7 @@ class S3(Candidate):
         `below_floor` and `no_solution` both mean the diesel axle is
         unusable on that grade and the truck is on its pack.
         """
-        vs = np.arange(1.0, 33.0, 0.1)
+        vs = np.arange(1.0, 33.0, dv)
         f_res = np.array([float(road_load_force(np.array([x]), grade,
                                                 VEH.m_gcw, None, None,
                                                 self.ctx.rho_air)[0][0])
@@ -1870,6 +2361,7 @@ class S3(Candidate):
             status = "no_solution"
         i_ref = int(np.argmin(np.abs(vs - max(v_hold, self.v_couple_min))))
         return dict(grade=grade, status=status,
+                    speed_scan_step_ms=float(dv),
                     v_hold_diesel_axle_kmh=v_hold * 3.6,
                     v_couple_floor_kmh=self.v_couple_min * 3.6,
                     v_couple_ceiling_kmh=self.v_couple_max * 3.6,
@@ -1985,12 +2477,57 @@ class S3(Candidate):
         idle_g = EN.idle_fuel_gps(self.engine)
         # pack charge acceptance AT THIS CORNER'S AMBIENT (F2)
         p_chg_max = self.pack_chg_limit_kw()
+
+        # --- THE OVERRUN RULE, AND THE CHARGING GATE (finding B1) -----
+        # r2 permitted through-the-road charging whenever the clutch was
+        # closed, the pack was below target and axle A had FORCE
+        # HEADROOM, holding it back only with `f_a > 0.72 * f_a_cap`.
+        # On a descent axle A's traction force is zero, so that guard
+        # could never fire: the engine fuelled at up to +220 kW of shaft
+        # power while the same crankshaft was handed 215 kW of
+        # compression braking through the same fixed ratio to the same
+        # axle - 5.67% of S3's nominal fuel, and 8.52% at the cold
+        # corner, burned while the truck was braking.
+        #
+        # R3_DIRECTIVE item 1: the gate is THE VEHICLE NOT BRAKING, not
+        # axle-A force being small. It is written here as both halves of
+        # what that means, because they are not the same statement and
+        # the stronger one is what the one rule requires:
+        #   ~braking   the integrator applied no retarding channel, and
+        #   ~overrun   the vehicle demands positive tractive force at
+        #              all, so the engine is driving the road rather
+        #              than being driven by it.
+        # `braking` is a strict subset of `overrun` (the integrator
+        # zeroes F_trac on every braking sample), so the conjunction IS
+        # `~overrun`; both are written and both are measured, so the
+        # claim is auditable rather than asserted.
+        #
+        # The 0.72 load threshold BELOW is kept, and it is no longer
+        # doing this job: it is the BSFC policy it always was - do not
+        # load an already hard-working engine further - and it is
+        # labelled as such.
+        overrun = overrun_mask(tr, rpm_a, self.engine.idle_rpm)
+        braking = braking_mask(tr)
+        if errata_on("b1_overrun_exclusivity"):
+            # `~(f_eb_applied > 0)` is redundant against `~overrun` for
+            # the same reason S2's gate is NOT: it is the belt to that
+            # brace, and it costs nothing to make the gate and the
+            # assertion the same statement here too.
+            ttr_gate = (coupled & ~braking & ~overrun
+                        & ~(f_eb_applied > 0.0))
+        else:
+            ttr_gate = coupled
+
         usable = max(self.pack.usable_kwh, 1e-9)
         e = usable * self.SOC_TARGET
         e_lo, e_hi = usable * self.SOC_FLOOR, usable * self.SOC_CEIL
         soc = np.empty(n)
         f_chg_wheel = np.zeros(n)
         p_spin = np.zeros(n)
+        p_pack_run = np.zeros(n)      # + = discharging, - = charging
+        p_unserved = np.zeros(n)
+        p_shed = np.zeros(n)
+        e_ttr_blocked_by_load_policy = 0.0
         unserved = 0.0
         e_uncoupled_traction = 0.0
         n_engine_off = 0
@@ -2003,15 +2540,22 @@ class S3(Candidate):
                 demand += spin_rate[i]
                 p_spin[i] = spin_rate[i]
             chg = 0.0
-            if coupled[i] and soc_now < self.SOC_TARGET \
+            if ttr_gate[i] and soc_now < self.SOC_TARGET \
                     and p_chg_head_bus[i] > 0.0:
                 want = (p_chg_max
                         * (self.SOC_TARGET - soc_now)
                         / (self.SOC_TARGET - self.SOC_FLOOR))
                 chg = min(want, p_chg_head_bus[i])
-                # only charge while the engine is lightly loaded, where
-                # loading it actually improves BSFC
+                # BSFC POLICY, not the braking gate (B1): do not load an
+                # engine that is already working hard, because that is
+                # where loading it stops improving BSFC. R3_DIRECTIVE
+                # item 1 replaces the axle-A FORCE test as the GATE; this
+                # threshold survives as the efficiency policy it always
+                # was, and the energy it withholds is measured on every
+                # run so that its influence is a number rather than an
+                # argument.
                 if f_a[i] > 0.72 * max(f_a_cap[i], 1e-9):
+                    e_ttr_blocked_by_load_policy += chg * h
                     chg = 0.0
             net = demand - chg
             if net > 0.0:
@@ -2022,16 +2566,30 @@ class S3(Candidate):
                     pd = room * self.pack.eta_dis / h if h > 0 else 0.0
                     de = max(room, 0.0)
                 unserved += (net - pd) * h
+                p_unserved[i] = net - pd
                 e -= de
+                p_pack_run[i] = pd
             else:
-                pc = min(-net, p_chg_max)
+                surplus = -net
+                pc = min(surplus, p_chg_max)
                 de = pc * h * self.pack.eta_chg
                 room = e_hi - e
                 if de > room:
                     pc = room / self.pack.eta_chg / h if h > 0 else 0.0
                     de = max(room, 0.0)
-                    chg = max(0.0, chg - ((-net) - pc))
+                over = surplus - pc
+                if over > 0.0:
+                    # same policy `series_dispatch` declares: throttle the
+                    # ENGINE's charging back first, then whatever is left
+                    # is regen the full pack cannot take and it goes to
+                    # the resistor. In r2 the remainder was dropped with
+                    # no bookkeeping at all; the run closure found it.
+                    cut = min(chg, over)
+                    chg -= cut
+                    over -= cut
+                    p_shed[i] = over
                 e += de
+                p_pack_run[i] = -pc
             f_chg_wheel[i] = (chg / max(eta_g[i], 1e-6) * 1e3
                               / max(v[i], 0.5)) if chg > 0 else 0.0
             soc[i] = e / usable
@@ -2041,9 +2599,17 @@ class S3(Candidate):
             if not coupled[i]:
                 e_uncoupled_traction += p_b_bus[i] * h
 
-        # engine fuel: only while coupled
+        # engine fuel: only while coupled, and NEVER in overrun (B1).
+        # With the charging gate above, `f_chg_wheel` is already zero on
+        # every overrun sample and `f_a` is zero because the integrator
+        # commands no traction there - so this line moves nothing. It is
+        # written anyway, because the rule is what is being asserted and
+        # a rule that holds only as a consequence of another rule is not
+        # auditable.
         t_a = (f_a + f_chg_wheel) * VEH.r_dyn / (self.ratio_a * self.eta_A)
         t_a = np.minimum(t_a, t_a_max)
+        if errata_on("b1_overrun_exclusivity"):
+            t_a = np.where(overrun | (f_eb_applied > 0.0), 0.0, t_a)
         w_eng = rpm_a * 2 * np.pi / 60.0
         p_a_shaft = t_a * w_eng / 1e3
         fuelling = coupled & (t_a > 1e-6)
@@ -2068,16 +2634,22 @@ class S3(Candidate):
         gear_x, mach_x = edrive_heat_split(p_rx_wheel, p_rx_bus, eta_red,
                                            generating=True)
         q_eng_s3 = engine_reject_kw(g, p_a_shaft)
-        # The pack's own loss, from its net bus power. Clipped to the
-        # pack's own limits for the same reason `series_dispatch` clips
-        # them: demand the pack cannot meet is UNSERVED energy, not pack
-        # current, and charging its loss would put heat in a component
-        # that never carried the power.
-        p_pack_s3 = np.clip(
-            p_b_bus + aux - p_rg_bus + p_spin
-            - np.where(f_chg_wheel > 0.0, f_chg_wheel * v / 1e3 * eta_g,
-                       0.0),
-            -p_chg_max, self.pack.p_cont_dis_kw)
+        # THE THROUGH-THE-ROAD PATH'S OWN LOSSES (r3). r2 charged the
+        # engine for the charging torque and credited the pack with the
+        # electricity, and booked NO heat for the conversion in between:
+        # axle A's fixed-ratio box carried the charging force, and axle
+        # B's machine and reduction stage generated from it, and neither
+        # loss had a row. The run closure found it.
+        p_chg_wheel = f_chg_wheel * v / 1e3
+        p_chg_bus = p_chg_wheel * eta_g
+        gear_c, mach_c = edrive_heat_split(p_chg_wheel, p_chg_bus, eta_red,
+                                           generating=True)
+        # The pack's own loss, from the net bus power THE SOC LOOP
+        # ACTUALLY RAN (r3). r2 reconstructed it afterwards and clipped
+        # the reconstruction to the pack's limits, which is not the same
+        # series: the loop's own `pd`/`pc` already carry the unserved and
+        # SOC-ceiling limits, so the recorded flow is both simpler and
+        # exact.
         hr = OrderedDict([
             ("engine_coolant_kW", q_eng_s3 * ENGINE_HEAT_TO_COOLANT_FRAC),
             ("engine_exhaust_kW",
@@ -2085,17 +2657,29 @@ class S3(Candidate):
              + f_eb_applied * v / 1e3),
             ("generator_rectifier_kW", np.zeros_like(v)),
             ("traction_machine_inverter_kW",
-             mach_m + mach_g + mach_x + p_spin),
-            ("driveline_kW", gear_m + gear_g + gear_x
-             + np.clip(f_a * v / 1e3 * (1.0 / self.eta_A - 1.0), 0.0, None)),
-            ("pack_kW", pack_heat_kw(p_pack_s3, self.pack)),
-            ("brake_resistor_kW", p_rx_bus),
+             mach_m + mach_g + mach_x + mach_c + p_spin),
+            ("driveline_kW", gear_m + gear_g + gear_x + gear_c
+             + np.clip((f_a + f_chg_wheel) * v / 1e3
+                       * (1.0 / self.eta_A - 1.0), 0.0, None)),
+            ("pack_kW", pack_heat_kw(p_pack_run, self.pack)),
+            ("brake_resistor_kW", resistor_and_overcommitment(
+                self, p_rx_bus, p_shed)[0]),
             ("friction_brake_kW", tr["F_friction"] * v / 1e3),
             ("accessory_kW", np.asarray(aux, float) * np.ones_like(v)),
         ])
 
+        _, _over = resistor_and_overcommitment(self, p_rx_bus, p_shed)
         return dict(
             fuel_g=fuel_g, e_fuel_MJ=EN.fuel_energy_MJ(fuel_g),
+            exclusivity=exclusivity_report(
+                tr, dt, f_eb_applied * v / 1e3, p_a_shaft, g,
+                p_chg_bus_kw=p_chg_bus),
+            run_closure=run_closure(
+                tr, dt, hr, g * LHV_KJ_PER_G,
+                p_storage_out_kw=(p_pack_run
+                                  + pack_heat_kw(p_pack_run, self.pack)),
+                p_unserved_kw=p_unserved,
+                p_retard_overcommitted_kw=_over),
             ratio_A=self.ratio_a,
             # S3 has no genset: the correction efficiency (F6) is priced
             # on the mechanical path it actually has, not on a genset
@@ -2104,16 +2688,34 @@ class S3(Candidate):
             e_axleA_wheel_kWh=float(np.sum(f_a * v)) * dt / 3.6e6,
             e_mech_wheel_kWh=float(np.sum(f_a * v)) * dt / 3.6e6,
             e_axleB_bus_kWh=float(np.sum(p_b_bus)) * h,
-            e_ttr_charge_bus_kWh=float(np.sum(f_chg_wheel * v)) * dt / 3.6e6,
+            # r3: the r2 field named `_bus_` was the WHEEL-side integral
+            # (rule 6 requires the name to say which boundary it is on).
+            # Both are exported now, on their own names.
+            e_ttr_charge_wheel_kWh=float(np.sum(p_chg_wheel)) * h,
+            e_ttr_charge_bus_kWh=float(np.sum(p_chg_bus)) * h,
+            ttr_charging_fraction_moving=float(
+                np.mean((f_chg_wheel > 0.0)[moving])) if moving.any()
+            else 0.0,
+            # what the 0.72 BSFC policy withheld, so the reader can see
+            # whether that policy - and not the B1 gate - is what decides
+            # how much through-the-road charging S3 does
+            e_ttr_blocked_by_load_policy_kWh=e_ttr_blocked_by_load_policy,
             e_aux_kWh=float(np.sum(aux)) * h,
             e_regen_bus_kWh=float(np.sum(p_rg_bus)) * h,
-            e_resistor_kWh=float(np.sum(p_rx_bus)) * h,
+            e_resistor_kWh=float(np.sum(hr["brake_resistor_kW"])) * h,
+            e_retard_overcommitted_kWh=float(np.sum(_over)) * h,
+            retard_overcommitted_peak_kW=float(np.max(_over)),
+            e_shed_to_resistor_kWh=float(np.sum(p_shed)) * h,
             e_engine_brake_kWh=float(np.sum(f_eb_applied * v)) * dt / 3.6e6,
             e_friction_brake_kWh=float(
                 np.sum(tr["F_friction"] * v)) * dt / 3.6e6,
             e_clutch_slip_kWh=0.0,
             e_uncoupled_traction_bus_kWh=e_uncoupled_traction,
-            unserved_kWh=unserved, shed_kWh=0.0,
+            unserved_kWh=unserved,
+            # r3: this used to be the literal 0.0 while the loop above
+            # measured the shed on the same run - two fields of one
+            # export contradicting each other.
+            shed_kWh=float(np.sum(p_shed)) * h,
             coupled_fraction_moving=float(np.mean(coupled[moving])),
             eaxle_connected_fraction_moving=float(np.mean(connected[moving])),
             clutch_engagements=n_engine_off,
@@ -2261,14 +2863,32 @@ class S4(Candidate):
         soc = d["soc"]
         sp = spin_report(self.edrive, tr, p_sp, geared=None)
         hr = series_heat_rows(self, tr, aux, p_t, p_rg, p_rx, p_sp, d)
+        _shed = d["p_shed_kw"]
+        _, _over = resistor_and_overcommitment(self, p_rx, _shed)
         return dict(
             fuel_g=d["fuel_g"], e_fuel_MJ=EN.fuel_energy_MJ(d["fuel_g"]),
+            # S4's sustainer is not geared to the road either: no
+            # compression brake, so the overrun rule is vacuous - and
+            # measured (B1).
+            exclusivity=exclusivity_report(
+                tr, dt, np.zeros_like(tr["v"]),
+                np.interp(d["p_genset_kw"], self.line.p_grid,
+                          self.line.p_shaft), d["fuel_gps"]),
+            run_closure=run_closure(
+                tr, dt, hr, d["fuel_gps"] * LHV_KJ_PER_G,
+                p_storage_out_kw=(d["p_pack_kw"]
+                                  + pack_heat_kw(d["p_pack_kw"], self.pack)),
+                p_unserved_kw=d["p_unserved_kw"],
+                p_retard_overcommitted_kw=_over),
             fuel_g_genset=d["fuel_g"],
             e_genset_bus_kWh=d["e_genset_bus_kWh"],
             e_bus_traction_kWh=float(np.sum(p_t)) * h,
             e_aux_kWh=float(np.sum(aux)) * h,
             e_regen_bus_kWh=float(np.sum(p_rg)) * h,
-            e_resistor_kWh=float(np.sum(p_rx)) * h,
+            e_resistor_kWh=float(np.sum(hr["brake_resistor_kW"])) * h,
+            e_retard_overcommitted_kWh=float(np.sum(_over)) * h,
+            retard_overcommitted_peak_kW=float(np.max(_over)),
+            e_shed_to_resistor_kWh=float(np.sum(_shed)) * h,
             e_engine_brake_kWh=0.0,
             e_friction_brake_kWh=float(
                 np.sum(tr["F_friction"] * tr["v"])) * dt / 3.6e6,

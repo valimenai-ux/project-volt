@@ -1,17 +1,29 @@
 # WS8 - Vehicle One, semi-scale architecture trial
 
-Executes `ASSIGNMENT.md`, and the errata round ordered by
-`R2_DIRECTIVE.md` (R26), against `../BASELINE_v4.md`. This folder is
-self-contained and deterministic; it reads Vehicle Zero's workstreams
-**read-only** and modifies nothing outside itself (CLAUDE.md rule 10).
+Executes `ASSIGNMENT.md`, and the round ordered by `R3_DIRECTIVE.md`
+(R35), against `../BASELINE_v5.md`. This folder is self-contained and
+deterministic; it reads Vehicle Zero's workstreams **read-only** and
+modifies nothing outside itself (CLAUDE.md rule 10).
 
-**Round 2 (errata).** The verdicts are `executed_kill_2026-08-30` under
-R25 and are **not reopened here**; this round makes the numbers of
-record correct against `FINDINGS_WS8_r1.md` (F1-F13). Read
-`CHANGELOG_WS8_r2.md` first if you are returning to this folder - it
-says which direction every candidate moved and why. The interface block
-carries `numbers_version: r2` and a sha256 pin of every input the
-numbers depend on.
+**Round 3.** The verdicts are `executed_kill_2026-08-30` under R25 and
+are **not reopened here**; this round makes the numbers of record
+correct against `FINDINGS_WS8_r2.md` (B1 blocking, M1-M4, m1-m7). Read
+`CHANGELOG_WS8_r3.md` first if you are returning to this folder - it
+says which direction every candidate moved and why, and this round every
+direction cell is GENERATED from the one-factor table rather than
+written by hand (finding M1). The interface block carries
+`numbers_version: r3` and a sha256 pin of every input the numbers depend
+on; the heat ledger carries `ledger_version: r3` and **WS6 consumes only
+that one** - r2's ledger is withdrawn.
+
+**The one rule this round added.** An engine geared to the road is in
+OVERRUN on every sample where the vehicle is moving and commands no
+tractive force: it burns no fuel, makes no positive shaft power, and its
+compression brake is available only there. It lives in
+`ws8_candidates.overrun_mask`, S0's long-standing cut-off is an instance
+of it, and a hard per-run assertion in `run_ws8.run_one` fails the run if
+any 10 Hz sample carries both compression-brake power and positive engine
+shaft power.
 
 ## Run it
 
@@ -45,11 +57,12 @@ Dependencies: `requirements.txt` (numpy only). The repository venv at
 | `ws8_whr.py` | waste-heat-recovery systems and the pre-committed gate |
 | `make_report_ws8.py` | renders `REPORT_WS8.md` from `results_ws8.json` |
 | `verify_ws8.py` | asserts every headline number renders a results value verbatim (rule 2) |
-| `R2_DIRECTIVE.md` | the errata order this round executes |
-| `FINDINGS_WS8_r1.md` | the round-1 adjudication this round closes |
-| `CHANGELOG_WS8_r2.md` | generated: what moved in r2 and which way |
+| `R3_DIRECTIVE.md` | the order this round executes |
+| `R2_DIRECTIVE.md`, `FINDINGS_WS8_r1.md`, `CHANGELOG_WS8_r2.md` | the previous round, kept as history |
+| `FINDINGS_WS8_r2.md` | the round-2 adjudication this round closes |
+| `CHANGELOG_WS8_r3.md` | generated: what moved in r3 and which way |
 | `results_ws8.json` | the data file of record |
-| `data/*.csv` | per-seed tables, the S3 ratio sweep, the WS6 heat ledger and its R14 worst cases, the one-factor rows |
+| `data/*.csv` | per-seed tables, the S3 ratio sweep, the WS6 heat ledger (versioned, with per-component labels for the simulated member) and its R14 worst cases, the one-factor rows |
 | `PRIOR_ART_WS8.md` | Task 0 claim map |
 
 ## What is inherited, and from where

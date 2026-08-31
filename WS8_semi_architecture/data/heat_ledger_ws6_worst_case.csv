@@ -1,63 +1,64 @@
-candidate,component,value_kW,governing_case,governing_run_or_rating_status
-S0,engine_coolant_kW,208.433,simulated_worst_run,nominal/LH-520/seed8104 @ 85 km/h
-S0,engine_exhaust_kW,303.808,descent_6pct_pack_accepting,
-S0,generator_rectifier_kW,0,cruise_95kmh_flat,
-S0,traction_machine_inverter_kW,0,cruise_95kmh_flat,
-S0,driveline_kW,29.1198,climb_6pct,
-S0,pack_kW,0,cruise_95kmh_flat,
-S0,brake_resistor_kW,0,cruise_95kmh_flat,
-S0,friction_brake_kW,312.838,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 65 km/h
-S0,accessory_kW,7,simulated_worst_run,hot_alt_2000m_45C/LH-520/seed8101 @ 52 km/h
-S0,total_rejected_kW,569.267,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 65 km/h
-S0,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
-S1,engine_coolant_kW,158.571,climb_6pct,
-S1,engine_exhaust_kW,218.978,simulated_worst_run,nominal/LH-520/seed8101 @ 92 km/h
-S1,generator_rectifier_kW,16.2016,climb_6pct,
-S1,traction_machine_inverter_kW,31.8897,simulated_worst_run,grade_heavy/REG-165/seed8106 @ 30 km/h
-S1,driveline_kW,17.4007,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 94 km/h
-S1,pack_kW,7.75796,simulated_worst_run,grade_heavy/LH-520/seed8108 @ 87 km/h
-S1,brake_resistor_kW,314.28,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 98 km/h
-S1,friction_brake_kW,205.169,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 94 km/h
-S1,accessory_kW,6.6,simulated_worst_run,cold_minus10C/LH-520/seed8101 @ 52 km/h
-S1,total_rejected_kW,574.927,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 94 km/h
-S1,RATING[brake_resistor],340,simulated_worst_run,within_rating
-S1,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
-S1,RATING[genset_electrical],289.469,climb_6pct,within_rating
-S2,engine_coolant_kW,196.462,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 108 km/h
-S2,engine_exhaust_kW,271.305,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 108 km/h
-S2,generator_rectifier_kW,16.2016,climb_6pct,
-S2,traction_machine_inverter_kW,31.8897,simulated_worst_run,grade_heavy/REG-165/seed8106 @ 30 km/h
-S2,driveline_kW,25.1207,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 107 km/h
-S2,pack_kW,10.1828,simulated_worst_run,grade_heavy/REG-165/seed8101 @ 53 km/h
-S2,brake_resistor_kW,267.854,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
-S2,friction_brake_kW,65.5534,simulated_worst_run,cold_minus10C/REG-165/seed8106 @ 97 km/h
-S2,accessory_kW,7,simulated_worst_run,hot_alt_2000m_45C/LH-520/seed8101 @ 80 km/h
-S2,total_rejected_kW,543.187,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
-S2,RATING[brake_resistor],340,simulated_worst_run,within_rating
-S2,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
-S2,RATING[genset_electrical],289.469,climb_6pct,within_rating
-S3,engine_coolant_kW,162.577,simulated_worst_run,payload_plus20/LH-520/seed8105 @ 108 km/h
-S3,engine_exhaust_kW,396.868,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 105 km/h
-S3,generator_rectifier_kW,0,cruise_95kmh_flat,
-S3,traction_machine_inverter_kW,24.3951,simulated_worst_run,grade_heavy/REG-165/seed8106 @ 5 km/h
-S3,driveline_kW,15.5157,simulated_worst_run,nominal/LH-520/seed8107 @ 88 km/h
-S3,pack_kW,7.20072,simulated_worst_run,nominal/LH-520/seed8101 @ 97 km/h
-S3,brake_resistor_kW,182.981,simulated_worst_run,cold_minus10C/LH-520/seed8108 @ 88 km/h
-S3,friction_brake_kW,147.952,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 101 km/h
-S3,accessory_kW,6.6,simulated_worst_run,cold_minus10C/LH-520/seed8101 @ 33 km/h
-S3,total_rejected_kW,651.391,simulated_worst_run,grade_heavy/REG-165/seed8102 @ 92 km/h
-S3,RATING[brake_resistor],200,simulated_worst_run,within_rating
-S3,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
-S4,engine_coolant_kW,115.746,simulated_worst_run,nominal/LH-520/seed8101 @ 91 km/h
-S4,engine_exhaust_kW,159.84,simulated_worst_run,nominal/LH-520/seed8101 @ 91 km/h
-S4,generator_rectifier_kW,9.0015,simulated_worst_run,nominal/LH-520/seed8101 @ 91 km/h
-S4,traction_machine_inverter_kW,36.6879,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
-S4,driveline_kW,19.3462,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
-S4,pack_kW,17.5735,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 105 km/h
-S4,brake_resistor_kW,314.506,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 105 km/h
-S4,friction_brake_kW,133.686,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
-S4,accessory_kW,6.6,simulated_worst_run,cold_minus10C/LH-520/seed8101 @ 52 km/h
-S4,total_rejected_kW,461.091,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 105 km/h
-S4,RATING[brake_resistor],340,simulated_worst_run,within_rating
-S4,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
-S4,RATING[genset_electrical],185.14,simulated_worst_run,within_rating
+# WS8 heat ledger, version r3. R3_DIRECTIVE item 7: WS6 consumes ONLY the r3 ledger. The r2 ledger is superseded, not amended: its `simulated_worst_run` member was exempt from the closure assertion and its largest row - S3's 396.87 kW exhaust - was a state one crankshaft cannot be in (finding B1). A consumer holding a ledger whose `ledger_version` is not 'r3' is holding numbers this workstream has withdrawn.
+ledger_version,candidate,component,value_kW,governing_case,governing_run_or_rating_status
+r3,S0,engine_coolant_kW,208.433,simulated_worst_run,nominal/LH-520/seed8104 @ 85 km/h
+r3,S0,engine_exhaust_kW,303.808,descent_6pct_pack_accepting,
+r3,S0,generator_rectifier_kW,0,cruise_95kmh_flat,
+r3,S0,traction_machine_inverter_kW,0,cruise_95kmh_flat,
+r3,S0,driveline_kW,29.2292,simulated_worst_run,payload_plus20/LH-520/seed8101 @ 44 km/h
+r3,S0,pack_kW,0,cruise_95kmh_flat,
+r3,S0,brake_resistor_kW,0,cruise_95kmh_flat,
+r3,S0,friction_brake_kW,312.838,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 65 km/h
+r3,S0,accessory_kW,7,simulated_worst_run,hot_alt_2000m_45C/LH-520/seed8107 @ 103 km/h
+r3,S0,total_rejected_kW,569.267,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 65 km/h
+r3,S0,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
+r3,S1,engine_coolant_kW,158.571,climb_6pct,
+r3,S1,engine_exhaust_kW,218.978,simulated_worst_run,nominal/LH-520/seed8101 @ 92 km/h
+r3,S1,generator_rectifier_kW,16.2016,climb_6pct,
+r3,S1,traction_machine_inverter_kW,31.8897,simulated_worst_run,grade_heavy/REG-165/seed8106 @ 30 km/h
+r3,S1,driveline_kW,17.4007,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 94 km/h
+r3,S1,pack_kW,7.75796,simulated_worst_run,grade_heavy/LH-520/seed8108 @ 87 km/h
+r3,S1,brake_resistor_kW,340,simulated_worst_run,nominal/LH-520/seed8101 @ 97 km/h
+r3,S1,friction_brake_kW,205.169,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 94 km/h
+r3,S1,accessory_kW,6.6,simulated_worst_run,cold_minus10C/LH-520/seed8101 @ 52 km/h
+r3,S1,total_rejected_kW,574.927,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 94 km/h
+r3,S1,RATING[brake_resistor],340,simulated_worst_run,within_rating
+r3,S1,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
+r3,S1,RATING[genset_electrical],289.469,climb_6pct,within_rating
+r3,S2,engine_coolant_kW,196.462,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 108 km/h
+r3,S2,engine_exhaust_kW,271.305,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 108 km/h
+r3,S2,generator_rectifier_kW,16.2016,climb_6pct,
+r3,S2,traction_machine_inverter_kW,31.8897,simulated_worst_run,grade_heavy/REG-165/seed8106 @ 30 km/h
+r3,S2,driveline_kW,25.1207,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 107 km/h
+r3,S2,pack_kW,10.1828,simulated_worst_run,grade_heavy/REG-165/seed8101 @ 53 km/h
+r3,S2,brake_resistor_kW,316.693,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 105 km/h
+r3,S2,friction_brake_kW,65.5534,simulated_worst_run,cold_minus10C/REG-165/seed8106 @ 97 km/h
+r3,S2,accessory_kW,7,simulated_worst_run,hot_alt_2000m_45C/LH-520/seed8101 @ 80 km/h
+r3,S2,total_rejected_kW,552.714,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 105 km/h
+r3,S2,RATING[brake_resistor],340,simulated_worst_run,within_rating
+r3,S2,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
+r3,S2,RATING[genset_electrical],289.469,climb_6pct,within_rating
+r3,S3,engine_coolant_kW,162.577,simulated_worst_run,payload_plus20/LH-520/seed8105 @ 108 km/h
+r3,S3,engine_exhaust_kW,224.511,simulated_worst_run,payload_plus20/LH-520/seed8105 @ 108 km/h
+r3,S3,generator_rectifier_kW,0,cruise_95kmh_flat,
+r3,S3,traction_machine_inverter_kW,24.3951,simulated_worst_run,grade_heavy/REG-165/seed8106 @ 5 km/h
+r3,S3,driveline_kW,15.5157,simulated_worst_run,nominal/LH-520/seed8107 @ 88 km/h
+r3,S3,pack_kW,6.60111,descent_6pct_pack_accepting,
+r3,S3,brake_resistor_kW,200,simulated_worst_run,nominal/LH-520/seed8103 @ 89 km/h
+r3,S3,friction_brake_kW,147.952,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 101 km/h
+r3,S3,accessory_kW,6.6,simulated_worst_run,cold_minus10C/LH-520/seed8101 @ 33 km/h
+r3,S3,total_rejected_kW,564.229,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 101 km/h
+r3,S3,RATING[brake_resistor],200,simulated_worst_run,within_rating
+r3,S3,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
+r3,S4,engine_coolant_kW,115.746,simulated_worst_run,nominal/LH-520/seed8101 @ 91 km/h
+r3,S4,engine_exhaust_kW,159.84,simulated_worst_run,nominal/LH-520/seed8101 @ 91 km/h
+r3,S4,generator_rectifier_kW,9.0015,simulated_worst_run,nominal/LH-520/seed8101 @ 91 km/h
+r3,S4,traction_machine_inverter_kW,36.6879,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
+r3,S4,driveline_kW,19.3462,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
+r3,S4,pack_kW,17.5735,simulated_worst_run,payload_plus20/LH-520/seed8102 @ 105 km/h
+r3,S4,brake_resistor_kW,314.506,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 105 km/h
+r3,S4,friction_brake_kW,133.686,simulated_worst_run,grade_heavy/REG-165/seed8105 @ 102 km/h
+r3,S4,accessory_kW,6.6,simulated_worst_run,cold_minus10C/LH-520/seed8101 @ 52 km/h
+r3,S4,total_rejected_kW,461.091,simulated_worst_run,cold_minus10C/LH-520/seed8102 @ 105 km/h
+r3,S4,RATING[brake_resistor],340,simulated_worst_run,within_rating
+r3,S4,RATING[foundation_brakes],60,simulated_worst_run,OVER RATING
+r3,S4,RATING[genset_electrical],185.14,simulated_worst_run,within_rating

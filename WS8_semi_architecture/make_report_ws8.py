@@ -19,7 +19,12 @@ from collections import OrderedDict
 HERE = os.path.dirname(os.path.abspath(__file__))
 R = json.load(open(os.path.join(HERE, "results_ws8.json")))
 OUT = os.path.join(HERE, "REPORT_WS8.md")
-OUT_CHANGELOG = os.path.join(HERE, "CHANGELOG_WS8_r2.md")
+# The changelog file is named from the ROUND ID in the data file, not
+# retyped: r2's generator hard-coded `CHANGELOG_WS8_r2.md`, and a round
+# that forgot to change it would have overwritten the previous round's
+# only surviving copy of its own numbers.
+ROUND = R["_meta"].get("errata_round_id", "r2")
+OUT_CHANGELOG = os.path.join(HERE, f"CHANGELOG_WS8_{ROUND}.md")
 
 CANDS = ["S0", "S1", "S2", "S3", "S4"]
 CORNERS = ["payload_plus20", "payload_minus20", "grade_heavy",
@@ -81,21 +86,29 @@ def header():
     meta = g("_meta")
     w("# REPORT WS8 - VEHICLE ONE: SEMI-SCALE ARCHITECTURE TRIAL")
     w("")
-    w("Workstream WS8, Vehicle One. Executes "
-      "`WS8_semi_architecture/ASSIGNMENT.md`, and the errata round "
-      "ordered by `WS8_semi_architecture/R2_DIRECTIVE.md` under R26, "
-      "against `BASELINE_v4.md`.")
+    w(f"Workstream WS8, Vehicle One. Executes "
+      f"`WS8_semi_architecture/ASSIGNMENT.md`, and the round ordered by "
+      f"`{meta['errata_round']}`, against `{meta['baseline_of_record']}`.")
     w("")
     iface = g("interface_ws8")
     vd = iface["verdicts"]
+    sup = iface.get("supersedes", {})
     w(f"**Numbers version {iface['numbers_version']}.** The verdicts are "
       f"`{vd['status']}` - R25 executed all four kills and the WHR drop "
       f"on the pre-committed criteria, and **this round does not reopen "
-      f"them**. What r2 does is make the NUMBERS of record correct: the "
-      f"two blocking findings and the eleven material and minor ones from "
-      f"`FINDINGS_WS8_r1.md` are closed here, every corner is "
+      f"them**. What {ROUND} does is make the NUMBERS of record correct: "
+      f"the blocking finding B1 and the eleven material and minor ones "
+      f"from `FINDINGS_WS8_r2.md` are closed here, every corner is "
       f"re-simulated, and section 15 states which direction each "
-      f"candidate moved and why.")
+      f"candidate moved and why - measured, not asserted (finding M1).")
+    w("")
+    if sup:
+        w(f"**The {sup.get('numbers_version')} numbers and the "
+          f"{sup.get('ledger_version')} heat ledger are SUPERSEDED, not "
+          f"amended.** {sup.get('why', '')} WS6 consumes only the "
+          f"`ledger_version: "
+          f"{g('heat_ledger/ledger_version')}` ledger "
+          f"(R3_DIRECTIVE item 7).")
     w("")
     w("**Nothing here is ratified.** The lead ratifies in a separate chat "
       "(CLAUDE.md rule 11). This report states what the physics gave and "
@@ -138,13 +151,37 @@ def summary():
         w(f"**No candidate advances.** {', '.join(killed)} all fail the "
           f"pre-committed criteria.")
     w("")
+    pk = g("interface_ws8/per_km_margin_paired/corners/nominal") or {}
+    wins = [c for c, b in pk.items() if b["wins_on_every_seed"]]
+    loses = [c for c, b in pk.items() if not b["wins_on_every_seed"]]
+    if loses:
+        losetxt = (
+            "; " + ", ".join(
+                f"**{c}** does not - it is behind S0 per kilometre on "
+                f"{pk[c]['n_seeds_below_zero']} of {pk[c]['n_seeds']} "
+                f"seeds (paired ensemble min "
+                f"{pct(pk[c]['ensemble']['min'])}, median "
+                f"{pct(pk[c]['ensemble']['median'])})"
+                for c in loses))
+    else:
+        losetxt = ""
     w("The trial is decided by a single structural fact, and it is worth "
       "stating before any table: **at fixed gross combination weight, "
-      "powertrain mass is payload.** Every candidate here is more "
-      "efficient per kilometre than the conventional truck. Every "
-      "candidate here is also heavier. The metric of record divides one "
-      "by the other, and that division is what the assignment ordered "
-      "precisely because it is where the argument actually lives.")
+      "powertrain mass is payload.** "
+      + (f"{', '.join(wins)} win per kilometre against the conventional "
+         f"truck on every seed{losetxt}. " if wins else
+         f"No candidate wins per kilometre on every seed{losetxt}. ")
+      + "Every candidate here is also heavier. The metric of record "
+        "divides one by the other, and that division is what the "
+        "assignment ordered precisely because it is where the argument "
+        "actually lives.")
+    w("")
+    w("*(r2 finding M2: the sentence above used to read \"Every candidate "
+      "here is more efficient per kilometre than the conventional "
+      "truck\" as a hard-coded literal, and it was false for S3. It is "
+      "generated from `interface_ws8.per_km_margin_paired` now, on the "
+      "PAIRED per-seed statistic - the same statistic as every margin in "
+      "this report.)*")
     w("")
     s0_fuel = g("task2_s0_calibration/fleet_L_per_100km/median")
     inband = g("task2_s0_calibration/in_corridor_all_seeds")
@@ -177,31 +214,42 @@ def summary():
             continue
         d_pay = (g("task3_trial/nominal/S0/spec/payload_kg")
                  - r["payload_kg"])
-        d_fuel = ((g("task3_trial/nominal/S0/fleet_ensemble/L_per_100km/"
-                     "median") - r["fleet_L_per_100km_median"])
-                  / g("task3_trial/nominal/S0/fleet_ensemble/L_per_100km/"
-                      "median") * 100.0)
-        w(f"- **{r['candidate']}** burns {d_fuel:.1f}% less fuel per "
-          f"kilometre than S0 and carries {d_pay:,.0f} kg less payload. "
-          f"Net on the metric of record: "
-          f"{pct(r['margin_vs_S0_pct_median'])} (median), "
-          f"{pct(r['margin_vs_S0_pct_min'])} (ensemble min). "
-          f"**{r['verdict']}**.")
+        km = pk.get(r["candidate"], {})
+        ke = km.get("ensemble", {})
+        w(f"- **{r['candidate']}**: per-kilometre energy against S0 "
+          f"{pct(ke.get('median'))} (PAIRED per-seed median, positive = "
+          f"less energy per km; envelope {pct(ke.get('min'))} to "
+          f"{pct(ke.get('max'))}"
+          + (f", below zero on {km['n_seeds_below_zero']} of "
+             f"{km['n_seeds']} seeds" if km.get("n_seeds_below_zero")
+             else "")
+          + f"), and it carries {d_pay:,.0f} kg less payload. "
+            f"Net on the metric of record: "
+            f"{pct(r['margin_vs_S0_pct_median'])} (median), "
+            f"{pct(r['margin_vs_S0_pct_min'])} (ensemble min). "
+            f"**{r['verdict']}**.")
     w("")
     fr = g("task5_s3_specific/fixed_ratio_grade_hold")
     if not fr["any_ratio_holds_6pct"]:
         cf = fr["ratio_ceiling_closed_form"]["value"]
         need = fr["ratio_needed_to_hold_6pct"]
+        rs = need.get("resolution_sensitivity") or {}
         w(f"S3 fails for a reason that has nothing to do with fuel, and it "
           f"is the most useful result in this report: **no fixed ratio "
           f"exists that lets a diesel axle both cruise at 105 km/h and "
           f"hold the 6% mountain grade at 36,300 kg.** The two "
-          f"requirements are not close, and in r2 the gap is stated in "
-          f"closed form rather than off a swept grid (finding F12): the "
-          f"cruise ceiling is **{cf:.2f}:1** and the grade needs "
+          f"requirements are not close: the cruise ceiling is "
+          f"**{cf:.2f}:1**, solved in closed form as an rpm limit at a "
+          f"road speed (finding F12), and the grade needs "
           f"**{need['ratio']:.2f}:1**, a factor of "
-          f"{need['ratio']/cf:.1f}. That is not a tuning problem, and it "
-          f"is the answer to the question S3 was posed to ask.")
+          f"{need['ratio']/cf:.1f}. The second of those is a SWEPT "
+          f"result and r3 says so (r2 minor m1) - ten times the grid "
+          f"resolution in both dimensions moves it by "
+          f"{abs(rs.get('d_ratio', 0.0)):.3f} and the engine speed at "
+          f"105 km/h by {abs(rs.get('d_rpm_at_105kmh', 0.0)):.0f} rpm, "
+          f"against a gap of {need['over_ceiling_by_rpm']:,.0f} rpm over "
+          f"the ceiling. That is not a tuning problem, and it is the "
+          f"answer to the question S3 was posed to ask.")
         w("")
     w("---")
     w("")
@@ -539,6 +587,43 @@ def task3():
     for c in CANDS:
         w(f"**{c}** - " + g(f"task3_trial/nominal/{c}/spec/policy"))
         w("")
+    # r2 minor m7: r2's prose called S2's disconnect "the G1(b) tax
+    # deleted by hardware" for a tax that, after the F5 fix, NOBODY pays.
+    # The measured charge and its bracket are rendered instead of the
+    # claim.
+    sp = g("interface_ws8/candidates")
+    if sp:
+        w("**What R22(d) actually costs here, measured** (r2 minor m7). "
+          "S2's traction disconnect and S3's e-axle disconnect are real "
+          "hardware and they are charged for in mass. What they delete is "
+          "a tax that this driver model barely levies on anyone: the "
+          "integrator is always either pulling or braking, so the "
+          "unloaded-and-geared test almost never fires. The charge is "
+          "reported with the COAST-PERMITTING BRACKET beside it - what "
+          "the same measured zero-torque loss would cost if it were "
+          "charged on every geared moving sample - so the near-zero is "
+          "read as a property of the driver model rather than as an "
+          "architectural win:")
+        w("")
+        w("| candidate | R22(d) charged kWh | coast-permitting bracket "
+          "kWh | disconnect fitted |")
+        w("|---|---|---|---|")
+        for c in CANDS:
+            b = sp.get(c, {}).get("spin_drag_R22d_kWh")
+            if not b:
+                continue
+            mr = g(f"task3_trial/nominal/{c}/spec/mass_rows_kg") or {}
+            disc = next((k for k in mr
+                         if "disconnect" in k), None)
+            w(f"| **{c}** | {b['charged']:.4f} | "
+              f"{b['coast_permitting_bracket']:.2f} | "
+              + (f"`{disc}` ({mr[disc]:.0f} kg)" if disc else "none") + " |")
+        w("")
+        w("The bracket is NOT in any margin. Read the two columns "
+          "together: the charged column is what the trial priced, and the "
+          "difference between the columns is what a coasting duty cycle "
+          "would have priced.")
+        w("")
     w("---")
     w("")
 
@@ -671,21 +756,32 @@ def one_factor():
     of = g("one_factor")
     if not of:
         return
-    w("### 4.4 What decides the S1-vs-S2 ordering, one factor at a time")
+    w("### 4.4 One factor at a time: what each correction was worth")
     w("")
     w("r1 put S2 ahead of S1 on the nominal median. The round-1 "
       "adjudication showed that about half of S2's advantage was the "
       "charge-sustaining **credit** (F4), and that S2's single engine was "
       "being run as a locked mechanical drive and a free-speed genset at "
       "the same time, with nothing capping their sum at the full-load "
-      "curve (F3). Both are corrected in r2, and both move S2 and not S1. "
-      "So the ordering is shown factor by factor rather than only at the "
-      "end.")
+      "curve (F3). r3 widens the table from the S1-vs-S2 pair to all "
+      "four candidates and adds rows for its own corrections - the "
+      "control rule B1, and the launch-fuel fix that moves THE RULER - "
+      "because r2 finding M1 is that the DIRECTION of every correction "
+      "must be measured here rather than written into a changelog cell "
+      "by hand. On a RE-SIMULATED row, a candidate the switch does not "
+      "reach comes back bit-identical, which is a proof rather than an "
+      "assertion; on the two exact RE-PRICING rows a zero means the "
+      "candidate carries none of that correction, and the direction "
+      "cells say which kind of zero they are.")
     w("")
     w(of["rule"])
     w("")
-    w("| row | S1 min / median / max | S2 min / median / max | ordering |")
-    w("|---|---|---|---|")
+    w("*Direction convention.* " + of["direction_convention"])
+    w("")
+    w("| row | "
+      + " | ".join(f"{c} min / median / max" for c in of["candidates"])
+      + " | ordering |")
+    w("|---|" + "---|" * (len(of["candidates"]) + 1))
     for label, r in of["rows"].items():
         cells = []
         for c in of["candidates"]:
@@ -698,6 +794,24 @@ def one_factor():
     for label, r in of["rows"].items():
         w(f"- **`{label}`** - {r['_note']}")
     w("")
+    cd_ = g("correction_directions") or {}
+    meas = [(k, v) for k, v in cd_.items()
+            if not k.startswith("_") and v.get("measurable")]
+    if meas:
+        w("**The direction of each correction, MEASURED** (r2 finding "
+          "M1). Every cell below is computed from the rows above by "
+          "`correction_directions()`; nothing in it is written by hand, "
+          "and `verify_ws8.py` asserts the rendered strings verbatim.")
+        w("")
+        w("| correction | direction | basis |")
+        w("|---|---|---|")
+        for k, v in meas:
+            w(f"| **{k}** | {v['direction']} | `{v['one_factor_row']}` |")
+        w("")
+        f6 = cd_.get("F6", {})
+        if f6.get("corner_caveat"):
+            w("*" + f6["corner_caveat"] + "*")
+            w("")
     if of["ordering_changes"]:
         w("**The ordering is not robust to these corrections.** It changes "
           "between the rows above, which is the whole reason this table "
@@ -729,18 +843,47 @@ def task5():
             "engine_derate_factor")
     if pk and der is not None:
         w(f"**Two things about this table changed in r2.** The **-10 C** "
-      f"corner now applies WS3's cold charge acceptance, which r1 named "
-      f"in the corner label, in the provenance list and in "
-      f"Recommendation 5 but never called: S1's buffer takes "
-      f"{pk.get('p_cont_chg_kW_at_corner', float('nan')):.1f} kW there "
-      f"against {pk.get('p_cont_chg_kW', float('nan')):.1f} kW warm, so "
-      f"descent regen goes to the resistor instead of the pack and every "
-      f"cold margin below is worse than r1's. And **2,000 m / +45 C** is "
-      f"a new corner, added under R28: it is the corner that became worst "
-      f"at Vehicle Zero, and it is the one that exercises WS4's ruled "
-      f"`derate_factor` (={der:.4f} here), which r1 listed as inherited "
-          f"and never called. Both corrections cut AGAINST the "
-          f"candidates.")
+          f"corner now applies WS3's cold charge acceptance, which r1 "
+          f"named in the corner label, in the provenance list and in "
+          f"Recommendation 5 but never called: S1's buffer takes "
+          f"{pk.get('p_cont_chg_kW_at_corner', float('nan')):.1f} kW "
+          f"there against "
+          f"{pk.get('p_cont_chg_kW', float('nan')):.1f} kW warm - both "
+          f"BUS-SIDE continuous ratings, and the envelope applies that "
+          f"bus-side number as a wheel-side force cap "
+          f"(`min(f_gen, chg*1e3/v)`), which is conservative and is "
+          f"r2 minor m6's point: the two boundaries are one number here "
+          f"and the name should say so. Descent regen goes to the "
+          f"resistor instead of the pack and every cold margin below is "
+          f"worse than r1's. And **2,000 m / +45 C** is a new corner, "
+          f"added under R28: it is the one that exercises WS4's ruled "
+          f"`derate_factor` (={der:.4f} here), which r1 listed as "
+          f"inherited and never called.")
+        w("")
+        ds = g("corner_derate_scope/R28_corner") or {}
+        if ds:
+            w("**What the R28 corner derates, measured** (r2 finding M3). "
+              + ds["statement"])
+            w("")
+            w("| moves at this corner | does not move |")
+            w("|---|---|")
+            w("| " + ", ".join(f"`{x}`" for x in ds["derates"])
+              + " | " + (", ".join(f"`{x}`" for x in ds["does_not_derate"])
+                         or "**no electric-side quantity moves at all**")
+              + " |")
+            w("")
+            w("*Direction of error.* " + ds["direction_of_error"])
+            w("")
+        cdir = (g("correction_directions/F2/direction"),
+                g("correction_directions/F11/direction"))
+        w(f"The DIRECTION of each of those two corrections is not "
+          f"separately measured - neither has a one-factor row, because "
+          f"reverting either changes what the corner IS rather than how a "
+          f"run is priced. r2's changelog asserted 'Both corrections cut "
+          f"AGAINST the candidates' anyway, and the R28 half of that is "
+          f"contradicted by the table below, in which S1, S2 and S4 all "
+          f"GAIN at that corner relative to nominal. The claim is "
+          f"withdrawn rather than restated (r2 finding M1).")
         w("")
     w("| candidate | nominal | " + " | ".join(CORNER_LABEL[c]
                                               for c in CORNERS) + " |")
@@ -797,9 +940,30 @@ def task5():
           f"105 km/h - {need['over_ceiling_by_rpm']:,.0f} rpm over the "
           f"{need['rpm_ceiling']:.0f} rpm ceiling. The ratio the grade "
           f"demands and the ratio the cruise permits differ by a factor "
-          f"of about {need['ratio']/cf['value']:.1f}. No swept grid is "
-          f"doing any work in that conclusion.")
+          f"of about {need['ratio']/cf['value']:.1f}.")
         w("")
+        rs = need.get("resolution_sensitivity")
+        if rs:
+            w(f"**What is closed form here, and what is not** (r2 minor "
+              f"m1). The CEILING is closed form: it is an rpm limit at a "
+              f"road speed and it is solved as one. The ratio the grade "
+              f"DEMANDS is not - it is the first hit on a "
+              f"{rs['coarse']['ratio_step']} ratio grid whose hold test "
+              f"scans road speed on a {rs['coarse']['speed_step_ms']} m/s "
+              f"grid - and r2's report said 'No swept grid is doing any "
+              f"work in that conclusion', which was the wrong claim to "
+              f"make about a swept result. So the sweep is priced instead "
+              f"of dismissed: at ten times the resolution in BOTH "
+              f"dimensions ({rs['fine']['ratio_step']} and "
+              f"{rs['fine']['speed_step_ms']} m/s) the ratio moves by "
+              f"{abs(rs['d_ratio']):.3f} and the engine speed at "
+              f"105 km/h by {abs(rs['d_rpm_at_105kmh']):.0f} rpm, against "
+              f"a gap of {need['over_ceiling_by_rpm']:,.0f} rpm over the "
+              f"ceiling. The conclusion is unchanged: "
+              f"`conclusion_unchanged: "
+              f"{str(rs['conclusion_unchanged']).lower()}`. The grid "
+              f"decides a decimal place; it does not decide the answer.")
+            w("")
     if not fr["any_ratio_holds_6pct"]:
         ex = next(r for r in fr["sweep"]
                   if abs(r["ratio_A"] - fr["max_ratio_without_overspeed"])
@@ -897,12 +1061,59 @@ def unserved():
     w("")
     over = u.get("cases_over_1kWh") or {}
     if over:
-        w("Cases above 1 kWh:")
+        w(f"All **{len(over)}** cases above 1 kWh (r2 minor m2: this "
+          f"table was silently truncated to the top 20, so the cases "
+          f"between the twentieth and the smallest were absent and the "
+          f"table read as though the candidates in that range had almost "
+          f"no unserved energy):")
         w("")
         w("| case | unserved kWh |")
         w("|---|---|")
-        for k, v in sorted(over.items(), key=lambda kv: -kv[1])[:20]:
+        for k, v in sorted(over.items(), key=lambda kv: -kv[1]):
             w(f"| `{k}` | {v:.2f} |")
+        w("")
+    ov = g("interface_ws8/retard_overcommitment")
+    if ov:
+        w("### 7.1 The same question on the braking side")
+        w("")
+        w(ov["meaning"])
+        w("")
+        w(f"Worst case **{ov['value_kW']:.1f} kW** sustained "
+          f"(governing case: `{ov['governing_case']}`, "
+          f"{ov['energy_kWh_at_governing_case']:.2f} kWh on that run), "
+          f"an explicit max over the enumerated (candidate, corner, "
+          f"cycle, seed) set per R14. {ov['never_absorbed'][0].upper()}"
+          f"{ov['never_absorbed'][1:]}.")
+        w("")
+        per = {}
+        for k, v in ov["cases_kW"].items():
+            c = k.split("/")[0]
+            e = per.setdefault(c, [0, 0.0])
+            e[0] += 1
+            e[1] = max(e[1], v)
+        w("| candidate | runs with any overcommitment | worst kW | "
+          "resistor rating kW |")
+        w("|---|---|---|---|")
+        for c in CANDS:
+            if c not in per:
+                continue
+            rating = g(f"task3_trial/nominal/{c}/spec/"
+                       f"brake_resistor_rating_kW")
+            w(f"| **{c}** | {per[c][0]} | {per[c][1]:.1f} | "
+              f"{('%.0f' % rating) if rating else '-'} |")
+        w("")
+        rows_all = sorted(ov["cases_kW"].items(), key=lambda kv: -kv[1])
+        n_show = 15
+        w(f"The {n_show} largest of **{len(rows_all)}** affected runs "
+          f"(labelled truncation, r2 minor m2 - the full set is "
+          f"`interface_ws8.retard_overcommitment.cases_kW`, and the "
+          f"smallest shown here is {rows_all[n_show-1][1]:.1f} kW against "
+          f"{rows_all[-1][1]:.1f} kW at the bottom of the list):")
+        w("")
+        w("| case | overcommitted kW |")
+        w("|---|---|")
+        for k, v in rows_all[:n_show]:
+            w(f"| `{k}` | {v:.1f} |")
         w("")
     w("---")
     w("")
@@ -920,15 +1131,27 @@ def corroboration():
       "are EXTERNAL and search-summary level, provisional per E13 "
       "precedent; see `PRIOR_ART_WS8.md` for their evidence limits.")
     w("")
+    _pk = g("interface_ws8/per_km_margin_paired/corners/nominal") or {}
+    _in = [c for c, b in _pk.items()
+           if 5.0 <= b["ensemble"]["median"] <= 10.0]
+    _out = [f"{c} {pct(b['ensemble']['median'])}" for c, b in _pk.items()
+            if not (5.0 <= b["ensemble"]["median"] <= 10.0)]
     w("**On the size of the hybrid prize.** Volvo built and ran a "
       "long-haul hybrid concept tractor and reported the hybrid path "
       "alone at **5-10% fuel saving**, from shutting the engine off for "
       "up to 30% of driving time, with topography-optimal control. The "
       "widely-quoted 30% for that vehicle is the whole truck including "
-      "aerodynamics. WS8's electrified candidates land on fuel per "
-      "kilometre inside that 5-10% band - which is the reassuring "
-      "outcome, not the disappointing one: a model that had produced 25% "
-      "would have been wrong.")
+      "aerodynamics. "
+      + (f"{', '.join(_in)} land inside that 5-10% band on the paired "
+         f"per-seed per-km margin" if _in else
+         "No candidate lands inside that 5-10% band on the paired "
+         "per-seed per-km margin")
+      + (f"; {', '.join(_out)} do not. " if _out else ". ")
+      + "For the candidates that do, that is the reassuring outcome, not "
+        "the disappointing one: a model that had produced 25% would have "
+        "been wrong. (r2 finding M2: this sentence used to assert the "
+        "whole set was inside the band, on a statistic the report did "
+        "not use.)")
     w("")
     w("**On deleting the gearbox.** Across the products and programmes "
       "the scan found, the number of on-highway Class 8 vehicles in which "
@@ -1021,10 +1244,18 @@ def recommendation():
       "mountain grade at any ratio that also permits highway cruise, and "
       "an e-axle fault leaves the combination immobile from rest. Those "
       "are structural, not parametric.")
+    _pk3 = g("interface_ws8/per_km_margin_paired/corners/nominal") or {}
+    _w3 = [c for c, b in _pk3.items() if b["wins_on_every_seed"]]
+    _l3 = [c for c, b in _pk3.items() if not b["wins_on_every_seed"]]
     w("3. **The binding constraint on this vehicle is mass, not "
-      "efficiency.** Every electrified candidate wins on fuel per "
-      "kilometre and gives it back on payload. Any future work that does "
-      "not attack the powertrain mass ledger is not attacking the problem.")
+      "efficiency.** "
+      + (f"{', '.join(_w3)} win per kilometre on every seed and give it "
+         f"back on payload"
+         + (f"; {', '.join(_l3)} " + ("does" if len(_l3) == 1 else "do")
+            + " not even do that" if _l3 else "")
+         if _w3 else "No candidate wins per kilometre on every seed")
+      + ". Any future work that does not attack the powertrain mass "
+        "ledger is not attacking the problem.")
     # r1 finding F13's class of defect: this paragraph carried
     # hand-written "about fourteen points ... roughly +10% ... about
     # -4%", and r2's cold corner moved all three. Formatted from the
@@ -1171,7 +1402,8 @@ def heat():
     hl = g("heat_ledger")
     w("## 12. Heat ledger for WS6 (rule 7)")
     w("")
-    w("**Rebuilt in r2.** Round 1's blocking finding F1 was three defects "
+    w("**Rebuilt in r2, and closed in r3.** Round 1's blocking finding "
+      "F1 was three defects "
       "in one export: the governing case sat OUTSIDE the enumerated case "
       "set (the ledger priced the 6% descent with the pack accepting its "
       "full charge power throughout, when the pack fills in about four "
@@ -1181,6 +1413,10 @@ def heat():
       "different retarder architectures; and foundation-brake heat had no "
       "row at all, so the S0 descent case did not close. All three are "
       "closed here.")
+    w("")
+    w(f"**This ledger is `ledger_version: {hl['ledger_version']}`, and it "
+      f"supersedes `{hl['supersedes_ledger_version']}`.** "
+      + hl["consumer_rule"])
     w("")
     w(hl["convention"] + ".")
     w("")
@@ -1224,13 +1460,90 @@ def heat():
           f"{row['friction_brake_kW']:.0f} | "
           f"{('%.0f' % rating) if rating else '-'} |")
     w("")
-    w("**Every case closes and every component stays inside the rating of "
-      "the hardware whose mass was charged**: "
-      f"`all_cases_close_and_within_rating = "
-      f"{hl['all_cases_close_and_within_rating']}`. In r1 S3 exported "
-      "210.71 kW of resistor heat against the 200 kW resistor it had been "
-      "charged 71.8 kg for (`FINDINGS_WS8_r1.md`, F1b); that check now "
-      "exists and runs.")
+    w(f"**`all_cases_close_and_within_rating = "
+      f"{hl['all_cases_close_and_within_rating']}`, and here is exactly "
+      f"what that tests** (r2 minor m5: r2's bolded sentence read "
+      f"'Every case closes and every component stays inside the rating', "
+      f"which is stronger than what the flag examined - the simulated "
+      f"member carried no residual and was skipped, and that exemption is "
+      f"what finding B1 came through):")
+    w("")
+    w(hl.get("what_all_cases_close_and_within_rating_tests", ""))
+    w("")
+    ex = hl.get("overrun_exclusivity") or {}
+    if ex:
+        w(f"**The crankshaft assertion (finding B1), per run.** "
+          f"{ex['rule']} `all_hold = {ex['all_hold']}`.")
+        w("")
+        w("| candidate | runs examined | samples with brake AND shaft "
+          "power | fuel while the vehicle brakes (max over runs) |")
+        w("|---|---|---|---|")
+        for c in CANDS:
+            e = ex["candidates"].get(c)
+            if not e:
+                continue
+            w(f"| **{c}** | {e['runs_examined']} | "
+              f"{e['samples_brake_and_shaft']} | "
+              f"{e['fuel_fraction_while_braking_max']*100:.2f}% |")
+        w("")
+        w(ex["note"][0].upper() + ex["note"][1:])
+        w("")
+    cl = g("heat_ledger/candidates/S3/closure") or {}
+    simrow = (cl.get("cases") or {}).get("simulated_worst_run")
+    if simrow:
+        w(f"**The simulated member is no longer exempt from the closure** "
+          f"(R3_DIRECTIVE item 1). Every candidate's `simulated_worst_run` "
+          f"carries the WORST 60-second energy residual any run of that "
+          f"candidate produced, against a tolerance of "
+          f"{cl['tolerance']*100:.0f}% of the accounted input at that "
+          f"window:")
+        w("")
+        w("| candidate | worst residual kW | relative | closes | "
+          "governing run |")
+        w("|---|---|---|---|---|")
+        for c in CANDS:
+            row = ((g(f"heat_ledger/candidates/{c}/closure/cases") or {})
+                   .get("simulated_worst_run"))
+            if not row:
+                continue
+            w(f"| **{c}** | {row['residual_kW']:+.3f} | "
+              f"{row['relative']*100:.4f}% | {row['closes']} | "
+              f"`{row.get('governing_run') or '-'}` |")
+        w("")
+    _res = {c: g(f"heat_ledger/candidates/{c}/worst_case/"
+                 f"brake_resistor_kW/value") for c in CANDS}
+    _rat = {c: g(f"task3_trial/nominal/{c}/spec/brake_resistor_rating_kW")
+            for c in CANDS}
+    _sat = [c for c in CANDS
+            if _rat.get(c) and _res.get(c) is not None
+            and _res[c] >= _rat[c] * 0.999]
+    w("In r1 S3 exported 210.71 kW of resistor heat against the 200 kW "
+      "resistor it had been charged 71.8 kg for "
+      "(`FINDINGS_WS8_r1.md`, F1b); that check now exists and runs, and "
+      "the brake resistor is still the ONLY hard row.")
+    w("")
+    w("**r2 minor m5(b) said that row could not fail by construction, "
+      "and r3 found the path that reaches it.** m5(b)'s argument was "
+      "that `_retard_channels` caps resistor force at the rating divided "
+      "by road speed AT THE WHEEL, so the bus-side figure is at most the "
+      "wheel-side rating times the generating efficiency - and it added "
+      "that the check would bind the moment a case appeared that did not "
+      "go through that cap. Such a case exists: regen the FULL pack "
+      "cannot accept is sent to the resistor by `series_dispatch` and by "
+      "S3's SOC loop, outside the retard-channel split entirely. "
+      + (f"Booked where the code says it goes, "
+         f"{', '.join(_sat)} now sit AT their ratings ("
+         + ", ".join("%s %.0f of %.0f kW" % (c, _res[c], _rat[c])
+                     for c in _sat) + ")"
+         if _sat else "Booked where the code says it goes, no candidate "
+         "reaches its rating")
+      + ". The row is capped at the rating in "
+        "`resistor_and_overcommitment`, because a figure above it would "
+        "not be a cooling load; what would have exceeded it is exported "
+        "as `retard_overcommitment` in section 7.1 and escalated as "
+        "ESC-WS8-10. The honest statement is therefore not that the "
+        "check passes - it is that the resistors SATURATE, and that the "
+        "surplus is a capability shortfall rather than heat.")
     w("")
     adv = hl.get("advisory_exceedances") or {}
     if adv:
@@ -1257,8 +1570,11 @@ def heat():
       "up the difference until the truck slows. A pack-saturated "
       "governor would have every electrified candidate descending "
       "slower. That is a WS9 requirement rather than a WS8 correction - "
-      "it changes trip time and therefore the metric - and it is flagged "
-      "here rather than changed under an errata order.")
+      "it changes trip time and therefore the metric - and r3 ESCALATES "
+      "it as **ESC-WS8-10** rather than changing it under an order whose "
+      "scope is declared exhaustive. Section 7.1 puts a number on it: "
+      "the retarding power the runs commanded that no sink could "
+      "absorb.")
     w("")
     w("The descent case is the one that matters to WS6: a series "
       "candidate holding the 6% grade puts several hundred kilowatts into "
@@ -1309,13 +1625,13 @@ def provenance():
                     p_cont_chg_kW=float("nan"))
     w("- **WS3** cell definitions, pack overhead model "
       "(1.55 x cell + 35 kg) and cold charge-acceptance figures - the "
-      f"last of these APPLIED in r2 at the -10 C corner "
+      f"last of these APPLIED since r2 at the -10 C corner "
       f"({pk.get('p_cont_chg_kW_at_corner', float('nan')):.1f} kW against "
       f"{pk.get('p_cont_chg_kW', float('nan')):.1f} kW warm), where in r1 "
       "it was listed here and never called (finding F2)")
     w("- **WS4** `WillansEngine`, `PMGenerator`, `derate_factor` and the "
       "R12 chain conventions; `WS2TractionChain` as the ruled map loader. "
-      f"`derate_factor` is APPLIED in r2 at the added 2,000 m / +45 C "
+      f"`derate_factor` is APPLIED since r2 at the added 2,000 m / +45 C "
       f"corner (R28), where it returns {der:.4f} and shrinks every "
       "engine's full-load curve and therefore every R18 continuous "
       "rating; in r1 it was imported, re-exported and never called "
@@ -1377,83 +1693,123 @@ R1_MARGINS = {
     "S3": dict(nom_min=-6.22, nom_med=-3.83, worst=-11.17),
     "S4": dict(nom_min=-3.67, nom_med=-0.95, worst=-8.26),
 }
-"""r1's numbers of record, quoted from R25 in BASELINE_v4 so the movement
-table below is against the RATIFIED record rather than against a file
-this round overwrote.
+R2_MARGINS = {
+    # BASELINE_v5 R35 and CHANGELOG_WS8_r2.md, quoted: the r2 numbers of
+    # record, nominal ensemble-min / median and the r2 worst corner (all
+    # cold_minus10C).
+    "S1": dict(nom_min=-0.69, nom_med=+0.73, worst=-12.87),
+    "S2": dict(nom_min=+0.48, nom_med=+1.80, worst=-9.62),
+    "S3": dict(nom_min=-7.65, nom_med=-5.26, worst=-21.98),
+    "S4": dict(nom_min=-3.84, nom_med=-1.06, worst=-17.21),
+}
+"""The PREVIOUS rounds' numbers of record, quoted from the ratified
+baselines (R25 in BASELINE_v4, R35 in BASELINE_v5) and from
+`CHANGELOG_WS8_r2.md`, so the movement table below is against the RECORD
+rather than against a file this round overwrote.
 
-These are the only hand-entered NUMBERS in this report. Every other
-figure is formatted out of `results_ws8.json`. Where the prose quotes a
-round-1 figure - the 210.71 kW resistor export, S3's 71.8 kg resistor -
-it is quoting `FINDINGS_WS8_r1.md`, which is sha-pinned in the interface
-block, and it is labelled as a quotation at the point of use. No result
-in this report depends on any of them."""
+These are the only hand-entered NUMBERS in this report, and they are
+citations of superseded rounds rather than results. Every other figure is
+formatted out of `results_ws8.json`. Where the prose quotes a round-1 or
+round-2 figure - the 210.71 kW resistor export, S3's 71.8 kg resistor,
+the 396.87 kW exhaust row - it is quoting `FINDINGS_WS8_r1.md` or
+`FINDINGS_WS8_r2.md`, both sha-pinned in the interface block, and it is
+labelled as a quotation at the point of use. No result in this report
+depends on any of them."""
 
 
 def changelog():
     """Section 15 of the report AND, byte-for-byte, the standalone
-    CHANGELOG_WS8_r2.md. One generator, one set of numbers: the
+    CHANGELOG_WS8_<round>.md. One generator, one set of numbers: the
     changelog cannot drift from the report, and neither can drift from
     `results_ws8.json` (rule 2)."""
     start = len(L)
-    w("## 15. r2 changelog - what moved, and which way")
+    w(f"## 15. {ROUND} changelog - what moved, and which way")
     w("")
     iface = g("interface_ws8")
     vs = g("verdict_stability")
-    w("This round executed `R2_DIRECTIVE.md` against "
-      "`FINDINGS_WS8_r1.md`. The verdicts were **not** reopened: R25 "
-      "executed all four kills and the WHR drop on the pre-committed "
-      "criteria, and the directive's instruction was to make the numbers "
-      "of record correct and to STOP and report if any verdict flipped. "
-      "None did.")
+    cd_ = g("correction_directions") or {}
+    w(f"This round executed `R3_DIRECTIVE.md` against "
+      f"`FINDINGS_WS8_r2.md`. The verdicts were **not** reopened: R25 "
+      f"executed all four kills and the WHR drop on the pre-committed "
+      f"criteria, and the directive's instruction was to make the numbers "
+      f"of record correct, to STOP and report if any verdict flipped, and "
+      f"to STOP if S3's nominal ensemble-min crossed the +3% bar. "
+      f"Neither happened.")
     w("")
     w("### 15.1 Which direction each candidate moved")
     w("")
-    w("Against r1's numbers of record as quoted in R25 (BASELINE_v4):")
+    w("Against r2's numbers of record as quoted in R35 (BASELINE_v5) and "
+      "`CHANGELOG_WS8_r2.md`:")
     w("")
-    w("| candidate | nominal min, r1 -> r2 | nominal median, r1 -> r2 | "
-      "worst corner, r1 -> r2 | direction | verdict |")
+    w("| candidate | nominal min, r2 -> r3 | nominal median, r2 -> r3 | "
+      "worst corner, r2 -> r3 | direction | verdict |")
     w("|---|---|---|---|---|---|")
     for c in CANDS[1:]:
-        r1 = R1_MARGINS[c]
+        r2 = R2_MARGINS[c]
         m = g(f"task3_margins/nominal/{c}/ensemble")
         ak = g(f"advance_kill/candidates/{c}")
-        d_med = m["median"] - r1["nom_med"]
+        d_med = m["median"] - r2["nom_med"]
         wc = ak["worst_corner_margin_pct_min"]
-        arrow = "WORSE" if d_med < 0 else "BETTER"
+        arrow = ("WORSE" if d_med < -0.005
+                 else ("BETTER" if d_med > 0.005 else "UNMOVED"))
         wtxt = ("no corners run" if wc is None else
-                f"{pct(r1['worst'])} -> {pct(wc)} "
-                f"({wc - r1['worst']:+.2f} pp, now at "
+                f"{pct(r2['worst'])} -> {pct(wc)} "
+                f"({wc - r2['worst']:+.2f} pp, at "
                 f"`{ak['worst_corner']}`)")
-        w(f"| **{c}** | {pct(r1['nom_min'])} -> {pct(m['min'])} | "
-          f"{pct(r1['nom_med'])} -> {pct(m['median'])} "
+        w(f"| **{c}** | {pct(r2['nom_min'])} -> {pct(m['min'])} | "
+          f"{pct(r2['nom_med'])} -> {pct(m['median'])} "
           f"({d_med:+.2f} pp) | {wtxt} | **{arrow}** on the nominal "
           f"median | **{ak['verdict']}** |")
     w("")
-    w("The worst-corner column is not like-for-like and should not be "
-      "read as one: r1's worst corner was -10 C for every candidate, and "
-      "r2 both made that corner harder (F2, the cold charge acceptance "
-      "that was never applied) and added a corner that did not exist "
-      "(R28's 2,000 m / +45 C). Both changes can only move a worst corner "
-      "down.")
+    b1 = cd_.get("B1", {})
+    ttr = g("s3_ttr_path_status") or {}
+    w(f"**Almost all of that movement is one correction, and it is "
+      f"measured rather than inferred.** The one-factor row "
+      f"`B1_reverted_brake_and_fuel` in section 4.4 reverts R3's control "
+      f"rule and nothing else: {b1.get('direction', 'not measured')}. "
+      f"Everything r3 changed besides that rule is an ACCOUNTING "
+      f"correction - the run closure and the ledger rows it found. Only "
+      f"one of those moves a margin at all, because it moves THE RULER, "
+      f"and it too is measured rather than called small: "
+      f"{g('correction_directions/R3_S0_launch_fuel/direction', 'not measured')}. "
+      f"Every other r3 correction is a heat row, and no margin reads the "
+      f"heat ledger - which is why S1 and S4 come back at r2's numbers to "
+      f"the precision this table is quoted to.")
+    w("")
+    if ttr:
+        w(f"**A consequence worth stating in the changelog rather than "
+          f"only in the escalations.** With the rule applied, S3 takes "
+          f"{ttr['e_ttr_charge_bus_kWh_total']:.3f} kWh of "
+          f"through-the-road charge over the whole trial, on "
+          f"{ttr['runs_with_any_ttr']} of {ttr['runs_examined']} runs, and "
+          f"the 0.72-of-capacity BSFC policy withheld "
+          f"{ttr['e_ttr_blocked_by_load_policy_kWh_total']:.3f} kWh of it. "
+          f"Half of S3's declared energy policy is inert, for a reason "
+          f"that is a modelling artefact rather than a control choice - "
+          f"raised as ESC-WS8-8 and not self-resolved.")
+        w("")
+    w("The worst-corner column IS like-for-like this round: r2 and r3 "
+      "run the same six corners on the same seeds. r2's own table was "
+      "not, and said so.")
     w("")
     hot = {c: g(f"task3_margins/hot_alt_2000m_45C/{c}/ensemble/min")
            for c in CANDS[1:]}
     cold = {c: g(f"task3_margins/cold_minus10C/{c}/ensemble/min")
             for c in CANDS[1:]}
+    ds = g("corner_derate_scope/R28_corner") or {}
     if all(v is not None for v in hot.values()):
-        w(f"**The R28 corner did not become the worst one, and that is "
-          f"itself a result.** R28 named 2,000 m / +45 C on the Vehicle "
-          f"Zero precedent that the altitude/hot corner became worst "
-          f"there. At Vehicle One it does not: the thin air at 2,000 m "
-          f"takes about 27% off the aerodynamic bill, which is the "
-          f"dominant term on a line-haul corridor, and that outweighs "
-          f"the {(1 - g('task3_trial/hot_alt_2000m_45C/S0/spec/corner/engine_derate_factor')) * 100:.1f}% "
-          f"engine derate it also imposes.")
-        w("")
         nom = {c: g(f"task3_margins/nominal/{c}/ensemble/min")
                for c in CANDS[1:]}
         better = [c for c in hot if hot[c] > nom[c]]
         worse = [c for c in hot if hot[c] <= nom[c]]
+        w(f"**The R28 corner is still not the worst one, and r3 scopes "
+          f"what that means** (r2 finding M3). At Vehicle One the thin "
+          f"air at 2,000 m takes about 27% off the aerodynamic bill, "
+          f"which is the dominant term on a line-haul corridor, and that "
+          f"outweighs the "
+          f"{(1 - g('task3_trial/hot_alt_2000m_45C/S0/spec/corner/engine_derate_factor')) * 100:.1f}% "
+          f"engine derate it also imposes.")
+        w("")
         w("| candidate | nominal min | 2,000 m / +45 C min | -10 C min |")
         w("|---|---|---|---|")
         for c in hot:
@@ -1464,105 +1820,231 @@ def changelog():
           f"relative to nominal"
           + (f"; {', '.join(worse)} "
              f"{'lose' if len(worse) != 1 else 'loses'} there, because "
-             f"the derate falls "
-             f"on a mechanical path that has no genset behind it and "
-             f"pushes the shortfall onto the pack" if worse else "")
+             f"the derate falls on a mechanical path that has no genset "
+             f"behind it and pushes the shortfall onto the pack"
+             if worse else "")
           + ". Either way the R28 corner is nowhere near the -10 C "
             "column. **The cold wall is Vehicle One's binding corner, "
-            "and nothing in this round moved that** - it deepened it. "
-            "R30 already reads it that way.")
+            "and nothing in this round moved that.** R30 already reads it "
+            "that way.")
         w("")
+        if ds:
+            w("**Scope of that statement, measured** (finding M3). "
+              + ds["statement"])
+            w("")
+            w("*Direction of error.* " + ds["direction_of_error"])
+            w("")
     w("### 15.2 The findings, and what each one did")
     w("")
-    w("| finding | severity | what r2 did | direction |")
+    w("Every cell in the DIRECTION column below is either generated by "
+      "`correction_directions()` from the one-factor table in section "
+      "4.4, or says explicitly that the direction is not separately "
+      "measured and why. r2's version of this table was thirteen Python "
+      "literals the verifier structurally could not reach, and "
+      "`FINDINGS_WS8_r2.md` M1 names three of them as contradicted by "
+      "that round's own numbers. That is finding M1, and this is its "
+      "fix.")
+    w("")
+
+    def _dir(key, fallback):
+        e = cd_.get(key)
+        if not e:
+            return fallback
+        if e.get("measurable"):
+            base = e["direction"]
+            if key == "F6" and e.get("corner_caveat"):
+                base += " - " + e["corner_caveat"]
+            return base + f" (measured: `{e['one_factor_row']}`)"
+        return e["direction"] + " - " + e.get("why_not", "")
+
+    w("| finding | severity | what r3 did | direction |")
     w("|---|---|---|---|")
-    for row in [
-        ("F1", "blocking",
-         "heat ledger rebuilt: a pack-saturated descent case and the "
-         "simulated worst run added to the enumerated set, the retard "
-         "channel split so compression-brake heat is booked to the "
-         "exhaust and resistor heat to the resistor, foundation-brake and "
-         "accessory rows added, every case closed against the energy that "
-         "entered it, and every component asserted against the rating of "
-         "the hardware whose mass was charged",
-         "no fuel number moves; the exported sink case rises "
-         "substantially and the attribution changes for S2 and S3"),
-        ("F2", "blocking",
-         "`Pack8.p_cont_chg_kw_at()` / `COLD_CHG_FACTOR` wired into every "
-         "regen envelope, every dispatch charge limit and S3's own SOC "
-         "loop, at the corner's ambient",
-         "AGAINST every electrified candidate, at the cold corner only"),
-        ("F3", "material",
-         "S2's single engine given one crankshaft: traction torque first, "
-         "then accessories, then the generator on what is left, priced at "
-         "the road-imposed speed; accessory duty the crank cannot carry "
-         "moves to the bus",
-         "AGAINST S2"),
-        ("F4", "material",
-         "the symmetric charge-sustaining convention declared, the "
-         "correction share exported signed with min AND max, and the "
-         "credit-free margin reported alongside (section 4.4)",
-         "disclosure only - no number of record moves"),
-        ("F5", "material",
-         "R22(d) charged on one rule for every candidate - geared AND "
-         "unloaded - which removes S3's double count, and the "
-         "coast-permitting bracket reported so the near-zero charge is "
-         "not mistaken for a result",
-         "FOR S3 (it was paying twice); negligible elsewhere"),
-        ("F6", "material",
-         "unserved and stored energy priced at the candidate's own "
-         "duty-averaged fuel-to-bus efficiency over the run being "
-         "corrected, not at the locus maximum (rule 5)",
-         "AGAINST S1, S3 and S4; slightly FOR S2, whose correction is a "
-         "credit"),
-        ("F7", "material",
-         "the S0 grade-zeroed cross-check restated as an 8-seed envelope "
-         "against the public band, with three enumerated combination "
-         "masses and the reference payload stated",
-         "weakens the evidence ESC-WS8-7 rests on; no margin moves"),
-        ("F8", "minor",
-         "S4's headline specification rendered from the rating the model "
-         "built, and class titles and policies added to the verify set",
+    rows = [
+        ("B1", "blocking",
+         "THE ONE RULE. An engine geared to the road is in OVERRUN on "
+         "every sample where the vehicle is moving and commands no "
+         "tractive force: it burns no fuel, makes no positive shaft "
+         "power, and its compression brake is available only there. S0 "
+         "already had this cut-off inline; it is stated once in "
+         "`overrun_mask` and applied to every candidate. S3's "
+         "through-the-road charging is GATED ON THE VEHICLE NOT BRAKING "
+         "(and, a fortiori, on the engine not being in overrun); the "
+         "axle-A load threshold that used to be the only thing holding "
+         "it back is no longer the gate and survives only as the BSFC "
+         "policy it always was - and it is MEASURED to withhold "
+         f"{(g('s3_ttr_path_status/e_ttr_blocked_by_load_policy_kWh_total') or 0.0):.3f}"
+         " kWh over the whole trial, so it decides nothing either way. "
+         "S2's genset ceiling is forced to zero on any sample where its "
+         "lockup coupling is drawing the compression brake. The "
+         "retarding ENVELOPE is untouched, so no achieved speed, trip "
+         "time or descent case moves. The per-run assertion is hard and "
+         "runs on every candidate: `heat_ledger.overrun_exclusivity`",
+         _dir("B1", "not measured")),
+        ("M1", "material",
+         "every hand-written direction string deleted; this column and "
+         "section 4.4's direction table are generated by "
+         "`correction_directions()` from the one-factor rows, and the "
+         "one-factor set is widened from the S1/S2 pair to all four "
+         "candidates so that a correction which does not reach a "
+         "candidate returns a bit-identical row instead of an assertion",
+         "record integrity - it moves no number; "
+         "`FINDINGS_WS8_r2.md` M1 names three r2 direction cells that "
+         "this file's own numbers contradicted, and the measurement "
+         "above replaces all thirteen"),
+        ("M2", "material",
+         "the per-km bullets, and every other per-km claim in the "
+         "report, computed on the PAIRED per-seed statistic and "
+         "labelled; the 'every candidate is more efficient per "
+         "kilometre' sentence generated from data; the ratio of medians "
+         "exported beside it for disclosure "
+         "(`interface_ws8.per_km_margin_paired`)",
+         "record integrity - no margin moves; `FINDINGS_WS8_r2.md` M2 "
+         "records that the r2 sentence was false for S3, whose two "
+         "statistics differ in SIGN"),
+        ("M3", "material",
+         "`corner_derate_scope` measures, leaf by leaf against nominal, "
+         "what each corner's model actually changes, and the R28 "
+         "conclusion is scoped by the measurement rather than asserted",
+         "record integrity - no number moves; the direction of error is "
+         "exported"),
+        ("M4", "material",
+         "ESC-WS8-1 restated with BOTH halves of the cell-substitution "
+         "direction, the power half measured at the contact patch and "
+         "the cold corner used as the in-model measurement of the "
+         "transfer, and R27/ESC-1(c)'s execution as WS9's S4' cited with "
+         "its provisional status",
+         "record integrity - no number moves"),
+        ("m1", "minor",
+         "the ratio the 6% grade demands is a SWEPT result and now says "
+         "so, with a resolution sensitivity solved at ten times the grid "
+         "in both dimensions instead of the claim that no grid was doing "
+         "any work", "record precision"),
+        ("m2", "minor",
+         "the unserved-energy table lists every case above 1 kWh instead "
+         "of silently truncating at twenty", "record precision"),
+        ("m3", "minor",
+         "`heat_ledger_ws6.csv` carries `ledger_version`, a `basis` "
+         "column, `components_sum_kW` and the governing run, and a "
+         "per-component label file for the simulated member",
          "record precision"),
-        ("F9", "minor",
-         "the road-load sanity note formatted from the computed values "
-         "instead of hand-written prose inside the data file",
+        ("m4", "minor",
+         "the instantaneous peaks `heat_peaks` has always computed are "
+         "enveloped and exported beside the sustained figure, in the "
+         "ledger and in the CSVs", "record precision"),
+        ("m5", "minor",
+         "`all_cases_close_and_within_rating` states exactly what it "
+         "tests, the simulated member is no longer exempt from the "
+         "closure, and the resistor row's unfailability by construction "
+         "is stated rather than left to be discovered",
+         "record precision - and the exemption it describes is what B1 "
+         "came through"),
+        ("m6", "minor",
+         "the bus-side/wheel-side slippage on the pack charge ceiling is "
+         "stated where the number is quoted; the physics is unchanged "
+         "because it is conservative and changing it would move every "
+         "margin", "record precision - deliberately no number moves"),
+        ("m7", "minor",
+         "section 4.2 renders the measured R22(d) charge and its "
+         "coast-permitting bracket for all five candidates instead of "
+         "calling the disconnect a deleted tax that nobody pays",
          "record precision"),
-        ("F10", "minor",
-         "the two-speed bracket computed on paired per-seed margins, the "
-         "same statistic as the headline, with the basis stated",
-         "record precision"),
-        ("F11", "minor",
-         "`derate_factor` exercised in an added 2,000 m / +45 C corner "
-         "(R28) rather than removed from the provenance list",
-         "AGAINST every candidate with an engine on the load"),
-        ("F12", "minor",
-         "the ratio ceiling solved in closed form as a physics bound, "
-         "with the swept set kept as the illustration, and the ratio the "
-         "6% grade demands solved too",
-         "record precision; S3's conclusion is unchanged and now rests on "
-         "no grid at all"),
-        ("F13", "minor",
-         "the LH-520 climb figure formatted from the ensemble everywhere "
-         "it appears",
-         "record precision"),
+    ]
+    for r in rows:
+        w(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} |")
+    w("")
+    w("### 15.2b Raised and closed inside r3, by the extended closure")
+    w("")
+    w("R3_DIRECTIVE item 1 ordered `heat_closure_check` extended to the "
+      "simulated member. Extending it meant building a per-sample energy "
+      "balance for every run, and the balance did not close until six "
+      "book-keeping errors were found. None of them was in "
+      "`FINDINGS_WS8_r2.md`; they are listed here because a correction "
+      "that is not in the changelog is a silent one. The CONSEQUENCE "
+      "column is measured, not asserted - where a correction has a "
+      "one-factor row its direction is rendered from it, and where it "
+      "cannot move a margin the reason is structural and stated.")
+    w("")
+    w("| what | where | consequence |")
+    w("|---|---|---|")
+    _s0dir = g("correction_directions/R3_S0_launch_fuel/direction",
+               "not separately measured")
+    _NOMARGIN = ("no margin can move: the heat ledger is built from the "
+                 "completed runs (`heat_ledger()` runs after "
+                 "`task3_margins` is fixed) and no margin reads it")
+    _s3ttr = g("s3_ttr_path_status/e_ttr_charge_bus_kWh_total", 0.0)
+    _ov = g("interface_ws8/retard_overcommitment") or {}
+    for r in [
+        ("S0 was fuelled at the IDLE rate on the first few tenths of a "
+         "second of every pull-away, because `stopped` is `v <= 0.1 m/s` "
+         "and a launch begins inside it - the model credited the engine "
+         "with about 28 kW of launch shaft power on 13.7 kW of fuel",
+         "`S0.account`",
+         f"it moves THE RULER and therefore every margin, so it is "
+         f"switchable and measured rather than called small: {_s0dir}"),
+        ("S0's clutch-slip heat was booked twice: once inside "
+         "`p_shaft - aux - p_wheel`, which already contains it, and "
+         "again as `p_slip_kw`",
+         "`S0.account` heat rows", _NOMARGIN),
+        ("S0's accessory row booked the full accessory load even on "
+         "samples where the crank was at its full-load curve and could "
+         "not carry it - r1's finding F3 for S2, surviving in the ruler. "
+         "The row now books what the crank carried and the shortfall is "
+         "exported",
+         "`S0.account` heat rows", _NOMARGIN),
+        ("S2's standstill idle fuel was added to the fuel total AFTER "
+         "the fuel series, so the heat ledger never saw it; and its "
+         "generator's own loss was priced off the free-speed locus while "
+         "the crank was locked to the road",
+         "`S2.account` heat rows", _NOMARGIN),
+        ("S3's through-the-road path had NO heat rows at all - the "
+         "engine was charged for the torque and the pack credited with "
+         "the electricity, with the axle-A box and the e-axle's "
+         "generating losses booked nowhere - and regen the full pack "
+         "could not take was dropped with no bookkeeping at all",
+         "`S3.account`, `series_dispatch`",
+         _NOMARGIN + f"; and the rows it adds carry "
+         f"{_s3ttr:.3f} kWh of through-the-road charge over the whole "
+         f"trial, because the path itself is inert once the B1 gate is "
+         f"applied (ESC-WS8-8) - the correction is real and its measured "
+         f"contribution is zero"),
+        ("regen the FULL pack cannot accept is dispatched to the brake "
+         "resistor by `series_dispatch` and by S3's SOC loop - each says "
+         "so in its own comment - and r3's first cut of the run closure "
+         "carried it as an out-term OUTSIDE the component ledger. A real "
+         "power flow with no component row is r1's F1 and r2's B1 over "
+         "again. It is now booked to the resistor up to the rating whose "
+         "mass was charged, and the remainder is exported as a "
+         "CAPABILITY shortfall",
+         "`resistor_and_overcommitment`, `run_closure`",
+         _NOMARGIN + f"; worst overcommitment "
+         f"{_ov.get('value_kW', 0.0):.1f} kW sustained at "
+         f"`{_ov.get('governing_case')}` - escalated as ESC-WS8-10"),
     ]:
-        w(f"| **{row[0]}** | {row[1]} | {row[2]} | {row[3]} |")
+        w(f"| {r[0]} | {r[1]} | {r[2]} |")
     w("")
     w("### 15.3 Verdict stability")
     w("")
     w("| candidate | verdict executed under R25 | verdict the same "
-      "criteria give on the r2 numbers | headroom to the >= 3% nominal "
-      "bar |")
+      f"criteria give on the {ROUND} numbers | headroom to the >= 3% "
+      "nominal bar |")
     w("|---|---|---|---|")
     for c, v in vs["candidates"].items():
         w(f"| **{c}** | {v['executed_verdict']} | "
-          f"{v['r2_verdict_on_same_criteria']} | "
+          f"{v['verdict_on_same_criteria']} | "
           f"{v['headroom_to_advance_pp']:.2f} pp short |")
     w("")
-    w(f"WHR on the r2 numbers: "
-      + ", ".join(f"{k} {v}" for k, v in vs["whr_on_r2_numbers"].items())
+    w(f"WHR on the {ROUND} numbers: "
+      + ", ".join(f"{k} {v}"
+                  for k, v in vs["whr_on_current_numbers"].items())
       + f" - {'unchanged' if vs['whr_unchanged'] else 'CHANGED'}.")
+    w("")
+    sc = vs["r3_stop_condition"]
+    w(f"**R3_DIRECTIVE item 1's own trip-wire, implemented rather than "
+      f"remembered.** {sc['rule']} S3's nominal ensemble-min on the "
+      f"{ROUND} numbers is "
+      f"{pct(sc['S3_nominal_margin_pct_min'])} against the "
+      f"+{sc['bar_pct']:.0f}% bar: `crossed = "
+      f"{str(sc['crossed']).lower()}`. {sc['note']}")
     w("")
     _n = vs["note"]
     w(f"**`all_unchanged = {vs['all_unchanged']}`.** "
@@ -1572,15 +2054,15 @@ def changelog():
     w("")
     meta = g("_meta")
     w(f"r1's artifacts were produced on Python 3.11.15 / numpy 2.4.6 on "
-      f"x86-64 Linux; r2's are produced on Python {meta['python']} / "
-      f"numpy {meta['numpy']} on arm64 macOS. The two platforms differ in "
-      f"the last one or two units in the last place of a double - a "
-      f"relative difference around 1e-16, from libm and SIMD reduction "
-      f"order, not from any change here. Byte-stable regeneration (rule "
-      f"1) is a property of a run reproducing ITSELF on one machine, and "
-      f"it is checked in section 14 on this one. Nothing in the errata "
-      f"depends on that difference, and no reported figure is quoted to "
-      f"anything like that precision.")
+      f"x86-64 Linux; r2's and r3's are produced on Python "
+      f"{meta['python']} / numpy {meta['numpy']} on arm64 macOS. The two "
+      f"platforms differ in the last one or two units in the last place "
+      f"of a double - a relative difference around 1e-16, from libm and "
+      f"SIMD reduction order, not from any change here. Byte-stable "
+      f"regeneration (rule 1) is a property of a run reproducing ITSELF "
+      f"on one machine, and it is checked in section 14 on this one. "
+      f"Nothing in the errata depends on that difference, and no reported "
+      f"figure is quoted to anything like that precision.")
     w("")
     w("### 15.5 Inputs, SHA-pinned")
     w("")
@@ -1588,7 +2070,11 @@ def changelog():
       "another workstream is pinned by sha256 in "
       "`interface_ws8.inputs_sha256`, so a consumer can tell from the "
       "export alone whether the numbers it holds came from these exact "
-      "inputs. " + str(len(iface["inputs_sha256"])) + " files are pinned.")
+      "inputs. " + str(len(iface["inputs_sha256"])) + " files are pinned, "
+      "and r3 adds this round's order, the findings file it closes and "
+      "the baseline it runs against without dropping r2's - the r2 "
+      "corrections are still live in the code and the verdicts still "
+      "cite R25.")
     w("")
     w("---")
     w("")
@@ -1599,20 +2085,25 @@ def _write_changelog_file(lines):
     meta = g("_meta")
     iface = g("interface_ws8")
     head = [
-        "# CHANGELOG - WS8 round 2 (errata)",
+        f"# CHANGELOG - WS8 round 3 ({ROUND})",
         "",
         "**Generated**, not written: every figure below is formatted out "
         "of `results_ws8.json` by `make_report_ws8.py`, which emits this "
         "file and section 15 of `REPORT_WS8.md` from the same lines. "
-        "Nothing here is transcribed by hand (rule 2).",
+        "Nothing here is transcribed by hand (rule 2) - including, this "
+        "round, every DIRECTION cell, which r2 wrote by hand and got "
+        "wrong three times (finding M1).",
         "",
         f"| | |",
         f"|---|---|",
-        f"| Order executed | `WS8_semi_architecture/R2_DIRECTIVE.md` "
-        f"(lead-issued 2026-08-30, under R26) |",
-        f"| Findings closed | `FINDINGS_WS8_r1.md` F1-F13 |",
+        f"| Order executed | `WS8_semi_architecture/R3_DIRECTIVE.md` "
+        f"(lead-issued 2026-08-30, under R35) |",
+        f"| Findings closed | `FINDINGS_WS8_r2.md` B1, M1-M4, m1-m7 |",
         f"| Baseline of record | {meta['baseline_of_record']} |",
-        f"| Numbers version | {iface['numbers_version']} |",
+        f"| Numbers version | {iface['numbers_version']} "
+        f"(supersedes {iface.get('supersedes', {}).get('numbers_version')}) |",
+        f"| Heat ledger version | {g('heat_ledger/ledger_version')} - "
+        f"WS6 consumes ONLY this one |",
         f"| Verdicts | `{iface['verdicts']['status']}` - not reopened by "
         f"this round |",
         f"| Seeds | {meta['seeds'][0]}..{meta['seeds'][-1]} "
@@ -1627,7 +2118,8 @@ def _write_changelog_file(lines):
     body = [ln for ln in lines]
     if body and body[0].startswith("## 15."):
         body[0] = "## What moved, and which way"
-    body = [re.sub(r"^### 15\.(\d+) ", r"### \1. ", ln) for ln in body]
+    body = [re.sub(r"^### 15\.(\d+[a-z]?) ", r"### \1. ", ln)
+            for ln in body]
     with open(OUT_CHANGELOG, "w") as f:
         f.write("\n".join(head + body).rstrip() + "\n")
     print(f"wrote {OUT_CHANGELOG} "

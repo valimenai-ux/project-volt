@@ -1,0 +1,121 @@
+row,mass_kg,t_cell_C,v_kmh,soc_init,config,duration_s,E_regen_bus_kWh,E_pack_kWh,E_heater_kWh,E_resistor_kWh,E_isg_motoring_kWh,E_friction_kWh,P_resistor_peak_kW,P_friction_mean_kW,P_friction_peak_kW,soc_end,t_cell_peak_C
+"gvw/45C/25kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,45.0,25.0,0.55,resistor_healthy,1460.0,7.95055,5.73264,0.00000,2.21791,0.00000,0.00073,19.837,0.002,0.729,1.0000,45.66
+"gvw/45C/25kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,45.0,25.0,0.55,resistor_lost,1460.0,7.95055,5.95621,0.00000,0.00000,0.00000,2.21712,0.000,5.467,19.823,1.0000,45.60
+"gvw/45C/25kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,45.0,25.0,0.55,resistor_lost_with_isg_motoring,1460.0,7.95055,5.73260,0.00000,0.00000,1.71165,0.56339,0.000,1.389,5.033,1.0000,45.60
+"gvw/45C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,45.0,25.0,0.95,resistor_healthy,1460.0,7.95055,0.64960,0.00000,7.30095,0.00000,0.00073,19.837,0.002,0.729,1.0000,45.61
+"gvw/45C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,45.0,25.0,0.95,resistor_lost,1460.0,7.95055,1.38565,0.00000,0.00000,0.00000,7.29657,0.000,17.992,19.823,1.0000,45.10
+"gvw/45C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,45.0,25.0,0.95,resistor_lost_with_isg_motoring,1460.0,7.95055,0.64960,0.00000,0.00000,5.63438,1.85286,0.000,4.569,5.033,1.0000,45.41
+"gvw/45C/40kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,45.0,40.0,0.55,resistor_healthy,920.0,7.57950,5.56458,0.00000,2.01492,0.00000,0.00025,30.263,0.001,0.426,1.0000,46.33
+"gvw/45C/40kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,45.0,40.0,0.55,resistor_lost,920.0,7.57950,5.69769,0.00000,0.00000,0.00000,2.06263,0.000,8.071,30.975,1.0000,46.13
+"gvw/45C/40kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,45.0,40.0,0.55,resistor_lost_with_isg_motoring,920.0,7.57950,5.56458,0.00000,0.00000,1.01930,1.09140,0.000,4.271,16.389,1.0000,46.13
+"gvw/45C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,45.0,40.0,0.95,resistor_healthy,920.0,7.57950,0.67057,0.00000,6.90892,0.00000,0.00025,30.263,0.001,0.426,1.0000,46.26
+"gvw/45C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,45.0,40.0,0.95,resistor_lost,920.0,7.57950,1.12713,0.00000,0.00000,0.00000,7.07178,0.000,27.672,30.975,1.0000,45.19
+"gvw/45C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,45.0,40.0,0.95,resistor_lost_with_isg_motoring,920.0,7.57950,0.67057,0.00000,0.00000,3.49506,3.74171,0.000,14.641,16.389,1.0000,45.38
+"gvw/45C/55kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,45.0,55.0,0.55,resistor_healthy,674.5,6.89736,5.57762,0.00000,1.31974,0.00000,0.00013,37.875,0.001,0.304,1.0000,46.78
+"gvw/45C/55kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,45.0,55.0,0.55,resistor_lost,674.5,6.89736,5.64729,0.00000,0.00000,0.00000,1.36558,0.000,7.288,39.186,1.0000,46.57
+"gvw/45C/55kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,45.0,55.0,0.55,resistor_lost_with_isg_motoring,674.5,6.89736,5.57762,0.00000,0.00000,0.53367,0.85875,0.000,4.583,24.649,1.0000,46.57
+"gvw/45C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,45.0,55.0,0.95,resistor_healthy,674.5,6.89736,0.75228,0.00000,6.14508,0.00000,0.00013,37.875,0.001,0.304,1.0000,46.69
+"gvw/45C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,45.0,55.0,0.95,resistor_lost,674.5,6.89736,1.07673,0.00000,0.00000,0.00000,6.35800,0.000,33.934,39.186,1.0000,45.32
+"gvw/45C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,45.0,55.0,0.95,resistor_lost_with_isg_motoring,674.5,6.89736,0.75228,0.00000,0.00000,2.48383,3.99930,0.000,21.345,24.649,1.0000,45.41
+"gvw/45C/70kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,45.0,70.0,0.55,resistor_healthy,534.3,5.95791,5.68869,0.00000,0.26922,0.00000,0.00008,41.644,0.001,0.236,1.0000,46.96
+"gvw/45C/70kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,45.0,70.0,0.55,resistor_lost,534.3,5.95791,5.70158,0.00000,0.00000,0.00000,0.28054,0.000,1.890,43.377,1.0000,46.91
+"gvw/45C/70kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,45.0,70.0,0.55,resistor_lost_with_isg_motoring,534.3,5.95791,5.68869,0.00000,0.00000,0.09908,0.18623,0.000,1.255,28.815,1.0000,46.91
+"gvw/45C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,45.0,70.0,0.95,resistor_healthy,534.3,5.95791,0.88752,0.00000,5.07039,0.00000,0.00008,41.644,0.001,0.236,1.0000,46.85
+"gvw/45C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,45.0,70.0,0.95,resistor_lost,534.3,5.95791,1.13102,0.00000,0.00000,0.00000,5.28147,0.000,35.585,43.377,1.0000,45.56
+"gvw/45C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,45.0,70.0,0.95,resistor_lost_with_isg_motoring,534.3,5.95791,0.88752,0.00000,0.00000,1.86409,3.50828,0.000,23.638,28.815,1.0000,45.56
+"gvw/45C/85kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,45.0,85.0,0.55,resistor_healthy,443.5,4.77272,4.77272,0.00000,0.00000,0.00000,0.00005,0.000,0.000,0.195,0.9117,46.83
+"gvw/45C/85kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,45.0,85.0,0.55,resistor_lost,443.5,4.77272,4.77272,0.00000,0.00000,0.00000,0.00005,0.000,0.000,0.195,0.9117,46.83
+"gvw/45C/85kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,45.0,85.0,0.55,resistor_lost_with_isg_motoring,443.5,4.77272,4.77272,0.00000,0.00000,0.00000,0.00005,0.000,0.000,0.195,0.9117,46.83
+"gvw/45C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,45.0,85.0,0.95,resistor_healthy,443.5,4.77272,1.02593,0.00000,3.74679,0.00000,0.00005,40.523,0.000,0.195,1.0000,46.72
+"gvw/45C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,45.0,85.0,0.95,resistor_lost,443.5,4.77272,1.21081,0.00000,0.00000,0.00000,3.92516,0.000,31.862,42.451,1.0000,45.83
+"gvw/45C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,45.0,85.0,0.95,resistor_lost_with_isg_motoring,443.5,4.77272,1.02593,0.00000,0.00000,1.41563,2.56893,0.000,20.853,27.785,1.0000,45.83
+"gvw/-10C/25kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,-10.0,25.0,0.55,resistor_healthy,1460.0,7.95055,5.73260,0.89450,1.32345,0.00000,0.00073,11.837,0.002,0.729,1.0000,4.97
+"gvw/-10C/25kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,-10.0,25.0,0.55,resistor_lost,1460.0,7.95055,5.73260,0.89450,0.00000,0.00000,1.47153,0.000,3.628,13.155,1.0000,4.46
+"gvw/-10C/25kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,-10.0,25.0,0.55,resistor_lost_with_isg_motoring,1460.0,7.95055,5.73260,0.89450,0.00000,1.32345,0.00073,0.000,0.002,0.729,1.0000,5.08
+"gvw/-10C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,-10.0,25.0,0.95,resistor_healthy,1460.0,7.95055,0.64960,2.16867,5.13229,0.00000,0.00073,19.837,0.002,0.729,1.0000,10.00
+"gvw/-10C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,-10.0,25.0,0.95,resistor_lost,1460.0,7.95055,0.66049,2.25044,0.00000,0.00000,5.60146,0.000,13.812,22.046,1.0000,10.00
+"gvw/-10C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,-10.0,25.0,0.95,resistor_lost_with_isg_motoring,1460.0,7.95055,0.64960,2.16511,0.00000,4.69470,0.49098,0.000,1.211,5.033,1.0000,10.00
+"gvw/-10C/40kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,-10.0,40.0,0.55,resistor_healthy,920.0,7.57950,5.56458,0.53267,1.48225,0.00000,0.00025,22.263,0.001,0.426,1.0000,2.00
+"gvw/-10C/40kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,-10.0,40.0,0.55,resistor_lost,920.0,7.57950,5.56458,0.53267,0.00000,0.00000,1.62474,0.000,6.358,24.399,1.0000,1.01
+"gvw/-10C/40kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,-10.0,40.0,0.55,resistor_lost_with_isg_motoring,920.0,7.57950,5.56458,0.53267,0.00000,1.01930,0.50762,0.000,1.986,7.621,1.0000,1.63
+"gvw/-10C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,-10.0,40.0,0.95,resistor_healthy,920.0,7.57950,0.67057,1.53289,5.37603,0.00000,0.00025,30.263,0.001,0.426,1.0000,10.00
+"gvw/-10C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,-10.0,40.0,0.95,resistor_lost,920.0,7.57950,0.67300,1.67178,0.00000,0.00000,5.73729,0.000,22.450,33.167,1.0000,10.00
+"gvw/-10C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,-10.0,40.0,0.95,resistor_lost_with_isg_motoring,920.0,7.57950,0.67057,1.59356,0.00000,3.49502,1.99528,0.000,7.808,16.389,1.0000,10.00
+"gvw/-10C/55kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,-10.0,55.0,0.55,resistor_healthy,674.5,6.89736,5.57762,0.27889,1.04085,0.00000,0.00013,29.875,0.001,0.304,1.0000,-0.62
+"gvw/-10C/55kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,-10.0,55.0,0.55,resistor_lost,674.5,6.89736,5.57762,0.27889,0.00000,0.00000,1.13705,0.000,6.069,32.633,1.0000,-1.55
+"gvw/-10C/55kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,-10.0,55.0,0.55,resistor_lost_with_isg_motoring,674.5,6.89736,5.57762,0.27889,0.00000,0.53345,0.55436,0.000,2.959,15.911,1.0000,-1.20
+"gvw/-10C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,-10.0,55.0,0.95,resistor_healthy,674.5,6.89736,0.75228,1.23156,4.91352,0.00000,0.00013,37.875,0.001,0.304,1.0000,10.00
+"gvw/-10C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,-10.0,55.0,0.95,resistor_lost,674.5,6.89736,0.75228,1.29800,0.00000,0.00000,5.29459,0.000,28.259,32.633,1.0000,8.24
+"gvw/-10C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,-10.0,55.0,0.95,resistor_lost_with_isg_motoring,674.5,6.89736,0.75228,1.29800,0.00000,2.48383,2.58150,0.000,13.778,15.911,1.0000,9.37
+"gvw/-10C/70kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,-10.0,70.0,0.55,resistor_healthy,534.3,5.95791,5.68869,0.05178,0.21744,0.00000,0.00008,33.644,0.001,0.236,1.0000,-3.76
+"gvw/-10C/70kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,-10.0,70.0,0.55,resistor_lost,534.3,5.95791,5.68869,0.05178,0.00000,0.00000,0.23799,0.000,1.604,36.812,1.0000,-4.00
+"gvw/-10C/70kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,-10.0,70.0,0.55,resistor_lost_with_isg_motoring,534.3,5.95791,5.68869,0.05178,0.00000,0.09908,0.12958,0.000,0.873,20.062,1.0000,-3.92
+"gvw/-10C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,-10.0,70.0,0.95,resistor_healthy,534.3,5.95791,0.88752,0.97422,4.09617,0.00000,0.00008,33.644,0.001,0.236,1.0000,8.47
+"gvw/-10C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,-10.0,70.0,0.95,resistor_lost,534.3,5.95791,0.88752,0.97422,0.00000,0.00000,4.48194,0.000,30.198,36.812,1.0000,5.44
+"gvw/-10C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,-10.0,70.0,0.95,resistor_lost_with_isg_motoring,534.3,5.95791,0.88752,0.97422,0.00000,1.86387,2.44257,0.000,16.458,20.062,1.0000,6.40
+"gvw/-10C/85kmh/soc0.55 (WS3 target)/resistor_healthy",6600.0,-10.0,85.0,0.55,resistor_healthy,443.5,4.77272,4.77272,0.00000,0.00000,0.00000,0.00005,0.000,0.000,0.195,0.9124,-4.49
+"gvw/-10C/85kmh/soc0.55 (WS3 target)/resistor_lost",6600.0,-10.0,85.0,0.55,resistor_lost,443.5,4.77272,4.77272,0.00000,0.00000,0.00000,0.00005,0.000,0.000,0.195,0.9124,-4.49
+"gvw/-10C/85kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",6600.0,-10.0,85.0,0.55,resistor_lost_with_isg_motoring,443.5,4.77272,4.77272,0.00000,0.00000,0.00000,0.00005,0.000,0.000,0.195,0.9124,-4.49
+"gvw/-10C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",6600.0,-10.0,85.0,0.95,resistor_healthy,443.5,4.77272,1.02593,0.73978,3.00702,0.00000,0.00005,32.523,0.000,0.195,1.0000,6.11
+"gvw/-10C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",6600.0,-10.0,85.0,0.95,resistor_lost,443.5,4.77272,1.02593,0.73978,0.00000,0.00000,3.31369,0.000,26.898,35.839,1.0000,3.77
+"gvw/-10C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",6600.0,-10.0,85.0,0.95,resistor_lost_with_isg_motoring,443.5,4.77272,1.02593,0.73978,0.00000,1.41563,1.75371,0.000,14.235,18.969,1.0000,4.55
+"payload120/45C/25kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,45.0,25.0,0.55,resistor_healthy,1460.0,8.66943,5.68000,0.00000,2.98943,0.00000,0.00079,21.631,0.002,0.793,1.0000,45.80
+"payload120/45C/25kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,45.0,25.0,0.55,resistor_lost,1460.0,8.66943,5.95639,0.00000,0.00000,0.00000,3.01822,0.000,7.442,21.833,1.0000,45.69
+"payload120/45C/25kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,45.0,25.0,0.55,resistor_lost_with_isg_motoring,1460.0,8.66943,5.68000,0.00000,0.00000,2.11579,0.97245,0.000,2.398,7.031,1.0000,45.69
+"payload120/45C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,45.0,25.0,0.95,resistor_healthy,1460.0,8.66943,0.64377,0.00000,8.02566,0.00000,0.00079,21.631,0.002,0.793,1.0000,45.74
+"payload120/45C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,45.0,25.0,0.95,resistor_lost,1460.0,8.66943,1.38583,0.00000,0.00000,0.00000,8.10156,0.000,19.976,21.833,1.0000,45.12
+"payload120/45C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,45.0,25.0,0.95,resistor_lost_with_isg_motoring,1460.0,8.66943,0.64377,0.00000,0.00000,5.68009,2.60952,0.000,6.434,7.031,1.0000,45.42
+"payload120/45C/40kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,45.0,40.0,0.55,resistor_healthy,920.0,8.31564,5.53369,0.00000,2.78195,0.00000,0.00027,33.201,0.001,0.463,1.0000,46.61
+"payload120/45C/40kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,45.0,40.0,0.55,resistor_lost,920.0,8.31564,5.70125,0.00000,0.00000,0.00000,2.86538,0.000,11.212,34.193,1.0000,46.28
+"payload120/45C/40kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,45.0,40.0,0.55,resistor_lost_with_isg_motoring,920.0,8.31564,5.53369,0.00000,0.00000,1.28295,1.64303,0.000,6.429,19.608,1.0000,46.28
+"payload120/45C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,45.0,40.0,0.95,resistor_healthy,920.0,8.31564,0.67019,0.00000,7.64546,0.00000,0.00027,33.201,0.001,0.463,1.0000,46.54
+"payload120/45C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,45.0,40.0,0.95,resistor_lost,920.0,8.31564,1.13069,0.00000,0.00000,0.00000,7.87423,0.000,30.812,34.193,1.0000,45.21
+"payload120/45C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,45.0,40.0,0.95,resistor_lost_with_isg_motoring,920.0,8.31564,0.67019,0.00000,0.00000,3.52525,4.51559,0.000,17.670,19.608,1.0000,45.39
+"payload120/45C/55kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,45.0,55.0,0.55,resistor_healthy,674.5,7.64165,5.55848,0.00000,2.08318,0.00000,0.00014,41.961,0.001,0.331,1.0000,47.19
+"payload120/45C/55kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,45.0,55.0,0.55,resistor_lost,674.5,7.64165,5.65775,0.00000,0.00000,0.00000,2.16538,0.000,11.557,43.614,1.0000,46.79
+"payload120/45C/55kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,45.0,55.0,0.55,resistor_lost_with_isg_motoring,674.5,7.64165,5.55848,0.00000,0.00000,0.76019,1.44406,0.000,7.707,29.088,1.0000,46.79
+"payload120/45C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,45.0,55.0,0.95,resistor_healthy,674.5,7.64165,0.75919,0.00000,6.88246,0.00000,0.00014,41.961,0.001,0.331,1.0000,47.10
+"payload120/45C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,45.0,55.0,0.95,resistor_lost,674.5,7.64165,1.08719,0.00000,0.00000,0.00000,7.15371,0.000,38.181,43.614,1.0000,45.36
+"payload120/45C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,45.0,55.0,0.95,resistor_lost_with_isg_motoring,674.5,7.64165,0.75919,0.00000,0.00000,2.51105,4.77112,0.000,25.465,29.088,1.0000,45.43
+"payload120/45C/70kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,45.0,70.0,0.55,resistor_healthy,534.3,6.70716,5.67851,0.00000,1.02865,0.00000,0.00008,46.878,0.001,0.257,1.0000,47.47
+"payload120/45C/70kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,45.0,70.0,0.55,resistor_lost,534.3,6.70716,5.72235,0.00000,0.00000,0.00000,1.07563,0.000,7.247,49.013,1.0000,47.23
+"payload120/45C/70kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,45.0,70.0,0.55,resistor_lost_with_isg_motoring,534.3,6.70716,5.67851,0.00000,0.00000,0.33594,0.75661,0.000,5.098,34.478,1.0000,47.23
+"payload120/45C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,45.0,70.0,0.95,resistor_healthy,534.3,6.70716,0.90423,0.00000,5.80293,0.00000,0.00008,46.878,0.001,0.257,1.0000,47.36
+"payload120/45C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,45.0,70.0,0.95,resistor_lost,534.3,6.70716,1.15179,0.00000,0.00000,0.00000,6.06727,0.000,40.880,49.013,1.0000,45.65
+"payload120/45C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,45.0,70.0,0.95,resistor_lost_with_isg_motoring,534.3,6.70716,0.90423,0.00000,0.00000,1.89530,4.26772,0.000,28.755,34.478,1.0000,45.65
+"payload120/45C/85kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,45.0,85.0,0.55,resistor_healthy,443.5,5.52648,5.52648,0.00000,0.00000,0.00000,0.00006,0.000,0.000,0.212,0.9767,47.36
+"payload120/45C/85kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,45.0,85.0,0.55,resistor_lost,443.5,5.52648,5.52648,0.00000,0.00000,0.00000,0.00006,0.000,0.000,0.212,0.9767,47.36
+"payload120/45C/85kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,45.0,85.0,0.55,resistor_lost_with_isg_motoring,443.5,5.52648,5.52648,0.00000,0.00000,0.00000,0.00006,0.000,0.000,0.212,0.9767,47.36
+"payload120/45C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,45.0,85.0,0.95,resistor_healthy,443.5,5.52648,1.03028,0.00000,4.49620,0.00000,0.00006,46.919,0.000,0.212,1.0000,47.23
+"payload120/45C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,45.0,85.0,0.95,resistor_lost,443.5,5.52648,1.22189,0.00000,0.00000,0.00000,4.72437,0.000,38.349,49.299,1.0000,45.93
+"payload120/45C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,45.0,85.0,0.95,resistor_lost_with_isg_motoring,443.5,5.52648,1.03028,0.00000,0.00000,1.46708,3.32453,0.000,26.986,34.692,1.0000,45.93
+"payload120/-10C/25kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,-10.0,25.0,0.55,resistor_healthy,1460.0,8.66943,5.68000,1.10577,1.88366,0.00000,0.00079,13.631,0.002,0.793,1.0000,7.63
+"payload120/-10C/25kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,-10.0,25.0,0.55,resistor_lost,1460.0,8.66943,5.68000,1.10577,0.00000,0.00000,2.09578,0.000,5.168,15.160,1.0000,6.90
+"payload120/-10C/25kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,-10.0,25.0,0.55,resistor_lost_with_isg_motoring,1460.0,8.66943,5.68000,1.10577,0.00000,1.88366,0.00079,0.000,0.002,0.793,1.0000,7.76
+"payload120/-10C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,-10.0,25.0,0.95,resistor_healthy,1460.0,8.66943,0.64377,2.15814,5.86752,0.00000,0.00079,21.631,0.002,0.793,1.0000,10.00
+"payload120/-10C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,-10.0,25.0,0.95,resistor_lost,1460.0,8.66943,0.65486,2.26192,0.00000,0.00000,6.39884,0.000,15.778,24.057,1.0000,10.00
+"payload120/-10C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,-10.0,25.0,0.95,resistor_lost_with_isg_motoring,1460.0,8.66943,0.64377,2.15992,0.00000,5.22689,0.71132,0.000,1.754,7.031,1.0000,10.00
+"payload120/-10C/40kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,-10.0,40.0,0.55,resistor_healthy,920.0,8.31564,5.53369,0.67044,2.11151,0.00000,0.00027,25.201,0.001,0.463,1.0000,4.45
+"payload120/-10C/40kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,-10.0,40.0,0.55,resistor_lost,920.0,8.31564,5.53369,0.67044,0.00000,0.00000,2.31426,0.000,9.056,27.618,1.0000,3.03
+"payload120/-10C/40kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,-10.0,40.0,0.55,resistor_lost_with_isg_motoring,920.0,8.31564,5.53369,0.67044,0.00000,1.28272,0.90853,0.000,3.555,10.841,1.0000,3.75
+"payload120/-10C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,-10.0,40.0,0.95,resistor_healthy,920.0,8.31564,0.67019,1.50467,6.14079,0.00000,0.00027,33.201,0.001,0.463,1.0000,10.00
+"payload120/-10C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,-10.0,40.0,0.95,resistor_lost,920.0,8.31564,0.67276,1.67844,0.00000,0.00000,6.53667,0.000,25.578,36.385,1.0000,10.00
+"payload120/-10C/40kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,-10.0,40.0,0.95,resistor_lost_with_isg_motoring,920.0,8.31564,0.67019,1.59956,0.00000,3.52525,2.76264,0.000,10.810,19.608,1.0000,10.00
+"payload120/-10C/55kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,-10.0,55.0,0.55,resistor_healthy,674.5,7.64165,5.55848,0.39733,1.68584,0.00000,0.00014,33.961,0.001,0.331,1.0000,2.07
+"payload120/-10C/55kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,-10.0,55.0,0.55,resistor_lost,674.5,7.64165,5.55848,0.39733,0.00000,0.00000,1.84008,0.000,9.821,37.065,1.0000,0.54
+"payload120/-10C/55kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,-10.0,55.0,0.55,resistor_lost_with_isg_motoring,674.5,7.64165,5.55848,0.39733,0.00000,0.75997,1.01065,0.000,5.394,20.357,1.0000,1.01
+"payload120/-10C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,-10.0,55.0,0.95,resistor_healthy,674.5,7.64165,0.75919,1.19244,5.69001,0.00000,0.00014,41.961,0.001,0.331,1.0000,10.00
+"payload120/-10C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,-10.0,55.0,0.95,resistor_lost,674.5,7.64165,0.75919,1.31222,0.00000,0.00000,6.07953,0.000,32.448,37.065,1.0000,8.44
+"payload120/-10C/55kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,-10.0,55.0,0.95,resistor_lost_with_isg_motoring,674.5,7.64165,0.75919,1.31222,0.00000,2.51105,3.33895,0.000,17.821,20.357,1.0000,9.58
+"payload120/-10C/70kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,-10.0,70.0,0.55,resistor_healthy,534.3,6.70716,5.67851,0.17556,0.85309,0.00000,0.00008,38.878,0.001,0.257,1.0000,-0.47
+"payload120/-10C/70kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,-10.0,70.0,0.55,resistor_lost,534.3,6.70716,5.67851,0.17556,0.00000,0.00000,0.93177,0.000,6.278,42.460,1.0000,-1.39
+"payload120/-10C/70kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,-10.0,70.0,0.55,resistor_lost_with_isg_motoring,534.3,6.70716,5.67851,0.17556,0.00000,0.33594,0.56488,0.000,3.806,25.741,1.0000,-1.17
+"payload120/-10C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,-10.0,70.0,0.95,resistor_healthy,534.3,6.70716,0.90423,0.99044,4.81249,0.00000,0.00008,38.878,0.001,0.257,1.0000,9.68
+"payload120/-10C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,-10.0,70.0,0.95,resistor_lost,534.3,6.70716,0.90423,0.99044,0.00000,0.00000,5.25594,0.000,35.413,42.460,1.0000,5.84
+"payload120/-10C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,-10.0,70.0,0.95,resistor_lost_with_isg_motoring,534.3,6.70716,0.90423,0.99044,0.00000,1.89508,3.18627,0.000,21.468,25.741,1.0000,6.80
+"payload120/-10C/85kmh/soc0.55 (WS3 target)/resistor_healthy",7180.0,-10.0,85.0,0.55,resistor_healthy,443.5,5.52648,5.52648,0.00000,0.00000,0.00000,0.00006,0.000,0.000,0.212,0.9774,-3.25
+"payload120/-10C/85kmh/soc0.55 (WS3 target)/resistor_lost",7180.0,-10.0,85.0,0.55,resistor_lost,443.5,5.52648,5.52648,0.00000,0.00000,0.00000,0.00006,0.000,0.000,0.212,0.9774,-3.25
+"payload120/-10C/85kmh/soc0.55 (WS3 target)/resistor_lost_with_isg_motoring",7180.0,-10.0,85.0,0.55,resistor_lost_with_isg_motoring,443.5,5.52648,5.52648,0.00000,0.00000,0.00000,0.00006,0.000,0.000,0.212,0.9774,-3.25
+"payload120/-10C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_healthy",7180.0,-10.0,85.0,0.95,resistor_healthy,443.5,5.52648,1.03028,0.76667,3.72953,0.00000,0.00006,38.919,0.000,0.212,1.0000,7.50
+"payload120/-10C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost",7180.0,-10.0,85.0,0.95,resistor_lost,443.5,5.52648,1.03028,0.76667,0.00000,0.00000,4.09324,0.000,33.226,42.714,1.0000,4.30
+"payload120/-10C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost_with_isg_motoring",7180.0,-10.0,85.0,0.95,resistor_lost_with_isg_motoring,443.5,5.52648,1.03028,0.76667,0.00000,1.46708,2.48311,0.000,20.156,25.912,1.0000,5.09

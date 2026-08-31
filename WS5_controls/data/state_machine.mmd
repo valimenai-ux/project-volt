@@ -1,0 +1,54 @@
+%% Project Volt WS5 supervisor state machine
+%% orthogonal regions; guards in ws5_statemachine.TRANSITIONS
+%%--- region FAULT ---
+stateDiagram-v2
+    [*] --> F_NONE
+    any --> F_GENSET_LOSS : G_FLT_GEN
+    any --> F_PACK_LOSS : G_FLT_PACK
+    any --> F_PACK_DERATE : G_FLT_PACK_DER
+    any --> F_RESISTOR_LOSS : G_FLT_RES
+    any --> F_INV_DERATE : G_FLT_INV
+    any --> F_SENSOR_LOSS : G_FLT_SENS
+    any --> F_NONE : G_FLT_CLEAR
+%%--- region THERMAL ---
+stateDiagram-v2
+    [*] --> H_NOMINAL
+    any --> H_PRECOND : G_TH_PRECOND
+    any --> H_INV_DERATE : G_TH_INV
+    any --> H_HOT_PACK_DERATE : G_TH_HOT
+    any --> H_COLD_DERATE : G_TH_COLD
+    any --> H_NOMINAL : G_TH_NOM
+%%--- region TRACTION ---
+stateDiagram-v2
+    [*] --> T_OFF
+    any --> T_DRIVE_LIMIT : G_TC_DRIVE
+    any --> T_REGEN_LIMIT : G_TC_REGEN
+    any --> T_OFF : G_TC_OFF
+%%--- region DISPATCH ---
+stateDiagram-v2
+    [*] --> D_OFF
+    any --> D_FAULT : G_D_FAULT
+    any --> D_MOTOR : G_D_MOTOR
+    any --> D_START : G_D_START
+    any --> D_RESERVE : G_D_RESERVE
+    any --> D_FOLLOW : G_D_FOLLOW
+    any --> D_NOTCH_HI : G_D_HI
+    any --> D_PIN : G_D_PIN
+    any --> D_OFF : G_D_OFF
+%%--- region BLEND ---
+stateDiagram-v2
+    [*] --> B_NONE
+    any --> B_FRICTION : G_B_FRIC
+    any --> B_RESISTOR : G_B_RES
+    any --> B_HEATER : G_B_HTR
+    any --> B_PACK : G_B_PACK
+    any --> B_NONE : G_B_NONE
+%%--- region VEHICLE ---
+stateDiagram-v2
+    [*] --> V_OFF
+    any --> V_HALT : G_V_HALT
+    any --> V_PRECOND : G_V_PRECOND
+    any --> V_LIMP : G_V_LIMP
+    any --> V_BRAKE : G_V_BRAKE
+    any --> V_DRIVE : G_V_DRIVE
+    any --> V_READY : G_V_READY

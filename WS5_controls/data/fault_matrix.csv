@@ -1,0 +1,7 @@
+fault,unserved_bus_kWh_max,unserved_wheel_kWh_max,friction_kWh_max,fuel_penalty_pct,limp_s_max,halt_s_max,ruled_outcome
+genset_loss,63.158987,0.000000,0.61515,2.9507,259.4,4783.0,"R22c: TOW once the buffer is spent"
+pack_loss,2.804621,0.000000,0.61515,9.3854,0.0,4814.3,"R22c: TOW"
+pack_derate,0.313562,0.000000,0.61515,0.6512,4814.3,0.0,"derated limp, cycle completable"
+resistor_loss,0.000000,0.000000,0.61515,0.0000,4814.3,0.0,"descent-restricted limp; see descent_r2_r17"
+inverter_thermal,0.000000,25.236848,1.70195,2.9025,4814.3,0.0,"derated limp, both directions"
+sensor_loss,0.000000,0.000000,0.61515,0.0000,4814.3,0.0,"derated limp"

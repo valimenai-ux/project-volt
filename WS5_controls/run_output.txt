@@ -1,0 +1,61 @@
+== 1. model sanity checks ==
+   pack fast path err 0.00e+00; adhesion err 1.82e-12 N; WS2 adhesion curves err 0.0491 kW over 54 points; motoring anchor 10.68 kW vs 10.7
+== 2. WS4 series_duty_v2 concordance ==
+   concordance over 24 runs x 8 fields: EXACT
+== 3. derate BSFC consistency observation ==
+   pinned BSFC 203.62 (WS4) vs 208.19 (consistent) g/kWh at the corner
+== 4. traction control (E23) ==
+   mu required (8-seed max): empty regen stop 0.362 (WS1 s4.16: 0.36); GVW 0.265 (0.26); 13.5 kN launch curb 0.654 (0.66); 6% descent 0.375 (+3.5%)
+== 5. R22b V2 dispatch trade ==
+   nominal: pin=1.7238  two_point=1.7638  load_follow=1.7170
+   cda_5.4: pin=2.0483  two_point=2.0951  load_follow=2.0297
+   alt2000m_45C: pin=1.4734  two_point=1.4744  load_follow=1.4454
+   cold_minus10C: pin=1.8003  two_point=1.8406  load_follow=1.7883
+   RECOMMENDATION: load_follow (DR1 fallback (no strategy satisfied DR2))
+== 6. dispatch sensitivities ==
+   notch / tau / slew / floor sweeps done (stop-on-surplus gains -2.11%)
+== 7. V1 dispatch (R19) and cross-cycle closure ==
+   V1 starts/8 h shift: 16.5-24.8 (R19 ratified 16-25; inside=True)
+== 8. cold dispatch (R16) ==
+   cold penalties (%% vs nominal): -20C=+0.83, -10C=+0.00, 0C=+0.00, 10C=+0.00, -10C, 4 kW aux=+4.16, 25C, 2 kW aux (nominal reference)=+0.00, 45C at 2,000 m (the R7 corner, not a hot sea-level day)=-15.82
+== 9. coast policy (R22d) ==
+   sustained coast: bus swing 0.742 kW mean, 0.1237 kWh over 600 s
+== 10. ESC-9 dispatch limit ==
+   worst unserved: reserve ON 0.0000 kWh, OFF 0.0000 kWh, WS4 bracket 0.6129 kWh
+== 11. R15 blending and the R2/R17 descent ==
+   descent: worst friction healthy 0.001 kWh; resistor lost 8.102 kWh; with ISG 4.771 kWh
+== 12. fault matrix ==
+   genset_loss: unserved bus 63.1590 kWh, unserved wheel 0.0000 kWh, friction 0.615 kWh
+   pack_loss: unserved bus 2.8046 kWh, unserved wheel 0.0000 kWh, friction 0.615 kWh
+   pack_derate: unserved bus 0.3136 kWh, unserved wheel 0.0000 kWh, friction 0.615 kWh
+   resistor_loss: unserved bus 0.0000 kWh, unserved wheel 0.0000 kWh, friction 0.615 kWh
+   inverter_thermal: unserved bus 0.0000 kWh, unserved wheel 25.2368 kWh, friction 1.702 kWh
+   sensor_loss: unserved bus 0.0000 kWh, unserved wheel 0.0000 kWh, friction 0.615 kWh
+== 13. WS6 heat ledger ==
+== 14. WS7 test vectors ==
+   12 vectors ({'BLOCKING': 4, 'HIGH': 5, 'MEDIUM': 3})
+== 15. state machine export ==
+== 16. interface block ==
+== 17. traces (R34) and tables ==
+== 18. figures ==
+   6 figures written
+== wrote results_ws5.json (763874 bytes) ==
+   patched results_sha256 9c702dd9117e87ee into 3 trace headers
+
+HEADLINES
+  R22b recommendation ........ load_follow (load-following (R22b c)), DR1 fallback (no strategy satisfied DR2)
+  nominal fuel (median) ...... 1.7170 kWh/km
+  WS4 concordance ............ EXACT
+  V1 starts/8 h shift ........ 16.5-24.8 (R19 band 16-25, inside=True)
+  ESC-9 worst unserved ....... 0.0000 kWh (WS4 bracket 0.6129)
+  resistor-loss descent ...... 8.10 kWh to friction at 20.0 kW mean (worst-energy row); worst-power row 40.9 kW mean carrying 6.07 kWh
+  WS7 vectors ................ 12 ({'BLOCKING': 4, 'HIGH': 5, 'MEDIUM': 3})
+RUN=0
+wrote REPORT_WS5.md (92565 bytes), 934 rendered numbers in the manifest
+REPORT=0
+manifest entries verified verbatim : 934 / 934
+rendered values not found in report: 0
+R14 / R9 / R34 / interface checks  : PASS
+
+VERIFIED: every headline number in REPORT_WS5.md is generated from, and verifies verbatim against, results_ws5.json.
+VERIFY=0

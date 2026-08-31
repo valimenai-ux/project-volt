@@ -1,0 +1,13 @@
+id,priority,title,ruling,ws5_predicted_value
+WS5-T1,BLOCKING,"Brake-resistor loss on a sustained 6% descent","R2 / R15 / R22c","three separate extrema over the enumerated descent grid, each with its own governing row - they are NOT the same run. Worst friction ENERGY 8.10 kWh at 20.0 kW mean (payload120/45C/25kmh/soc0.95 (crest, buffer nearly full)/resistor_lost); worst sustained friction POWER 40.9 kW mean carrying 6.07 kWh (payload120/45C/70kmh/soc0.95 (crest, buffer nearly full)/resistor_lost); worst instantaneous friction POWER 49.3 kW (payload120/45C/85kmh/soc0.95 (crest, buffer nearly full)/resistor_lost)"
+WS5-T2,HIGH,"ISG engine-motoring as a retardation sink","R2 / WS4 motoring anchor [WS5-PROPOSED]","15.3 kW at rated-continuous speed; 9.9 kW at WS4's 1,706 rpm anchor point"
+WS5-T3,BLOCKING,"Genset load-acceptance ramp","R19 / R22b / ESC-9","the supervisor assumes a 4 s raised ramp and 25 kW/s slew; the residual ESC-9 exposure (0.0000 kWh) is entirely inside this ramp"
+WS5-T4,BLOCKING,"Pack dispatch envelope below SOC 40% of nameplate","ESC-9 / WS3 soc15_note / R8 as restated by R12","WS5 dispatch limit at -10 C / SOC 0.25 usable = 102.9 kW bus vs 125 kW warm"
+WS5-T5,HIGH,"Empty-truck regen adhesion, flat and on grade","E23","mu required flat 0.362; on the 6% descent 0.375 (+3.5%)"
+WS5-T6,HIGH,"13.5 kN launch adhesion","E23 / R3","mu required curb 0.654, GVW 0.294"
+WS5-T7,HIGH,"R16 cold dispatch and preconditioning","R16","preconditioning energy up to 0.70 kWh per cycle; cold fuel penalty at -10 C +0.0%"
+WS5-T8,BLOCKING,"Genset-loss and pack-loss limp, then tow","R22c","genset loss: first unserved sample at 0.0 - 259.4 s after injection; pack loss: unserved wheel energy up to 0.00 kWh"
+WS5-T9,MEDIUM,"Inverter thermal derate law","R13 / WS2 inverter Tj export","WS5 uses a lumped Tj proxy calibrated on WS2's pair (6.15 K/kW above the LT inlet); peak Tj on the duty reaches 131 C at the 2,000 m / +45 C corner"
+WS5-T10,MEDIUM,"Sustained true-coast recovery (R22d)","R22d","bus swing 0.74 kW mean, 0.124 kWh over 600 s"
+WS5-T11,MEDIUM,"Two-point notch NVH","R22b","load_follow: 5353 set-point transitions/h and 1.1 starts/h at nominal (8-seed max)"
+WS5-T12,HIGH,"V1 start count over a shift","R19","16.5-24.8 starts/shift (8-seed envelope; inside the ratified band: True)"

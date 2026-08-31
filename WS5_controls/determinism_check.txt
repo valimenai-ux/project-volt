@@ -1,0 +1,23 @@
+compared 19 artifacts
+  OK  REPORT_WS5.md  a7408cf9a2ad3449
+  OK  data/descent_blend_r15.csv  9413de0468518ff8
+  OK  data/dispatch_trade_v2.csv  4d6c142c23c27f38
+  OK  data/fault_matrix.csv  9193e4628a88b69c
+  OK  data/heat_ledger_ws5_to_ws6.csv  8c7ca7cacc8b6901
+  OK  data/report_number_manifest.csv  b2a096fbda1c0a08
+  OK  data/state_machine.csv  098427f6a188b22e
+  OK  data/state_machine.mmd  ba7cd4ee0d734e5a
+  OK  data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv  e1d1c950064f03e1
+  OK  data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv  7d2568e8f8bceb6c
+  OK  data/trace_V2_descent6pct-70kmh_resistor-loss_seed0_10Hz.csv  c5246d35b7e7355f
+  OK  data/ws7_test_vectors.csv  4068c725b702b97d
+  OK  figs/ws5_cold_dispatch.png  4db14b9ed4bc680c
+  OK  figs/ws5_descent_blend.png  130293d89a8b96a7
+  OK  figs/ws5_dispatch_trade.png  ed2af9bf20c38990
+  OK  figs/ws5_reference_trace.png  718b4f6ddf56b987
+  OK  figs/ws5_state_machine.png  c284c15a498798f1
+  OK  figs/ws5_traction_e23.png  ba0646ac85c7a0f7
+  OK  results_ws5.json  9c702dd9117e87ee
+
+BYTE-STABLE: every artifact reproduced byte-for-byte.
+DET=0

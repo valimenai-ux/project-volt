@@ -253,6 +253,47 @@ case is the boundary being tested, and it lands on the consistency side of it.
 
 ---
 
+## 12. The exhibit's own coverage limits
+
+The interactive exhibit (`WS12_exhibit/`, linked from [README.md](README.md)) is
+built from this repository's committed record and ships its own manifest and
+verifier. Its citation-check adjudication closed all twelve of its findings; two
+residuals survive by construction and are recorded here because CLOSEOUT §4
+requires unclosed items to land in this file. Neither moves a number, a status
+or a verdict.
+
+- **Values the app formats at run time sit outside the manifest.** The
+  build-time manifest enumerates cited and derived value *objects*. Values the
+  app formats at run time from raw bundle fields — the trace registry's blend
+  residuals, the elevation span, the power-flow kW labels, the source index's
+  file sizes, and race mode's peak speed and grade — produce no such object, so
+  they are outside both the manifest and its verifier. The panels carrying them
+  are badged DERIVED and the exhibit's coverage claim is narrowed to "every
+  value of record" rather than "every renderable value". Binding every run-time
+  format call at build time is a design change rather than a copy or binding
+  fix, so it was recorded rather than attempted under the one-fold rule.
+  (`WS12_exhibit/REPORT_WS12.md` §0.)
+
+- **The exhibit's verifier re-derives the load-bearing derived values, not all
+  152.** Its derived-value check recomputes the ones a reader's conclusion turns
+  on; the uncovered remainder is dominated by the race screen's build-time trace
+  integrals, which a separate check compares byte-for-byte against their source
+  files and which the adjudicator re-derived independently. For that reason the
+  verifier's summary line reports assertions rather than coverage.
+  (`WS12_exhibit/REPORT_WS12.md` §0; independently re-derived in
+  `WS12_exhibit/FINDINGS_WS12_r1.md`.)
+
+**What these two do and do not say.** Both are about what the exhibit's own
+machinery re-checks, not about whether a number on screen is the number in the
+record — the adjudicator resolved the exhibit's citations, quotations, file
+identities and published traces with its own resolver and found them clean. They
+are the same class of limitation as the narrowed coverage claim this publication
+makes about its own ledger ([FINDINGS.md](FINDINGS.md) §Provenance): a
+verifier's reach is a statement about internal consistency, and internal
+consistency is not physical validity.
+
+---
+
 ## What would move any of this
 
 One thing, mostly: hardware. A measured stock NPR-HD on the program cycles

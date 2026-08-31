@@ -429,6 +429,34 @@ log("building VOLT-REG ensemble ...")
 REG = {sd: vc.build_cycle_B(seed=sd) for sd in REG_SEEDS}
 log(f"  built {len(REG)} cycles")
 
+# --- KX r3 / adjudication KX2-m3. The member set OF RECORD of the
+# ARCHIVED gate's raw reference-seed dump, frozen in the record's own key
+# order. `gate_g1` is an archived block (KX_DIRECTIVE item 3) whose
+# values may not move; before this freeze its raw dump also could not
+# stop GROWING, because it was built from `everything run_g1_mode
+# returns`. Any simulator field added after 2026-08-30 belongs to the
+# LIVE block (series_duty_v2), never to the archive.
+G1_RAW_KEYS_OF_RECORD = (
+    'mode', 'fuel_g', 'fuel_corrected_g', 'soc_drift_kwh_cells',
+    'fuel_energy_kwh', 'fuel_l', 'starts', 'sync_starts',
+    'ramp_starts', 'duration_s', 'distance_km', 'e_fric_kwh',
+    'e_gen_loss_kwh', 'e_chain_loss_kwh', 'e_dl_loss_kwh',
+    'eng_kwh', 'eng_on_s', 'locked_s', 'bank_kwh',
+    'over_rating_s', 'e_bus_kwh', 'eng_reject_kwh',
+    'e_dir_wheel_kwh', 'emerg_s', 'unserved_kwh',
+    'e_spin_shaft_kwh', 'e_spin_bus_kwh', 'above_pin_demand_s',
+    'above_pin_demand_kwh', 'above_pin_engine_s',
+    'above_pin_transitions', 'eng_stops', 'pack_chg_peak_kw',
+    'pack_dis_peak_kw', 'pack_chg_over_r8_110kW_s',
+    'pack_dis_over_r8_125kW_s', 'regen_shed_r16_kwh',
+    'regen_bus_peak_kw', 'r8_dis_clip_s', 'r8_chg_clip_s',
+    'r8_chg_shed_kwh', 'coast_no_regen_s',
+    'coast_spin_shaft_kwh_r22d', 'coast_spin_bus_kwh_r22d',
+    'l_per_100km', 'mean_bsfc_eff_g_per_kwh', 'soc_min',
+    'soc_max', 'soc_end', 'starts_per_h',
+    'above_pin_transitions_per_h', 'fuel_energy_kWh_per_km',
+    'eng_on_frac')
+
 
 def g1_config(tag, engine, veh=VEH, aux=2.0, derate=1.0, modes=("a", "b"),
               chain=None, spin=(0.0, 0.0), convention=None, gen=GEN_V2):
@@ -540,9 +568,19 @@ def g1_config(tag, engine, veh=VEH, aux=2.0, derate=1.0, modes=("a", "b"),
             a_spin_shaft_kwh_max=_mm("a", "e_spin_shaft_kwh")[1],
             a_spin_bus_kwh_min=_mm("a", "e_spin_bus_kwh")[0],
             a_spin_bus_kwh_max=_mm("a", "e_spin_bus_kwh")[1])
-    out["_raw_reference_seed"] = {md: {k: v for k, v in rows[23][md].items()
-                                       if k != "pinned"}
-                                  for md in modes} if 23 in REG_SEEDS else {}
+    # KX r3 / adjudication KX2-m3: the ARCHIVED gate's raw reference-seed
+    # dump used to be `everything the simulator returns`, so it gained 234
+    # members the moment the KX r2 rework added diagnostics to the
+    # simulator - including over-rating counters for mode (a), a mode the
+    # block's own notice says exists in no live architecture, measured by
+    # a counter that did not exist when the gate was run. An archived
+    # record that mutates whenever the simulator gains a field is not
+    # archived. The dump is now projected through the explicit member set
+    # OF RECORD below, in the record's own key order, so the block is
+    # frozen against every future simulator change.
+    out["_raw_reference_seed"] = {
+        md: {k: rows[23][md][k] for k in G1_RAW_KEYS_OF_RECORD}
+        for md in modes} if 23 in REG_SEEDS else {}
     out["pinned_point"] = rows[REG_SEEDS[0]][modes[0]]["pinned"]
     return out
 
@@ -693,6 +731,24 @@ def _DELTA_GOV(cfg):
             f"{G1_PRIOR['ensemble']['margin_pct_min_governing_case']}")
 
 
+# KX r3 / construction sweep (KX2-M3 family). The two attribution deltas
+# are DIFFERENCES OF ENSEMBLE STATISTICS, not extrema of the paired
+# per-seed delta. Their names say so (`delta_pp_min` = delta of the min)
+# and `_DELTA_GOV` states it inline for the min; the median sibling
+# carried no such statement, so it gets one here. The VALUES are
+# BASELINE_v3-ratified record (-7.01 pp map-vs-scalar, -1.77 pp spin) and
+# are NOT recomputed; the paired per-seed companion is measured and
+# exported OUTSIDE this archived block, at
+# results_ws4.json -> construction_sweep_kx_r3.
+_DELTA_MEDIAN_CONSTRUCTION = (
+    "difference of ensemble MEDIANS over the enumerated 8-seed VOLT-REG "
+    "set (row median minus prior-convention median) - NOT the median of "
+    "the paired per-seed deltas. Stated explicitly under the KX r3 "
+    "construction sweep; the value is the BASELINE_v3-ratified record "
+    "and is not recomputed. Paired companion: results_ws4.json -> "
+    "construction_sweep_kx_r3 -> examined -> gate_g1_one_factor.")
+
+
 R["gate_g1_one_factor"] = dict(
     _note=("directive item 3: one-factor rows at nominal. delta = "
            "row margin minus prior-convention margin, in percentage "
@@ -705,14 +761,16 @@ R["gate_g1_one_factor"] = dict(
         - G1_PRIOR["ensemble"]["margin_pct_min"],
         delta_pp_min_governing_case=_DELTA_GOV(G1_SPIN),
         delta_pp_median=G1_SPIN["ensemble"]["margin_pct_median"]
-        - G1_PRIOR["ensemble"]["margin_pct_median"]),
+        - G1_PRIOR["ensemble"]["margin_pct_median"],
+        delta_pp_median_construction=_DELTA_MEDIAN_CONSTRUCTION),
     map_vs_scalar_alone=dict(
         **_mrg(G1_MAPS),
         delta_pp_min=G1_MAPS["ensemble"]["margin_pct_min"]
         - G1_PRIOR["ensemble"]["margin_pct_min"],
         delta_pp_min_governing_case=_DELTA_GOV(G1_MAPS),
         delta_pp_median=G1_MAPS["ensemble"]["margin_pct_median"]
-        - G1_PRIOR["ensemble"]["margin_pct_median"]),
+        - G1_PRIOR["ensemble"]["margin_pct_median"],
+        delta_pp_median_construction=_DELTA_MEDIAN_CONSTRUCTION),
     both_g1r=dict(
         min=None, median=None))   # filled below once G1 nominal is final
 R["gate_g1_one_factor"]["both_g1r"] = dict(
@@ -721,7 +779,8 @@ R["gate_g1_one_factor"]["both_g1r"] = dict(
     - G1_PRIOR["ensemble"]["margin_pct_min"],
     delta_pp_min_governing_case=_DELTA_GOV(G1["nominal"]),
     delta_pp_median=G1["nominal"]["ensemble"]["margin_pct_median"]
-    - G1_PRIOR["ensemble"]["margin_pct_median"])
+    - G1_PRIOR["ensemble"]["margin_pct_median"],
+    delta_pp_median_construction=_DELTA_MEDIAN_CONSTRUCTION)
 
 # bp comparison (nominal only): pure-series-done-well vs pinned
 bp_fuel = [G1["nominal"]["per_seed"][str(sd)]["bp"]["fuel_kg"]
@@ -910,6 +969,11 @@ for _case, _veh in _F2_CASES.items():
         _vals = [_rows[str(sd)][_k] for sd in REG_SEEDS]
         _env[_k + "_min"] = min(_vals)
         _env[_k + "_max"] = max(_vals)
+        # R14 (adjudication KX2-m2): the `_min` siblings were unlabelled
+        # where the `_max` siblings in the same object were labelled.
+        _env[_k + "_min_governing_case"] = (
+            f"seed {REG_SEEDS[int(np.argmin(_vals))]} of the enumerated "
+            f"8-seed VOLT-REG ensemble [{_case}]")
         _env[_k + "_max_governing_case"] = (
             f"seed {REG_SEEDS[int(np.argmax(_vals))]} of the enumerated "
             f"8-seed VOLT-REG ensemble [{_case}]")
@@ -1233,6 +1297,10 @@ SD = dict(
             cases={_c: dict(
                 exposure_s_motoring_min=R["chain_boundary_exposure"][
                     "cases"][_c]["envelope"]["exposure_s_motoring_min"],
+                # R14 (adjudication KX2-m2)
+                exposure_s_motoring_min_governing_case=R[
+                    "chain_boundary_exposure"]["cases"][_c]["envelope"][
+                        "exposure_s_motoring_min_governing_case"],
                 exposure_s_motoring_max=R["chain_boundary_exposure"][
                     "cases"][_c]["envelope"]["exposure_s_motoring_max"],
                 exposure_s_motoring_max_governing_case=R[
@@ -1407,6 +1475,128 @@ def _sd_envelope(per_seed, tag):
     return env
 
 
+# ---------------------------------------------------------------------------
+# KX r3 / adjudication KX2-M1, KX2-M3, KX2-m1 - CONSTRUCTION HELPERS.
+#
+# Two defect families were re-introduced by the KX r2 rework and are
+# closed here at source, for every field in the workstream rather than
+# one field at a time:
+#
+#   (1) An aggregate whose NAME asserts one construction and whose CODE
+#       performs another - a "max" built from two independently maximised
+#       numbers, a "paired median" built as a ratio of medians, a "max
+#       over the case set" filtered down to one case. BASELINE_v5 R36 is
+#       on the record precisely because a ratio-of-statistics artefact
+#       reached doctrine once already: per-km claims are stated on the
+#       PAIRED statistic only. `_paired_pct_delta` below is the only
+#       sanctioned way to state a delta between two dispatches in this
+#       pipeline.
+#   (2) A degenerate extremum labelled with Python's first-key tie-break
+#       as though it were a governing case. `_case_worst` refuses to.
+# ---------------------------------------------------------------------------
+def _case_set_str(cases):
+    return "{" + ", ".join(cases) + "}"
+
+
+def _case_worst(vals, kind="max", gov_by_case=None, case_order=None,
+                zero_is_degenerate=True,
+                degenerate_zero_label=("no governing case - every ordered "
+                                       "case is exactly zero on all 8 seeds"),
+                set_name="enumerated ordered case set"):
+    """R14 min/max over an ENUMERATED case set, with an honest label.
+
+    Returns (value, label). When every case carries exactly the same
+    value the label refuses to name a governing case (adjudication
+    KX2-m1: `max(cases, key=...)` over three exact zeros is a first-key
+    tie-break, not a measurement); when a strict subset ties, the label
+    says so and names them all.
+    """
+    order = list(case_order if case_order is not None else vals)
+    best = max(vals[c] for c in order) if kind == "max" \
+        else min(vals[c] for c in order)
+    tied = [c for c in order if vals[c] == best]
+    cs = _case_set_str(order)
+    if len(tied) == len(order):
+        if zero_is_degenerate and best == 0.0:
+            # the exact degenerate-tie wording `unserved_energy_verdict`
+            # already used and round 1 accepted as the right form
+            return best, degenerate_zero_label
+        return best, (f"no governing case - every case of the {set_name} "
+                      f"{cs} is exactly {best:.6g}")
+    if len(tied) > 1:
+        inner = ("; within them, " + " / ".join(
+            f"{c}: {gov_by_case[c]}" for c in tied)) if gov_by_case else ""
+        return best, (f"tied at {best:.6g} across cases "
+                      f"{_case_set_str(tied)} of the {set_name} "
+                      f"{cs}{inner}")
+    inner = f"; within it, {gov_by_case[tied[0]]}" if gov_by_case else ""
+    return best, (f"case {tied[0]} of the {set_name} {cs}{inner}")
+
+
+def _paired_pct_delta(alt_cases, base_cases, key, cases, alt_label,
+                      base_label, unit_note=""):
+    """BASELINE_v5 R36 / adjudication KX2-M3: the PAIRED per-seed
+    percentage delta of `key` between two dispatches.
+
+    The two ensembles are paired by construction - same seeds, same
+    cycles, same everything but the supervisor - so the paired per-seed
+    delta is available at zero cost and is the statistic the program
+    requires. A ratio of ensemble statistics (median/median, max/max) is
+    a DIFFERENT quantity: at nominal the r2 companion's ratio of medians
+    was 2.7x smaller than the median of the paired deltas, and the r2
+    R16 bracket's ratio of maxima had the OPPOSITE SIGN to six of its
+    eight paired seeds.
+
+    Exports, per case: the eight paired deltas, their min/median/max with
+    R14 governing SEEDS, and the sign split; then the worst over the
+    enumerated case set with the governing case AND seed inline.
+    """
+    by_case = {}
+    for c in cases:
+        vals, dists = [], []
+        for sd in REG_SEEDS:
+            b = base_cases[c]["per_seed"][str(sd)]
+            a = alt_cases[c]["per_seed"][str(sd)]
+            # the two runs share the seed's cycle, so distance is
+            # identical and a per-km delta is a fuel-mass delta
+            dists.append(abs(a["distance_km"] - b["distance_km"]))
+            vals.append(100.0 * (a[key] - b[key]) / b[key])
+        assert max(dists) < 1e-9, \
+            f"paired delta on {key}: {c} distances differ ({max(dists)})"
+        by_case[c] = dict(
+            per_seed={str(sd): v for sd, v in zip(REG_SEEDS, vals)},
+            min=min(vals), median=float(np.median(vals)), max=max(vals),
+            min_governing_case=(
+                f"seed {REG_SEEDS[int(np.argmin(vals))]} of the enumerated "
+                f"8-seed VOLT-REG ensemble [{c}]"),
+            max_governing_case=(
+                f"seed {REG_SEEDS[int(np.argmax(vals))]} of the enumerated "
+                f"8-seed VOLT-REG ensemble [{c}]"),
+            seeds_positive_n=int(sum(1 for v in vals if v > 0.0)),
+            seeds_total=len(vals))
+    wmax, wmax_gov = _case_worst(
+        {c: by_case[c]["max"] for c in cases}, "max",
+        {c: by_case[c]["max_governing_case"] for c in cases}, cases,
+        zero_is_degenerate=False)
+    wmin, wmin_gov = _case_worst(
+        {c: by_case[c]["min"] for c in cases}, "min",
+        {c: by_case[c]["min_governing_case"] for c in cases}, cases,
+        zero_is_degenerate=False)
+    return dict(
+        _statistic=(f"PAIRED per-seed percentage delta of `{key}`: "
+                    f"100 x ({alt_label} - {base_label}) / {base_label}, "
+                    f"formed SEED BY SEED on the same enumerated 8-seed "
+                    f"VOLT-REG ensemble and only then enveloped "
+                    f"(BASELINE_v5 R36; adjudication KX2-M3). "
+                    f"{unit_note}").strip(),
+        by_case=by_case,
+        worst_max_pct=wmax, worst_max_pct_governing_case=wmax_gov,
+        worst_min_pct=wmin, worst_min_pct_governing_case=wmin_gov,
+        seeds_positive_n_by_case={c: by_case[c]["seeds_positive_n"]
+                                  for c in cases},
+        seeds_total_per_case=len(REG_SEEDS))
+
+
 # KX r2 / adjudication KX-m4: R34's "one per run" is ambiguous between
 # per PIPELINE run and per SIMULATED run. WS4 declares the reading below
 # and, rather than leave the gap, emits a full-rate 10 Hz trace for EVERY
@@ -1495,6 +1685,43 @@ def _axis(key, limit, limit_label):
                 mode_bp_companion=_m("bp"))
 
 
+# KX r3 / adjudication KX2-M3(a). The KX r2 block exported
+# `bp_penalty_pct_on_median` - a RATIO OF ENSEMBLE MEDIANS - and the
+# report rendered it three times, including in ESC-9, as "on the paired
+# per-case median". BASELINE_v5 R36 exists because exactly that artefact
+# reached doctrine once. The paired statistic is computed here; the
+# ratio-of-medians is retained beside it under a name that says what it
+# is, so nothing previously reported is dropped.
+# KX r3 / CONSTRUCTION SWEEP. The report rendered "peak shaft X kW = Y %
+# of the continuous rating" (ESC-10) as a max over ALL cases divided by
+# ONE case's rating. It happens to be right here only because the peak's
+# governing cases are the two undereated ones; at the corner the rating
+# is derated and the same arithmetic would be wrong. The ratio is now
+# formed PER CASE PER SEED against that case's own derated rating, then
+# enveloped (R14).
+_ENG_PCT = {}
+for _c in KX_CASES:
+    _rate = ENG_CONT_KW_BY_CASE[_c]
+    _v = [100.0 * SD["cases"][_c]["per_seed"][str(_sd)]["engine_shaft_peak_kW"]
+          / _rate for _sd in REG_SEEDS]
+    _ENG_PCT[_c] = dict(
+        continuous_rating_kW=_rate,
+        min=min(_v), median=float(np.median(_v)), max=max(_v),
+        max_governing_case=(
+            f"seed {REG_SEEDS[int(np.argmax(_v))]} of the enumerated "
+            f"8-seed VOLT-REG ensemble [{_c}]"))
+_eng_pct_worst, _eng_pct_worst_gov = _case_worst(
+    {c: _ENG_PCT[c]["max"] for c in KX_CASES}, "max",
+    {c: _ENG_PCT[c]["max_governing_case"] for c in KX_CASES},
+    list(KX_CASES), zero_is_degenerate=False)
+
+_BP_PAIRED = _paired_pct_delta(
+    {c: SD["cases"][c]["companion_bp"] for c in KX_CASES},
+    {c: SD["cases"][c] for c in KX_CASES},
+    "fuel_energy_kWh_per_km", list(KX_CASES),
+    "mode (b') load-following companion", "mode (b) block of record",
+    "Positive = the companion burns MORE than the pinned mode of record.")
+
 SD["companion_bp_capability_comparison"] = dict(
     ruling="R22b (WS5 owns the dispatch choice) / ESC-9 / KX-B2",
     _status=("MEASUREMENT, NOT A RECOMMENDATION. WS4 does not choose "
@@ -1505,7 +1732,10 @@ SD["companion_bp_capability_comparison"] = dict(
              "flat-rating - on every seed of every ordered case - where the "
              "pinned mode of record violates all three. ESC-9 asks the lead "
              "to choose between remedies; one of them is already measured "
-             "here, at the fuel deltas in fuel_kWh_per_km_by_case."),
+             "here, at the fuel deltas in fuel_kWh_per_km_by_case - which "
+             "are stated on the PAIRED per-seed statistic BASELINE_v5 R36 "
+             "mandates (fuel_delta_paired), not on a ratio of ensemble "
+             "statistics."),
     axes=dict(
         pack_discharge_peak_kW_bus=_axis(
             "pack_dis_peak_kW", 125.0,
@@ -1526,6 +1756,12 @@ SD["companion_bp_capability_comparison"] = dict(
             "engine_continuous_rating_kW_by_case below; the compliance "
             "verdict is the derate-aware seconds row above")),
     engine_continuous_rating_kW_by_case=ENG_CONT_KW_BY_CASE,
+    # KX r3 / construction sweep: per case, per seed, against THAT case's
+    # own derated rating - not a cross-case max over one case's rating.
+    engine_shaft_peak_pct_of_continuous_rating_by_case=_ENG_PCT,
+    engine_shaft_peak_pct_of_continuous_rating_worst=_eng_pct_worst,
+    engine_shaft_peak_pct_of_continuous_rating_worst_governing_case=(
+        _eng_pct_worst_gov),
     engine_automotive_peak_kW=ENG_V2.peak_power_kw(),
     generator_continuous_shaft_input_kW=GEN_V2.cont_kw_in,
     r16_accept_kW_bus_by_case=_ACCEPT,
@@ -1537,13 +1773,33 @@ SD["companion_bp_capability_comparison"] = dict(
                     "fuel_energy_kWh_per_km_min"],
                     SD["cases"][c]["companion_bp"]["ensemble"][
                         "fuel_energy_kWh_per_km_max"]],
-                bp_penalty_pct_on_median=100.0 * (
+                # --- the statistic R36 requires: PAIRED, per seed
+                bp_fuel_delta_pct_paired_min=_BP_PAIRED["by_case"][c]["min"],
+                bp_fuel_delta_pct_paired_median=_BP_PAIRED["by_case"][c][
+                    "median"],
+                bp_fuel_delta_pct_paired_max=_BP_PAIRED["by_case"][c]["max"],
+                bp_fuel_delta_pct_paired_min_governing_case=_BP_PAIRED[
+                    "by_case"][c]["min_governing_case"],
+                bp_fuel_delta_pct_paired_max_governing_case=_BP_PAIRED[
+                    "by_case"][c]["max_governing_case"],
+                bp_fuel_delta_pct_paired_seeds_positive_n=_BP_PAIRED[
+                    "by_case"][c]["seeds_positive_n"],
+                # --- the KX r2 field, retained under an honest name
+                bp_penalty_pct_ratio_of_ensemble_medians=100.0 * (
                     SD["cases"][c]["companion_bp"]["ensemble"][
                         "fuel_energy_kWh_per_km_median"]
                     - SD["cases"][c]["ensemble"][
                         "fuel_energy_kWh_per_km_median"])
-                / SD["cases"][c]["ensemble"]["fuel_energy_kWh_per_km_median"])
+                / SD["cases"][c]["ensemble"]["fuel_energy_kWh_per_km_median"],
+                _superseded_field=(
+                    "KX r2 exported the line above as "
+                    "`bp_penalty_pct_on_median` and rendered it as 'the "
+                    "paired per-case median'. It is a ratio of ensemble "
+                    "medians, which is a different quantity: withdrawn "
+                    "under that name (adjudication KX2-M3(a)); consume "
+                    "bp_fuel_delta_pct_paired_*."))
         for c in KX_CASES},
+    fuel_delta_paired=_BP_PAIRED,
     genset_starts_by_case={
         c: dict(mode_b=[SD["cases"][c]["ensemble"]["genset_starts_min"],
                         SD["cases"][c]["ensemble"]["genset_starts_max"]],
@@ -1555,9 +1811,10 @@ SD["companion_bp_capability_comparison"] = dict(
     reading=("on the three capability axes above, the load-following "
              "companion is inside every limit on every ordered seed and "
              "the pinned mode of record is outside all three. The fuel "
-             "cost of that is inside the ensemble spread at nominal and at "
-             "CdA 5.4 and about the corner penalty above at "
-             "alt2000m_45C. This is one endpoint of R22b's question "
+             "cost of that, on the PAIRED per-seed delta (R36), is inside "
+             "the ensemble spread at nominal and at CdA 5.4 and about the "
+             "corner penalty above at alt2000m_45C. This is one endpoint "
+             "of R22b's question "
              "measured on the same trace as the other, which is what the "
              "companion exists for. It is not a WS4 recommendation and it "
              "does not price the axes R22b must also weigh - start "
@@ -1616,12 +1873,33 @@ SD["soc_window_check"] = dict(
     resolution_s=5.0,
     cases={c: dict(
         t_below_gate_s_min=min(r[0] for r in rows),
+        # R14 (KX r3 construction sweep): the `_min` sibling was unlabelled
+        t_below_gate_s_min_governing_case=(
+            f"seed {REG_SEEDS[min(range(len(rows)), key=lambda i: rows[i][0])]}"
+            f" of the enumerated 8-seed VOLT-REG ensemble [{c}]"),
         t_below_gate_s_max=max(r[0] for r in rows),
         t_below_gate_s_max_governing_case=(
             f"seed {REG_SEEDS[max(range(len(rows)), key=lambda i: rows[i][0])]}"
             f" of the enumerated 8-seed VOLT-REG ensemble [{c}]"),
         soc_usable_min=min(r[1] for r in rows),
-        soc_nameplate_min=min(r[2] for r in rows))
+        soc_usable_min_governing_case=(
+            f"seed {REG_SEEDS[min(range(len(rows)), key=lambda i: rows[i][1])]}"
+            f" of the enumerated 8-seed VOLT-REG ensemble [{c}]"),
+        soc_nameplate_min=min(r[2] for r in rows),
+        soc_nameplate_min_governing_case=(
+            f"seed {REG_SEEDS[min(range(len(rows)), key=lambda i: rows[i][2])]}"
+            f" of the enumerated 8-seed VOLT-REG ensemble [{c}]"),
+        # KX r3 / adjudication note 5 for the lead: soc_usable_min here is
+        # measured off the 5 s decimated trajectory this block declares,
+        # while cases[*].ensemble.soc_min_min is the same quantity at the
+        # full 10 Hz rate. They differ by 0.0002-0.0004 of usable; both
+        # are exported and neither is a different SOC.
+        soc_usable_min_sampling_note=(
+            "computed on the 5 s decimated SOC trajectory declared by "
+            "`resolution_s` above. The full-rate value of the SAME "
+            "quantity is series_duty_v2 -> cases -> "
+            f"{c} -> ensemble -> soc_min_min "
+            f"({SD['cases'][c]['ensemble']['soc_min_min']:.6f})."))
         for c, rows in _gate_rows.items()},
     reading=("the ordered run spends real time below the SOC band over "
              "which WS3 declares the R8 discharge peak, on every case. "
@@ -1640,23 +1918,112 @@ _hot_mask = R16_T >= 45.0
 
 
 def _r16_case_env(key, fmt_case=True):
-    """min/max/governing over the enumerated 3-case x 8-seed set."""
-    per = {c: (SD["cases"][c]["ensemble"][key + "_min"],
-               SD["cases"][c]["ensemble"][key + "_max"],
-               SD["cases"][c]["ensemble"][key + "_max_governing_case"])
-           for c in KX_CASES}
-    worst = max(KX_CASES, key=lambda c: per[c][1])
-    return dict(per_case_min={c: per[c][0] for c in KX_CASES},
-                per_case_max={c: per[c][1] for c in KX_CASES},
-                per_case_max_governing_case={c: per[c][2] for c in KX_CASES},
-                worst_case_max=per[worst][1],
-                worst_case_max_governing_case=(
-                    f"case {worst} of the enumerated ordered case set "
-                    f"{{{', '.join(KX_CASES)}}}; within it, {per[worst][2]}"))
+    """min/max/governing over the enumerated 3-case x 8-seed set.
+
+    KX r3 / adjudication KX2-m2 + construction sweep: the `_min` siblings
+    now carry their R14 governing seeds too, and the worst-case label is
+    produced by `_case_worst`, so a degenerate tie cannot be presented as
+    a governing case.
+    """
+    e = {c: SD["cases"][c]["ensemble"] for c in KX_CASES}
+    wmax, wmax_gov = _case_worst(
+        {c: e[c][key + "_max"] for c in KX_CASES}, "max",
+        {c: e[c][key + "_max_governing_case"] for c in KX_CASES},
+        list(KX_CASES))
+    wmin, wmin_gov = _case_worst(
+        {c: e[c][key + "_min"] for c in KX_CASES}, "min",
+        {c: e[c][key + "_min_governing_case"] for c in KX_CASES},
+        list(KX_CASES))
+    return dict(per_case_min={c: e[c][key + "_min"] for c in KX_CASES},
+                per_case_min_governing_case={
+                    c: e[c][key + "_min_governing_case"] for c in KX_CASES},
+                per_case_max={c: e[c][key + "_max"] for c in KX_CASES},
+                per_case_max_governing_case={
+                    c: e[c][key + "_max_governing_case"] for c in KX_CASES},
+                worst_case_max=wmax,
+                worst_case_max_governing_case=wmax_gov,
+                mildest_case_min=wmin,
+                mildest_case_min_governing_case=wmin_gov)
 
 
 _pack_bound = bool(max(SD["cases"][c]["ensemble"][
     "pack_chg_above_r16_accept_s_max"] for c in KX_CASES) > 0.0)
+_pack_bound_every_seed = bool(min(SD["cases"][c]["ensemble"][
+    "pack_chg_above_r16_accept_s_min"] for c in KX_CASES) > 0.0)
+
+
+def _r16_crossing(target, t_branch, p_branch, what):
+    """np.interp against a MONOTONE branch of WS3's acceptance curve -
+    but only where a crossing genuinely exists.
+
+    KX r3 / adjudication KX2-M2. `np.interp` CLAMPS outside its range and
+    returns the branch's own end abscissa. KX r2 exported one such clamp
+    (`cold_side_binding_cell_C_pack_quantity = 10.0`) beside two genuine
+    crossings, so a consumer read a non-binding region above 10 C cells
+    that does not exist. A clamp and a crossing must not share a field
+    name: this asserts the target is inside the branch's range before
+    interpolating, and returns None when it is not, forcing the caller to
+    export the measured statement instead.
+    """
+    lo, hi = float(np.min(p_branch)), float(np.max(p_branch))
+    if not (lo <= target <= hi):
+        return None
+    order = np.argsort(p_branch)
+    return float(np.interp(target, np.asarray(p_branch)[order],
+                           np.asarray(t_branch)[order]))
+
+
+# --- KX r3 / adjudication KX2-M2: the PACK quantity has no crossing on
+# either side. WS3's continuous column peaks at its global maximum below
+# the ordered run's peak pack charge, so the constraint is exceeded at
+# EVERY tabulated cell temperature. That sentence - not a clamped
+# interpolation - is the decision-relevant fact for ESC-8.
+_R16_CURVE_MAX = float(np.max(R16_P))
+_R16_CURVE_MAX_T = float(R16_T[int(np.argmax(R16_P))])
+_R16_PULSE_MAX = float(np.max(R16_P_PULSE))
+_R16_PULSE_MAX_T = float(R16_T_PULSE[int(np.argmax(R16_P_PULSE))])
+_pulse_ok = R16_P_PULSE >= _pk_pack_chg
+_PACK_BINDING = dict(
+    _statement=("on the PACK quantity the ordered duty's peak charge "
+                "EXCEEDS WS3's continuous acceptance at EVERY tabulated "
+                "cell temperature WS3 publishes. There is no cold-side "
+                "boundary, no hot-side boundary and no non-binding "
+                "window - which is why no *_binding_cell_C field is "
+                "exported for this quantity (adjudication KX2-M2)."),
+    peak_pack_charge_kW_bus=_pk_pack_chg,
+    acceptance_curve_max_kW_bus=_R16_CURVE_MAX,
+    acceptance_curve_max_at_cell_C=_R16_CURVE_MAX_T,
+    least_binding_cell_C=_R16_CURVE_MAX_T,
+    least_binding_cell_C_meaning=(
+        "the cell temperature at which WS3's CONTINUOUS acceptance column "
+        "attains its MAXIMUM, i.e. the most favourable point on the "
+        "curve. It is NOT a boundary and NOT a crossing."),
+    min_exceedance_kW_over_the_curve=_pk_pack_chg - _R16_CURVE_MAX,
+    exceeds_acceptance_at_every_tabulated_cell_C=bool(
+        _pk_pack_chg > _R16_CURVE_MAX),
+    n_tabulated_cells=int(R16_T.size),
+    tabulated_cell_C_min=float(np.min(R16_T)),
+    tabulated_cell_C_max=float(np.max(R16_T)),
+    cold_side_crossing_exists=False,
+    hot_side_crossing_exists=False,
+    pulse10s_max_kW_bus=_R16_PULSE_MAX,
+    pulse10s_max_at_cell_C=_R16_PULSE_MAX_T,
+    pulse10s_covers_peak_between_cell_C=[float(R16_T_PULSE[_pulse_ok].min()),
+                                         float(R16_T_PULSE[_pulse_ok].max())],
+    pulse10s_note=("the 10-s PULSE column DOES cover the peak magnitude "
+                   "over the cell range above; `pulse10s_covers_the_"
+                   "excursions` is False on excursion DURATION, not on "
+                   "magnitude, and that distinction is correct."),
+    _superseded_field=dict(
+        name="cold_side_binding_cell_C_pack_quantity",
+        kx_r2_value=10.0,
+        why_withdrawn=(
+            "computed as np.interp(peak_pack_charge, cold branch) with "
+            "the peak ABOVE the branch's right edge, so np.interp clamped "
+            "and returned the branch's last abscissa. It was not a "
+            "crossing; there is none. Exported beside two genuine "
+            "crossings, it read as a non-binding region above 10 C cells "
+            "(adjudication KX2-M2).")))
 SD["r16_binding_analysis"] = dict(
     ruling="R16 (regen_acceptance.csv is the interface of record)",
     # ---------------------------------------------------------------
@@ -1695,16 +2062,27 @@ SD["r16_binding_analysis"] = dict(
         for c in KX_CASES) > 1e-12),
     regen_leg_enforced_in_ordered_run=True,
     peak_regen_to_pack_kW_bus=_pk_regen,
-    peak_regen_governing_case=max(
-        KX_CASES, key=lambda c: SD["cases"][c]["ensemble"][
-            "regen_bus_peak_kW_max"]),
+    # KX r3 / adjudication KX2-m2: these two named a CASE only, where the
+    # same block's other worst-case fields use the program's fuller form.
+    peak_regen_governing_case=_case_worst(
+        {c: SD["cases"][c]["ensemble"]["regen_bus_peak_kW_max"]
+         for c in KX_CASES}, "max",
+        {c: SD["cases"][c]["ensemble"]["regen_bus_peak_kW_max_governing_case"]
+         for c in KX_CASES}, list(KX_CASES))[1],
     # --- reading (2): the pack, which is what the run VIOLATES
     pack_charge_bound_by_r16_any_sample=_pack_bound,
+    # KX r3 / construction sweep: `any_sample` is a max>0 over the set and
+    # is correctly named, but the stronger measured statement - the
+    # exceedance is nonzero on EVERY seed of EVERY ordered case - is the
+    # one ESC-8 turns on, so it is exported explicitly as a min>0.
+    pack_charge_bound_on_every_ordered_seed=_pack_bound_every_seed,
     pack_charge_enforced_in_ordered_run=False,
     peak_pack_charge_kW_bus=_pk_pack_chg,
-    peak_pack_charge_governing_case=max(
-        KX_CASES, key=lambda c: SD["cases"][c]["ensemble"][
-            "pack_chg_peak_kW_max"]),
+    peak_pack_charge_governing_case=_case_worst(
+        {c: SD["cases"][c]["ensemble"]["pack_chg_peak_kW_max"]
+         for c in KX_CASES}, "max",
+        {c: SD["cases"][c]["ensemble"]["pack_chg_peak_kW_max_governing_case"]
+         for c in KX_CASES}, list(KX_CASES))[1],
     pack_charge_above_r16_accept_s=_r16_case_env(
         "pack_chg_above_r16_accept_s"),
     pack_charge_above_r16_accept_kWh=_r16_case_env(
@@ -1730,12 +2108,12 @@ SD["r16_binding_analysis"] = dict(
                    "cover them. Stated because the previous round never "
                    "consulted this column."),
     # --- the hot end, on the PACK quantity (KX-B1 re-scopes ESC-8)
-    cold_side_binding_cell_C=float(np.interp(
-        _pk_regen, R16_P[_cold_mask], R16_T[_cold_mask])),
-    hot_side_binding_cell_C=float(np.interp(
-        _pk_regen, R16_P[_hot_mask][::-1], R16_T[_hot_mask][::-1])),
-    cold_side_binding_cell_C_pack_quantity=float(np.interp(
-        _pk_pack_chg, R16_P[_cold_mask], R16_T[_cold_mask])),
+    cold_side_binding_cell_C=_r16_crossing(
+        _pk_regen, R16_T[_cold_mask], R16_P[_cold_mask], "regen/cold"),
+    hot_side_binding_cell_C=_r16_crossing(
+        _pk_regen, R16_T[_hot_mask], R16_P[_hot_mask], "regen/hot"),
+    # KX r3 / adjudication KX2-M2: the pack quantity has NO crossing.
+    pack_quantity_binding_analysis=_PACK_BINDING,
     accept_at_ws3_loop_ceiling_55C_kW=float(np.interp(55.0, R16_T, R16_P)),
     accept_at_50C_kW=float(np.interp(50.0, R16_T, R16_P)),
     pulse10s_at_ws3_loop_ceiling_55C_kW=float(
@@ -1751,7 +2129,15 @@ SD["r16_binding_analysis"] = dict(
                      "95.0 kW; and at WS3's 55 C loop ceiling even the "
                      "10-s PULSE rating (128.8 kW) sits below the run's "
                      "147.6 kW peak. ESC-8 is restated on the pack "
-                     "quantity in s12."),
+                     "quantity in s12. KX r3 (adjudication KX2-M2) adds "
+                     "the single most decision-relevant sentence, which "
+                     "was missing from both prior rounds: the curve's "
+                     "CONTINUOUS column peaks BELOW the run's peak pack "
+                     "charge, so on the pack quantity the acceptance is "
+                     "exceeded at EVERY tabulated cell temperature - "
+                     "there is no favourable cell temperature at all, "
+                     "only a least-unfavourable one. See "
+                     "pack_quantity_binding_analysis."),
     note=("READ BOTH FIELDS. On the REGEN LEG - the leg the ordered run "
           "enforces - R16's curve is not binding: peak regen-to-pack is "
           "far below acceptance at the declared cell temperatures and "
@@ -1792,6 +2178,10 @@ for _case, _cfg in KX_CASES.items():
         f"{_R8B[_case]['ensemble']['unserved_bus_kWh_max']:.3f} kWh, "
         f"discharge clipped "
         f"{_R8B[_case]['ensemble']['r8_envelope_dis_clip_s_max']:.1f} s")
+_r8b_uns, _r8b_uns_gov = _case_worst(
+    {c: _R8B[c]["ensemble"]["unserved_bus_kWh_max"] for c in KX_CASES},
+    "max", {c: _R8B[c]["ensemble"]["unserved_bus_kWh_max_governing_case"]
+            for c in KX_CASES}, list(KX_CASES))
 SD["r8_power_envelope_bracket"] = dict(
     ruling="R8 as restated by R12/ES-4 (125 kW discharge / 110 kW charge, "
            "bus-side)",
@@ -1803,11 +2193,8 @@ SD["r8_power_envelope_bracket"] = dict(
                  "fuel-corrected exactly as the buffer-empty case is); "
                  "charge above the cap is shed"),
     cases=_R8B,
-    worst_unserved_kWh=max(_R8B[c]["ensemble"]["unserved_bus_kWh_max"]
-                           for c in KX_CASES),
-    worst_unserved_governing_case=max(
-        KX_CASES,
-        key=lambda c: _R8B[c]["ensemble"]["unserved_bus_kWh_max"]),
+    worst_unserved_kWh=_r8b_uns,
+    worst_unserved_governing_case=_r8b_uns_gov,
     reading=("R4/E24's 'the spine is not sized for forced series' record "
              "extends to the PACK's power envelope, not only the motor "
              "rating: the delivered pack has the ENERGY for pure-series "
@@ -1845,10 +2232,37 @@ for _case, _cfg in KX_CASES.items():
         f"{_R16B[_case]['ensemble']['r16_pack_cap_clip_s_max']:.1f} s, "
         f"unserved "
         f"{_R16B[_case]['ensemble']['unserved_bus_kWh_max']:.4f} kWh")
+# KX r3 / adjudication KX2-M3(b). The KX r2 field was a RATIO OF
+# ENSEMBLE MAXIMA - two independently maximised numbers, which is not the
+# maximum of the quantity: the identical construction defect the same
+# round had just fixed in the heat ledger under KX-m6. At nominal it also
+# FLIPPED SIGN (-0.0018% exported, +0.169% on the paired median, a cost
+# on six of the eight seeds), and `fuel_penalty_pct_max` was rendered in
+# ESC-8(c) as "at most +0.20%" while the worst paired seed at CdA 5.4
+# costs +0.249%. The paired statistic is computed here; the
+# ratio-of-maxima is retained beside it under an honest name.
+_R16B_PAIRED = _paired_pct_delta(
+    _R16B, {c: SD["cases"][c] for c in KX_CASES},
+    "fuel_energy_kWh_per_km", list(KX_CASES),
+    "R16 acceptance enforced on the pack", "the ordered mode-(b) run",
+    "Positive = enforcing the pack reading COSTS fuel on that seed.")
 _r16b_fuel_pp = {
     c: 100.0 * (_R16B[c]["ensemble"]["fuel_kg_max"]
                 - SD["cases"][c]["ensemble"]["fuel_kg_max"])
     / SD["cases"][c]["ensemble"]["fuel_kg_max"] for c in KX_CASES}
+_r16b_uns, _r16b_uns_gov = _case_worst(
+    {c: _R16B[c]["ensemble"]["unserved_bus_kWh_max"] for c in KX_CASES},
+    "max", {c: _R16B[c]["ensemble"]["unserved_bus_kWh_max_governing_case"]
+            for c in KX_CASES}, list(KX_CASES))
+_r16b_shed, _r16b_shed_gov = _case_worst(
+    {c: _R16B[c]["ensemble"]["r16_pack_cap_shed_kWh_max"] for c in KX_CASES},
+    "max", {c: _R16B[c]["ensemble"][
+        "r16_pack_cap_shed_kWh_max_governing_case"] for c in KX_CASES},
+    list(KX_CASES))
+_r16b_clip, _r16b_clip_gov = _case_worst(
+    {c: _R16B[c]["ensemble"]["r16_pack_cap_clip_s_max"] for c in KX_CASES},
+    "max", {c: _R16B[c]["ensemble"]["r16_pack_cap_clip_s_max_governing_case"]
+            for c in KX_CASES}, list(KX_CASES))
 SD["r16_pack_acceptance_bracket"] = dict(
     ruling="R16 read as a PACK charge limit (adjudication KX-B1)",
     _status=("WS4 bracket in response to adjudication KX-B1, NOT an ordered "
@@ -1866,28 +2280,40 @@ SD["r16_pack_acceptance_bracket"] = dict(
                  "every seed of every ordered case with no shed energy at "
                  "all - see companion_bp and s4-KX.6."),
     cases=_R16B,
-    worst_shed_kWh=max(_R16B[c]["ensemble"]["r16_pack_cap_shed_kWh_max"]
-                       for c in KX_CASES),
-    worst_shed_governing_case=max(
-        KX_CASES, key=lambda c: _R16B[c]["ensemble"][
-            "r16_pack_cap_shed_kWh_max"]),
-    worst_clip_s=max(_R16B[c]["ensemble"]["r16_pack_cap_clip_s_max"]
-                     for c in KX_CASES),
-    worst_clip_governing_case=max(
-        KX_CASES,
-        key=lambda c: _R16B[c]["ensemble"]["r16_pack_cap_clip_s_max"]),
-    worst_unserved_kWh=max(_R16B[c]["ensemble"]["unserved_bus_kWh_max"]
-                           for c in KX_CASES),
-    worst_unserved_governing_case=max(
-        KX_CASES, key=lambda c: _R16B[c]["ensemble"]["unserved_bus_kWh_max"]),
-    fuel_penalty_pct_vs_ordered=_r16b_fuel_pp,
-    fuel_penalty_pct_max=max(_r16b_fuel_pp.values()),
-    fuel_penalty_pct_max_governing_case=max(
-        _r16b_fuel_pp, key=lambda c: _r16b_fuel_pp[c]),
+    worst_shed_kWh=_r16b_shed,
+    worst_shed_governing_case=_r16b_shed_gov,
+    worst_clip_s=_r16b_clip,
+    worst_clip_governing_case=_r16b_clip_gov,
+    worst_unserved_kWh=_r16b_uns,
+    worst_unserved_governing_case=_r16b_uns_gov,
+    # --- R36: the PAIRED per-seed fuel delta (adjudication KX2-M3(b))
+    fuel_delta_paired=_R16B_PAIRED,
+    fuel_delta_pct_paired_worst_max=_R16B_PAIRED["worst_max_pct"],
+    fuel_delta_pct_paired_worst_max_governing_case=_R16B_PAIRED[
+        "worst_max_pct_governing_case"],
+    fuel_delta_pct_paired_worst_min=_R16B_PAIRED["worst_min_pct"],
+    fuel_delta_pct_paired_worst_min_governing_case=_R16B_PAIRED[
+        "worst_min_pct_governing_case"],
+    # --- the KX r2 fields, retained under names that say what they are
+    fuel_penalty_pct_vs_ordered_ratio_of_ensemble_maxima=_r16b_fuel_pp,
+    fuel_penalty_pct_ratio_of_ensemble_maxima_max=max(_r16b_fuel_pp.values()),
+    _superseded_fields=(
+        "KX r2 exported the two lines above as "
+        "`fuel_penalty_pct_vs_ordered` / `fuel_penalty_pct_max` and "
+        "ESC-8(c) rendered the latter as 'fuel penalty at most +0.20%'. "
+        "Both are ratios of two INDEPENDENTLY MAXIMISED ensemble numbers, "
+        "which is not the maximum of the quantity and is not a bound: at "
+        "nominal the ratio-of-maxima has the OPPOSITE SIGN to six of the "
+        "eight paired seeds, and the true worst paired seed at CdA 5.4 "
+        "costs more than the 'at most'. Withdrawn under those names "
+        "(adjudication KX2-M3(b)); consume fuel_delta_pct_paired_*."),
     reading=("enforcing WS3's acceptance curve on the PACK costs the shed "
              "energy and fuel above and does NOT reopen the zero-unserved "
              "headline. The headline therefore does not depend on which "
-             "reading of R16 the lead rules for."))
+             "reading of R16 the lead rules for. The fuel cost is a cost "
+             "on every seed of both other cases and on the majority of "
+             "seeds at nominal - see fuel_delta_paired.seeds_positive_n_"
+             "by_case."))
 
 # --- ENGINE CONTINUOUS-RATING bracket (KX r2, adjudication KX-M1).
 # The ordered run's emergency band caps the engine at the AUTOMOTIVE
@@ -1917,10 +2343,29 @@ for _case, _cfg in KX_CASES.items():
         f"SOC min {_M1B[_case]['ensemble']['soc_min_min']:.3f}, over-rating "
         f"{_M1B[_case]['ensemble']['engine_over_continuous_rating_s_max']:.1f} s, "
         f"fuel {_M1B[_case]['ensemble']['fuel_kg_max']:.2f} kg")
+# KX r3 / adjudication KX2-M3(c): same construction defect. Here the
+# conclusion survives the correction - paired, every seed of every case
+# is <= 0, so ESC-10's "fuel does not rise at all" holds - but a "max"
+# over three negatives is the LEAST saving, exported under a name that
+# says penalty.
+_M1B_PAIRED = _paired_pct_delta(
+    _M1B, {c: SD["cases"][c] for c in KX_CASES},
+    "fuel_energy_kWh_per_km", list(KX_CASES),
+    "the engine held to its own continuous flat-rating",
+    "the ordered mode-(b) run",
+    "Positive = holding the engine to its rating COSTS fuel on that seed.")
 _m1b_fuel_pp = {
     c: 100.0 * (_M1B[c]["ensemble"]["fuel_kg_max"]
                 - SD["cases"][c]["ensemble"]["fuel_kg_max"])
     / SD["cases"][c]["ensemble"]["fuel_kg_max"] for c in KX_CASES}
+_m1b_uns, _m1b_uns_gov = _case_worst(
+    {c: _M1B[c]["ensemble"]["unserved_bus_kWh_max"] for c in KX_CASES},
+    "max", {c: _M1B[c]["ensemble"]["unserved_bus_kWh_max_governing_case"]
+            for c in KX_CASES}, list(KX_CASES))
+_m1b_soc, _m1b_soc_gov = _case_worst(
+    {c: _M1B[c]["ensemble"]["soc_min_min"] for c in KX_CASES},
+    "min", {c: _M1B[c]["ensemble"]["soc_min_min_governing_case"]
+            for c in KX_CASES}, list(KX_CASES), zero_is_degenerate=False)
 SD["engine_continuous_rating_bracket"] = dict(
     ruling="R18 / ESC-1 (the 132 kW continuous flat-rating); KX-M1",
     _status=("WS4 bracket in response to adjudication KX-M1, NOT an "
@@ -1936,22 +2381,36 @@ SD["engine_continuous_rating_bracket"] = dict(
         c: ENG_V2.rated_cont_kw * cfg["derate"]
         for c, cfg in KX_CASES.items()},
     cases=_M1B,
-    worst_unserved_kWh=max(_M1B[c]["ensemble"]["unserved_bus_kWh_max"]
-                           for c in KX_CASES),
-    worst_unserved_governing_case=max(
-        KX_CASES, key=lambda c: _M1B[c]["ensemble"]["unserved_bus_kWh_max"]),
+    worst_unserved_kWh=_m1b_uns,
+    worst_unserved_governing_case=_m1b_uns_gov,
     unserved_stays_zero=bool(max(
         _M1B[c]["ensemble"]["unserved_bus_kWh_max"]
         for c in KX_CASES) <= 1e-9),
     soc_min_by_case={c: _M1B[c]["ensemble"]["soc_min_min"]
                      for c in KX_CASES},
-    soc_min_worst=min(_M1B[c]["ensemble"]["soc_min_min"] for c in KX_CASES),
-    soc_min_worst_governing_case=min(
-        KX_CASES, key=lambda c: _M1B[c]["ensemble"]["soc_min_min"]),
-    fuel_penalty_pct_vs_ordered=_m1b_fuel_pp,
-    fuel_penalty_pct_max=max(_m1b_fuel_pp.values()),
-    fuel_penalty_pct_max_governing_case=max(
-        _m1b_fuel_pp, key=lambda c: _m1b_fuel_pp[c]),
+    soc_min_worst=_m1b_soc,
+    soc_min_worst_governing_case=_m1b_soc_gov,
+    # --- R36: the PAIRED per-seed fuel delta (adjudication KX2-M3(c))
+    fuel_delta_paired=_M1B_PAIRED,
+    fuel_delta_pct_paired_worst_max=_M1B_PAIRED["worst_max_pct"],
+    fuel_delta_pct_paired_worst_max_governing_case=_M1B_PAIRED[
+        "worst_max_pct_governing_case"],
+    fuel_delta_pct_paired_worst_min=_M1B_PAIRED["worst_min_pct"],
+    fuel_delta_pct_paired_worst_min_governing_case=_M1B_PAIRED[
+        "worst_min_pct_governing_case"],
+    fuel_rises_on_no_ordered_seed=bool(_M1B_PAIRED["worst_max_pct"] <= 0.0),
+    # --- the KX r2 fields, retained under names that say what they are
+    fuel_penalty_pct_vs_ordered_ratio_of_ensemble_maxima=_m1b_fuel_pp,
+    fuel_penalty_pct_ratio_of_ensemble_maxima_max=max(_m1b_fuel_pp.values()),
+    _superseded_fields=(
+        "KX r2 exported the two lines above as "
+        "`fuel_penalty_pct_vs_ordered` / `fuel_penalty_pct_max`. Both are "
+        "ratios of two independently maximised ensemble numbers, and the "
+        "'max' was a maximum over three NEGATIVE numbers - i.e. the LEAST "
+        "saving - under a name that says penalty. Withdrawn under those "
+        "names (adjudication KX2-M3(c)); consume "
+        "fuel_delta_pct_paired_*. ESC-10's conclusion is unchanged: "
+        "paired, every seed of every ordered case is <= 0."),
     reading=("the zero-unserved headline does NOT rest on the emergency "
              "band's automotive ceiling: with the engine held to its own "
              "continuous flat-rating the run still completes every "
@@ -1960,6 +2419,146 @@ SD["engine_continuous_rating_bracket"] = dict(
              "is SOC margin, not feasibility. Escalated as ESC-10 against "
              "R18/ESC-1, whose +0.82 kW corner margin is a CONTINUOUS-"
              "rating figure."))
+
+# ---------------------------------------------------------------------------
+# R6 RATING-FAMILY PROBE (KX r3, adjudication KX2-m4).
+#
+# ESC-10 asks the lead to rule on whether short excursions above the
+# genset's own continuous flat-rating are acceptable. KX r2 put a
+# correctly-constructed ORDERED-SET maximum in front of the lead
+# (250.0 s/cycle at cda_5.4) - but R6, the ruling that SETS the 132 kW
+# rating, defines its rating basis as +20% payload, CdA 5.4, 4 kW aux,
+# +45 C, 2,000 m, and members of that family that the directive did not
+# order are WORSE. A lead ruling on an exposure should see the worst
+# exposure available inside the sizing corner's own family, so it is
+# measured here.
+#
+# These are NOT ordered cases and do NOT join series_duty_v2's case set:
+# the ordered-set maximum stays exported, unchanged, as an ordered-set
+# maximum. This block is a second, explicitly-named enumerated set and
+# every extremum over it says which set it is over (R14).
+# ---------------------------------------------------------------------------
+R6_FAMILY = {
+    "payload+20pct_cda5.4_sea_level": dict(
+        veh=dataclasses.replace(VEH, CdA=5.4), m=7180.0, aux=2.0,
+        derate=1.0, t_cell_C=25.0,
+        condition="+20% payload (7,180 kg), CdA 5.4, 2 kW aux, sea level"),
+    "aux4kW_cda5.4": dict(
+        veh=dataclasses.replace(VEH, CdA=5.4), m=None, aux=4.0,
+        derate=1.0, t_cell_C=25.0,
+        condition="CdA 5.4, 4 kW aux, GVW, sea level"),
+    "aux4kW_nominal": dict(
+        veh=VEH, m=None, aux=4.0, derate=1.0, t_cell_C=25.0,
+        condition="CdA 4.2, 4 kW aux, GVW, sea level"),
+    "r6_rating_corner_full": dict(
+        veh=dataclasses.replace(VEH, CdA=5.4, rho_air=0.8706), m=7180.0,
+        aux=4.0, derate=DER, t_cell_C=45.0,
+        condition=("the full R6 rating corner: +20% payload, CdA 5.4, "
+                   "4 kW aux, 2,000 m / +45 C")),
+}
+log("ESC-10 widening: R6 rating-family probe (unordered, 4 cases) ...")
+_R6F = {}
+for _case, _cfg in R6_FAMILY.items():
+    _acc = float(np.interp(_cfg["t_cell_C"], R16_T, R16_P))
+    _ps = {}
+    for sd in REG_SEEDS:
+        _o = run_g1_mode(
+            REG[sd], "b", ENG_V2, GEN_V2, USABLE_KX_KWH,
+            p_aux_kw=_cfg["aux"], veh=_cfg["veh"], m=_cfg["m"],
+            derate=_cfg["derate"], chain=CHAIN, chg_accept_bus_kw=_acc,
+            spin_coast_shaft_kw_85=COAST_SH_KW,
+            spin_coast_bus_kw_85=COAST_BUS_KW)
+        _ps[str(sd)] = _sd_record(_o)
+    _R6F[_case] = dict(condition=_cfg["condition"],
+                       declared_cell_temperature_C=_cfg["t_cell_C"],
+                       engine_continuous_rating_kW=(
+                           ENG_V2.rated_cont_kw * _cfg["derate"]),
+                       per_seed=_ps,
+                       ensemble=_sd_envelope(_ps, _case + "/R6-family"))
+    log(f"  [{_case}] above rating "
+        f"{_R6F[_case]['ensemble']['engine_over_continuous_rating_s_min']:.1f}"
+        f"-{_R6F[_case]['ensemble']['engine_over_continuous_rating_s_max']:.1f}"
+        f" s, unserved "
+        f"{_R6F[_case]['ensemble']['unserved_bus_kWh_max']:.4f} kWh")
+
+_R6F_KEYS = list(R6_FAMILY)
+_r6f_over, _r6f_over_gov = _case_worst(
+    {c: _R6F[c]["ensemble"]["engine_over_continuous_rating_s_max"]
+     for c in _R6F_KEYS}, "max",
+    {c: _R6F[c]["ensemble"]["engine_over_continuous_rating_s_max_governing_case"]
+     for c in _R6F_KEYS}, _R6F_KEYS, zero_is_degenerate=False,
+    set_name="enumerated R6 rating-family probe set")
+_UNION_KEYS = list(KX_CASES) + _R6F_KEYS
+_union_over = {
+    **{c: SD["cases"][c]["ensemble"]["engine_over_continuous_rating_s_max"]
+       for c in KX_CASES},
+    **{c: _R6F[c]["ensemble"]["engine_over_continuous_rating_s_max"]
+       for c in _R6F_KEYS}}
+_union_gov = {
+    **{c: SD["cases"][c]["ensemble"][
+        "engine_over_continuous_rating_s_max_governing_case"]
+       for c in KX_CASES},
+    **{c: _R6F[c]["ensemble"][
+        "engine_over_continuous_rating_s_max_governing_case"]
+       for c in _R6F_KEYS}}
+_u_over, _u_over_gov = _case_worst(
+    _union_over, "max", _union_gov, _UNION_KEYS, zero_is_degenerate=False,
+    set_name=("union of the enumerated ordered case set and the R6 "
+              "rating-family probe set"))
+_r6f_uns, _r6f_uns_gov = _case_worst(
+    {c: _R6F[c]["ensemble"]["unserved_bus_kWh_max"] for c in _R6F_KEYS},
+    "max", {c: _R6F[c]["ensemble"]["unserved_bus_kWh_max_governing_case"]
+            for c in _R6F_KEYS}, _R6F_KEYS,
+    degenerate_zero_label=("no governing case - every case of the R6 "
+                           "rating-family probe set is exactly zero on all "
+                           "8 seeds"),
+    set_name="enumerated R6 rating-family probe set")
+_r6f_soc, _r6f_soc_gov = _case_worst(
+    {c: _R6F[c]["ensemble"]["soc_min_min"] for c in _R6F_KEYS}, "min",
+    {c: _R6F[c]["ensemble"]["soc_min_min_governing_case"]
+     for c in _R6F_KEYS}, _R6F_KEYS, zero_is_degenerate=False,
+    set_name="enumerated R6 rating-family probe set")
+SD["r6_rating_family_probe"] = dict(
+    ruling="R6 (the rating basis) / ESC-10; adjudication KX2-m4",
+    _status=("WS4 probe, NOT ordered cases and NOT part of "
+             "series_duty_v2's case set. The KX_DIRECTIVE ordered three "
+             "cases and the ordered-set maximum is exported unchanged as "
+             "an ordered-set maximum. This block widens the EXPOSURE the "
+             "lead is asked to rule on in ESC-10 to R6's own rating "
+             "family, because a ruling on an exposure should see the "
+             "worst exposure available inside the sizing corner's family "
+             "rather than the worst inside a case set chosen for a "
+             "different purpose."),
+    r6_rating_basis=("R6: 122.1 kW delivered at +20% payload, 4 kW "
+                     "accessories, CdA 5.4, +45 C, 2,000 m"),
+    cases=_R6F,
+    ordered_set_worst_over_rating_s=SD[
+        "companion_bp_capability_comparison"]["axes"][
+            "engine_over_continuous_rating_s"]["mode_b_block_of_record"][
+                "worst_case_max"],
+    ordered_set_worst_over_rating_s_governing_case=SD[
+        "companion_bp_capability_comparison"]["axes"][
+            "engine_over_continuous_rating_s"]["mode_b_block_of_record"][
+                "worst_case_max_governing_case"],
+    r6_family_worst_over_rating_s=_r6f_over,
+    r6_family_worst_over_rating_s_governing_case=_r6f_over_gov,
+    union_worst_over_rating_s=_u_over,
+    union_worst_over_rating_s_governing_case=_u_over_gov,
+    union_case_set=_UNION_KEYS,
+    worst_unserved_kWh=_r6f_uns,
+    worst_unserved_governing_case=_r6f_uns_gov,
+    soc_min_worst=_r6f_soc,
+    soc_min_worst_governing_case=_r6f_soc_gov,
+    reading=("inside R6's own rating family the genset spends MORE time "
+             "above its continuous flat-rating than at any ordered case, "
+             "and the worst member is not the full corner - the corner's "
+             "derate keeps the engine's ceiling low and its air thin, "
+             "while +20% payload at CdA 5.4 and SEA LEVEL has the full "
+             "automotive ceiling available and the load to use it. The "
+             "zero-unserved headline is unaffected: every probe case "
+             "completes on every seed. ESC-10 is restated on the union "
+             "maximum, with both set maxima exported so the lead can see "
+             "which set each number is over."))
 
 # --- hysteresis sensitivity: WS3's own allocated genset band on the
 # delivered pack, reference seed. The cycling rate is the export WS5 needs
@@ -2018,17 +2617,49 @@ _c_sh = [SD["cases"][c]["ensemble"]["r22d_coast_spin_shaft_kWh_max"]
          for c in KX_CASES]
 _c_bus = [SD["cases"][c]["ensemble"]["r22d_coast_spin_bus_kWh_max"]
           for c in KX_CASES]
-_c_pp = {}
+# KX r3 / CONSTRUCTION SWEEP (KX2-M3 family, found by the sweep and not
+# named in the findings file). The KX r2 figure combined THREE
+# independently extremised ensemble numbers - a maximised shaft energy,
+# a maximised bus energy and a maximised fuel mass in the DENOMINATOR -
+# and exported the result as `unbooked_pp_max`, rendered as "worth at
+# most X pp of cycle fuel". A ratio of independently extremised numbers
+# is not the extremum of the ratio and is not a bound. The member is now
+# priced PER SEED, on that seed's own coast energies over that seed's own
+# fuel, and only then enveloped (R36 / R9 / R14).
+_c_pp_env = {}
 for c in KX_CASES:
-    e = SD["cases"][c]["ensemble"]
     # price the coast member at the pinned point's marginal fuel rate:
     # shaft-side drag has to be made up at the wheel through the chain,
     # bus-side draw is served from the bus directly
     _pin_c = SD["cases"][c]["pinned_point"]
+    _vals = []
+    for _sd in REG_SEEDS:
+        _r = SD["cases"][c]["per_seed"][str(_sd)]
+        _g_sd = ((_r["r22d_coast_spin_shaft_kWh"] / _eta_series_ref
+                  + _r["r22d_coast_spin_bus_kWh"])
+                 / _pin_c["eta_gen"] * _pin_c["bsfc"])
+        _vals.append(100.0 * _g_sd / (_r["fuel_kg"] * 1e3))
+    _c_pp_env[c] = dict(
+        per_seed={str(_sd): v for _sd, v in zip(REG_SEEDS, _vals)},
+        min=min(_vals), median=float(np.median(_vals)), max=max(_vals),
+        max_governing_case=(
+            f"seed {REG_SEEDS[int(np.argmax(_vals))]} of the enumerated "
+            f"8-seed VOLT-REG ensemble [{c}]"),
+        min_governing_case=(
+            f"seed {REG_SEEDS[int(np.argmin(_vals))]} of the enumerated "
+            f"8-seed VOLT-REG ensemble [{c}]"))
+_c_pp = {c: _c_pp_env[c]["max"] for c in KX_CASES}
+_c_pp_r2 = {}
+for c in KX_CASES:
+    e = SD["cases"][c]["ensemble"]
+    _pin_c = SD["cases"][c]["pinned_point"]
     _g = ((e["r22d_coast_spin_shaft_kWh_max"] / _eta_series_ref
            + e["r22d_coast_spin_bus_kWh_max"])
           / _pin_c["eta_gen"] * _pin_c["bsfc"])
-    _c_pp[c] = 100.0 * _g / (e["fuel_kg_max"] * 1e3)
+    _c_pp_r2[c] = 100.0 * _g / (e["fuel_kg_max"] * 1e3)
+_c_pp_worst, _c_pp_worst_gov = _case_worst(
+    _c_pp, "max", {c: _c_pp_env[c]["max_governing_case"] for c in KX_CASES},
+    list(KX_CASES), zero_is_degenerate=False)
 def _R22D_GOV(key):
     """R14 label for a max over the enumerated 3-case x 8-seed set."""
     worst = max(KX_CASES,
@@ -2055,9 +2686,21 @@ SD["r22d_coast_spin_member"] = dict(
     coast_spin_bus_kWh_max=max(_c_bus),
     coast_spin_bus_kWh_max_governing_case=_R22D_GOV(
         "r22d_coast_spin_bus_kWh"),
+    # KX r3 / construction sweep: per-seed pricing, then the envelope.
     unbooked_pp_of_cycle_fuel=_c_pp,
-    unbooked_pp_max=max(_c_pp.values()),
-    unbooked_pp_max_governing_case=max(_c_pp, key=lambda c: _c_pp[c]),
+    unbooked_pp_paired_by_case=_c_pp_env,
+    unbooked_pp_max=_c_pp_worst,
+    unbooked_pp_max_governing_case=_c_pp_worst_gov,
+    unbooked_pp_of_cycle_fuel_ratio_of_ensemble_extrema_kx_r2=_c_pp_r2,
+    _superseded_construction=(
+        "KX r2 built each case's figure from the 8-seed MAXIMUM coast "
+        "shaft energy plus the 8-seed MAXIMUM coast bus energy over the "
+        "8-seed MAXIMUM fuel mass - three independently extremised "
+        "numbers - and exported max() of that as `unbooked_pp_max`, "
+        "rendered as 'at most X pp of cycle fuel'. That is not the "
+        "maximum of the quantity and is not a bound. The r2 values are "
+        "retained on the line above; the live figures are the per-seed "
+        "construction (KX r3 construction sweep, KX2-M3 family)."),
     charged_to_fuel=False,
     direction_of_error=("series_duty_v2's fuel numbers EXCLUDE this member, "
                         "so they are optimistic by the percentage points "
@@ -2098,7 +2741,12 @@ for _case in KX_CASES:
         friction_brake_kWh_per_cycle_governing_case=_e[
             "friction_brake_kWh_max_governing_case"],
         pm_coast_spin_shaft_kWh_per_cycle=_e["r22d_coast_spin_shaft_kWh_max"],
+        # R14 (adjudication KX2-m2): these were exported as bare maxima
+        pm_coast_spin_shaft_kWh_per_cycle_governing_case=_e[
+            "r22d_coast_spin_shaft_kWh_max_governing_case"],
         pm_coast_spin_bus_kWh_per_cycle=_e["r22d_coast_spin_bus_kWh_max"],
+        pm_coast_spin_bus_kWh_per_cycle_governing_case=_e[
+            "r22d_coast_spin_bus_kWh_max_governing_case"],
         # --- KX-m7: the transient the cycle mean cannot show
         engine_rejection_peak_kW=_e["engine_reject_peak_kW_max"],
         engine_rejection_peak_kW_governing_case=_e[
@@ -2111,13 +2759,26 @@ for _case in KX_CASES:
             "engine_reject_10min_max_kW_max_governing_case"],
         # the same three rows through the declared 48% radiator-package
         # share, i.e. the numbers the HT package actually sees
+        # R14 (adjudication KX2-m2): each of these four is the labelled
+        # engine-rejection maximum above scaled by the declared package
+        # share, so it inherits that row's governing seed - which was not
+        # exported. It is now.
         radiator_package_avg_kW=RAD_PKG_FRAC * _e["engine_reject_avg_kW_max"],
+        radiator_package_avg_kW_governing_case=_e[
+            "engine_reject_avg_kW_max_governing_case"],
         radiator_package_peak_kW=RAD_PKG_FRAC * _e[
             "engine_reject_peak_kW_max"],
+        radiator_package_peak_kW_governing_case=_e[
+            "engine_reject_peak_kW_max_governing_case"],
         radiator_package_2min_max_kW=RAD_PKG_FRAC * _e[
             "engine_reject_2min_max_kW_max"],
+        radiator_package_2min_max_kW_governing_case=_e[
+            "engine_reject_2min_max_kW_max_governing_case"],
         radiator_package_10min_max_kW=RAD_PKG_FRAC * _e[
             "engine_reject_10min_max_kW_max"],
+        radiator_package_10min_max_kW_governing_case=_e[
+            "engine_reject_10min_max_kW_max_governing_case"],
+        radiator_package_share=RAD_PKG_FRAC,
         transient_note=("SIZE AGAINST THE WINDOWS, NOT THE MEAN. The "
                         "cycle-average row above is a mean over a ~1.5 h "
                         "VOLT-REG realisation; the same duty rejects the "
@@ -2250,13 +2911,30 @@ SS["usable_3.0_hyst_1.6"] = run_v1_startstop(SUB[11], ENG_V1, GEN_V1,
                                              3.0, 1.6)
 ens = [run_v1_startstop(SUB[sd], ENG_V1, GEN_V1, USABLE_V1_KWH, 0.8)
        for sd in SUB_SEEDS]
+_ss_starts = [e["starts_per_8h_shift"] for e in ens]
+_ss_flh = [e["fuel_l_per_h"] for e in ens]
+
+
+def _ss_gov(vals, kind):
+    i = int(np.argmax(vals)) if kind == "max" else int(np.argmin(vals))
+    return (f"seed {SUB_SEEDS[i]} of the enumerated "
+            f"{len(SUB_SEEDS)}-seed VOLT-SUB ensemble [V1 start-stop, "
+            "0.8 kWh hysteresis]")
+
+
 SS["ensemble_hyst_0.8kWh"] = dict(
-    starts_per_8h_shift=[e["starts_per_8h_shift"] for e in ens],
-    starts_per_8h_min=min(e["starts_per_8h_shift"] for e in ens),
-    starts_per_8h_max=max(e["starts_per_8h_shift"] for e in ens),
-    fuel_l_per_h=[e["fuel_l_per_h"] for e in ens],
-    fuel_l_per_h_min=min(e["fuel_l_per_h"] for e in ens),
-    fuel_l_per_h_max=max(e["fuel_l_per_h"] for e in ens))
+    starts_per_8h_shift=_ss_starts,
+    starts_per_8h_min=min(_ss_starts),
+    # R14 (KX r3 construction sweep): min/max over the enumerated VOLT-SUB
+    # seed set, previously exported unlabelled.
+    starts_per_8h_min_governing_case=_ss_gov(_ss_starts, "min"),
+    starts_per_8h_max=max(_ss_starts),
+    starts_per_8h_max_governing_case=_ss_gov(_ss_starts, "max"),
+    fuel_l_per_h=_ss_flh,
+    fuel_l_per_h_min=min(_ss_flh),
+    fuel_l_per_h_min_governing_case=_ss_gov(_ss_flh, "min"),
+    fuel_l_per_h_max=max(_ss_flh),
+    fuel_l_per_h_max_governing_case=_ss_gov(_ss_flh, "max"))
 SS["continuous_ref_seed"] = run_v1_startstop(SUB[11], ENG_V1, GEN_V1,
                                              USABLE_V1_KWH, 0.8,
                                              strategy="continuous")
@@ -2430,50 +3108,531 @@ R["heat_ledger_ws6"]["series_duty_v2_cycle_average_kx_r1_superseded"] = dict(
 # --- KX r2 / adjudication KX-m7: the transient rows checked against R20's
 # declared radiator design point, explicitly, so a cooling owner reading a
 # cycle-mean row is not surprised by the duty's transients.
+# ---------------------------------------------------------------------------
+# KX r3 / adjudication KX2-M1. The KX r2 block exported
+# `r20_survives_on_the_2min_window: true`, built as
+#     max(rows[c] for c in KX_CASES if c == "alt2000m_45C") <= design
+# - a maximum over ONE case, written so that it reads as a maximum over
+# the enumerated three-case set, and exported beside a three-case worst
+# 21% ABOVE the design point. The scoping that would make it defensible
+# (the other two cases are not at R20's +45 C ambient) was stated in
+# prose and never quantified, and WS4 exports no ratified radiator
+# capability-versus-ambient model.
+#
+# This round does three separate things and keeps them separate:
+#   1. the ABSOLUTE comparison, as a real max/min over the enumerated
+#      three-case set, with the exceeding cases enumerated;
+#   2. the scoped single-case statement, under a field name that carries
+#      its scope;
+#   3. a WS4-DECLARED linear-ITD ambient sensitivity that QUANTIFIES the
+#      previously-asserted scoping argument, including its break-even -
+#      explicitly a sensitivity, not a capability model, and NOT the
+#      source of any survival verdict.
+# The R20/ESC-4 question itself is escalated (ESC-12), not self-resolved.
+# ---------------------------------------------------------------------------
 _R20_DESIGN_KW = split_corner["radiator_package_kW"]
-_r20_rows = {
-    c: dict(
-        radiator_package_peak_kW=SD_HEAT[
-            f"series_duty_v2_{c}_cycle_average"]["radiator_package_peak_kW"],
-        radiator_package_2min_max_kW=SD_HEAT[
-            f"series_duty_v2_{c}_cycle_average"][
-                "radiator_package_2min_max_kW"],
-        radiator_package_10min_max_kW=SD_HEAT[
-            f"series_duty_v2_{c}_cycle_average"][
-                "radiator_package_10min_max_kW"],
+_R20_DESIGN_AMB_C = 45.0
+_R_AIR = 287.05                       # J/(kg K), dry air
+_ISA_P0 = 101325.0                    # Pa
+
+
+def _isa_pressure_pa(alt_m):
+    return _ISA_P0 * (1.0 - 2.25577e-5 * alt_m) ** 5.25588
+
+
+# [WS4-DECLARED] each ordered case's AIR temperature, derived from the
+# case's own air density and its altitude through the ideal gas law -
+# i.e. from the same number the road-load model uses, not asserted. The
+# derivation is validated by the corner: it reproduces the case's
+# declared +45 C to the hundredth of a degree.
+_R20_CASE_ALT_M = {"nominal": 0.0, "cda_5.4": 0.0, "alt2000m_45C": 2000.0}
+_R20_CASE_AMB_C = {
+    c: _isa_pressure_pa(_R20_CASE_ALT_M[c])
+    / (KX_CASES[c]["veh"].rho_air * _R_AIR) - 273.15 for c in KX_CASES}
+# declared coolant top-tank sensitivity set for the ITD ratio
+_R20_TOP_TANK_C = (95.0, 105.0, 115.0, 125.0)
+
+_r20_rows = {}
+for c in KX_CASES:
+    _row = SD_HEAT[f"series_duty_v2_{c}_cycle_average"]
+    _r20_rows[c] = dict(
+        air_temperature_C_declared=_R20_CASE_AMB_C[c],
+        altitude_m=_R20_CASE_ALT_M[c],
+        rho_air_kg_per_m3=KX_CASES[c]["veh"].rho_air,
+        radiator_package_peak_kW=_row["radiator_package_peak_kW"],
+        radiator_package_peak_kW_governing_case=_row[
+            "radiator_package_peak_kW_governing_case"],
+        radiator_package_2min_max_kW=_row["radiator_package_2min_max_kW"],
+        radiator_package_2min_max_kW_governing_case=_row[
+            "radiator_package_2min_max_kW_governing_case"],
+        radiator_package_10min_max_kW=_row["radiator_package_10min_max_kW"],
+        radiator_package_10min_max_kW_governing_case=_row[
+            "radiator_package_10min_max_kW_governing_case"],
         exceeds_r20_design_point_on_peak=bool(
-            SD_HEAT[f"series_duty_v2_{c}_cycle_average"][
-                "radiator_package_peak_kW"] > _R20_DESIGN_KW),
+            _row["radiator_package_peak_kW"] > _R20_DESIGN_KW),
         exceeds_r20_design_point_on_2min=bool(
-            SD_HEAT[f"series_duty_v2_{c}_cycle_average"][
-                "radiator_package_2min_max_kW"] > _R20_DESIGN_KW))
-    for c in KX_CASES}
+            _row["radiator_package_2min_max_kW"] > _R20_DESIGN_KW),
+        # the declared ITD capability ratio, per top-tank temperature
+        duty_over_capability_2min_by_top_tank_C={
+            f"{tt:.0f}": (_row["radiator_package_2min_max_kW"]
+                          / (_R20_DESIGN_KW * (tt - _R20_CASE_AMB_C[c])
+                             / (tt - _R20_DESIGN_AMB_C)))
+            for tt in _R20_TOP_TANK_C})
+
+_r20_2min = {c: _r20_rows[c]["radiator_package_2min_max_kW"]
+             for c in KX_CASES}
+_r20_2min_gov = {c: _r20_rows[c]["radiator_package_2min_max_kW_governing_case"]
+                 for c in KX_CASES}
+_r20_worst_2min, _r20_worst_2min_gov = _case_worst(
+    _r20_2min, "max", _r20_2min_gov, list(KX_CASES),
+    zero_is_degenerate=False)
+_R20_TIE_TOL = 1e-6
+_r20_2min_tied = [c for c in KX_CASES
+                  if abs(_r20_2min[c] - _r20_worst_2min) <= _R20_TIE_TOL]
+_r20_exceeding = [c for c in KX_CASES
+                  if _r20_rows[c]["exceeds_r20_design_point_on_2min"]]
+_r20_exceeding_peak = [c for c in KX_CASES
+                       if _r20_rows[c]["exceeds_r20_design_point_on_peak"]]
+# worst declared-ITD ratio over the enumerated set, per top tank
+_r20_ratio_worst = {}
+for _tt in _R20_TOP_TANK_C:
+    _k = f"{_tt:.0f}"
+    _v, _gov = _case_worst(
+        {c: _r20_rows[c]["duty_over_capability_2min_by_top_tank_C"][_k]
+         for c in KX_CASES}, "max", _r20_2min_gov, list(KX_CASES),
+        zero_is_degenerate=False)
+    _r20_ratio_worst[_k] = dict(worst_ratio=_v, worst_ratio_governing_case=_gov,
+                                all_cases_within_capability=bool(_v <= 1.0))
+# break-even coolant top tank: the T_top at which the worst EXCEEDING
+# case's 2-min duty exactly equals its declared-ITD capability.
+_r20_be_case = max(_r20_exceeding, key=lambda c: _r20_2min[c]) \
+    if _r20_exceeding else None
+if _r20_be_case is not None:
+    _q = _r20_2min[_r20_be_case] / _R20_DESIGN_KW
+    _ta = _R20_CASE_AMB_C[_r20_be_case]
+    _r20_break_even_top_tank_C = (_ta - _q * _R20_DESIGN_AMB_C) / (1.0 - _q)
+else:
+    _r20_break_even_top_tank_C = None
+
+# --- KX r3, second-order point the sensitivity itself raises: R20/ESC-4
+# rules WHICH CASE SIZES the radiator, not merely whether every case is
+# inside capability. Under the declared ITD model the ordered cases'
+# normalised ratios cross at
+#     T_top = (Q_i x T_j - Q_j x T_i) / (Q_i - Q_j),
+# and above that top-tank temperature the DESIGN CASE changes hands even
+# though every case is still inside capability. This is the number
+# R20/ESC-4 actually turns on, and it is NOT the break-even above.
+_r20_cross = []
+for _i in KX_CASES:
+    for _j in KX_CASES:
+        if _i >= _j:
+            continue
+        _qi, _qj = _r20_2min[_i], _r20_2min[_j]
+        _ti, _tj = _R20_CASE_AMB_C[_i], _R20_CASE_AMB_C[_j]
+        if abs(_qi - _qj) < 1e-9 or abs(_ti - _tj) < 1e-9:
+            continue
+        _tx = (_qi * _tj - _qj * _ti) / (_qi - _qj)
+        if _tx > max(_R20_CASE_AMB_C.values()):
+            # which case governs just above the crossing
+            _eps = _tx + 1.0
+            def _ratio(c, tt):
+                return (_r20_2min[c]
+                        / (_R20_DESIGN_KW * (tt - _R20_CASE_AMB_C[c])
+                           / (tt - _R20_DESIGN_AMB_C)))
+            _hi = max((_i, _j), key=lambda c: _ratio(c, _eps))
+            _lo = _i if _hi == _j else _j
+            _r20_cross.append(dict(top_tank_C=_tx, below=_lo, above=_hi,
+                                   pair=[_i, _j]))
+_r20_cross.sort(key=lambda d: d["top_tank_C"])
+_r20_first_cross = _r20_cross[0] if _r20_cross else None
+
 R["heat_ledger_ws6"]["series_duty_v2_transient_vs_R20_design_point"] = dict(
     ruling="R20 / ESC-4 (radiator design case = the R6 corner)",
     r20_design_point_radiator_package_kW=_R20_DESIGN_KW,
+    r20_design_point_air_temperature_C=_R20_DESIGN_AMB_C,
     r20_design_point_basis=("engine at 132 kW x derate continuous, 2,000 m "
                             "/ +45 C, x the declared 48% radiator-package "
                             "share - heat_ledger_ws6 -> "
                             "V2_R6_corner_continuous"),
     cases=_r20_rows,
-    worst_2min_kW=max(r["radiator_package_2min_max_kW"]
-                      for r in _r20_rows.values()),
-    worst_2min_governing_case=max(
-        _r20_rows, key=lambda c: _r20_rows[c]["radiator_package_2min_max_kW"]),
-    r20_survives_on_the_2min_window=bool(
-        max(_r20_rows[c]["radiator_package_2min_max_kW"]
-            for c in KX_CASES if c == "alt2000m_45C") <= _R20_DESIGN_KW),
+    # --- (1) THE ABSOLUTE COMPARISON, over the whole enumerated set
+    absolute_kW_comparison=dict(
+        _construction=("every field in this object is an explicit max/min "
+                       "over the SAME enumerated ordered case set "
+                       f"{_case_set_str(list(KX_CASES))}, comparing "
+                       "absolute package kW against a design point stated "
+                       "in +45 C air. It is NOT ambient-normalised, and "
+                       "WS4 says so rather than filtering the set."),
+        worst_2min_kW=_r20_worst_2min,
+        worst_2min_governing_case=_r20_worst_2min_gov,
+        worst_2min_tied_cases_within_1e_6_kW=_r20_2min_tied,
+        worst_2min_tie_note=("nominal and cda_5.4 both sit at the engine's "
+                             "emergency-band ceiling through the window, "
+                             "so their 2-min maxima agree to ~4e-12 kW; "
+                             "the governing-case label is a float-level "
+                             "tie-break and both cases are named."),
+        cases_exceeding_design_point_on_2min=_r20_exceeding,
+        n_cases_exceeding_design_point_on_2min=len(_r20_exceeding),
+        cases_exceeding_design_point_on_peak=_r20_exceeding_peak,
+        all_ordered_cases_within_design_point_on_2min=bool(
+            not _r20_exceeding),
+        exceedance_pct_of_design_point_worst=100.0 * (
+            _r20_worst_2min / _R20_DESIGN_KW - 1.0)),
+    # --- (2) the scoped single-case statement, named for its scope
+    r20_survives_on_the_2min_window_at_alt2000m_45C_only=bool(
+        _r20_rows["alt2000m_45C"]["radiator_package_2min_max_kW"]
+        <= _R20_DESIGN_KW),
+    r20_survives_scope_note=(
+        "this field is a statement about ONE case - alt2000m_45C, the "
+        "only ordered case in R20's own +45 C ambient - and its name says "
+        "so. KX r2 exported the same boolean as "
+        "`r20_survives_on_the_2min_window`, built as a max over a "
+        "comprehension filtered down to that one case, beside a "
+        "three-case worst 21% above the design point (adjudication "
+        "KX2-M1). It is NOT a verdict over the ordered case set and must "
+        "not be consumed as one."),
+    # --- (3) the declared ambient sensitivity that quantifies the scoping
+    ambient_normalised_sensitivity=dict(
+        _status="[WS4-DECLARED SENSITIVITY - NOT A CAPABILITY MODEL]",
+        _model=("a liquid-to-air HT package at FIXED air flow, coolant "
+                "flow and geometry rejects Q = UA_eff x ITD, with ITD = "
+                "(coolant top tank - inlet air). Anchoring UA_eff on "
+                "R20's declared design point (Q_design at +45 C air) "
+                "gives capability(T_air) = Q_design x (T_top - T_air) / "
+                "(T_top - 45). Air DENSITY is deliberately ignored, which "
+                "is conservative: the corner is the thin-air case, so the "
+                "sea-level cases would gain further capability that this "
+                "ratio does not credit."),
+        _assumptions=("(i) the fan/airflow state is the same in all three "
+                      "cases; (ii) UA_eff is constant, i.e. the same "
+                      "hardware; (iii) linearity over 21-45 C air; (iv) "
+                      "the 2-min window is the right thermal window. None "
+                      "of the four is WS4's to ratify - the radiator is "
+                      "WS6's and the design case is R20/ESC-4's."),
+        case_air_temperature_C=_R20_CASE_AMB_C,
+        case_air_temperature_basis=(
+            "[WS4-DECLARED] T = p_ISA(altitude) / (rho_case x R_air), "
+            "R_air 287.05 J/(kg K), from each case's OWN air density. "
+            "Validation: the corner returns "
+            f"{_R20_CASE_AMB_C['alt2000m_45C']:.2f} C against its declared "
+            "+45.0 C, so the derivation reproduces the case definition."),
+        top_tank_C_set=list(_R20_TOP_TANK_C),
+        duty_over_capability_worst_by_top_tank_C=_r20_ratio_worst,
+        # --- WHICH CASE GOVERNS: the question R20/ESC-4 actually asks
+        design_case_crossovers=_r20_cross,
+        design_case_crossover_top_tank_C=(
+            _r20_first_cross["top_tank_C"] if _r20_first_cross else None),
+        design_case_below_crossover=(
+            _r20_first_cross["below"] if _r20_first_cross else None),
+        design_case_above_crossover=(
+            _r20_first_cross["above"] if _r20_first_cross else None),
+        design_case_crossover_reading=(
+            "R20/ESC-4 rules WHICH CASE SIZES the radiator. Under the "
+            "declared ITD model the R6 corner governs only while the "
+            "coolant top tank is BELOW this temperature; above it the "
+            "sea-level high-load cases demand more capability relative to "
+            "their own ambient, even though every case is still inside "
+            "capability until the separate break-even below. The "
+            "crossover sits inside the range a pressurised heavy-duty "
+            "coolant system can actually run, so ESC-4's design case is "
+            "live, not settled, on WS4's own declared sensitivity. WS4 "
+            "does not rule it."),
+        break_even_top_tank_C=_r20_break_even_top_tank_C,
+        break_even_case=_r20_be_case,
+        break_even_reading=(
+            "the coolant top-tank temperature at which the worst "
+            "EXCEEDING ordered case's 2-min duty would exactly equal its "
+            "declared-ITD capability, i.e. where the package would run "
+            "out of capability outright. It sits far above any physical "
+            "diesel HT coolant cap, which is WHY the r2 scoping argument "
+            "pointed the right way ON THE CAPABILITY QUESTION. It is NOT "
+            "the answer to R20/ESC-4, which asks which case GOVERNS - see "
+            "design_case_crossover_top_tank_C, which is far lower and "
+            "inside the physical range. Both are results of this declared "
+            "sensitivity, not measurements, and WS4 converts neither into "
+            "an R20 verdict."),
+        what_ws4_does_not_have=(
+            "a ratified radiator capability-versus-ambient model. WS4 "
+            "measures DUTY; R20/ESC-4 rules on the design CASE, which is "
+            "a capability question. The sensitivity above quantifies the "
+            "argument the KX r2 block asserted; it does not settle it.")),
+    escalation="ESC-12 (R20 / ESC-4) - raised, not self-resolved",
+    _design_case_note=(
+        "R20/ESC-4 asks WHICH CASE SIZES the radiator. WS4 measures duty, "
+        "not capability, so it cannot answer that - see "
+        "ambient_normalised_sensitivity -> design_case_crossover_top_tank_C "
+        "and ESC-12."),
     reading=("the ordered duty's INSTANTANEOUS radiator-package peak "
-             "exceeds R20's design point at every case, and at the "
-             "alt2000m_45C corner - the only ordered case in R20's own "
-             "+45 C ambient - it does so by the peak row above. The 2-min "
-             "rolling average at that corner stays UNDER the design point, "
-             "so R20/ESC-4's 'radiator design case = the R6 corner' "
-             "SURVIVES on the window that matters thermally. The rows are "
-             "exported anyway: the KX round gave WS6 a 59.7 kW cycle mean "
-             "for a case carrying a >200 kW transient, and program rule 7 "
-             "asks for heat by component AND CASE, not by cycle mean "
+             "exceeds R20's declared design point at EVERY ordered case, "
+             "and the 2-MINUTE rolling maximum exceeds it at two of the "
+             "three - nominal and cda_5.4, by 21% - while the "
+             "alt2000m_45C corner, the only ordered case in R20's own "
+             "+45 C ambient, stays under it. On ABSOLUTE kW, therefore, "
+             "the ordered set does NOT stay inside R20's design point, "
+             "and WS4 exports that plainly. Whether R20/ESC-4's "
+             "'radiator design case = the R6 corner' survives depends on "
+             "comparing each case against capability AT ITS OWN AMBIENT, "
+             "which needs a capability model WS4 does not have and does "
+             "not invent: the declared ITD sensitivity above quantifies "
+             "the argument and its break-even, and the ruling question "
+             "goes to the lead as ESC-12. The rows exist at all because "
+             "the KX round gave WS6 a 59.7 kW cycle mean for a case "
+             "carrying a >200 kW transient, and program rule 7 asks for "
+             "heat by component AND CASE, not by cycle mean "
              "(adjudication KX-m7)."))
+
+# ---------------------------------------------------------------------------
+# 7b. CONSTRUCTION SWEEP (KX r3)
+#
+# The lead's standing diagnosis of this program's repeat failure mode is
+# the PARTIAL CORRECTION. Adjudication KX2-M1/M2/M3 are one defect family
+# - a machine-readable summary whose CONSTRUCTION does not match its NAME
+# - and KX r2 both fixed an instance of it (KX-m6) and re-introduced it in
+# three new blocks in the same round. So this round did not stop at the
+# three named fields: every machine-readable aggregate in the workstream
+# was enumerated and checked. This block is the record of that sweep,
+# INCLUDING the places where nothing was wrong, so the next reader does
+# not have to redo it.
+#
+# Method: (i) every max/min/median expression in run_ws4.py that reaches
+# an exported field, read against the field's name; (ii) every exported
+# field whose name contains max/min/worst/median/penalty/paired/at-most;
+# (iii) every arithmetic expression in make_report_ws4.py that builds a
+# rendered number from JSON values; (iv) every extremum over an
+# enumerated set checked for an R14 governing label and for degenerate
+# ties.
+# ---------------------------------------------------------------------------
+def _paired_one_factor(cfg):
+    """The one-factor attribution delta on the PAIRED per-seed statistic,
+    computed OUTSIDE the archived block for comparison only. The archived
+    values are BASELINE_v3-ratified record and are not recomputed."""
+    d = [cfg["per_seed"][str(sd)]["margin_pct"]
+         - G1_PRIOR["per_seed"][str(sd)]["margin_pct"] for sd in REG_SEEDS]
+    return dict(paired_delta_pp_min=min(d),
+                paired_delta_pp_median=float(np.median(d)),
+                paired_delta_pp_max=max(d),
+                paired_delta_pp_min_governing_case=(
+                    f"seed {REG_SEEDS[int(np.argmin(d))]} of the enumerated "
+                    "8-seed VOLT-REG ensemble"))
+
+
+_SWEEP_CORRECTED = {
+    "companion_bp_capability_comparison.fuel_kWh_per_km_by_case."
+    "bp_penalty_pct_on_median": dict(
+        finding="KX2-M3(a)",
+        kx_r2_construction="ratio of ensemble medians, named 'paired'",
+        corrected_to="paired per-seed delta, 8-seed envelope, R14 labels",
+        kx_r2_value={c: SD["companion_bp_capability_comparison"][
+            "fuel_kWh_per_km_by_case"][c][
+                "bp_penalty_pct_ratio_of_ensemble_medians"]
+            for c in KX_CASES},
+        corrected_value={c: _BP_PAIRED["by_case"][c]["median"]
+                         for c in KX_CASES}),
+    "r16_pack_acceptance_bracket.fuel_penalty_pct_vs_ordered": dict(
+        finding="KX2-M3(b)",
+        kx_r2_construction="ratio of ensemble maxima, named 'penalty'",
+        corrected_to="paired per-seed delta, 8-seed envelope, R14 labels",
+        kx_r2_value=_r16b_fuel_pp,
+        corrected_value={c: _R16B_PAIRED["by_case"][c]["median"]
+                         for c in KX_CASES},
+        corrected_worst_max=_R16B_PAIRED["worst_max_pct"],
+        sign_flip_at_nominal=bool(
+            _r16b_fuel_pp["nominal"] < 0.0
+            <= _R16B_PAIRED["by_case"]["nominal"]["median"])),
+    "engine_continuous_rating_bracket.fuel_penalty_pct_vs_ordered": dict(
+        finding="KX2-M3(c)",
+        kx_r2_construction=("ratio of ensemble maxima; the 'max' was a "
+                            "maximum over three negatives"),
+        corrected_to="paired per-seed delta, 8-seed envelope, R14 labels",
+        kx_r2_value=_m1b_fuel_pp,
+        corrected_value={c: _M1B_PAIRED["by_case"][c]["median"]
+                         for c in KX_CASES},
+        conclusion_unchanged=bool(_M1B_PAIRED["worst_max_pct"] <= 0.0)),
+    "r22d_coast_spin_member.unbooked_pp_max": dict(
+        finding="FOUND BY THE SWEEP - not in FINDINGS_KX_r2.md",
+        kx_r2_construction=("max over cases of a ratio of THREE "
+                            "independently extremised ensemble numbers "
+                            "(max shaft kWh + max bus kWh over max fuel "
+                            "kg), rendered as 'at most X pp of cycle "
+                            "fuel'"),
+        corrected_to=("priced per seed on that seed's own coast energies "
+                      "over its own fuel, then enveloped (R9/R14/R36)"),
+        kx_r2_value=_c_pp_r2,
+        corrected_value=_c_pp),
+    "heat_ledger_ws6.series_duty_v2_transient_vs_R20_design_point."
+    "r20_survives_on_the_2min_window": dict(
+        finding="KX2-M1",
+        kx_r2_construction=("max over a three-case comprehension filtered "
+                            "to ONE case, named as a set-wide verdict"),
+        corrected_to=("withdrawn; replaced by an absolute comparison over "
+                      "the whole enumerated set, a scope-named "
+                      "single-case statement, a declared ambient "
+                      "sensitivity, and ESC-12"),
+        kx_r2_value=True,
+        corrected_value=dict(
+            all_ordered_cases_within_design_point_on_2min=bool(
+                not _r20_exceeding),
+            cases_exceeding_design_point_on_2min=_r20_exceeding)),
+    "r16_binding_analysis.cold_side_binding_cell_C_pack_quantity": dict(
+        finding="KX2-M2",
+        kx_r2_construction=("np.interp RIGHT-EDGE CLAMP presented as a "
+                            "curve crossing, beside two genuine "
+                            "crossings"),
+        corrected_to=("withdrawn; replaced by the measured statement "
+                      "(exceeded at every tabulated cell temperature) "
+                      "and an in-range assertion on every remaining "
+                      "interpolation"),
+        kx_r2_value=10.0,
+        corrected_value=dict(
+            exceeds_acceptance_at_every_tabulated_cell_C=_PACK_BINDING[
+                "exceeds_acceptance_at_every_tabulated_cell_C"],
+            min_exceedance_kW_over_the_curve=_PACK_BINDING[
+                "min_exceedance_kW_over_the_curve"],
+            least_binding_cell_C=_PACK_BINDING["least_binding_cell_C"])),
+    "report M1PEAKPCT (ESC-10's '% of the continuous rating')": dict(
+        finding="FOUND BY THE SWEEP - not in FINDINGS_KX_r2.md",
+        kx_r2_construction=("a max over ALL three cases divided by ONE "
+                            "case's continuous rating; correct only "
+                            "because the peak's governing cases happen to "
+                            "be the two underated ones"),
+        corrected_to=("per case, per seed, against that case's own "
+                      "derated rating, then enveloped (R14)"),
+        kx_r2_value=100.0 * SD["companion_bp_capability_comparison"][
+            "axes"]["engine_shaft_peak_kW"]["mode_b_block_of_record"][
+                "worst_case_max"] / ENG_CONT_KW_BY_CASE["nominal"],
+        corrected_value=_eng_pct_worst),
+    "brackets: worst_unserved_governing_case (x2)": dict(
+        finding="KX2-m1",
+        kx_r2_construction=("max(KX_CASES, key=...) over three exact "
+                            "zeros - Python's first-key tie-break "
+                            "presented as a governing case"),
+        corrected_to=("_case_worst() refuses to name a governing case "
+                      "for a full tie and names all tied members for a "
+                      "partial one; applied to every case-set extremum "
+                      "in the workstream"),
+        kx_r2_value="nominal",
+        corrected_value=SD["r16_pack_acceptance_bracket"][
+            "worst_unserved_governing_case"]),
+}
+
+_SWEEP_CLEAN = {
+    "gate_g1[*].ensemble.margin_pct_{min,median,max}": (
+        "CLEAN and is the reference construction. The margin is formed "
+        "PER SEED as 100 x (b - a) / b and only then enveloped - the "
+        "paired statistic R36 mandates. This is the construction the "
+        "adjudicator pointed at as already present in this workstream's "
+        "own code, and the three corrected blocks now match it."),
+    "gate_g1_one_factor.*.delta_pp_min": (
+        "EXAMINED, NOT CHANGED. Construction is a difference of ensemble "
+        "MINIMA, the name says 'delta of the min', and _DELTA_GOV states "
+        "it inline. The values are BASELINE_v3-ratified record "
+        "(-7.01 pp map-vs-scalar, -1.77 pp spin drag) and an archived "
+        "block's values may not move. The paired per-seed companion is "
+        "measured below for comparison only."),
+    "gate_g1_one_factor.*.delta_pp_median": (
+        "EXAMINED. Same construction; not a worst-case field, so R14 does "
+        "not ask for a governing case. It carried no construction "
+        "statement where its `_min` sibling did, so one was added "
+        "(`delta_pp_median_construction`). No value moved."),
+    "gate_g1_map_vintage_spread.spread_pp_*": (
+        "CLEAN. max - min over the enumerated vintage member list, all "
+        "members the same statistic (each vintage's ensemble margin_pct_"
+        "min). The name says 'spread' and the construction is a spread."),
+    "series_duty_v2.cases[*].ensemble.* (_sd_envelope)": (
+        "CLEAN. min/median/max over the enumerated 8-seed set of per-seed "
+        "values, every extremum carrying its governing seed. 57 fields x "
+        "3 cases, plus companion, brackets and probe on the same helper."),
+    "companion_bp_capability_comparison.axes[*].worst_case_max": (
+        "CLEAN. max over cases of each case's own 8-seed max of the SAME "
+        "quantity, i.e. a true max over the 3 x 8 union, with case and "
+        "seed inline. A max of maxima IS the max here - unlike a ratio of "
+        "maxima, which is not."),
+    "unserved_energy_verdict.worst_case_governing_case": (
+        "CLEAN, and was the model for the KX2-m1 fix: it already refused "
+        "to name a governing case for an all-zero tie."),
+    "r16_binding_analysis.{regen_leg_bound_any_sample,"
+    "pack_charge_bound_by_r16_any_sample}": (
+        "CLEAN. Both are 'any sample' booleans built as max-over-the-set "
+        "> 0, which is what 'any' means. The stronger measured statement "
+        "(nonzero on EVERY seed of EVERY case) was not exported and now "
+        "is, as `pack_charge_bound_on_every_ordered_seed` - a min > 0."),
+    "r16_binding_analysis.pulse10s_covers_the_excursions": (
+        "CLEAN. A boolean over the worst (longest) excursion in the "
+        "enumerated set against the 10 s window; the underlying max and "
+        "its governing case are exported separately."),
+    "chain_boundary_exposure.*.one_sided_pp_locked_linear / total_pp_linear": (
+        "CLEAN. Priced PER SEED (that seed's unbooked bus energy over "
+        "that seed's own fuel) and only then enveloped - already the "
+        "paired construction. This is why the F2/D5 pp figures did not "
+        "move in this round."),
+    "r8_power_envelope_bracket.worst_unserved_kWh": (
+        "CLEAN as a value - a genuine, non-degenerate max over the "
+        "enumerated set (0.61 kWh at alt2000m_45C). Its LABEL was a bare "
+        "case name naming neither the set nor the seed; upgraded to the "
+        "program's fuller form for consistency."),
+    "heat_ledger_ws6.series_duty_v2_*_cycle_average.* (KX-m6 rows)": (
+        "CLEAN. Each row is the max of the PER-SEED cycle averages with "
+        "its own governing seed - the KX r2 fix, verified independently "
+        "by the r2 adjudicator (V7) and untouched here. The derived "
+        "radiator-package rows inherit those maxima and now carry the "
+        "same labels (KX2-m2)."),
+    "sanity.* and *_ref_seed fields": (
+        "CLEAN. Reference-seed scalars, named `_ref_seed`; not extrema "
+        "over a set, so R14 does not apply."),
+    "make_report_ws4.py arithmetic": (
+        "SWEPT. Exactly three expressions in the generator build a "
+        "rendered number from JSON: GAP and BSGAP (5.0 - an ensemble min, "
+        "the kill-criterion gap - name matches construction) and "
+        "M1PEAKPCT, which is corrected above. Every other rendered number "
+        "is a format of a single JSON value, which verify_ws4.py pins."),
+    "v1_start_stop.ensemble_hyst_0.8kWh.*": (
+        "CLEAN as values - min/max over the enumerated VOLT-SUB seed set. "
+        "R14 governing labels were absent and were added; no value moved."),
+    "soc_window_check.*_min": (
+        "CLEAN as values. `t_below_gate_s_min`, `soc_usable_min` and "
+        "`soc_nameplate_min` are minima over the enumerated 8-seed set "
+        "and were unlabelled; labels added, plus an explicit "
+        "cross-reference to the full-rate `soc_min_min` for the same "
+        "quantity (r2 adjudicator's note 5 for the lead)."),
+}
+
+R["construction_sweep_kx_r3"] = dict(
+    _purpose=("KX r3 record of the workstream-wide sweep for the defect "
+              "family named in adjudication KX2-M1/M2/M3: a "
+              "machine-readable summary whose CONSTRUCTION does not match "
+              "its NAME. Recorded so the sweep is auditable and so the "
+              "clean areas do not have to be re-swept."),
+    _rulings="BASELINE_v5 R36; R14; R9",
+    corrected=_SWEEP_CORRECTED,
+    examined_clean=_SWEEP_CLEAN,
+    gate_g1_one_factor_paired_companion=dict(
+        _status=("FOR COMPARISON ONLY - the archived attribution rows are "
+                 "BASELINE_v3-ratified record and are NOT recomputed. "
+                 "Exported outside gate_g1 so the archive stays frozen "
+                 "(adjudication KX2-m3)."),
+        spin_drag_alone=_paired_one_factor(G1_SPIN),
+        map_vs_scalar_alone=_paired_one_factor(G1_MAPS),
+        both_g1r=_paired_one_factor(G1["nominal"]),
+        archived_delta_pp_min=dict(
+            spin_drag_alone=R["gate_g1_one_factor"]["spin_drag_alone"][
+                "delta_pp_min"],
+            map_vs_scalar_alone=R["gate_g1_one_factor"][
+                "map_vs_scalar_alone"]["delta_pp_min"],
+            both_g1r=R["gate_g1_one_factor"]["both_g1r"]["delta_pp_min"])),
+    counts=dict(
+        fields_corrected=len(_SWEEP_CORRECTED),
+        areas_examined_clean=len(_SWEEP_CLEAN),
+        named_in_findings=sum(
+            1 for v in _SWEEP_CORRECTED.values()
+            if not v["finding"].startswith("FOUND BY THE SWEEP")),
+        found_by_the_sweep=sum(
+            1 for v in _SWEEP_CORRECTED.values()
+            if v["finding"].startswith("FOUND BY THE SWEEP"))),
+    _reading=("five of the seven corrected entries are the findings the "
+              "adjudication named; two - the R22d unbooked-pp bound and "
+              "ESC-10's percent-of-rating - were found by the sweep and "
+              "are the same defect family. No ordered value moved in "
+              "either."))
 
 # ---------------------------------------------------------------------------
 # 8. machine-readable interface block
@@ -2580,6 +3739,13 @@ IFACE_M1B_KEYS = ("unserved_bus_kWh", "fuel_kg", "fuel_energy_kWh_per_km",
                   "soc_min", "emergency_band_s", "genset_starts",
                   "engine_over_continuous_rating_s", "engine_shaft_peak_kW",
                   "pack_dis_peak_kW")
+# KX r3 / adjudication KX2-m4: the R6 rating-family probe's own axes.
+IFACE_R6F_KEYS = ("engine_over_continuous_rating_s",
+                  "engine_over_continuous_rating_kWh",
+                  "engine_over_continuous_rating_longest_s",
+                  "engine_shaft_peak_kW", "unserved_bus_kWh", "soc_min",
+                  "fuel_energy_kWh_per_km", "genset_starts",
+                  "pack_dis_peak_kW", "pack_chg_peak_kW")
 
 
 def _env_subset(env, keys):
@@ -2658,7 +3824,16 @@ R["interface_ws4"] = {
             "is retained as the record of the decision and its provenance. "
             "NO FIELD OF THIS BLOCK MAY BE CONSUMED AS A LIVE REQUIREMENT - "
             "consume interface_ws4 -> series_duty_v2 instead. Mode (a) does "
-            "not exist in any live architecture."),
+            "not exist in any live architecture. FROZEN MEMBER SET (KX r3, "
+            "adjudication KX2-m3): results_ws4.json -> gate_g1 -> <case> -> "
+            "_raw_reference_seed is projected through the explicit "
+            "53-member key list of record (run_ws4.py "
+            "G1_RAW_KEYS_OF_RECORD), in the record's own key order, so "
+            "the archive cannot grow when the simulator gains a field. "
+            "KX r2 let 234 such members leak in - including mode-(a) "
+            "over-rating counters that did not exist when the gate was "
+            "run - with 0 values changed; they are withdrawn here. Every "
+            "diagnostic added after 2026-08-30 belongs to the LIVE block."),
         "executed_by": "BASELINE_v3.md, GATE G1: EXECUTED. THE CLUTCH IS "
                        "DELETED.",
         "_revision": ("G1-R recompute (G1R_DIRECTIVE.md; rulings R10/R11/"
@@ -2822,6 +3997,20 @@ R["interface_ws4"] = {
                     "cases"][_c]["ensemble"], IFACE_M1B_KEYS)
             for _c in R["series_duty_v2"][
                 "engine_continuous_rating_bracket"]["cases"]},
+        # KX r3 / adjudication KX2-m4: the exposure ESC-10 asks the lead
+        # to rule on, widened to R6's own rating family. NOT ordered cases.
+        "r6_rating_family_probe": {
+            k: v for k, v in
+            R["series_duty_v2"]["r6_rating_family_probe"].items()
+            if k != "cases"},
+        "r6_rating_family_probe_ensembles": {
+            _c: dict(
+                condition=_cb["condition"],
+                engine_continuous_rating_kW=_cb[
+                    "engine_continuous_rating_kW"],
+                **_env_subset(_cb["ensemble"], IFACE_R6F_KEYS))
+            for _c, _cb in R["series_duty_v2"][
+                "r6_rating_family_probe"]["cases"].items()},
         # KX r2 / adjudication KX-m8: 8-seed, not one draw. Renamed from
         # `hysteresis_sensitivity_ref_seed` because it is no longer a
         # reference-seed quantity; the reference-seed rows are retained
@@ -2907,6 +4096,10 @@ R["interface_ws4"] = {
                                  "measured over LOCKED time) is in "
                                  "gate_g1.spin_drag_member and applies to no "
                                  "live architecture.")},
+    # KX r3: the construction sweep's own record (see 7b). Carried in the
+    # interface because it is the auditable answer to "which exported
+    # fields were checked, and what was found" for the whole workstream.
+    "construction_sweep_kx_r3": R["construction_sweep_kx_r3"],
     "v1_start_stop": {
         "pinned_point": pinV1,
         "starts_per_8h_shift_at_R8_floor_hyst0.8kWh_ensemble":
@@ -3157,12 +4350,25 @@ log(f"R16 curve, PACK charge (measured, NOT enforced): binding "
     f"{_r16a['pack_charge_above_r16_accept_longest_s']['worst_case_max']:.1f} s "
     f"(10-s pulse column covers them: "
     f"{_r16a['pulse10s_covers_the_excursions']}) [KX-B1]")
+_pkb = _r16a["pack_quantity_binding_analysis"]
+log("R16 curve, PACK charge, on temperature (KX2-M2): acceptance is "
+    f"exceeded at ALL {_pkb['n_tabulated_cells']} tabulated cell "
+    f"temperatures - the continuous column peaks at "
+    f"{_pkb['acceptance_curve_max_kW_bus']:.3f} kW bus at "
+    f"{_pkb['acceptance_curve_max_at_cell_C']:.0f} C against the run's "
+    f"{_pkb['peak_pack_charge_kW_bus']:.3f} kW, so the minimum exceedance "
+    f"over the whole curve is {_pkb['min_exceedance_kW_over_the_curve']:.3f}"
+    " kW; there is NO cold-side or hot-side crossing on this quantity")
 _r16b = R["series_duty_v2"]["r16_pack_acceptance_bracket"]
 log(f"R16 PACK-acceptance bracket (enforced): worst shed "
-    f"{_r16b['worst_shed_kWh']:.3f} kWh [{_r16b['worst_shed_governing_case']}], "
+    f"{_r16b['worst_shed_kWh']:.3f} kWh, "
     f"worst clip {_r16b['worst_clip_s']:.1f} s, worst unserved "
-    f"{_r16b['worst_unserved_kWh']:.4f} kWh, fuel penalty up to "
-    f"{_r16b['fuel_penalty_pct_max']:+.2f}%")
+    f"{_r16b['worst_unserved_kWh']:.4f} kWh, PAIRED fuel delta "
+    f"{_r16b['fuel_delta_pct_paired_worst_min']:+.3f}% to "
+    f"{_r16b['fuel_delta_pct_paired_worst_max']:+.3f}% "
+    f"(KX r2 ratio-of-maxima said at most "
+    f"{_r16b['fuel_penalty_pct_ratio_of_ensemble_maxima_max']:+.2f}%) "
+    "[KX2-M3]")
 _m1 = R["series_duty_v2"]["companion_bp_capability_comparison"]["axes"][
     "engine_over_continuous_rating_s"]
 log("Genset above its OWN 132 kW continuous flat-rating x derate: "
@@ -3190,6 +4396,25 @@ log(f"R8 power-envelope bracket (125/110 kW bus enforced): worst unserved "
     f"discharge peaks at "
     f"{max(R['series_duty_v2']['cases'][c]['ensemble']['pack_dis_peak_kW_max'] for c in R['series_duty_v2']['cases']):.1f}"
     " kW bus")
+_r6f = R["series_duty_v2"]["r6_rating_family_probe"]
+log("ESC-10 widening (KX2-m4): ordered-set worst above the continuous "
+    f"rating {_r6f['ordered_set_worst_over_rating_s']:.1f} s; R6 "
+    f"rating-family worst {_r6f['r6_family_worst_over_rating_s']:.1f} s "
+    f"({_r6f['r6_family_worst_over_rating_s_governing_case'].split(';')[0]})"
+    f"; union worst {_r6f['union_worst_over_rating_s']:.1f} s; every probe "
+    f"case unserved {_r6f['worst_unserved_kWh']:.4f} kWh")
+_tr20 = R["heat_ledger_ws6"]["series_duty_v2_transient_vs_R20_design_point"]
+log("R20/ESC-4 vs the ordered duty (KX2-M1): design point "
+    f"{_tr20['r20_design_point_radiator_package_kW']:.3f} kW in +45 C air; "
+    f"2-min worst {_tr20['absolute_kW_comparison']['worst_2min_kW']:.3f} kW "
+    f"(+{_tr20['absolute_kW_comparison']['exceedance_pct_of_design_point_worst']:.1f}%); "
+    "cases exceeding on the 2-min window: "
+    + ", ".join(_tr20["absolute_kW_comparison"][
+        "cases_exceeding_design_point_on_2min"])
+    + "; all ordered cases within the design point on 2 min: "
+    f"{_tr20['absolute_kW_comparison']['all_ordered_cases_within_design_point_on_2min']}"
+    "; ambient-normalised capability model NOT held by WS4 - escalated as "
+    "ESC-12")
 log(f"R22d true-coast spin member (reported, not charged): up to "
     f"{R['series_duty_v2']['r22d_coast_spin_member']['unbooked_pp_max']:.3f}"
     " pp of cycle fuel")

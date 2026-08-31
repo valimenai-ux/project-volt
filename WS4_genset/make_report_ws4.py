@@ -436,6 +436,11 @@ D5R = R["chain_boundary_exposure"]["d5_reconciliation"]
 HYS = R["series_duty_v2"]["hysteresis_sensitivity"]
 TR20 = R["heat_ledger_ws6"]["series_duty_v2_transient_vs_R20_design_point"]
 TRF = R["series_duty_v2"]["_trace_files"]
+# KX r3 shorthands
+PKB = R["series_duty_v2"]["r16_binding_analysis"][
+    "pack_quantity_binding_analysis"]
+R6F = R["series_duty_v2"]["r6_rating_family_probe"]
+SWEEP = R["construction_sweep_kx_r3"]
 
 
 def _r16rng(block, c, fmt="{:.1f}"):
@@ -526,8 +531,29 @@ T.update({
     "R16BSHEDGOV": R16B["worst_shed_governing_case"],
     "R16BCLIP": f"{R16B['worst_clip_s']:.1f}",
     "R16BUNS": f"{R16B['worst_unserved_kWh']:.4f}",
-    "R16BFUEL": f"{R16B['fuel_penalty_pct_max']:+.2f}",
-    "R16BFUELGOV": R16B["fuel_penalty_pct_max_governing_case"],
+    # KX r3 / KX2-M3(b): the PAIRED per-seed worst, which IS a bound.
+    "R16BFUEL": f"{R16B['fuel_delta_pct_paired_worst_max']:+.3f}",
+    "R16BFUELGOV": R16B["fuel_delta_pct_paired_worst_max_governing_case"],
+    "R16BFUELMIN": f"{R16B['fuel_delta_pct_paired_worst_min']:+.3f}",
+    "R16BFUELMINGOV": R16B["fuel_delta_pct_paired_worst_min_governing_case"],
+    "R16BFUELMEDN": "{:+.3f}".format(
+        R16B["fuel_delta_paired"]["by_case"]["nominal"]["median"]),
+    "R16BFUELMEDC": "{:+.3f}".format(
+        R16B["fuel_delta_paired"]["by_case"]["cda_5.4"]["median"]),
+    "R16BFUELMEDA": "{:+.3f}".format(
+        R16B["fuel_delta_paired"]["by_case"]["alt2000m_45C"]["median"]),
+    "R16BPOSN": "{:.0f}".format(
+        R16B["fuel_delta_paired"]["by_case"]["nominal"]["seeds_positive_n"]),
+    "R16BPOSC": "{:.0f}".format(
+        R16B["fuel_delta_paired"]["by_case"]["cda_5.4"]["seeds_positive_n"]),
+    "R16BPOSA": "{:.0f}".format(
+        R16B["fuel_delta_paired"]["by_case"]["alt2000m_45C"][
+            "seeds_positive_n"]),
+    "R16BFUELR2": "{:+.4f}".format(
+        R16B["fuel_penalty_pct_ratio_of_ensemble_maxima_max"]),
+    "R16BFUELR2N": "{:+.4f}".format(
+        R16B["fuel_penalty_pct_vs_ordered_ratio_of_ensemble_maxima"][
+            "nominal"]),
     # --- KX-M1: the genset above its own continuous rating
     "M1CONTN":
         f"{BPC['engine_continuous_rating_kW_by_case']['nominal']:.1f}",
@@ -548,10 +574,15 @@ T.update({
             "mode_b_block_of_record"]["worst_case_max_governing_case"],
     "M1PEAK":
         f"{BPC['axes']['engine_shaft_peak_kW']['mode_b_block_of_record']['worst_case_max']:.1f}",
+    # KX r3 / construction sweep: per case, per seed, against that case's
+    # own derated rating - not a cross-case max over one case's rating.
     "M1PEAKPCT": "{:.0f}".format(
-        100.0 * BPC["axes"]["engine_shaft_peak_kW"][
-            "mode_b_block_of_record"]["worst_case_max"]
-        / BPC["engine_continuous_rating_kW_by_case"]["nominal"]),
+        BPC["engine_shaft_peak_pct_of_continuous_rating_worst"]),
+    "M1PEAKPCTGOV":
+        BPC["engine_shaft_peak_pct_of_continuous_rating_worst_governing_case"],
+    "M1PEAKPCTA": "{:.1f}".format(
+        BPC["engine_shaft_peak_pct_of_continuous_rating_by_case"][
+            "alt2000m_45C"]["max"]),
     "M1TABLE": "\n".join([
         "| Genset vs its own rating (mode (b), 8-seed) | "
         + " | ".join(SDLBL[c] for c in SDORD) + " |",
@@ -600,13 +631,37 @@ T.update({
         _bprow("Peak engine shaft [kW]", "engine_shaft_peak_kW", "{:.1f}"),
         _bprow("Emergency-band time [s/cycle]", "emergency_band_s", "{:.1f}"),
     ]),
-    "BPPENN": "{:+.2f}".format(
-        BPC["fuel_kWh_per_km_by_case"]["nominal"]["bp_penalty_pct_on_median"]),
-    "BPPENC": "{:+.2f}".format(
-        BPC["fuel_kWh_per_km_by_case"]["cda_5.4"]["bp_penalty_pct_on_median"]),
-    "BPPENA": "{:+.2f}".format(
+    # KX r3 / KX2-M3(a): the PAIRED per-seed median, which is what the
+    # prose has always claimed to be quoting.
+    "BPPENN": "{:+.3f}".format(
+        BPC["fuel_delta_paired"]["by_case"]["nominal"]["median"]),
+    "BPPENC": "{:+.3f}".format(
+        BPC["fuel_delta_paired"]["by_case"]["cda_5.4"]["median"]),
+    "BPPENA": "{:+.3f}".format(
+        BPC["fuel_delta_paired"]["by_case"]["alt2000m_45C"]["median"]),
+    "BPPENNRNG": "{:+.3f} to {:+.3f}".format(
+        BPC["fuel_delta_paired"]["by_case"]["nominal"]["min"],
+        BPC["fuel_delta_paired"]["by_case"]["nominal"]["max"]),
+    "BPPENCRNG": "{:+.3f} to {:+.3f}".format(
+        BPC["fuel_delta_paired"]["by_case"]["cda_5.4"]["min"],
+        BPC["fuel_delta_paired"]["by_case"]["cda_5.4"]["max"]),
+    "BPPENARNG": "{:+.3f} to {:+.3f}".format(
+        BPC["fuel_delta_paired"]["by_case"]["alt2000m_45C"]["min"],
+        BPC["fuel_delta_paired"]["by_case"]["alt2000m_45C"]["max"]),
+    "BPPENWORST": "{:+.3f}".format(
+        BPC["fuel_delta_paired"]["worst_max_pct"]),
+    "BPPENWORSTGOV": BPC["fuel_delta_paired"]["worst_max_pct_governing_case"],
+    # the superseded ratio-of-medians, rendered so the before/after in the
+    # changelog is a rendering and not a transcription
+    "BPPENR2N": "{:+.3f}".format(
+        BPC["fuel_kWh_per_km_by_case"]["nominal"][
+            "bp_penalty_pct_ratio_of_ensemble_medians"]),
+    "BPPENR2C": "{:+.3f}".format(
+        BPC["fuel_kWh_per_km_by_case"]["cda_5.4"][
+            "bp_penalty_pct_ratio_of_ensemble_medians"]),
+    "BPPENR2A": "{:+.3f}".format(
         BPC["fuel_kWh_per_km_by_case"]["alt2000m_45C"][
-            "bp_penalty_pct_on_median"]),
+            "bp_penalty_pct_ratio_of_ensemble_medians"]),
     "BPDISPK": "{:.1f}".format(
         BPC["axes"]["pack_discharge_peak_kW_bus"]["mode_bp_companion"][
             "worst_case_max"]),
@@ -709,7 +764,75 @@ T.update({
         f"{TR20['cases']['alt2000m_45C']['radiator_package_2min_max_kW']:.1f}",
     "R20ALTPEAK":
         f"{TR20['cases']['alt2000m_45C']['radiator_package_peak_kW']:.1f}",
-    "R20SURVIVES": f"{TR20['r20_survives_on_the_2min_window']}",
+    # KX r3 / KX2-M1: the absolute comparison over the WHOLE enumerated
+    # set, the scope-named single-case statement, and the declared
+    # ambient sensitivity - three separate things, three separate fields.
+    "R20WORST2MIN":
+        f"{TR20['absolute_kW_comparison']['worst_2min_kW']:.3f}",
+    "R20WORST2MINGOV":
+        TR20["absolute_kW_comparison"]["worst_2min_governing_case"],
+    "R20EXCEED": ", ".join(
+        f"`{c}`" for c in TR20["absolute_kW_comparison"][
+            "cases_exceeding_design_point_on_2min"]),
+    "R20NEXCEED": "{:.0f}".format(
+        TR20["absolute_kW_comparison"][
+            "n_cases_exceeding_design_point_on_2min"]),
+    "R20ALLIN": "{}".format(
+        TR20["absolute_kW_comparison"][
+            "all_ordered_cases_within_design_point_on_2min"]),
+    "R20EXCPCT": "{:+.1f}".format(
+        TR20["absolute_kW_comparison"][
+            "exceedance_pct_of_design_point_worst"]),
+    "R20TIED": ", ".join(
+        f"`{c}`" for c in TR20["absolute_kW_comparison"][
+            "worst_2min_tied_cases_within_1e_6_kW"]),
+    "R20SCOPED": "{}".format(
+        TR20["r20_survives_on_the_2min_window_at_alt2000m_45C_only"]),
+    "R20AMBN": "{:.1f}".format(
+        TR20["ambient_normalised_sensitivity"]["case_air_temperature_C"][
+            "nominal"]),
+    "R20AMBA": "{:.2f}".format(
+        TR20["ambient_normalised_sensitivity"]["case_air_temperature_C"][
+            "alt2000m_45C"]),
+    "R20BREAKEVEN": "{:.0f}".format(
+        TR20["ambient_normalised_sensitivity"]["break_even_top_tank_C"]),
+    "R20RATIO105": "{:.3f}".format(
+        TR20["ambient_normalised_sensitivity"][
+            "duty_over_capability_worst_by_top_tank_C"]["105"][
+                "worst_ratio"]),
+    "R20RATIO105IN": "{}".format(
+        TR20["ambient_normalised_sensitivity"][
+            "duty_over_capability_worst_by_top_tank_C"]["105"][
+                "all_cases_within_capability"]),
+    "R20RATIOTABLE": "\n".join(
+        ["| Coolant top tank [°C] | " + " | ".join(
+            f"`{c}`" for c in ("nominal", "cda_5.4", "alt2000m_45C"))
+         + " | worst (= the design case) | all within capability |",
+         "|---|---|---|---|---|---|"]
+        + ["| {:.0f} | ".format(tt) + " | ".join(
+            "{:.3f}".format(TR20["cases"][c][
+                "duty_over_capability_2min_by_top_tank_C"][f"{tt:.0f}"])
+            for c in ("nominal", "cda_5.4", "alt2000m_45C"))
+           + " | **{:.3f}** ({}) | {} |".format(
+               TR20["ambient_normalised_sensitivity"][
+                   "duty_over_capability_worst_by_top_tank_C"][
+                       f"{tt:.0f}"]["worst_ratio"],
+               TR20["ambient_normalised_sensitivity"][
+                   "duty_over_capability_worst_by_top_tank_C"][
+                       f"{tt:.0f}"]["worst_ratio_governing_case"].split(
+                           " of the")[0],
+               TR20["ambient_normalised_sensitivity"][
+                   "duty_over_capability_worst_by_top_tank_C"][
+                       f"{tt:.0f}"]["all_cases_within_capability"])
+           for tt in TR20["ambient_normalised_sensitivity"][
+               "top_tank_C_set"]]),
+    "R20CROSS": "{:.1f}".format(
+        TR20["ambient_normalised_sensitivity"][
+            "design_case_crossover_top_tank_C"]),
+    "R20CROSSLO": TR20["ambient_normalised_sensitivity"][
+        "design_case_below_crossover"],
+    "R20CROSSHI": TR20["ambient_normalised_sensitivity"][
+        "design_case_above_crossover"],
     # --- KX-m8: 8-seed hysteresis
     "HYSTTABLE8": "\n".join([
         "| 8-seed envelope | " + " | ".join(SDLBL[c] for c in SDORD) + " |",
@@ -776,9 +899,20 @@ T.update({
         g("series_duty_v2/engine_continuous_rating_bracket/soc_min_worst")),
     "M1BSOCGOV": g("series_duty_v2/engine_continuous_rating_bracket/"
                    "soc_min_worst_governing_case"),
-    "M1BFUEL": "{:+.2f}".format(
+    "M1BFUEL": "{:+.3f}".format(
         g("series_duty_v2/engine_continuous_rating_bracket/"
-          "fuel_penalty_pct_max")),
+          "fuel_delta_pct_paired_worst_max")),
+    "M1BFUELGOV": g("series_duty_v2/engine_continuous_rating_bracket/"
+                    "fuel_delta_pct_paired_worst_max_governing_case"),
+    "M1BFUELMIN": "{:+.3f}".format(
+        g("series_duty_v2/engine_continuous_rating_bracket/"
+          "fuel_delta_pct_paired_worst_min")),
+    "M1BFUELR2": "{:+.4f}".format(
+        g("series_duty_v2/engine_continuous_rating_bracket/"
+          "fuel_penalty_pct_ratio_of_ensemble_maxima_max")),
+    "M1BNORISE": "{}".format(
+        g("series_duty_v2/engine_continuous_rating_bracket/"
+          "fuel_rises_on_no_ordered_seed")),
     "SDCDASOCMINMIN": "{:.3f}".format(
         SDC["cda_5.4"]["ensemble"]["soc_min_min"]),
     "LEDGERN":
@@ -787,6 +921,82 @@ T.update({
         f"{g('heat_ledger_ws6/series_duty_v2_cda_5.4_cycle_average/engine_rejection_avg_kW'):.4f}",
     "LEDGERA":
         f"{g('heat_ledger_ws6/series_duty_v2_alt2000m_45C_cycle_average/engine_rejection_avg_kW'):.4f}",
+    # ===================================================================
+    # KX r3 tokens
+    # ===================================================================
+    # --- KX2-M2: the pack quantity has no crossing at all
+    "PKBNCELLS": "{:.0f}".format(PKB["n_tabulated_cells"]),
+    "PKBCURVEMAX": "{:.3f}".format(PKB["acceptance_curve_max_kW_bus"]),
+    "PKBCURVEMAXT": "{:.0f}".format(PKB["acceptance_curve_max_at_cell_C"]),
+    "PKBPEAK": "{:.3f}".format(PKB["peak_pack_charge_kW_bus"]),
+    "PKBMINEXC": "{:.3f}".format(PKB["min_exceedance_kW_over_the_curve"]),
+    "PKBEVERY": "{}".format(
+        PKB["exceeds_acceptance_at_every_tabulated_cell_C"]),
+    "PKBTMIN": "{:.0f}".format(PKB["tabulated_cell_C_min"]),
+    "PKBTMAX": "{:.0f}".format(PKB["tabulated_cell_C_max"]),
+    "PKBPULSEMAX": "{:.3f}".format(PKB["pulse10s_max_kW_bus"]),
+    "PKBPULSELO": "{:.0f}".format(PKB["pulse10s_covers_peak_between_cell_C"][0]),
+    "PKBPULSEHI": "{:.0f}".format(PKB["pulse10s_covers_peak_between_cell_C"][1]),
+    "PKBEVERYSEED": "{}".format(
+        g("series_duty_v2/r16_binding_analysis/"
+          "pack_charge_bound_on_every_ordered_seed")),
+    # --- KX2-m4: the R6 rating-family probe
+    "R6FORD": "{:.1f}".format(R6F["ordered_set_worst_over_rating_s"]),
+    "R6FWORST": "{:.1f}".format(R6F["r6_family_worst_over_rating_s"]),
+    "R6FWORSTGOV": R6F["r6_family_worst_over_rating_s_governing_case"],
+    "R6FUNION": "{:.1f}".format(R6F["union_worst_over_rating_s"]),
+    "R6FUNIONGOV": R6F["union_worst_over_rating_s_governing_case"],
+    "R6FUNS": "{:.4f}".format(R6F["worst_unserved_kWh"]),
+    "R6FSOC": "{:.3f}".format(R6F["soc_min_worst"]),
+    "R6FTABLE": "\n".join(
+        ["| Case (R6 rating family - NOT ordered) | s/cycle above the "
+         "continuous rating (8-seed) | peak shaft [kW] | unserved [kWh] |",
+         "|---|---|---|---|"]
+        + ["| {} | {} | {:.1f} | {:.4f} |".format(
+            f"`{c}` - " + R6F["cases"][c]["condition"],
+            _rng(R6F["cases"][c]["ensemble"],
+                 "engine_over_continuous_rating_s", "{:.1f}"),
+            R6F["cases"][c]["ensemble"]["engine_shaft_peak_kW_max"],
+            R6F["cases"][c]["ensemble"]["unserved_bus_kWh_max"])
+           for c in R6F["cases"]]
+        + ["| *ordered worst, for comparison (`cda_5.4`)* | "
+           "*{:.1f}* | | *0.0000* |".format(
+               R6F["ordered_set_worst_over_rating_s"])]),
+    # --- the construction sweep
+    "SWEEPN": "{:.0f}".format(SWEEP["counts"]["fields_corrected"]),
+    "SWEEPCLEANN": "{:.0f}".format(SWEEP["counts"]["areas_examined_clean"]),
+    "SWEEPFOUND": "{:.0f}".format(SWEEP["counts"]["found_by_the_sweep"]),
+    "SWEEPNAMED": "{:.0f}".format(SWEEP["counts"]["named_in_findings"]),
+    "SWEEPCLEANLIST": "\n".join(
+        f"- `{k}` — {v}" for k, v in SWEEP["examined_clean"].items()),
+    "SWEEPCORRTABLE": "\n".join(
+        ["| Field | Finding | KX r2 construction | Corrected to |",
+         "|---|---|---|---|"]
+        + ["| `{}` | {} | {} | {} |".format(
+            k, v["finding"], v["kx_r2_construction"], v["corrected_to"])
+           for k, v in SWEEP["corrected"].items()]),
+    "OFSPINPAIRED": "{:+.4f}".format(
+        SWEEP["gate_g1_one_factor_paired_companion"]["spin_drag_alone"][
+            "paired_delta_pp_min"]),
+    "OFMAPSPAIRED": "{:+.4f}".format(
+        SWEEP["gate_g1_one_factor_paired_companion"]["map_vs_scalar_alone"][
+            "paired_delta_pp_min"]),
+    "OFSPINARCH": "{:+.4f}".format(
+        SWEEP["gate_g1_one_factor_paired_companion"]["archived_delta_pp_min"][
+            "spin_drag_alone"]),
+    "OFMAPSARCH": "{:+.4f}".format(
+        SWEEP["gate_g1_one_factor_paired_companion"]["archived_delta_pp_min"][
+            "map_vs_scalar_alone"]),
+    # --- KX2-m3: the archived-gate member freeze
+    "G1FROZENN": "{:.0f}".format(len(
+        R["gate_g1"]["nominal"]["_raw_reference_seed"]["a"])),
+    # --- the r22d member, corrected construction
+    "R22DPPR2": "{:.6f}".format(
+        g("series_duty_v2/r22d_coast_spin_member/"
+          "unbooked_pp_of_cycle_fuel_ratio_of_ensemble_extrema_kx_r2/"
+          "alt2000m_45C")),
+    "R22DPP6": "{:.6f}".format(
+        g("series_duty_v2/r22d_coast_spin_member/unbooked_pp_max")),
 })
 
 BODY = r"""# REPORT WS4 — GENSET, THE ARCHIVED GATE G1, AND THE R22a PURE-SERIES DUTY
@@ -797,22 +1007,36 @@ Project Volt · workstream 4 · against **BASELINE_v3.md** (ratified
 were computed against BASELINE_v2.md and are **archived, not
 recomputed**.
 Author: WS4 (engine & generator). Status: **for adjudication — KX
-round 2 (rework)** against `FINDINGS_KX_r1.md` (2 blocking, 3 material,
-8 minor — all addressed), executing the lead directive
-`KX_DIRECTIVE.md` (rulings R22, R23). Rework changelog in **§0-KX2**,
-including the exported-member delta for the two workstreams consuming
-`series_duty_v2` live; the KX r1 changelog (§0-KX), the G1-R changelog
-(§0-R) and the round-2 changelog (§0) are retained as history.
+round 3 (final rework)** against `FINDINGS_KX_r2.md` (0 blocking, 3
+material, 4 minor — all addressed), on top of round 2's closure of all
+thirteen `FINDINGS_KX_r1.md` findings, executing the lead directive
+`KX_DIRECTIVE.md` (rulings R22, R23). Rework changelog in **§0-KX3**,
+including the exported-member delta for the workstreams consuming
+`series_duty_v2` live; the KX r2 changelog (§0-KX2), the KX r1 changelog
+(§0-KX), the G1-R changelog (§0-R) and the round-2 changelog (§0) are
+retained as history.
 
-> **KX r2 in one line: no ordered number moved, and the block now says
-> what it does.** The two blocking findings were interface-correctness
-> defects on a live design-input block — a field asserting a constraint
-> was inactive while the pack was charged above it (B1), and a companion
-> run that omitted the very axes the escalation it feeds turns on (B2).
-> Both are fixed at source and both are now measured, bracketed and
-> escalated rather than decided by WS4. Every `series_duty_v2` fuel,
-> unserved-energy, above-pin, SOC, starts and pack-peak value is
-> byte-identical to the r1 vintage; §0-KX2 lists the member-level delta.
+> **KX r3 in one line: three material defects, one defect family, and a
+> sweep of the whole workstream rather than three patches.** All three
+> were machine-readable summaries whose CONSTRUCTION did not match their
+> NAME — a `max` over one case named as a set verdict (M1), an
+> `np.interp` clamp named as a curve crossing (M2), and fuel deltas
+> built as ratios of ensemble statistics where BASELINE_v5 **R36**
+> requires the paired per-seed statistic, one of them labelled "the
+> paired per-case median" in three places including ESC-9 (M3). Because
+> round 2 fixed exactly this defect in one block and re-introduced it in
+> three others in the same round, this round enumerated **every**
+> machine-readable aggregate in the workstream against its own name
+> (§4-KX.9, §0-KX3): @SWEEPN@ fields corrected — @SWEEPFOUND@ of them
+> found by the sweep and not named in the adjudication — and
+> @SWEEPCLEANN@ areas examined and recorded clean. **No ordered number
+> moved:** exactly three distinct numeric values changed anywhere in
+> `results_ws4.json` — the three per-case R22d coast-spin figures the
+> sweep re-priced per seed — in twelve occurrences, because each is
+> exported in three places and the worst-case field repeats the corner's
+> value. Two verdict-relevant movements are reported
+> plainly: WS4 **withdraws** its R20 survival verdict and escalates it
+> (ESC-12), and ESC-10's exposure is restated on a wider, measured set.
 
 **The clutch is dead.** BASELINE_v3 executed Gate G1's kill clause on
 the numbers this report carries. Nothing in this round re-runs or
@@ -864,9 +1088,17 @@ kx_input_provenance → input_sha256` (and, for the archived gate,
 > peak pack charge @R16PACKPK@ kW bus), because regen and the genset
 > charge the pack at the same time; both readings and the cost of
 > enforcing the pack one are now exported, and the choice between them
-> is escalated (ESC-8). The genset also runs above its own
-> @M1CONTN@ kW continuous flat-rating for up to @M1WORSTS@ s per cycle
-> (ESC-10). Fuel energy
+> is escalated (ESC-8) — and, corrected in KX r3, the pack reading is
+> exceeded at **every one of the @PKBNCELLS@ tabulated cell
+> temperatures WS3 publishes**, not only at the hot end. The genset also
+> runs above its own @M1CONTN@ kW continuous flat-rating for up to
+> @M1WORSTS@ s per cycle on the ordered set, and **@R6FUNION@ s** inside
+> R6's own rating family (ESC-10, §4-KX.8). The duty's 2-minute
+> HT-package load reaches @R20WORST2MIN@ kW against R20's
+> @R20DESIGN@ kW design point, and WS4 **withdraws** the survival
+> verdict its previous round exported rather than assert a
+> capability-versus-ambient model it does not have (ESC-12, §4-KX.7).
+> Fuel energy
 > per km, above-pin duty, SOC trajectories, genset cycling and the
 > per-seed tables are exported for WS5's R22b dispatch question.
 >
@@ -897,6 +1129,185 @@ kx_input_provenance → input_sha256` (and, for the archived gate,
 > to map voltage across WS2's full exported window (§6). The kill
 > clause was armed at ≥5% on these numbers (BASELINE_v2); BASELINE_v3
 > executed it. WS4 reported the number; the lead executed.**
+
+---
+
+## 0-KX3. KX rework changelog, round 3 (response to `FINDINGS_KX_r2.md`)
+
+KX round 2 closed all thirteen round-1 findings at root cause — the
+round-2 adjudicator could not break any of them and re-derived every
+one — and then **introduced three material and four minor defects of its
+own**. All three material findings are one defect family, named
+precisely by the adjudicator: *a machine-readable summary whose
+CONSTRUCTION does not match its NAME, sitting beside per-case data that
+is correct.* One of them, KX2-M3, is a **regression**: fuel deltas built
+as ratios of ensemble statistics, one of them labelled "the paired
+per-case median" in three places including ESC-9, where **BASELINE_v5
+R36** — a ratified doctrine correction that exists because a
+ratio-of-medians artefact reached doctrine once already — requires the
+paired per-seed statistic. Round 2 had fixed exactly this defect in the
+heat ledger (m6) and re-introduced it in three new blocks in the same
+round.
+
+**So this round did not stop at the three named fields.** Every
+machine-readable aggregate in the workstream was enumerated and checked
+against its own name; the sweep is recorded, clean areas included, in
+`results_ws4.json → construction_sweep_kx_r3`; the method is in §4-KX.9. It
+corrected **@SWEEPN@** fields, of which **@SWEEPNAMED@** were named in
+the adjudication and **@SWEEPFOUND@ were found by the sweep itself** and
+are the same defect family; **@SWEEPCLEANN@** areas were examined and
+found clean, and are listed so the next reader need not re-sweep them.
+
+**No ordered number moved in this round either.** Exactly **three**
+distinct numeric values changed anywhere in `results_ws4.json`, in
+twelve occurrences: the three per-case R22d coast-spin figures
+(`unbooked_pp_of_cycle_fuel`, each exported in three places) plus
+`unbooked_pp_max`, which repeats the corner's value. All three are the
+member the sweep re-priced per seed. Zero values changed inside
+`series_duty_v2 → cases`, and zero anywhere under `gate_g1`.
+
+- **KX2-M1** *(material)* — `r20_survives_on_the_2min_window` was a
+  `max` over a three-case comprehension **filtered down to one case**,
+  written to read as a set-wide verdict, and exported beside a
+  three-case worst @R20EXCPCT@ % above the design point. **Withdrawn.**
+  §4-KX.7 now carries three separate things under three separate names:
+  an **absolute** comparison over the whole enumerated set
+  (`all_ordered_cases_within_design_point_on_2min`: **@R20ALLIN@**;
+  exceeding cases @R20EXCEED@), the scoped single-case statement
+  (`r20_survives_on_the_2min_window_at_alt2000m_45C_only`:
+  @R20SCOPED@), and a **[WS4-DECLARED] ambient sensitivity** that
+  quantifies the scoping argument the r2 block only asserted.
+  Quantified, that argument holds on the **capability** question (the
+  break-even is a @R20BREAKEVEN@ °C top tank) but **not on R20's own
+  question**: the ordered cases' ambient-normalised ratios cross at a
+  **@R20CROSS@ °C** top tank, below which `@R20CROSSLO@` is the design
+  case and above which `@R20CROSSHI@` is — and @R20CROSS@ °C is inside
+  the range a pressurised heavy-duty coolant system can run. WS4 has no
+  ratified radiator capability-versus-ambient model and does not invent
+  one; the R20/ESC-4 question is escalated as **ESC-12**.
+- **KX2-M2** *(material)* — `cold_side_binding_cell_C_pack_quantity:
+  10.0` was an `np.interp` **right-edge clamp**, not a crossing, sitting
+  beside two genuine crossings, so a consumer read a non-binding region
+  above 10 °C cells that does not exist. **Withdrawn** and replaced by
+  the measured statement, which is stronger and simpler: on the pack
+  quantity the ordered duty exceeds WS3's continuous acceptance at
+  **every one of the @PKBNCELLS@ tabulated cell temperatures**, by at
+  least **@PKBMINEXC@ kW** even at the curve's best point
+  (@PKBCURVEMAX@ kW at @PKBCURVEMAXT@ °C against the run's
+  @PKBPEAK@ kW). Every remaining interpolation against a monotone branch
+  now **asserts in range before use** (`_r16_crossing`), so a clamp and
+  a crossing can no longer share a field name. ESC-8(b) is restated on
+  the corrected reading.
+- **KX2-M3** *(material, a regression against R36)* — all three fuel
+  deltas between paired dispatches are recomputed on the **paired
+  per-seed statistic**, enveloped over the 8 seeds with R14 governing
+  seeds, and the r2 ratio-of-statistics fields are retained beside them
+  under names that say what they are. Measured before/after:
+  - companion (b′) vs (b), `bp_penalty_pct_on_median` → **paired
+    median**: @BPPENR2N@ → **@BPPENN@** % at nominal, @BPPENR2C@ →
+    **@BPPENC@** % at CdA 5.4, @BPPENR2A@ → **@BPPENA@** % at the
+    corner. The three renderings that called the r2 number "the paired
+    per-case median", including ESC-9's, are now true of the number they
+    label.
+  - R16 pack bracket: the r2 ratio of maxima read **@R16BFUELR2N@ %** at
+    nominal — a *saving* — where the paired delta is a **cost on
+    @R16BPOSN@ of the 8 seeds** (median @R16BFUELMEDN@ %), and on 8 of 8
+    at both other cases. `fuel_penalty_pct_max` = @R16BFUELR2@ %, quoted
+    in ESC-8(c) as "at most +0.20 %", **was not a bound**: the worst
+    paired seed costs **@R16BFUEL@ %** (@R16BFUELGOV@). ESC-8(c) is
+    restated on it.
+  - engine continuous-rating bracket: same construction; the conclusion
+    survives (paired, every seed of every ordered case is ≤ 0 —
+    `fuel_rises_on_no_ordered_seed`: @M1BNORISE@), but the r2 "max"
+    @M1BFUELR2@ % was a maximum over three negatives, i.e. the *least*
+    saving, under a name that says penalty.
+- **KX2-m1** *(minor)* — the two new brackets labelled an all-zero tie
+  as governed by `nominal` (Python's first-key tie-break). The
+  degenerate-tie form `unserved_energy_verdict` already used is now
+  produced by a single helper, `_case_worst`, applied to **every**
+  case-set extremum in the workstream; it also refuses partial ties,
+  which caught one the adjudication did not name (below).
+- **KX2-m2** *(minor)* — the six unlabelled maxima are labelled
+  (`boundary_convention_exposure/*/exposure_s_motoring_min` ×3, the four
+  `radiator_package_*` rows and both `pm_coast_spin_*` rows), and
+  `peak_pack_charge_governing_case` / `peak_regen_governing_case` are
+  raised to the block's own fuller form. **The first of those exposed a
+  real tie-break:** peak pack charge is *exactly* equal at `nominal` and
+  `cda_5.4`, so the r2 label "nominal" was a first-key artefact; both
+  are now named.
+- **KX2-m3** *(minor)* — the ARCHIVED `gate_g1` raw reference-seed dump
+  was built from *everything the simulator returns*, so it gained 234
+  members the moment r2 added diagnostics — including mode-(a)
+  over-rating counters measured by a counter that did not exist when the
+  gate was run. It is now projected through an explicit **@G1FROZENN@-member
+  key list of record** (`G1_RAW_KEYS_OF_RECORD`), in the record's own key
+  order. The archive can no longer grow when the simulator changes, and
+  the archival notice says so.
+- **KX2-m4** *(minor)* — ESC-10's exposure was bounded by the ordered
+  set. R6's own rating family is worse, so it is **measured** rather
+  than mentioned: a four-case, 8-seed **R6 rating-family probe** (not
+  ordered cases, and not joined to `series_duty_v2`'s case set) puts
+  **@R6FWORST@ s/cycle** above the continuous rating against the ordered
+  set's @R6FORD@ s. ESC-10 is restated on the union maximum
+  (**@R6FUNION@ s**), with both set maxima exported so the lead can see
+  which set each number is over. Every probe case still completes with
+  @R6FUNS@ kWh unserved.
+
+### What the construction sweep found (KX r3)
+
+@SWEEPCORRTABLE@
+
+The two entries marked *found by the sweep* are the same family as
+KX2-M3 and were not in the findings file:
+
+- **`r22d_coast_spin_member.unbooked_pp_max`** — built from the 8-seed
+  maximum coast *shaft* energy **plus** the 8-seed maximum coast *bus*
+  energy **over** the 8-seed maximum fuel mass — three independently
+  extremised numbers — and rendered as "worth **at most** X pp of cycle
+  fuel". Re-priced per seed: @R22DPPR2@ → **@R22DPP6@** pp at the
+  governing case. *(This is the one member of this block WS5 consumes
+  live; the before/after is stated here for the hot-swap.)*
+- **ESC-10's "% of the continuous rating"** — a max over **all** cases
+  divided by **one** case's rating. Correct only by luck, because the
+  peak's governing cases are the two underated ones; at the corner the
+  same arithmetic gives @M1PEAKPCTA@ % against a derated rating. Now
+  formed per case, per seed, against that case's own rating.
+
+Areas examined and found **clean** — recorded so they need not be
+re-swept:
+
+@SWEEPCLEANLIST@
+
+One examined item is deliberately **not changed**: the archived
+`gate_g1_one_factor` attribution deltas are differences of ensemble
+minima, their names say "delta of the min", `_DELTA_GOV` states the
+construction inline, and their values are BASELINE_v3-ratified record.
+The paired per-seed companion is measured **outside** the archived block
+for comparison: spin drag @OFSPINARCH@ → @OFSPINPAIRED@ pp,
+map-vs-scalar @OFMAPSARCH@ → @OFMAPSPAIRED@ pp. Neither moves the
+attribution's shape or the executed kill; the numbers are on the record
+so the lead can see that for itself.
+
+### Exported-member delta, round 3 (for live consumers)
+
+| Kind | Member | Before → after |
+|---|---|---|
+| **value changed** | `r22d_coast_spin_member → unbooked_pp_of_cycle_fuel` (3 cases) and `unbooked_pp_max`, in both places they appear | re-priced per seed; worst @R22DPPR2@ → @R22DPP6@ pp. **WS5 consumes `unbooked_pp_max` live.** |
+| **withdrawn** | `r16_binding_analysis → cold_side_binding_cell_C_pack_quantity` | clamp, not a crossing → `pack_quantity_binding_analysis` (KX2-M2) |
+| **withdrawn** | `heat_ledger_ws6 → …_vs_R20_design_point → r20_survives_on_the_2min_window` | one-case max named as a set verdict → `absolute_kW_comparison` + scope-named single-case field + declared sensitivity (KX2-M1) |
+| **moved** | the same block's `worst_2min_kW` / `worst_2min_governing_case` | now inside `absolute_kW_comparison`, with the verdict, over the same set |
+| **renamed** | `bp_penalty_pct_on_median` → `bp_penalty_pct_ratio_of_ensemble_medians` | value unchanged; the paired statistic ships beside it |
+| **renamed** | both brackets' `fuel_penalty_pct_vs_ordered` / `fuel_penalty_pct_max` → `…_ratio_of_ensemble_maxima…` | values unchanged; `fuel_delta_pct_paired_*` is the live figure |
+| **relabelled** | every case-set governing label in the brackets, `r16_binding_analysis` and `r22d_coast_spin_member` | bare case name → degenerate-tie string or the program's fuller "case X …; within it, seed Y" form |
+| **removed** | `gate_g1 → <case> → _raw_reference_seed` diagnostic members | 234 members that leaked in during r2; 0 values changed (KX2-m3) |
+| **added** | `series_duty_v2 → r6_rating_family_probe` (+ interface projection) | KX2-m4 |
+| **added** | `construction_sweep_kx_r3` (results + interface) | the sweep record |
+| **added** | R14 governing labels on 6 named fields plus the V1 start-stop, `soc_window_check` and `chain_boundary_exposure` minima | KX2-m2 + sweep; no value moved |
+
+`ws4_sim.py` is **byte-identical** to the r2 vintage
+(`de25e3da1fd2bb1ae5c8be3b590bd7f51c7cbba3143306957e0965b87a191632`), so
+WS11's simulator pin is unaffected; `results_ws4.json` necessarily
+changes and must be re-pinned.
 
 ---
 
@@ -1029,8 +1440,10 @@ for the two workstreams (WS11, WS5) consuming this block live.
 - **m7** — peak and rolling **2-min / 10-min** maximum engine rejection
   are exported per case with R14 labels, plus the implied radiator-
   package rows and an explicit comparison against R20's @R20DESIGN@ kW
-  design point (§4-KX.7). R20/ESC-4 survives on the 2-min window at the
-  corner (@R20ALT2MIN@ kW): @R20SURVIVES@.
+  design point (§4-KX.7). *(The survival verdict this round exported
+  alongside them, `r20_survives_on_the_2min_window`, was a max over one
+  filtered case; it is **withdrawn in KX r3** and replaced — see §0-KX3
+  KX2-M1 and ESC-12. The transient rows themselves stand.)*
 - **m8** — the hysteresis sensitivity now runs both bands over the
   **8-seed** ensemble (R9). The block is renamed
   `hysteresis_sensitivity_ref_seed` → `hysteresis_sensitivity`; the r1
@@ -1912,9 +2325,22 @@ than argue the point — pack charge above the acceptance is shed:
 @R16BTABLE@
 
 Worst shed **@R16BSHED@ kWh** at @R16BSHEDGOV@, up to @R16BCLIP@ s of
-clipping, fuel penalty at most **@R16BFUEL@ %** (@R16BFUELGOV@), and
-**unserved bus energy stays @R16BUNS@ kWh**. So the §4-KX.2 headline
-does not depend on which reading the lead rules for. Note the shed
+clipping, and **unserved bus energy stays @R16BUNS@ kWh**. So the
+§4-KX.2 headline does not depend on which reading the lead rules for.
+
+**The fuel cost, on the paired per-seed statistic (KX r3, adjudication
+KX2-M3(b) / BASELINE_v5 R36).** The two dispatches are paired by
+construction — same eight seeds, same cycles, only the supervisor
+differs — so the delta is formed seed by seed and only then enveloped.
+Paired medians **@R16BFUELMEDN@ / @R16BFUELMEDC@ / @R16BFUELMEDA@ %**;
+the worst paired seed anywhere is **@R16BFUEL@ %** (@R16BFUELGOV@) and
+the best is @R16BFUELMIN@ % (@R16BFUELMINGOV@). Enforcement is a **cost
+on @R16BPOSN@ of 8 seeds at nominal and on @R16BPOSC@ / @R16BPOSA@ of 8
+at CdA 5.4 and the corner.** The KX r2 round exported a *ratio of
+ensemble maxima* here — @R16BFUELR2N@ % at nominal, i.e. the opposite
+sign to six of its own eight seeds — and quoted its maximum
+(@R16BFUELR2@ %) in ESC-8(c) as an "at most". It was not a bound and is
+withdrawn under that name. Note the shed
 formulation is the crudest remedy available — it discards surplus rather
 than not generating it; the supervisor that instead backs the genset off
 is the load-following companion (b′), which stays inside the acceptance
@@ -1926,8 +2352,31 @@ the semantics of WS3's interface are WS3's and the blend order is WS5's.
 The r1 round chose the permissive reading without recording that a
 choice existed; that is the defect, and the choice goes to the lead.
 
-**Where the curve would bind on temperature**, from the same curve and
-this run's peak regen: below **@R16COLD@ °C** cells on the cold side, and
+**On the PACK quantity there is no binding TEMPERATURE at all (KX r3,
+adjudication KX2-M2).** WS3's continuous column attains its global
+maximum of **@PKBCURVEMAX@ kW bus at @PKBCURVEMAXT@ °C cells**, and the
+ordered run's peak pack charge is **@PKBPEAK@ kW**. The acceptance is
+therefore exceeded at **every one of the @PKBNCELLS@ tabulated cell
+temperatures** WS3 publishes (@PKBTMIN@ °C to @PKBTMAX@ °C), by at least
+**@PKBMINEXC@ kW** even at the curve's most favourable point
+(`exceeds_acceptance_at_every_tabulated_cell_C`: @PKBEVERY@), and it is
+exceeded on **every seed of every ordered case**
+(`pack_charge_bound_on_every_ordered_seed`: @PKBEVERYSEED@). There is no
+cold-side boundary and no hot-side boundary on this quantity. KX r2
+exported `cold_side_binding_cell_C_pack_quantity = 10.0` here — which
+was `np.interp` **clamping** at the right edge of the cold branch, not a
+crossing — and beside two genuine regen-leg crossings it read as a
+non-binding region above 10 °C cells that does not exist. The field is
+withdrawn; every remaining interpolation against a monotone branch now
+asserts in range before use. *(In the escalation's favour: the 10-s
+**pulse** column does cover @PKBPEAK@ kW in magnitude between
+@PKBPULSELO@ °C and @PKBPULSEHI@ °C cells, peaking at @PKBPULSEMAX@ kW —
+which is exactly why `pulse10s_covers_the_excursions` turns on excursion
+**duration**, not magnitude.)*
+
+**Where the curve binds on temperature for the REGEN LEG**, from the
+same curve and this run's peak regen: below **@R16COLD@ °C** cells on
+the cold side, and
 above **@R16HOT@ °C** cells on the hot side. The hot side is not
 hypothetical — WS3's pack-loop **sizing line** holds cells at or below
 **55 °C** at +45 °C ambient, and acceptance at 55 °C is **@R1655@ kW**,
@@ -2008,10 +2457,19 @@ of, on every seed of every ordered case:**
 | Engine above its continuous rating [s] | 0 | **@M1SN@ / @M1SC@ / @M1SA@ — outside** | 0.0 on every seed: @BPINENG@ |
 | Peak engine shaft [kW] | @M1CONTN@ / @M1CONTA@ by case | **@M1PEAK@** | @BPENGPK@ |
 
-The fuel cost of that, on the paired per-case median: @BPPENN@ % at
-nominal, @BPPENC@ % at CdA 5.4, @BPPENA@ % at the corner — inside the
-ensemble spread at nominal and CdA 5.4, and a real penalty only at the
-corner, where load-following drags the derated engine off its island.
+The fuel cost of that, **on the paired per-seed statistic BASELINE_v5
+R36 mandates** — formed seed by seed on the same eight cycles and only
+then enveloped: median **@BPPENN@ %** at nominal (8-seed range
+@BPPENNRNG@), **@BPPENC@ %** at CdA 5.4 (@BPPENCRNG@) and
+**@BPPENA@ %** at the corner (@BPPENARNG@); worst paired seed anywhere
+**@BPPENWORST@ %** (@BPPENWORSTGOV@). Inside the ensemble spread at
+nominal and CdA 5.4, and a real penalty only at the corner, where
+load-following drags the derated engine off its island. *(KX r3,
+adjudication KX2-M3(a): the KX r2 round printed a **ratio of ensemble
+medians** here — @BPPENR2N@ / @BPPENR2C@ / @BPPENR2A@ % — under this
+same sentence's claim to be the paired median. At nominal that was 2.7×
+smaller than the statistic it was called. The claim is now true of the
+number it labels.)*
 
 **This is a measurement, not a recommendation.** WS4 does not choose the
 dispatch; R22b assigns that to WS5, and this table does not price the
@@ -2052,19 +2510,123 @@ windows a cooling package is actually sized against are now exported:
 @HEATTRTABLE@
 
 Read against **R20/ESC-4's declared radiator design point of
-@R20DESIGN@ kW** of HT-package duty in +45 °C air: the instantaneous
-radiator-package peak exceeds it at every case, and at `alt2000m_45C` —
-the only ordered case in R20's own +45 °C ambient — it reaches
-**@R20ALTPEAK@ kW**. The **2-minute** rolling average there is
-**@R20ALT2MIN@ kW**, which stays *under* the design point, so
-**R20/ESC-4's "radiator design case = the R6 corner" survives**
-(`r20_survives_on_the_2min_window`: @R20SURVIVES@) — the finding is that
-the rows WS6 was pointed at could not have shown this either way.
+@R20DESIGN@ kW** of HT-package duty in +45 °C air.
+
+**(1) The absolute comparison, over the whole enumerated ordered set.**
+The instantaneous radiator-package peak exceeds the design point at
+**every** ordered case. On the **2-minute** rolling window the worst is
+**@R20WORST2MIN@ kW** — **@R20EXCPCT@ %** above the design point — and
+**@R20NEXCEED@ of the three ordered cases exceed it**: @R20EXCEED@.
+`all_ordered_cases_within_design_point_on_2min`: **@R20ALLIN@**. The
+`alt2000m_45C` corner stays under, at **@R20ALT2MIN@ kW** (its peak is
+**@R20ALTPEAK@ kW**). The worst is a tie: @R20TIED@ both sit at the
+engine's emergency-band ceiling through the window, so their 2-minute
+maxima agree to ~4e-12 kW and both are named.
+
+> **KX r3 (adjudication KX2-M1).** The KX r2 round exported
+> `r20_survives_on_the_2min_window: true` here. It was a `max` over a
+> three-case comprehension **filtered down to one case** — written to
+> read as a max over the enumerated set — sitting beside a three-case
+> worst @R20EXCPCT@ % above the design point. The field is
+> **withdrawn**. The scoped statement it was really making survives,
+> under a name that carries its scope:
+> `r20_survives_on_the_2min_window_at_alt2000m_45C_only`: @R20SCOPED@.
+
+**(2) Why the absolute comparison is not the R20 question, and what WS4
+does not have.** R20/ESC-4 rules which case *sizes the radiator*. To
+sustain "the R6 corner is still the design case" one must show no other
+case demands more **capability relative to its own ambient** — and
+capability-versus-ambient is a model **WS4 does not have and does not
+invent**. The r2 block asserted the scoping ("the other two cases are
+not at +45 °C") and never quantified it. It is quantified here, as a
+declared sensitivity and nothing more.
+
+**(3) [WS4-DECLARED] ambient sensitivity.** At fixed airflow and
+geometry an HT package rejects `Q = UA_eff × ITD`; anchoring `UA_eff` on
+R20's own design point gives
+`capability(T_air) = Q_design × (T_top − T_air) / (T_top − 45)`. Each
+ordered case's air temperature is derived from its **own** air density
+and altitude through the ideal gas law — the corner returns
+**@R20AMBA@ °C** against its declared +45.0 °C, which validates the
+derivation; the two sea-level cases return **@R20AMBN@ °C**. Air density
+is deliberately not credited, which is conservative (the corner is the
+thin-air case). Duty ÷ capability on the 2-minute window:
+
+@R20RATIOTABLE@
+
+At a 105 °C top tank the worst ordered case sits at **@R20RATIO105@** of
+capability (all cases within: @R20RATIO105IN@), and the **capability
+break-even is a @R20BREAKEVEN@ °C top tank** — far above any physical
+diesel HT cap. On the *capability* question, therefore, the r2 scoping
+argument pointed the right way.
+
+**But R20/ESC-4 does not ask whether every case is inside capability —
+it asks which case SIZES the radiator, and that answer flips much
+lower.** The ordered cases' normalised ratios cross at a top tank of
+**@R20CROSS@ °C**: below it `@R20CROSSLO@` is the design case (the
+standing ruling), above it `@R20CROSSHI@` is — while every case is still
+inside capability. **@R20CROSS@ °C is inside the range a pressurised
+heavy-duty coolant system can actually run**, so on WS4's own declared
+sensitivity ESC-4's design case is *live, not settled*. **That is a
+result of a declared sensitivity, not a measurement, and WS4 does not
+convert either number into an R20 verdict.** Four assumptions carry it
+(same fan state in all three cases, constant `UA_eff`, linearity over
+21–45 °C, and the 2-minute window being the right thermal window) and
+none of the four is WS4's to ratify. **Escalated as ESC-12.**
 
 Splits follow §7's declared 49/38/10/3 exhaust/coolant+oil/CAC/radiation
 balance (radiator package = 48 %); the R22d coast-spin members
 (≤0.0002 kWh/cycle) land in the traction machine on WS2's LT-loop line
 and are exported per case in `heat_ledger_ws6`.
+
+### 4-KX.8 The R6 rating-family probe, and ESC-10's real exposure
+
+**KX r3 (adjudication KX2-m4).** ESC-10 asks the lead to rule on whether
+short excursions above the genset's own continuous flat-rating are
+acceptable for a genset installation. The number the r2 round put in
+front of the lead — **@R6FORD@ s/cycle** — is a correct **ordered-set**
+maximum, and the directive ordered three cases. But **R6**, the ruling
+that *sets* the 132 kW rating, defines its rating basis as +20 %
+payload, CdA 5.4, 4 kW aux, +45 °C, 2,000 m, and members of that family
+are worse. A lead ruling on an exposure should see the worst exposure
+available inside the sizing corner's own family, so it is measured
+rather than mentioned — four cases, 8 seeds each, mode (b), same chain,
+same pin:
+
+@R6FTABLE@
+
+**Worst in R6's own family: @R6FWORST@ s/cycle** (@R6FWORSTGOV@),
+against the ordered set's @R6FORD@ s — and the worst member is *not* the
+full corner, because the corner's derate lowers the engine's ceiling and
+thins its air while **+20 % payload at CdA 5.4 and sea level** has the
+full automotive ceiling available and the load to use it. **Union
+maximum over both enumerated sets: @R6FUNION@ s** (@R6FUNIONGOV@).
+ESC-10 is restated on the union figure with both set maxima exported, so
+the lead can see which set each number is over.
+
+**These are not ordered cases and do not join `series_duty_v2`'s case
+set**: the ordered-set maximum stays exported, unchanged, as an
+ordered-set maximum. The zero-unserved headline is unaffected — every
+probe case completes on every seed (@R6FUNS@ kWh unserved, worst SOC
+minimum @R6FSOC@ of usable).
+
+### 4-KX.9 Construction sweep (KX r3)
+
+The program's stated repeat failure mode is the **partial correction**,
+and this workstream has been caught by it in three consecutive rounds:
+r1's KX-M3 (prose right, JSON wrong), r2's m6 (a ledger row built from
+mismatched statistics), and r2's own M1/M2/M3 — the same family
+re-introduced in three new blocks *in the round that fixed it
+elsewhere*. So this round swept the whole workstream rather than the
+three named fields. Method: every `max`/`min`/`median` expression in
+`run_ws4.py` that reaches an exported field, read against the field's
+name; every exported field whose name contains *max/min/worst/median/
+penalty/paired*; every arithmetic expression in `make_report_ws4.py`
+that builds a rendered number from JSON; and every extremum over an
+enumerated set checked for an R14 label and for degenerate ties. The
+record is `results_ws4.json → construction_sweep_kx_r3`; the result is
+in §0-KX3, and the clean areas are listed there too so they need not be
+re-swept.
 
 ## 5. Start-stop analysis (V1)
 
@@ -2232,10 +2794,16 @@ archived mode-(a) row above. Full tables in §4-KX.7 and
   but @HEATPKN@ / @HEATPKC@ / @HEATPKA@ kW at the **peak**, with 2-min
   rolling maxima of @HEAT2N@ / @HEAT2C@ / @HEAT2A@ kW. Through the
   declared 48 % radiator-package share the corner's 2-min figure is
-  @R20ALT2MIN@ kW against R20's @R20DESIGN@ kW design point, so
-  **R20/ESC-4 survives** (@R20SURVIVES@) — but the r1 ledger gave WS6
-  only the cycle mean, which could not have shown that either way
-  (§4-KX.7, adjudication m7).
+  @R20ALT2MIN@ kW against R20's @R20DESIGN@ kW design point — but the
+  two sea-level cases reach **@R20WORST2MIN@ kW**, @R20EXCPCT@ % above
+  it (`all_ordered_cases_within_design_point_on_2min`: @R20ALLIN@).
+  **RESTATED IN KX r3:** the r2 round exported an
+  `r20_survives_on_the_2min_window` boolean built as a max over one
+  filtered case; WS4 withdraws it and escalates the R20/ESC-4 question
+  as **ESC-12** rather than assert a capability-versus-ambient model it
+  does not have. The r1 ledger gave WS6 only the cycle mean, which could
+  not have shown any of this either way (§4-KX.7, adjudication m7 and
+  KX2-M1).
 - **F-11** *(new, KX r2 — for WS5/R22b)* The load-following companion
   (b′) is inside R8's bus-side envelope in both directions
   (@BPDISPK@ / @BPCHGPK@ kW vs 125/110), inside WS3's R16 acceptance
@@ -2243,7 +2811,8 @@ archived mode-(a) row above. Full tables in §4-KX.7 and
   flat-rating (0.0 s, peak @BPENGPK@ kW) on **every seed of every
   ordered case**, where the pinned mode of record is outside all three.
   Fuel delta @BPPENN@ / @BPPENC@ / @BPPENA@ % on the paired per-case
-  median (§4-KX.6, ESC-9, adjudication B2). Reported, not recommended.
+  median — the genuinely paired statistic since KX r3 (§4-KX.6, ESC-9,
+  adjudication B2 and KX2-M3(a)). Reported, not recommended.
 - **F-9** *(new, KX/R23-F2; restated KX r2)* The map-boundary
   convention's exposure is @BEXN@ s/cycle at nominal (of which only
   @BEXNL@ s locked) and @BEXC@ s/cycle at CdA 5.4 (of which @BEXCL@ s
@@ -2520,18 +3089,42 @@ ref_seed`. §0-KX2 carries the full member-level delta.
   @SDNOMONFRAC@ of cycle time, so this is structural to the dispatch of
   record, not incidental.
 
-  **(b) The hot end, on the pack quantity.** At the 45 °C declared cells
-  the ordered run already charges at @R16PACKPKA@ kW against @R16ALT@ kW
-  continuous. At 50 °C the continuous curve falls to **@R1650@ kW**. At
-  WS3's 55 °C loop ceiling the continuous rating is **@R1655@ kW** and
-  even the **10-s pulse** rating is **@R16PULSE55@ kW** — still below
-  this run's peak charge.
+  **(b) The hot end — and, corrected in KX r3, the WHOLE curve.** At
+  the 45 °C declared cells the ordered run already charges at
+  @R16PACKPKA@ kW against @R16ALT@ kW continuous. At 50 °C the
+  continuous curve falls to **@R1650@ kW**. At WS3's 55 °C loop ceiling
+  the continuous rating is **@R1655@ kW** and even the **10-s pulse**
+  rating is **@R16PULSE55@ kW** — still below this run's peak charge.
+  **The stronger statement, which both earlier rounds missed
+  (adjudication KX2-M2): this is not a hot-end problem. WS3's continuous
+  column peaks at @PKBCURVEMAX@ kW bus at @PKBCURVEMAXT@ °C cells and
+  the run's peak pack charge is @PKBPEAK@ kW, so the acceptance is
+  exceeded at EVERY ONE of the @PKBNCELLS@ tabulated cell temperatures
+  (@PKBTMIN@ °C to @PKBTMAX@ °C), by at least @PKBMINEXC@ kW even at the
+  curve's most favourable point — and on every seed of every ordered
+  case.** There is no cell temperature at which the pack reading is
+  satisfied, only a least-unfavourable one. KX r2 exported a
+  `cold_side_binding_cell_C_pack_quantity = 10.0` here, which was an
+  `np.interp` right-edge **clamp** and read as a non-binding region
+  above 10 °C cells; it is withdrawn (§4-KX.4). This makes the ruling
+  question sharper, not softer: if the lead rules for the pack reading,
+  no cell-temperature limit can rescue the dispatch of record — only a
+  supervisor change or a restated interface rating can.
 
   **(c) What enforcing the pack reading costs**, measured, not asserted:
   worst shed **@R16BSHED@ kWh** at @R16BSHEDGOV@, up to @R16BCLIP@ s of
-  clipping, fuel penalty at most **@R16BFUEL@ %**, and unserved bus
-  energy stays **@R16BUNS@ kWh** (§4-KX.4). The §4-KX.2 headline is
-  invariant under either reading.
+  clipping, and unserved bus energy stays **@R16BUNS@ kWh** (§4-KX.4).
+  The §4-KX.2 headline is invariant under either reading. **Fuel, on the
+  paired per-seed statistic (R36; corrected in KX r3, adjudication
+  KX2-M3(b)): paired medians @R16BFUELMEDN@ / @R16BFUELMEDC@ /
+  @R16BFUELMEDA@ %, and the worst paired seed anywhere costs
+  @R16BFUEL@ % (@R16BFUELGOV@).** The r2 form of this escalation said
+  "fuel penalty **at most +0.20 %**"; that figure was a ratio of two
+  independently maximised ensemble numbers, **not a bound**, and at
+  nominal it carried the opposite sign to six of its own eight seeds.
+  The corrected worst is @R16BFUEL@ %. Nothing in the disposition turns
+  on 0.05 pp of fuel — but the lead should be ruling on the right
+  number.
 
   WS4 cannot resolve this and does not: the semantics of WS3's interface
   are WS3's, the cell-temperature trajectory is WS3/WS6's, and the blend
@@ -2572,8 +3165,12 @@ ref_seed`. §0-KX2 carries the full member-level delta.
   flat-rating — on every seed of every ordered case** (pack discharge
   peak @BPDISPK@ kW vs 125; charge peak @BPCHGPK@ kW vs 110; 0.0 s above
   R16 acceptance; 0.0 s above the continuous rating), at a fuel delta of
-  @BPPENN@ % / @BPPENC@ % / @BPPENA@ % on the paired per-case median
-  (§4-KX.6). The r1 round named "run the genset earlier so the pack
+  @BPPENN@ % / @BPPENC@ % / @BPPENA@ % on the **paired per-case median**
+  — which in KX r3 is genuinely the paired per-seed median (§4-KX.6;
+  adjudication KX2-M3(a) found the r2 figure was a ratio of ensemble
+  medians carrying this same label, and at nominal it read
+  @BPPENR2N@ % against the true @BPPENN@ %). Worst paired seed anywhere
+  @BPPENWORST@ %. The r1 round named "run the genset earlier so the pack
   never has to cover the peak alone" as an abstract remedy and did not
   report that its own companion demonstrates it. WS4 still does not
   choose the dispatch — that is R22b's, and the table does not price
@@ -2588,9 +3185,24 @@ ref_seed`. §0-KX2 carries the full member-level delta.
   identifies as automotive), not at the **@M1CONTN@ kW continuous
   flat-rating** WS4 specifies. Measured over the ordered run: @M1SN@ /
   @M1SC@ / @M1SA@ s per cycle above the rating, worst @M1WORSTS@ s
-  (@M1WORSTGOV@), peak shaft **@M1PEAK@ kW = @M1PEAKPCT@ %** of the
-  continuous rating, and the generator exposed on the same samples
-  against its @M1GENCONT@ kW continuous shaft input (§4-KX.3).
+  (@M1WORSTGOV@), peak shaft **@M1PEAK@ kW = @M1PEAKPCT@ %** of that
+  case's own continuous rating (@M1PEAKPCTGOV@; the corner reaches
+  @M1PEAKPCTA@ % of its derated rating), and the generator exposed on
+  the same samples against its @M1GENCONT@ kW continuous shaft input
+  (§4-KX.3).
+  **KX r3 — the exposure the lead is asked to rule on is wider than the
+  ordered set (adjudication KX2-m4).** @M1WORSTS@ s is a correct
+  ORDERED-SET maximum, and the directive ordered three cases. But R6 —
+  the ruling that sets the 132 kW rating — defines its basis as +20 %
+  payload, CdA 5.4, 4 kW aux, +45 °C, 2,000 m, and inside that family
+  the exposure is **@R6FWORST@ s/cycle** (@R6FWORSTGOV@), at +20 %
+  payload and CdA 5.4 at **sea level**, where the full automotive
+  ceiling is available and the load uses it. **The figure this
+  escalation puts to the lead is therefore the union maximum over both
+  enumerated sets: @R6FUNION@ s/cycle** (@R6FUNIONGOV@); §4-KX.8 carries
+  the probe. The probe cases are NOT ordered cases and the ordered-set
+  maximum is exported unchanged as such. Every probe case still
+  completes with @R6FUNS@ kWh unserved.
   Why it matters to the lead specifically: the 132 kW flat-rating is a
   **blocking** R18 datasheet figure and a WS6 release blocker, specified
   as an unlimited-hours prime/COP-class rating with **+0.82 kW** of
@@ -2601,9 +3213,15 @@ ref_seed`. §0-KX2 carries the full member-level delta.
   the emergency band the run still completes every ordered case with
   **@M1BUNS@ kWh** unserved on every seed. What the over-rating buys is
   SOC margin, not feasibility: the CdA 5.4 SOC minimum deepens from
-  @SDCDASOCMINMIN@ to @M1BSOC@ of usable, and fuel does not rise at all
-  (the worst case is @M1BFUEL@ %, i.e. every ordered case burns slightly
-  *less*, because the capped engine stays nearer its island).
+  @SDCDASOCMINMIN@ to @M1BSOC@ of usable, and **fuel does not rise on a
+  single ordered seed** (`fuel_rises_on_no_ordered_seed`: @M1BNORISE@;
+  worst paired seed @M1BFUEL@ %, best @M1BFUELMIN@ %) — every ordered
+  seed burns slightly *less*, because the capped engine stays nearer its
+  island. *(KX r3: the r2 form quoted @M1BFUELR2@ % here, a ratio of
+  ensemble maxima whose "max" was a maximum over three negatives, i.e.
+  the least saving, under a name that says penalty. The conclusion is
+  unchanged; the statistic is now the paired one — adjudication
+  KX2-M3(c).)*
   `engine_continuous_rating_bracket`. Requested disposition: either
   rule that short excursions to the automotive curve are accepted for a
   genset installation — in which case R18's datasheet task should
@@ -2631,10 +3249,57 @@ ref_seed`. §0-KX2 carries the full member-level delta.
   @R34ORD@ with no other change, and the lead should say whether ~132 MB
   of trace belongs in the repository.
 
+- **ESC-12 (new, KX r3 — cites R20 / ESC-4; for the lead and WS6) —
+  WS4 CANNOT ESTABLISH THAT THE R6 CORNER IS STILL THE RADIATOR DESIGN
+  CASE, AND WILL NOT ASSERT IT.** On absolute HT-package kW the ordered
+  pure-series duty does **not** stay inside R20's declared design point
+  of @R20DESIGN@ kW: the 2-minute rolling maximum reaches
+  **@R20WORST2MIN@ kW** — **@R20EXCPCT@ %** above it — at @R20NEXCEED@
+  of the three ordered cases (@R20EXCEED@), and the instantaneous peak
+  exceeds it at all three (§4-KX.7). The corner case, the only ordered
+  case in R20's own +45 °C air, stays under at @R20ALT2MIN@ kW.
+  **The honest position:** whether R20/ESC-4 survives is a question
+  about **capability at each case's own ambient**, and WS4 exports no
+  ratified radiator capability-versus-ambient model — it measures duty.
+  The KX r2 round resolved this gap by exporting a boolean built from a
+  max over a single filtered case, with the scoping argument asserted in
+  prose and never quantified (adjudication KX2-M1); that field is
+  withdrawn. WS4 has instead **quantified** the argument as a declared
+  linear-ITD sensitivity (§4-KX.7): at a 105 °C top tank the worst
+  ordered case sits at @R20RATIO105@ of capability, and the **capability
+  break-even** is a **@R20BREAKEVEN@ °C** top tank, far above any
+  physical diesel HT cap — so on the capability question the r2
+  conclusion probably *is* right. **The sensitivity also says something
+  the r2 round never asked, and it points the other way.** R20/ESC-4
+  rules which case *sizes* the radiator, and the ordered cases'
+  ambient-normalised ratios **cross at a @R20CROSS@ °C top tank**: below
+  it `@R20CROSSLO@` is the design case, above it `@R20CROSSHI@` is,
+  while every case is still inside capability. @R20CROSS@ °C is **inside
+  the range a pressurised heavy-duty coolant system can run**, so
+  ESC-4's design case is live rather than settled — and a sensitivity
+  built on four WS4-declared assumptions is not a basis for a
+  machine-readable verdict on a standing ruling either way. WS4 does not
+  self-resolve it.
+  **Requested disposition, three parts:** (1) rule whether R20/ESC-4's
+  "radiator design case = the R6 corner" is retained on the
+  ambient-normalised reading, or whether the sea-level high-load cases
+  become the sizing case on absolute duty; (2) direct WS6 to publish a
+  radiator capability-versus-ambient (and versus air density) curve for
+  the declared package, against which this duty can be compared properly
+  — WS4's ITD sensitivity is a placeholder for exactly that curve and
+  should be replaced by it; (3) rule whether the **2-minute** window is
+  the right one for this package, or whether the peak
+  (@R20ALTPEAK@ kW at the corner) or a thermal-mass model governs. Until
+  (1) is ruled, WS6 should size against the **absolute** rows in
+  `heat_ledger_ws6 → series_duty_v2_transient_vs_R20_design_point →
+  cases`, which are exported per case with their governing seeds, and
+  **not** against any survival boolean.
+
 ## 13. Artefacts in this folder
 
-- `FINDINGS_KX_r1.md` — the adjudication this round reworks against
-  (input, not a WS4 product; not modified)
+- `FINDINGS_KX_r1.md`, `FINDINGS_KX_r2.md` — the adjudications this
+  round and the previous one rework against (inputs, not WS4 products;
+  not modified)
 - `REPORT_WS4.md` (this file, generated by `make_report_ws4.py`),
   `results_ws4.json` (every number, machine-readable; `interface_ws4`
   is the block downstream parses)
@@ -2642,7 +3307,14 @@ ref_seed`. §0-KX2 carries the full member-level delta.
   `ws4_chain.py` (WS2 map chain + spin member, hot-swappable; KX adds
   the F2 boundary counters), `make_report_ws4.py`, `verify_ws4.py`
   (KX adds the R23 errata pins, including occurrence counts and a
-  structural resolution check on every interface `*_file`),
+  structural resolution check on every interface `*_file`; **KX r3 adds
+  construction pins that RE-DERIVE each paired fuel delta from
+  `per_seed` rather than matching its rendering, re-derive the R16 curve
+  statistics from WS3's CSV directly, re-derive the R20 exceedance set,
+  assert the archived raw dump is frozen at its @G1FROZENN@-member set of
+  record, and reject any bare-case-name governing label anywhere in the
+  live block** — a rendering pin cannot catch a construction defect,
+  because the rendering of a wrong construction is faithful),
   `requirements.txt`, `run_output.txt`
 - `data/bsfc_map_4HK1_ref.csv`, `data/bsfc_map_V2_candidate.csv`,
   `data/bsfc_map_V1_candidate.csv` — Willans BSFC maps (labeled
@@ -2653,7 +3325,8 @@ ref_seed`. §0-KX2 carries the full member-level delta.
   reference seed, @TRACEROWS@ rows each, every bus-side and engine-side
   channel plus SOC: @R34FILES@. The reading of R34 these satisfy is
   declared in `series_duty_v2 → _trace_files → r34_interpretation` and
-  put to the lead as ESC-11.
+  put to the lead as ESC-11. The KX r3 R6 rating-family probe is not an
+  ordered case, so it emits no trace under that declared reading.
 - `@SOCFILE@` — R22a SOC trajectories, all 8 seeds × 3 cases
   (@R34SOCRUNS@ ordered runs), 5 s decimation
 - `figs/fig01_bsfc_v2.png`, `figs/fig02_g1_fuel.png` (archived-gate

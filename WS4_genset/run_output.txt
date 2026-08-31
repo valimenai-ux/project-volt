@@ -156,6 +156,11 @@ R22a bracket: engine capped at its OWN continuous flat-rating in the emergency b
   [nominal] unserved 0.0000 kWh, SOC min 0.185, over-rating 0.0 s, fuel 19.15 kg
   [cda_5.4] unserved 0.0000 kWh, SOC min 0.125, over-rating 0.0 s, fuel 22.59 kg
   [alt2000m_45C] unserved 0.0000 kWh, SOC min 0.236, over-rating 0.0 s, fuel 15.82 kg
+ESC-10 widening: R6 rating-family probe (unordered, 4 cases) ...
+  [payload+20pct_cda5.4_sea_level] above rating 185.0-287.1 s, unserved 0.0000 kWh
+  [aux4kW_cda5.4] above rating 167.8-268.1 s, unserved 0.0000 kWh
+  [aux4kW_nominal] above rating 150.7-157.7 s, unserved 0.0000 kWh
+  [r6_rating_corner_full] above rating 172.4-188.3 s, unserved 0.0000 kWh
 R22a sensitivity: WS3 allocated genset-hysteresis band, 8 seeds ...
   [nominal] starts, WS3 band 6-6 vs simulator band 5-6
   [cda_5.4] starts, WS3 band 6-6 vs simulator band 4-4
@@ -192,9 +197,12 @@ R22a series_duty_v2 at 11.084 kWh usable: unserved bus energy worst case 0.0000 
   [alt2000m_45C] fuel energy 1.413-1.426 kWh/km; above-pin demand 691-742 s; starts/h 3.3-3.3; SOC 0.246-0.809; pack peak 192.5 kW dis / 147.5 kW chg
 R16 curve, REGEN LEG (enforced): binding False (peak regen-to-pack 69.1 kW bus; binds below -9.4 C and above 53.9 C cells)
 R16 curve, PACK charge (measured, NOT enforced): binding True - pack charge peaks at 147.6 kW bus vs 129.1-130.8 kW accepted; above acceptance for nominal 39.1-47.0 s, cda_5.4 41.4-58.6 s, alt2000m_45C 13.6-23.8 s; longest single excursion 15.4 s (10-s pulse column covers them: False) [KX-B1]
-R16 PACK-acceptance bracket (enforced): worst shed 0.240 kWh [cda_5.4], worst clip 59.7 s, worst unserved 0.0000 kWh, fuel penalty up to +0.20%
+R16 curve, PACK charge, on temperature (KX2-M2): acceptance is exceeded at ALL 19 tabulated cell temperatures - the continuous column peaks at 135.043 kW bus at 10 C against the run's 147.585 kW, so the minimum exceedance over the whole curve is 12.542 kW; there is NO cold-side or hot-side crossing on this quantity
+R16 PACK-acceptance bracket (enforced): worst shed 0.240 kWh, worst clip 59.7 s, worst unserved 0.0000 kWh, PAIRED fuel delta -0.296% to +0.249% (KX r2 ratio-of-maxima said at most +0.20%) [KX2-M3]
 Genset above its OWN 132 kW continuous flat-rating x derate: nominal 0.0-146.5 s, cda_5.4 161.8-250.0 s, alt2000m_45C 55.0-66.1 s; worst 250.0 s at case cda_5.4 of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; engine shaft peak 147.9 kW vs automotive peak 153.3 kW [KX-M1]
 Companion (b') on the capability axes (KX-B2): pack_discharge_peak_kW_bus: b=OUT/bp=in, pack_charge_peak_kW_bus: b=OUT/bp=in, pack_charge_above_r16_accept_s: b=OUT/bp=in, engine_over_continuous_rating_s: b=OUT/bp=in
-R8 power-envelope bracket (125/110 kW bus enforced): worst unserved 0.613 kWh [alt2000m_45C] - the ordered run's pack discharge peaks at 192.5 kW bus
+R8 power-envelope bracket (125/110 kW bus enforced): worst unserved 0.613 kWh [case alt2000m_45C of the enumerated ordered case set {nominal, cda_5.4, alt2000m_45C}; within it, seed 6 of the enumerated 8-seed VOLT-REG ensemble [alt2000m_45C/R8-envelope]] - the ordered run's pack discharge peaks at 192.5 kW bus
+ESC-10 widening (KX2-m4): ordered-set worst above the continuous rating 250.0 s; R6 rating-family worst 287.1 s (case payload+20pct_cda5.4_sea_level of the enumerated R6 rating-family probe set {payload+20pct_cda5.4_sea_level, aux4kW_cda5.4, aux4kW_nominal, r6_rating_corner_full}); union worst 287.1 s; every probe case unserved 0.0000 kWh
+R20/ESC-4 vs the ordered duty (KX2-M1): design point 95.018 kW in +45 C air; 2-min worst 115.119 kW (+21.2%); cases exceeding on the 2-min window: nominal, cda_5.4; all ordered cases within the design point on 2 min: False; ambient-normalised capability model NOT held by WS4 - escalated as ESC-12
 R22d true-coast spin member (reported, not charged): up to 0.000 pp of cycle fuel
 R34 10 Hz traces (3, one per ordered case at the reference seed; all 24 ordered runs at 5 s in data/series_duty_v2_soc_trajectories.csv): data/trace_series_duty_v2_alt2000m_45C_seed23_10Hz.csv (66,143 rows), data/trace_series_duty_v2_cda_5.4_seed23_10Hz.csv (66,143 rows), data/trace_series_duty_v2_nominal_seed23_10Hz.csv (66,143 rows)

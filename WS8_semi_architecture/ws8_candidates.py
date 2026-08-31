@@ -20,10 +20,13 @@ the metric of record, fuel energy per payload tonne-km, and nowhere else.
 CONTROL POLICIES are declared, not tuned to taste. Each candidate's
 policy is written in its class docstring, and the report states it.
 """
+from collections import OrderedDict
+
 import numpy as np
 
 from ws8_params import (VEH, ADH, AUX, DL, ML, G, LHV_KJ_PER_G,
-                        DIESEL_DENSITY_KG_PER_L)
+                        DIESEL_DENSITY_KG_PER_L,
+                        ENGINE_HEAT_TO_COOLANT_FRAC)
 from ws8_physics import road_load_force
 import ws8_engine as EN
 import ws8_electric as EL
@@ -45,6 +48,74 @@ and is priced here rather than hidden in an unlimited friction brake."""
 
 V_GRID_ENV = np.arange(0.0, 36.05, 0.05)
 
+# --------------------------------------------------------- r2 errata set
+ERRATA_ALL = ("f3_s2_engine_budget", "f5_spin_rule")
+"""The r2 corrections that MOVE NUMBERS and are not analytically
+reversible after the fact. They are switchable ONLY so that the round can
+report the one-factor rows the directive asks for - the S1-vs-S2 ordering
+is decided by these corrections, so it has to be shown which one did
+what. The run of record has all of them ON; nothing reads these switches
+except the one-factor block.
+
+f3_s2_engine_budget - S2's single engine is one crankshaft with one
+    speed and one full-load curve while it is locked to the wheels, and
+    the generator is priced at the ROAD-IMPOSED speed out of the torque
+    that traction and accessories left behind (r1 ran it simultaneously
+    as a free-speed genset on the BSFC-optimal locus, uncapped).
+f5_spin_rule - R22(d) is charged on one rule for every candidate: geared
+    AND unloaded (r1 charged S3's zero-torque loss on every connected
+    sample, including the 91% where the machine was loaded and WS2's map
+    already contained the loss).
+
+F4 (the charge-sustaining credit) and F6 (duty-averaged correction
+pricing) are exact re-pricings of a completed run, so their one-factor
+rows are computed analytically from the same simulation rather than by
+re-running it."""
+
+_ERRATA = set(ERRATA_ALL)
+
+
+def set_errata(names=None):
+    """Set the active errata for the current process. `None` restores
+    the run of record."""
+    global _ERRATA
+    _ERRATA = set(ERRATA_ALL) if names is None else set(names)
+
+
+def errata_on(name):
+    return name in _ERRATA
+
+# --------------------------------------------------------------- R22(d)
+SPIN_IDLE_FORCE_N = 1.0
+"""Commanded-force threshold below which a geared machine counts as
+UNLOADED and pays zero-torque spin drag [N at the contact patch].
+
+ONE RULE FOR EVERY CANDIDATE (r1 finding F5). R22(d) is charged when, and
+only when, the traction machine is geared to the road AND every commanded
+force channel - traction, regen, retard - is below this threshold. When
+the machine IS loaded, nothing extra is charged, because WS2's measured
+loss map already contains the loss at that operating point; adding the
+zero-torque loss on top would count it twice, which is exactly what S3
+did in r1 (91% of its charged spin fell on loaded samples).
+
+The threshold is 1 N because the integrator commands a force of exactly
+0.0 when it commands nothing; it is not a coasting band."""
+
+SPIN_IDLE_V_MIN_MS = 0.5
+"""Road speed below which spin drag is not charged [m/s]. Applied
+identically to every candidate (in r1, S2 used 0.1 m/s and S1/S3/S4 used
+0.5 m/s - the same quantity on two different rules)."""
+
+
+def machine_idle_mask(tr):
+    """Samples on which a GEARED machine is turning with no torque
+    commanded. The geared/disconnected question is the candidate's own;
+    this is only the unloaded test, and it is the same for all of them."""
+    return ((tr["F_trac"] <= SPIN_IDLE_FORCE_N)
+            & (tr["F_regen"] <= SPIN_IDLE_FORCE_N)
+            & (tr["F_retard"] <= SPIN_IDLE_FORCE_N)
+            & (tr["v"] > SPIN_IDLE_V_MIN_MS))
+
 # Low-speed regen blend-out, carried from WS1's ratified control
 # constants (volt_params.Control.v_regen_blend_lo/hi = 3 / 8 km/h):
 # below ~8 km/h back-EMF and controllability collapse and the service
@@ -64,14 +135,21 @@ class Ctx:
 
     def __init__(self, name, rho_air=None, t_amb_c=20.0, aux_bus_kw=None,
                  aux_mech_kw=None, payload_factor=1.0, cold=False,
-                 grade_heavy=False, label=""):
+                 grade_heavy=False, alt_m=0.0, hot=False, label=""):
         self.name = name
         self.rho_air = VEH.rho_air if rho_air is None else rho_air
         self.t_amb_c = t_amb_c
         self.cold = cold
+        self.hot = hot
+        # Altitude, for WS4's ruled derate_factor(alt_m, t_amb_c). r1
+        # finding F11: the derate was imported and never called, so no
+        # corner exercised it. R28 makes 2,000 m / +45 C a corner of
+        # record for Vehicle One, and this is what carries it.
+        self.alt_m = float(alt_m)
         self.grade_heavy = grade_heavy
         self.payload_factor = payload_factor
         self.aux_bus_kw = (AUX.p_aux_bus_cold_kW if cold else
+                           AUX.p_aux_bus_hot_kW if hot else
                            AUX.p_aux_bus_avg_kW) if aux_bus_kw is None \
             else aux_bus_kw
         # A conventional truck's accessories are crank-driven. In the cold
@@ -80,13 +158,25 @@ class Ctx:
         # accessory penalty an electrified one pays. Charging both the
         # same would be a bookkeeping gift to the electrified candidates,
         # so it is not done.
-        self.aux_mech_kw = AUX.p_aux_mech_avg_kW if aux_mech_kw is None \
-            else aux_mech_kw
+        #
+        # AT +45 C THE ASYMMETRY REVERSES AND IS NOT GRANTED TO ANYONE:
+        # there is no waste-heat path to an air-conditioner, so the
+        # conventional truck pays a crank-driven compressor and the
+        # electrified truck pays an electric one. Both are charged.
+        self.aux_mech_kw = (AUX.p_aux_mech_hot_kW if hot
+                            else AUX.p_aux_mech_avg_kW) \
+            if aux_mech_kw is None else aux_mech_kw
         self.label = label
+
+    def derate(self):
+        """WS4's ruled continuous-power derate at this corner [-]."""
+        return float(EN.derate_factor(self.alt_m, self.t_amb_c))
 
     def as_dict(self):
         return dict(name=self.name, rho_air=self.rho_air,
-                    t_amb_C=self.t_amb_c, cold=self.cold,
+                    t_amb_C=self.t_amb_c, cold=self.cold, hot=self.hot,
+                    altitude_m=self.alt_m,
+                    engine_derate_factor=self.derate(),
                     grade_heavy=self.grade_heavy,
                     payload_factor=self.payload_factor,
                     aux_bus_kW=self.aux_bus_kw,
@@ -270,6 +360,25 @@ class Candidate:
     def whr_mass_kg(self):
         return self.whr.mass_kg if self.whr is not None else 0.0
 
+    def pack_chg_limit_kw(self):
+        """Continuous pack charge acceptance AT THIS CORNER'S AMBIENT
+        [kW, bus-side].
+
+        r1 finding F2 (blocking): every envelope and every dispatch used
+        the WARM nameplate in all five corners, including -10 C, while
+        the corner label, the provenance list and Recommendation 5 all
+        said WS3's cold acceptance was applied. It now is. This single
+        method is the ONE place the charge ceiling comes from, so the
+        claim and the code cannot drift apart again."""
+        pack = getattr(self, "pack", None)
+        if pack is None:
+            return 0.0
+        return pack.p_cont_chg_kw_at(self.ctx.t_amb_c)
+
+    def engine_for_ctx(self, engine):
+        """The engine with this corner's WS4 derate applied (F11/R28)."""
+        return EN.derated_engine(engine, self.ctx.alt_m, self.ctx.t_amb_c)
+
     # -- to be provided by each architecture --------------------------
     def setup(self):
         raise NotImplementedError
@@ -287,6 +396,63 @@ class Candidate:
         raise NotImplementedError
 
     # -- shared -------------------------------------------------------
+    def _retard_channels(self, v, pack_saturated=False):
+        """(regen, resistor, compression brake) force [N]. Overridden by
+        every candidate that has more than one retarding channel."""
+        _, f_rg, f_ret = self.envelope(v)
+        return f_rg, f_ret, 0.0
+
+    def retard_split(self, v, pack_saturated=False):
+        """Split the envelope's THIRD channel into (resistor, engine
+        brake) force at the contact patch [N], in the order they are
+        drawn on.
+
+        WHY THIS EXISTS (r1 finding F1(b), blocking). The integrator sees
+        one retarding channel, and in r1 S2 and S3 returned
+        `f_resistor + f_engine_brake` in it and then booked the whole
+        thing to the brake resistor - so S1, S2 and S3 exported the same
+        210.71 kW of resistor heat despite three different retarder
+        architectures, and the exhaust row was explicitly zeroed. An
+        air-cooled grid resistor and an exhaust-side compression brake go
+        to different places in a packaging study, so the two are tracked
+        separately here and each is booked to its own row.
+
+        THE DRAW ORDER, declared: regen first (it is the only channel
+        that recovers anything, and the integrator already takes it
+        first), then the COMPRESSION BRAKE, then the resistor. The engine
+        brake is what a compression brake is for - continuous grade
+        holding - it costs nothing to run and it does not consume the
+        resistor's thermal budget, so a supervisor with both uses it
+        first and keeps the resistor for what the engine brake cannot
+        take. Candidates with no engine brake return (all, 0).
+
+        `pack_saturated` re-solves the split with the pack unable to
+        take any regen - the state the descent sizing case is actually
+        in once the buffer has filled, and the case r1's ledger did not
+        contain.
+
+        The order matters only to the SPLIT, never to the total: the sum
+        is the same channel the integrator was given, so no candidate's
+        achieved speed or fuel moves by one bit because of it."""
+        _, f_res, f_eb = self._retard_channels(v, pack_saturated)
+        return f_res, f_eb
+
+    def retard_split_arrays(self, tr):
+        """Per-sample (resistor, engine-brake) share of the retard force
+        the integrator actually applied. The applied force is a fraction
+        of the channel maximum; it is apportioned by the declared draw
+        order, engine brake first."""
+        v = tr["v"]
+        f_applied = tr["F_retard"]
+        # tabulate on the same speed grid the envelope uses, then
+        # interpolate - the split is a smooth function of road speed
+        f_eb_tab = np.array([self.retard_split(float(x))[1]
+                             for x in V_GRID_ENV])
+        f_eb_cap = np.interp(v, V_GRID_ENV, f_eb_tab)
+        f_eb = np.minimum(f_applied, f_eb_cap)
+        f_res = np.clip(f_applied - f_eb, 0.0, None)
+        return f_res, f_eb
+
     def powertrain_mass_kg(self):
         return float(sum(self.mass_rows().values())) + self.whr_mass_kg()
 
@@ -339,13 +505,44 @@ class Candidate:
 
     def spec(self):
         rows = self.mass_rows()
-        return dict(name=self.name, title=self.title, policy=self.policy,
-                    mass_rows_kg=rows,
-                    powertrain_mass_kg=self.powertrain_mass_kg(),
-                    tare_common_kg=self.tare_common_kg(),
-                    combination_tare_kg=self.curb_kg(),
-                    payload_kg=self.payload_kg(),
-                    gcw_kg=VEH.m_gcw)
+        pack = getattr(self, "pack", None)
+        d = dict(name=self.name, title=self.title, policy=self.policy,
+                 mass_rows_kg=rows,
+                 powertrain_mass_kg=self.powertrain_mass_kg(),
+                 tare_common_kg=self.tare_common_kg(),
+                 combination_tare_kg=self.curb_kg(),
+                 payload_kg=self.payload_kg(),
+                 gcw_kg=VEH.m_gcw,
+                 corner=self.ctx.as_dict())
+        if pack is not None:
+            d["pack"] = pack.spec(t_amb_c=self.ctx.t_amb_c)
+        eng = getattr(self, "engine", None)
+        if eng is not None:
+            d["engine"] = dict(
+                name=eng.name, label=eng.label,
+                peak_power_kW=eng.peak_power_kw(),
+                derate_factor_applied=self.ctx.derate())
+        line = getattr(self, "line", None)
+        if line is not None:
+            fitted = getattr(self, "genset_shaft_kw",
+                             getattr(self, "sustainer_shaft_kw", None))
+            cap = getattr(self, "genset_shaft_cap_kw",
+                          getattr(self, "sustainer_shaft_cap_kw", None))
+            d["genset"] = dict(
+                p_elec_max_kW_bus=line.p_elec_max_kw,
+                shaft_cont_kW_fitted=fitted,
+                shaft_cont_kW_at_corner=cap,
+                derated_at_this_corner=bool(cap is not None
+                                            and fitted is not None
+                                            and cap < fitted - 1e-9),
+                note=("the genset is SIZED on the fitted rating - its "
+                      "mass is charged once and does not change with the "
+                      "corner - while the corner's WS4 derate reduces "
+                      "what it can deliver"))
+        resistor = getattr(self, "resistor_kw", None)
+        if resistor is not None:
+            d["brake_resistor_rating_kW"] = float(resistor)
+        return d
 
 
 # =====================================================================
@@ -361,7 +558,7 @@ class S0(Candidate):
               "descents; accessories crank-driven.")
 
     def setup(self):
-        self.engine = EN.ENG_13L
+        self.engine = self.engine_for_ctx(EN.ENG_13L)
         self.amt = EN.AMT(self.engine, r_dyn=VEH.r_dyn)
         self.p_engine_brake_kw = 290.0     # [WS8-PROV] 13 L compression brake
 
@@ -389,6 +586,11 @@ class S0(Candidate):
         f_ret = self.amt.engine_brake_force(v, self.p_engine_brake_kw)
         f_ret = min(f_ret, self.adhesion_force_N())
         return f_t, 0.0, f_ret
+
+    def retard_split(self, v, pack_saturated=False):
+        """S0 has no resistor and no pack: the whole retard channel is
+        the compression brake, and it leaves through the exhaust."""
+        return 0.0, self.envelope(v)[2]
 
     def account(self, tr):
         v = tr["v"]
@@ -471,10 +673,29 @@ class S0(Candidate):
             t_trac * w_eng / 1e3 - p_wheel_kw / eta_sel, 0.0, None), 0.0)
         e_slip_kwh = float(np.sum(p_slip_kw) * dt) / 3600.0
 
+        # ---- heat rows (rule 7) ---------------------------------------
+        q_eng0 = engine_reject_kw(g_per_s, p_shaft_kw)
+        hr = OrderedDict([
+            ("engine_coolant_kW", q_eng0 * ENGINE_HEAT_TO_COOLANT_FRAC),
+            ("engine_exhaust_kW",
+             q_eng0 * (1.0 - ENGINE_HEAT_TO_COOLANT_FRAC)
+             + tr["F_retard"] * v / 1e3),
+            ("generator_rectifier_kW", np.zeros_like(v)),
+            ("traction_machine_inverter_kW", np.zeros_like(v)),
+            ("driveline_kW", np.clip(p_shaft_kw - aux_kw - p_wheel_kw,
+                                     0.0, None) + p_slip_kw),
+            ("pack_kW", np.zeros_like(v)),
+            ("brake_resistor_kW", np.zeros_like(v)),
+            ("friction_brake_kW", tr["F_friction"] * v / 1e3),
+            ("accessory_kW", np.asarray(aux_kw, float) * np.ones_like(v)),
+        ])
+
         return dict(
             fuel_g=fuel_g,
             e_fuel_MJ=EN.fuel_energy_MJ(fuel_g),
             e_engine_shaft_kWh=float(np.sum(p_shaft_kw) * dt) / 3600.0,
+            e_mech_wheel_kWh=float(np.sum(np.clip(p_wheel_kw, 0, None))
+                                   * dt) / 3600.0,
             e_aux_kWh=float(np.sum(aux_kw) * dt) / 3600.0,
             e_clutch_slip_kWh=e_slip_kwh,
             e_regen_bus_kWh=0.0,
@@ -482,6 +703,14 @@ class S0(Candidate):
             e_engine_brake_kWh=float(np.sum(tr["F_retard"] * v) * dt) / 3.6e6,
             e_friction_brake_kWh=float(
                 np.sum(tr["F_friction"] * v) * dt) / 3.6e6,
+            resistor_peak_kW=0.0,
+            engine_brake_peak_kW=float(np.max(tr["F_retard"] * v)) / 1e3,
+            friction_brake_peak_kW=float(np.max(tr["F_friction"] * v)) / 1e3,
+            e_genset_bus_kWh=0.0, fuel_g_genset=0.0,
+            e_spin_kWh=0.0, e_spin_coast_bracket_kWh=0.0,
+            spin_charged_fraction_moving=0.0,
+            spin_geared_fraction_moving=0.0,
+            heat_peaks_kW=heat_peaks(v, hr, dt),
             unserved_kWh=0.0, shed_kWh=0.0,
             soc_start=0.0, soc_end=0.0,
             mean_engine_rpm_moving=float(np.mean(rpm[moving])),
@@ -525,14 +754,176 @@ def series_bus_demand(edrive, tr, aux_kw, count_spin=True):
         # R22(d) at semi scale: a permanently geared PM machine drags
         # whenever the wheels turn and no torque is commanded. Charged
         # as a bus draw on unloaded samples, following WS4's treatment
-        # of the same quantity.
-        idle_machine = ((tr["F_trac"] <= 1.0) & (tr["F_regen"] <= 1.0)
-                        & (tr["F_retard"] <= 1.0) & (v > 0.5))
-        p_spin = np.where(idle_machine, edrive.spin_drag_kw(v), 0.0)
+        # of the same quantity. The unloaded test is the program-wide
+        # one (`machine_idle_mask`), so every candidate is charged this
+        # member on the same rule - r1 finding F5.
+        p_spin = np.where(machine_idle_mask(tr), edrive.spin_drag_kw(v), 0.0)
     else:
         p_spin = np.zeros_like(v)
 
     return p_bus_trac, p_bus_regen, p_bus_resistor, p_spin
+
+
+HEAT_ROWS = ("engine_coolant_kW", "engine_exhaust_kW",
+             "generator_rectifier_kW", "traction_machine_inverter_kW",
+             "driveline_kW", "pack_kW", "brake_resistor_kW",
+             "friction_brake_kW", "accessory_kW")
+"""The heat ledger's component rows, in one place so the analytic cases
+and the simulated case cannot enumerate different components (rule 7)."""
+
+
+def edrive_heat_split(p_wheel_kw, p_bus_kw, eta_red, generating=False):
+    """Split an electric path's loss into (reduction-gear, machine +
+    inverter) [kW]. The gear and the machine jacket reject to different
+    places, and WS6 sizes them separately."""
+    pw = np.asarray(p_wheel_kw, float)
+    pb = np.asarray(p_bus_kw, float)
+    if generating:
+        p_ms = pw * eta_red
+        return np.clip(pw - p_ms, 0.0, None), np.clip(p_ms - pb, 0.0, None)
+    p_ms = np.where(pw > 0.0, pw / eta_red, 0.0)
+    return np.clip(p_ms - pw, 0.0, None), np.clip(pb - p_ms, 0.0, None)
+
+
+def pack_heat_kw(p_pack_kw, pack):
+    """Pack loss [kW] from its net bus power (+ = discharging).
+
+    The form follows the dispatch's OWN energy bookkeeping, so the ledger
+    and the SOC trace describe the same pack: discharging, the store
+    gives p/eta_dis to put p on the bus, so the loss is p(1/eta_dis - 1);
+    charging, the bus gives p and the store receives p*eta_chg, so the
+    loss is p(1 - eta_chg)."""
+    p = np.asarray(p_pack_kw, float)
+    return np.where(p >= 0.0, p * (1.0 / pack.eta_dis - 1.0),
+                    -p * (1.0 - pack.eta_chg))
+
+
+def engine_reject_kw(fuel_gps, p_shaft_kw):
+    """Engine heat rejection [kW] = fuel power in less brake power out."""
+    return np.clip(np.asarray(fuel_gps, float) * LHV_KJ_PER_G
+                   - np.asarray(p_shaft_kw, float), 0.0, None)
+
+
+def series_heat_rows(cand, tr, aux, p_t, p_rg, p_rx, p_spin, d,
+                     pw_t=None, pw_x=None, pw_eb=None):
+    """Per-sample heat rejection by component for a series traction path.
+
+    Every row is built from the SAME quantities the fuel accounting used,
+    so the ledger and the fuel number cannot describe different trucks.
+
+    pw_t   traction wheel power seen by the ELECTRIC path [kW] (S2's is
+           the torque-fill share, not the whole demand)
+    pw_x   resistor-path wheel power [kW]
+    pw_eb  compression-brake wheel power [kW] - booked to the exhaust,
+           where it physically goes (F1b), not to the resistor
+    """
+    v = tr["v"]
+    eta_red = cand.edrive.eta_red
+    pw_t = tr["F_trac"] * v / 1e3 if pw_t is None else pw_t
+    pw_g = tr["F_regen"] * v / 1e3
+    pw_x = tr["F_retard"] * v / 1e3 if pw_x is None else pw_x
+    f_eb_wheel = np.zeros_like(v) if pw_eb is None else np.asarray(pw_eb,
+                                                                   float)
+    gear_m, mach_m = edrive_heat_split(pw_t, p_t, eta_red)
+    gear_g, mach_g = edrive_heat_split(pw_g, p_rg, eta_red, generating=True)
+    gear_x, mach_x = edrive_heat_split(pw_x, p_rx, eta_red, generating=True)
+    line = getattr(cand, "line", None)
+    if line is not None:
+        p_shaft = np.interp(d["p_genset_kw"], line.p_grid, line.p_shaft)
+        gen_loss = np.clip(p_shaft - d["p_genset_kw"], 0.0, None)
+        q_eng = engine_reject_kw(d["fuel_gps"], p_shaft)
+    else:
+        gen_loss = np.zeros_like(v)
+        q_eng = np.zeros_like(v)
+    return OrderedDict([
+        ("engine_coolant_kW", q_eng * ENGINE_HEAT_TO_COOLANT_FRAC),
+        ("engine_exhaust_kW",
+         q_eng * (1.0 - ENGINE_HEAT_TO_COOLANT_FRAC) + f_eb_wheel),
+        ("generator_rectifier_kW", gen_loss),
+        ("traction_machine_inverter_kW",
+         mach_m + mach_g + mach_x + np.asarray(p_spin, float)),
+        ("driveline_kW", gear_m + gear_g + gear_x),
+        ("pack_kW", pack_heat_kw(d["p_pack_kw"], cand.pack)),
+        ("brake_resistor_kW", np.asarray(p_rx, float)),
+        ("friction_brake_kW", tr["F_friction"] * v / 1e3),
+        ("accessory_kW", np.asarray(aux, float) * np.ones_like(v)),
+    ])
+
+
+HEAT_SUSTAINED_WINDOW_S = 60.0
+"""Averaging window for the SUSTAINED heat peak [s]. A cooling package is
+sized on what it must reject continuously, not on a two-second spike: a
+Class 8 snubbing to a stop puts 600 kW into the foundation brakes for a
+moment, and reporting that as the sizing case would be as wrong in one
+direction as r1's 211 kW resistor figure was in the other. The exported
+worst case is therefore the maximum 60-second mean, with the
+instantaneous maximum reported alongside so nothing is hidden."""
+
+
+def heat_peaks(v, rows, dt=0.1, window_s=HEAT_SUSTAINED_WINDOW_S):
+    """Per-component peak heat rejection over a simulated run [kW].
+
+    This is what r1's heat ledger was missing (finding F1a): its case set
+    was three analytic operating points, and the sizing case - the pack
+    saturating part-way down a 9.6-minute descent, after which the whole
+    retarding duty is the resistor's - was outside it. The trial already
+    contained the answer; nothing read it. Now it is an enumerated member
+    of the R14 max."""
+    out = OrderedDict()
+    n_win = max(1, int(round(window_s / dt)))
+    total = np.zeros_like(np.asarray(v, float))
+    for k in HEAT_ROWS:
+        a = np.asarray(rows.get(k, 0.0), float)
+        if a.ndim == 0:
+            a = np.full_like(np.asarray(v, float), float(a))
+        total = total + a
+        s = _moving_average(a, n_win)
+        j = int(np.argmax(s))
+        out[k] = float(s[j])
+        out[k + "_instantaneous_kW"] = float(np.max(a))
+        out[k + "_at_kmh"] = float(v[j]) * 3.6
+    # The TOTAL is the peak of the SUM, not the sum of the peaks: the
+    # component maxima happen at different moments on a real run, and
+    # adding them would export a case the truck is never in.
+    st = _moving_average(total, n_win)
+    jt = int(np.argmax(st))
+    out["total_rejected_kW"] = float(st[jt])
+    out["total_rejected_kW_at_kmh"] = float(v[jt]) * 3.6
+    out["_window_s"] = float(window_s)
+    return out
+
+
+def spin_report(edrive, tr, p_spin, geared=None):
+    """R22(d) bookkeeping, reported the same way for every candidate.
+
+    `p_spin` is what the candidate actually charged. `geared` is the
+    per-sample mask of samples on which the machine is mechanically
+    connected to the road (None = always geared, i.e. no disconnect).
+
+    THE BRACKET. r1 finding F5(1): the unloaded test almost never fires,
+    because this integrator's driver is always either pulling or braking
+    - it does not coast. So R22(d), which cost Vehicle Zero 1.77 pp at
+    G1, costs essentially nothing here, and that is a property of the
+    DRIVER MODEL, not of the architecture. Rather than leave that as an
+    unstated near-zero, the coast-permitting bracket below reports what
+    the same measured zero-torque loss would cost if it were charged on
+    every geared moving sample. It is an explicit upper bound, it is not
+    in any margin, and it is labelled as a bracket wherever it appears."""
+    v = tr["v"]
+    dt = tr["dt"]
+    h = dt / 3600.0
+    moving = v > SPIN_IDLE_V_MIN_MS
+    g_mask = moving if geared is None else (moving & geared)
+    rate = edrive.spin_drag_kw(v)
+    charged = np.asarray(p_spin, float) > 0.0
+    return dict(
+        e_spin_kWh=float(np.sum(p_spin)) * h,
+        e_spin_coast_bracket_kWh=float(np.sum(np.where(g_mask, rate, 0.0)))
+        * h,
+        spin_charged_fraction_moving=float(np.mean(charged[moving]))
+        if moving.any() else 0.0,
+        spin_geared_fraction_moving=float(np.mean(g_mask[moving]))
+        if moving.any() else 0.0)
 
 
 def _moving_average(x, n):
@@ -547,7 +938,8 @@ def _moving_average(x, n):
 def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
                     p_off_kw=35.0, smooth_s=180.0, soc_target=0.60,
                     soc_lo=0.15, soc_hi=0.95, kp_kw_per_soc=260.0,
-                    soc0=0.60, whr=None):
+                    soc0=0.60, whr=None, p_chg_max_kw=None,
+                    p_elec_cap_kw=None, fuel_fn=None):
     """Genset dispatch for a series path. Sequential, charge-sustaining.
 
     POLICY, declared:
@@ -570,6 +962,21 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
     Unserved energy is recorded, never absorbed silently - the failure
     mode WS4's ESC-5 named. Regen the pack cannot accept is moved to the
     resistor rather than shed, because that is where it physically goes.
+
+    r2 arguments:
+      p_chg_max_kw  the pack's charge ceiling AT THE CORNER'S AMBIENT
+                    (r1 finding F2 - this used to be the warm nameplate
+                    in every corner, including -10 C).
+      p_elec_cap_kw per-sample ceiling on the genset's electrical output.
+                    S2 uses it to cap the generator at the shaft torque
+                    the engine has left over while it is mechanically
+                    locked to the wheels (r1 finding F3); everyone else
+                    passes None and gets the line's own ceiling.
+      fuel_fn       callable(p_out array) -> g/s array. S2 overrides it
+                    because while locked its engine is NOT on the
+                    BSFC-optimal free-speed locus - road speed sets its
+                    speed - so the free-speed fuel line would price the
+                    genset at an operating point the engine cannot be at.
     """
     n = net_bus_kw.size
     n_smooth = max(1, int(round(smooth_s / dt)))
@@ -581,10 +988,15 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
     e = usable * soc0
     e_lo, e_hi = usable * soc_lo, usable * soc_hi
     p_max = line.p_elec_max_kw
-    p_chg_max, p_dis_max = pack.p_cont_chg_kw, pack.p_cont_dis_kw
+    cap_arr = None if p_elec_cap_kw is None else np.asarray(p_elec_cap_kw,
+                                                            float)
+    p_chg_max = (pack.p_cont_chg_kw if p_chg_max_kw is None
+                 else float(p_chg_max_kw))
+    p_dis_max = pack.p_cont_dis_kw
     eta_c, eta_d = pack.eta_chg, pack.eta_dis
 
     p_out = np.empty(n)
+    p_pack = np.zeros(n)          # + = pack discharging, - = charging
     soc = np.empty(n)
     on = False
     unserved = 0.0
@@ -593,11 +1005,14 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
 
     for i in range(n):
         soc_now = e / usable
+        p_lim = p_max if cap_arr is None else min(p_max, cap_arr[i])
+        if p_lim < 0.0:
+            p_lim = 0.0
         p_ref = pre[i] + kp_kw_per_soc * (soc_target - soc_now)
         if p_ref < 0.0:
             p_ref = 0.0
-        elif p_ref > p_max:
-            p_ref = p_max
+        elif p_ref > p_lim:
+            p_ref = p_lim
         if on:
             if p_ref < p_off_kw:
                 on = False
@@ -617,6 +1032,7 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
                 de = max(room, 0.0)
             unserved += (net - pd) * h
             e -= de
+            p_pack[i] = pd
         else:                              # pack charges
             surplus = -net
             pc = surplus if surplus < p_chg_max else p_chg_max
@@ -626,6 +1042,7 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
                 pc = room / eta_c / h if h > 0 else 0.0
                 de = max(room, 0.0)
             e += de
+            p_pack[i] = -pc
             over = surplus - pc
             if over > 0.0:
                 # first throttle the genset back, then send whatever is
@@ -637,10 +1054,17 @@ def series_dispatch(net_bus_kw, dt, line, pack, p_on_kw=55.0,
         p_out[i] = p
         soc[i] = e / usable
 
-    fuel_g = float(np.sum(line.fuel_whr(p_out, whr)) * dt)
+    if fuel_fn is None:
+        fuel_gps = line.fuel_whr(p_out, whr)
+    else:
+        fuel_gps = np.asarray(fuel_fn(p_out), float)
+    fuel_g = float(np.sum(fuel_gps) * dt)
     on_mask = p_out > 0.0
-    return dict(p_genset_kw=p_out, soc=soc, unserved_kWh=unserved,
+    return dict(p_genset_kw=p_out, p_pack_kw=p_pack,
+                soc=soc, unserved_kWh=unserved,
                 shed_kWh=to_resistor, starts=starts, fuel_g=fuel_g,
+                fuel_gps=fuel_gps,
+                e_genset_bus_kWh=float(np.sum(p_out)) * h,
                 genset_on_fraction=float(np.mean(on_mask)),
                 p_genset_mean_on_kW=(float(np.mean(p_out[on_mask]))
                                      if on_mask.any() else 0.0),
@@ -742,17 +1166,26 @@ class S1(Candidate):
         self.k_each = size_edrive_for_startability(EDRIVE_RATIO, 2)
         self.edrive = EL.ScaledEDrive(self.k_each, EDRIVE_RATIO,
                                       n_machines=2, label="S1 tandem e-drive")
-        self.engine = EN.ENG_13L
+        self.engine = self.engine_for_ctx(EN.ENG_13L)
         # R18 flat-rating: a genset prime mover is not run at its
         # automotive peak. WS4's ruled ratio (132/153.3 = 0.861) is
         # applied to the 13 L's 352 kW peak -> 303 kW continuous.
-        self.genset_shaft_kw = EN.flat_rated_cont_kw(self.engine)
+        #
+        # THE HARDWARE IS SIZED ONCE, AT THE NOMINAL RATING. A truck does
+        # not fit a smaller generator because it drove up a mountain: the
+        # R28 corner's derate reduces what the genset can DELIVER, not
+        # what it weighs, so the mass ledger - and therefore the payload,
+        # and therefore the metric of record - is computed from the
+        # un-derated engine and is identical at every corner.
+        self.genset_shaft_kw = EN.flat_rated_cont_kw(EN.ENG_13L)
         self.generator, self.gen_scale = EL.scaled_generator(
             "GEN-S1", self.genset_shaft_kw)
+        self.genset_shaft_cap_kw = EN.flat_rated_cont_kw(self.engine)
         self.pack = EL.Pack8(self.PACK_CELL, self.PACK_KWH, 0.80,
                              label="S1 buffer")
         self.line = GensetLine(self.engine, self.generator,
-                               self.generator.cont_kw_in * 0.955)
+                               min(self.generator.cont_kw_in,
+                                   self.genset_shaft_cap_kw) * 0.955)
         self.resistor_kw = self.RESISTOR_KW
 
     def mass_rows(self):
@@ -796,29 +1229,41 @@ class S1(Candidate):
             f_t = min(f_t, p_bus_cap * eta * 1e3 / v)
         f_t = min(f_t, self.adhesion_force_N())
 
-        f_gen_max = self.edrive.wheel_force_max(v)      # generating capability
-        f_gen_max = min(f_gen_max, self.adhesion_force_N())
+        f_regen, f_resistor, _ = self._retard_channels(v)
+        return f_t, f_regen, f_resistor
+
+    def _retard_channels(self, v, pack_saturated=False):
+        """(regen, resistor, compression brake) [N]. S1 has no engine
+        brake - there is no mechanical path at all - so the third channel
+        is always zero and the whole retarding duty is the resistor's."""
+        f_gen_max = min(self.edrive.wheel_force_max(v),
+                        self.adhesion_force_N())
         if v > 0.5:
             blend = regen_blend(v)
-            f_regen = min(f_gen_max, self.pack.p_cont_chg_kw * 1e3 / v) * blend
+            chg = 0.0 if pack_saturated else self.pack_chg_limit_kw()
+            f_regen = min(f_gen_max, chg * 1e3 / v) * blend
             f_resistor = min(max(0.0, f_gen_max - f_regen),
                              self.resistor_kw * 1e3 / v) * blend
         else:
             f_regen = f_resistor = 0.0
-        return f_t, f_regen, f_resistor
+        return f_regen, f_resistor, 0.0
 
     def account(self, tr):
         dt = tr["dt"]
         aux = self._aux_bus_kw(tr)
         p_t, p_rg, p_rx, p_sp = series_bus_demand(self.edrive, tr, aux)
         net = p_t + aux + p_sp - p_rg
-        d = series_dispatch(net, dt, self.line, self.pack, whr=self.whr)
+        d = series_dispatch(net, dt, self.line, self.pack, whr=self.whr,
+                            p_chg_max_kw=self.pack_chg_limit_kw())
         h = dt / 3600.0
+        sp = spin_report(self.edrive, tr, p_sp, geared=None)
+        hr = series_heat_rows(self, tr, aux, p_t, p_rg, p_rx, p_sp, d)
         return dict(
             fuel_g=d["fuel_g"], e_fuel_MJ=EN.fuel_energy_MJ(d["fuel_g"]),
+            fuel_g_genset=d["fuel_g"],
+            e_genset_bus_kWh=d["e_genset_bus_kWh"],
             e_bus_traction_kWh=float(np.sum(p_t)) * h,
             e_aux_kWh=float(np.sum(aux)) * h,
-            e_spin_kWh=float(np.sum(p_sp)) * h,
             e_regen_bus_kWh=float(np.sum(p_rg)) * h,
             e_resistor_kWh=float(np.sum(p_rx)) * h,
             e_engine_brake_kWh=0.0,
@@ -834,6 +1279,11 @@ class S1(Candidate):
             mean_bsfc_g_per_kWh=float("nan"),
             top_gear_fraction=float("nan"),
             resistor_peak_kW=float(np.max(p_rx)),
+            engine_brake_peak_kW=0.0,
+            friction_brake_peak_kW=float(
+                np.max(tr["F_friction"] * tr["v"])) / 1e3,
+            heat_peaks_kW=heat_peaks(tr["v"], hr, dt),
+            **sp,
         )
 
 
@@ -853,7 +1303,12 @@ class S2(Candidate):
         "is charged: the machine's losses whenever it IS connected "
         "(measured, from WS2's map, not a scalar), and the engine's "
         "off-best-point operation at band edges, where road speed - not "
-        "the supervisor - sets engine speed.")
+        "the supervisor - sets engine speed. There is ONE crankshaft and "
+        "it has one speed and one full-load curve: while locked, traction "
+        "torque is allocated first, then accessories, then the generator "
+        "gets whatever torque is left and its fuel is priced at the "
+        "ROAD-IMPOSED speed, not on the free-speed BSFC locus. Accessory "
+        "duty the crank has no torque left to carry moves to the bus.")
 
     # Fixed cruise ratio: engine at ~1,307 rpm (ENG-13L's BSFC island) at
     # 95 km/h on a 0.50 m radius. [WS8-PROV]
@@ -871,14 +1326,18 @@ class S2(Candidate):
         self.k_each = size_edrive_for_startability(EDRIVE_RATIO, 2)
         self.edrive = EL.ScaledEDrive(self.k_each, EDRIVE_RATIO,
                                       n_machines=2, label="S2 tandem e-drive")
-        self.engine = EN.ENG_13L
-        self.genset_shaft_kw = EN.flat_rated_cont_kw(self.engine)
+        self.engine = self.engine_for_ctx(EN.ENG_13L)
+        # sized once at the nominal rating; the corner derate reduces
+        # what it delivers, not what it weighs (see S1.setup)
+        self.genset_shaft_kw = EN.flat_rated_cont_kw(EN.ENG_13L)
         self.generator, _ = EL.scaled_generator("GEN-S2",
                                                 self.genset_shaft_kw)
+        self.genset_shaft_cap_kw = EN.flat_rated_cont_kw(self.engine)
         self.pack = EL.Pack8(self.PACK_CELL, self.PACK_KWH, 0.80,
                              label="S2 buffer")
         self.line = GensetLine(self.engine, self.generator,
-                               self.generator.cont_kw_in * 0.955)
+                               min(self.generator.cont_kw_in,
+                                   self.genset_shaft_cap_kw) * 0.955)
         self.resistor_kw = self.RESISTOR_KW
         self.eta_lock = (DL.eta_fixed_ratio_box * DL.eta_axle_tandem
                          * DL.eta_driveshaft)
@@ -947,11 +1406,18 @@ class S2(Candidate):
                          self.pack_sustained_kw() * 1e3 / max(v, 0.5))
             f_t = max(f_t, f_eng + f_fill)
         f_t = min(f_t, self.adhesion_force_N())
+        f_regen, f_res, f_eb = self._retard_channels(v)
+        return f_t, f_regen, f_res + f_eb
 
+    def _retard_channels(self, v, pack_saturated=False):
+        """(regen, resistor, compression brake) force at the contact
+        patch [N]. One place, so the envelope the integrator is given and
+        the split the ledger books can never disagree (r1 finding F1b)."""
         f_gen = min(self.edrive.wheel_force_max(v), self.adhesion_force_N())
         if v > 0.5:
             blend = regen_blend(v)
-            f_regen = min(f_gen, self.pack.p_cont_chg_kw * 1e3 / v) * blend
+            chg = 0.0 if pack_saturated else self.pack_chg_limit_kw()
+            f_regen = min(f_gen, chg * 1e3 / v) * blend
             f_res = min(max(0.0, f_gen - f_regen),
                         self.resistor_kw * 1e3 / v) * blend
         else:
@@ -961,128 +1427,252 @@ class S2(Candidate):
         if self.v_lock_lo <= v <= self.v_lock_hi:
             rpm = float(self._rpm_at_v(v))
             f_eb = self.p_engine_brake_kw * (rpm / 2100.0) * 1e3 / max(v, 0.5)
-        return f_t, f_regen, f_res + f_eb
+        return f_regen, f_res, f_eb
+
+    def retard_split(self, v, pack_saturated=False):
+        _, f_res, f_eb = self._retard_channels(v, pack_saturated)
+        return f_res, f_eb
 
     def account(self, tr):
         dt = tr["dt"]
         v = tr["v"]
-        aux = self._aux_bus_kw(tr)
+        aux_rate = self._aux_bus_kw(tr)
         moving = v > 0.1
+        h = dt / 3600.0
 
-        rpm_lock = self._rpm_at_v(v)
+        rpm_lock = np.clip(self._rpm_at_v(v), 600.0, 2100.0)
         locked = ((v >= self.v_lock_lo) & (v <= self.v_lock_hi)
                   & (tr["F_trac"] > 0.0))
 
         # --- mechanical share while locked ----------------------------
-        t_eng_max = self.engine.t_max(np.clip(rpm_lock, 600.0, 2100.0))
+        t_eng_max = self.engine.t_max(rpm_lock)
         f_eng_max = t_eng_max * self.CRUISE_RATIO * self.eta_lock / VEH.r_dyn
         f_mech = np.where(locked, np.minimum(tr["F_trac"], f_eng_max), 0.0)
         f_fill = np.where(locked, np.clip(tr["F_trac"] - f_mech, 0.0, None),
                           0.0)
 
-        # engine shaft work on the locked path, plus its share of aux
-        w_eng = np.clip(rpm_lock, 600.0, 2100.0) * 2 * np.pi / 60.0
-        t_mech = f_mech * VEH.r_dyn / (self.CRUISE_RATIO * self.eta_lock)
-        # accessories: while locked the engine carries them mechanically
-        t_aux_lock = np.where(locked, self.ctx.aux_mech_kw * 1e3
+        w_eng = rpm_lock * 2 * np.pi / 60.0
+        t_mech = np.minimum(f_mech * VEH.r_dyn
+                            / (self.CRUISE_RATIO * self.eta_lock), t_eng_max)
+
+        # --- THE ENGINE'S TORQUE BUDGET WHILE LOCKED (r1 finding F3) ---
+        # In r1 the same single engine was run mechanically locked to the
+        # wheels AND, simultaneously, as a free-speed genset on the
+        # BSFC-optimal locus: the two were never coupled and their sum
+        # was never capped, so 3.7% of locked samples drew shaft power
+        # beyond the full-load curve - by up to 305.7 kW - and priced it
+        # at a mean 908 rpm while the engine was physically at 1,210 rpm.
+        #
+        # There is one crankshaft and it has one speed and one full-load
+        # torque. The budget at rpm_lock is allocated in the order the
+        # architecture demands it: TRACTION first (the road is not
+        # negotiable), then ACCESSORIES, then whatever is left may drive
+        # the generator. Accessory duty the crank cannot carry is moved
+        # to the BUS rather than dropped, and the generator is capped at
+        # the electrical power the residual shaft torque can make AT THE
+        # ROAD-IMPOSED SPEED - which is the assignment's own instruction
+        # to charge "off-point engine operation at band edges".
+        f3 = errata_on("f3_s2_engine_budget")
+        t_aux_want = np.where(locked, self.ctx.aux_mech_kw * 1e3
                               / np.maximum(w_eng, 1e-6), 0.0)
-        t_lock_tot = np.minimum(t_mech + t_aux_lock,
-                                self.engine.t_max(np.clip(rpm_lock, 600.0,
-                                                          2100.0)))
-        p_lock_shaft_kw = t_lock_tot * w_eng / 1e3
-        fuelling = locked & (t_lock_tot > 1e-6)
-        b = np.full(v.shape, np.inf)
-        if fuelling.any():
-            with np.errstate(divide="ignore", invalid="ignore"):
-                b[fuelling] = self.engine.bsfc(
-                    np.clip(rpm_lock, 600.0, 2100.0)[fuelling],
-                    t_lock_tot[fuelling])
-        g_lock = np.zeros(v.shape)
-        okf = fuelling & np.isfinite(b)
-        g_lock[okf] = b[okf] * np.clip(p_lock_shaft_kw[okf], 0, None) / 3600.0
-        if self.whr is not None:
-            phi_l = np.clip(t_lock_tot / np.maximum(
-                self.engine.t_max(np.clip(rpm_lock, 600.0, 2100.0)), 1e-9),
-                0.0, 1.0)
-            g_lock = g_lock * (1.0 - self.whr.gain(phi_l))
+        if f3:
+            t_aux = np.minimum(t_aux_want,
+                               np.clip(t_eng_max - t_mech, 0.0, None))
+        else:
+            # r1: the sum was silently clipped at the full-load curve and
+            # the accessory torque that did not fit simply vanished.
+            t_aux = np.clip(np.minimum(t_mech + t_aux_want, t_eng_max)
+                            - t_mech, 0.0, None)
+        aux_mech_kw_served = t_aux * w_eng / 1e3
+        aux_spill_kw = np.where(
+            locked, np.clip(self.ctx.aux_mech_kw - aux_mech_kw_served,
+                            0.0, None), 0.0) if f3 else np.zeros_like(v)
+        t_head = np.clip(t_eng_max - t_mech - t_aux, 0.0, None)
+        p_shaft_head_kw = t_head * w_eng / 1e3
+        p_gen_cap = np.where(
+            locked,
+            np.minimum(self.generator.elec_from_shaft(rpm_lock,
+                                                      p_shaft_head_kw),
+                       self.line.p_elec_max_kw),
+            self.line.p_elec_max_kw) if f3 else np.full_like(
+            v, self.line.p_elec_max_kw)
 
         # --- electric share -------------------------------------------
-        # a synthetic trace for the series/fill part of the traction
         tr_e = dict(tr)
         tr_e["F_trac"] = np.where(locked, f_fill, tr["F_trac"])
-        p_t, p_rg, p_rx, _ = series_bus_demand(self.edrive, tr_e, aux,
-                                               count_spin=False)
+        p_t, p_rg, _, _ = series_bus_demand(self.edrive, tr_e, aux_rate,
+                                            count_spin=False)
+        # the retard channel, split by physical location (F1b)
+        f_res_applied, f_eb_applied = self.retard_split_arrays(tr)
+        p_rx_wheel = f_res_applied * v / 1e3
+        p_rx = p_rx_wheel * self.edrive.eta_wheel_to_bus(v, p_rx_wheel)
 
-        # spin drag: charged ONLY where the machine is connected but
-        # unloaded. While locked the disconnect is open unless the
-        # machine has been asked to fill within CONNECT_DILATION_S.
+        # spin drag: charged where the machine is GEARED and unloaded,
+        # on the program-wide rule (F5). While locked the disconnect is
+        # open unless the machine has been asked to fill within
+        # CONNECT_DILATION_S; outside the band it is always geared.
         w = max(1, int(round(self.CONNECT_DILATION_S / dt)))
         filling = f_fill > 1.0
         connected_lock = _moving_average(filling.astype(float), w) > 1e-9
-        unloaded_connected = (
-            (connected_lock & locked & ~filling)
-            | (~locked & (tr["F_trac"] <= 1.0) & (tr["F_regen"] <= 1.0)
-               & (tr["F_retard"] <= 1.0) & moving))
-        p_spin = np.where(unloaded_connected, self.edrive.spin_drag_kw(v), 0.0)
+        geared = (connected_lock & locked) | (~locked & moving)
+        if errata_on("f5_spin_rule"):
+            idle = geared & machine_idle_mask(tr)
+        else:
+            # r1: two different unloaded tests in one candidate - the
+            # locked branch used ~filling, the unlocked branch used a
+            # 0.1 m/s speed floor where every other candidate used 0.5.
+            idle = ((connected_lock & locked & ~filling)
+                    | (~locked & (tr["F_trac"] <= 1.0)
+                       & (tr["F_regen"] <= 1.0) & (tr["F_retard"] <= 1.0)
+                       & moving))
+        p_spin = np.where(idle, self.edrive.spin_drag_kw(v), 0.0)
 
-        # bus demand: aux is electric only when NOT locked (locked, the
-        # engine carries it mechanically - already charged above)
-        aux_bus = np.where(locked, 0.0, aux)
+        # bus demand: while locked the crank carries the accessories,
+        # except for whatever torque it had no room for
+        aux_bus = np.where(locked, aux_spill_kw, aux_rate)
         net = p_t + aux_bus + p_spin - p_rg
+
+        # ---- the engine's fuel, ONE engine, ONE operating point -------
+        base_state = {}
+
+        def _lock_fuel(t_tot):
+            t_tot = np.minimum(t_tot, t_eng_max)
+            p_shaft = t_tot * w_eng / 1e3
+            fuelling = locked & (t_tot > 1e-6)
+            b = np.full(v.shape, np.inf)
+            if fuelling.any():
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    b[fuelling] = self.engine.bsfc(rpm_lock[fuelling],
+                                                   t_tot[fuelling])
+            g = np.zeros(v.shape)
+            ok = fuelling & np.isfinite(b)
+            g[ok] = b[ok] * np.clip(p_shaft[ok], 0, None) / 3600.0
+            if self.whr is not None:
+                phi = np.clip(t_tot / np.maximum(t_eng_max, 1e-9), 0.0, 1.0)
+                g = g * (1.0 - self.whr.gain(phi))
+            return g, p_shaft, ok
+
+        g_base, p_base_shaft, ok_base = _lock_fuel(t_mech + t_aux)
+
+        def fuel_fn(p_out):
+            t_gen = np.zeros(v.shape)
+            if f3:
+                m = locked & (p_out > 0.0)
+                if m.any():
+                    p_sh = self.generator.shaft_from_elec(rpm_lock[m],
+                                                          p_out[m])
+                    t_gen[m] = p_sh * 1e3 / np.maximum(w_eng[m], 1e-6)
+            g_tot, p_tot_shaft, ok_tot = _lock_fuel(t_mech + t_aux + t_gen)
+            g_free = np.asarray(self.line.fuel_whr(p_out, self.whr), float)
+            base_state["g_tot"] = g_tot
+            base_state["p_tot_shaft"] = p_tot_shaft
+            base_state["ok_tot"] = ok_tot
+            base_state["g_free"] = g_free
+            base_state["t_gen"] = t_gen
+            if f3:
+                return np.where(locked, g_tot, g_free)
+            # r1: the locked path's fuel AND a free-speed genset's fuel,
+            # from the same crankshaft, added.
+            return g_tot + g_free
+
         d = series_dispatch(net, dt, self.line, self.pack,
                             soc_target=self.SOC_TARGET,
-                            soc_lo=self.SOC_FLOOR, whr=self.whr)
+                            soc_lo=self.SOC_FLOOR, whr=self.whr,
+                            p_chg_max_kw=self.pack_chg_limit_kw(),
+                            p_elec_cap_kw=p_gen_cap, fuel_fn=fuel_fn)
 
-        h = dt / 3600.0
-        fuel_g = float(np.sum(g_lock) * dt) + d["fuel_g"]
+        g_tot = base_state["g_tot"]
+        ok_tot = base_state["ok_tot"]
+        p_tot_shaft = base_state["p_tot_shaft"]
+        fuel_g = d["fuel_g"]
         idle_g = EN.idle_fuel_gps(self.engine)
         stopped = ~moving
         fuel_g += float(np.sum(np.where(stopped & (d["p_genset_kw"] <= 0.0),
                                         idle_g, 0.0)) * dt)
+        # fuel attributable to the GENSET, for the correction efficiency
+        # (F6): all of it while unlocked, the marginal cost of the extra
+        # crank torque while locked.
+        fuel_g_genset = float(
+            np.sum(np.where(locked, np.clip(g_tot - g_base, 0.0, None),
+                            base_state["g_free"])) * dt) if f3 else float(
+            np.sum(base_state["g_free"]) * dt)
+        sp = spin_report(self.edrive, tr, p_spin, geared=geared)
+        # heat rows: while locked the ENGINE's own rejection is the
+        # locked-path fuel less its brake power; while unlocked it is the
+        # genset's. The compression brake is booked to the exhaust.
+        p_shaft_free = np.interp(d["p_genset_kw"], self.line.p_grid,
+                                 self.line.p_shaft)
+        p_shaft_eng = np.where(locked, p_tot_shaft, p_shaft_free)
+        q_eng = engine_reject_kw(d["fuel_gps"], p_shaft_eng)
+        hr = series_heat_rows(
+            self, tr, aux_bus, p_t, p_rg, p_rx, p_spin, d,
+            pw_t=tr_e["F_trac"] * v / 1e3,
+            pw_x=f_res_applied * v / 1e3,
+            pw_eb=f_eb_applied * v / 1e3)
+        hr["engine_coolant_kW"] = q_eng * ENGINE_HEAT_TO_COOLANT_FRAC
+        hr["engine_exhaust_kW"] = (q_eng * (1.0 - ENGINE_HEAT_TO_COOLANT_FRAC)
+                                   + f_eb_applied * v / 1e3)
+        # the locked mechanical path has its own gearing loss
+        hr["driveline_kW"] = hr["driveline_kW"] + np.clip(
+            f_mech * v / 1e3 * (1.0 / self.eta_lock - 1.0), 0.0, None)
+        hr["accessory_kW"] = aux_bus + aux_mech_kw_served
         return dict(
             fuel_g=fuel_g, e_fuel_MJ=EN.fuel_energy_MJ(fuel_g),
+            fuel_g_genset=fuel_g_genset,
+            e_genset_bus_kWh=d["e_genset_bus_kWh"],
             e_bus_traction_kWh=float(np.sum(p_t)) * h,
             e_mech_traction_kWh=float(np.sum(f_mech * v)) * dt / 3.6e6,
+            e_mech_wheel_kWh=float(np.sum(f_mech * v)) * dt / 3.6e6,
             e_torque_fill_wheel_kWh=float(np.sum(f_fill * v)) * dt / 3.6e6,
             # accessories are served TWO ways in S2 and each is reported
             # where it was actually charged: mechanically off the crank
-            # while locked (already inside the locked-path fuel above),
-            # and bus-side otherwise. Summing the bus figure over the
-            # whole trace would report energy the bus never carried.
+            # while locked (inside the locked-path fuel above), and
+            # bus-side otherwise - including the share the crank had no
+            # torque left to carry. Summing the bus figure over the whole
+            # trace would report energy the bus never carried.
             e_aux_bus_kWh=float(np.sum(aux_bus)) * h,
-            e_aux_mech_kWh=float(np.sum(
-                np.where(locked, self.ctx.aux_mech_kw, 0.0))) * h,
+            e_aux_mech_kWh=float(np.sum(aux_mech_kw_served)) * h,
+            e_aux_spill_to_bus_kWh=float(np.sum(aux_spill_kw)) * h,
             e_aux_kWh=(float(np.sum(aux_bus))
-                       + float(np.sum(np.where(locked,
-                                               self.ctx.aux_mech_kw,
-                                               0.0)))) * h,
-            e_spin_kWh=float(np.sum(p_spin)) * h,
+                       + float(np.sum(aux_mech_kw_served))) * h,
             e_regen_bus_kWh=float(np.sum(p_rg)) * h,
             e_resistor_kWh=float(np.sum(p_rx)) * h,
-            e_engine_brake_kWh=float(np.sum(tr["F_retard"] * v)) * dt / 3.6e6,
+            e_engine_brake_kWh=float(np.sum(f_eb_applied * v)) * dt / 3.6e6,
             e_friction_brake_kWh=float(
                 np.sum(tr["F_friction"] * v)) * dt / 3.6e6,
             e_clutch_slip_kWh=0.0,
             unserved_kWh=d["unserved_kWh"], shed_kWh=d["shed_kWh"],
             genset_starts=d["starts"],
             genset_on_fraction=d["genset_on_fraction"],
+            genset_on_fraction_of_locked=float(
+                np.mean((d["p_genset_kw"] > 0.0)[locked]))
+            if locked.any() else 0.0,
             p_genset_mean_on_kW=d["p_genset_mean_on_kW"],
+            p_genset_cap_locked_mean_kW=float(np.mean(p_gen_cap[locked]))
+            if locked.any() else 0.0,
+            engine_torque_budget_binding_fraction_locked=float(np.mean(
+                (t_mech + t_aux_want > t_eng_max - 1e-9)[locked]))
+            if locked.any() else 0.0,
             soc_min=float(np.min(d["soc"])), soc_max=float(np.max(d["soc"])),
             soc_start=float(d["soc"][0]), soc_end=float(d["soc"][-1]),
             locked_fraction_moving=float(np.mean(locked[moving])),
             fill_fraction_of_locked=float(
                 np.mean(filling[locked]) if locked.any() else 0.0),
-            machine_connected_fraction=float(np.mean(
-                (connected_lock | ~locked)[moving])),
+            machine_connected_fraction=float(np.mean(geared[moving])),
             mean_locked_engine_rpm=float(
                 np.mean(rpm_lock[locked]) if locked.any() else 0.0),
             mean_locked_bsfc_g_per_kWh=float(
-                np.sum(g_lock[okf]) * 3600.0
-                / max(np.sum(p_lock_shaft_kw[okf]), 1e-9)) if okf.any()
+                np.sum(g_tot[ok_tot]) * 3600.0
+                / max(np.sum(p_tot_shaft[ok_tot]), 1e-9)) if ok_tot.any()
             else float("nan"),
             mean_bsfc_g_per_kWh=float("nan"),
             top_gear_fraction=float("nan"),
             resistor_peak_kW=float(np.max(p_rx)),
+            engine_brake_peak_kW=float(np.max(f_eb_applied * v)) / 1e3,
+            friction_brake_peak_kW=float(
+                np.max(tr["F_friction"] * v)) / 1e3,
+            heat_peaks_kW=heat_peaks(v, hr, dt),
+            **sp,
         )
 
 
@@ -1134,7 +1724,7 @@ class S3(Candidate):
         self.k_axleB = size_edrive_for_startability(EDRIVE_RATIO, 1)
         self.edrive = EL.ScaledEDrive(self.k_axleB, EDRIVE_RATIO,
                                       n_machines=1, label="S3 e-axle (axle B)")
-        self.engine = EN.ENGINES[self.engine_name]
+        self.engine = self.engine_for_ctx(EN.ENGINES[self.engine_name])
         self.pack = EL.Pack8(self.PACK_CELL, self.PACK_KWH, 0.80,
                              label="S3 buffer")
         self.eta_A = (DL.eta_fixed_ratio_box * DL.eta_axle_single_reduction
@@ -1208,11 +1798,17 @@ class S3(Candidate):
     def envelope(self, v):
         f_t = self.f_axleA_max(v) + self.f_axleB_max(v)
         f_t = min(f_t, self.adhesion_force_N())
+        f_regen, f_res, f_eb = self._retard_channels(v)
+        return f_t, f_regen, f_res + f_eb
 
+    def _retard_channels(self, v, pack_saturated=False):
+        """(regen, resistor, compression brake) force [N] - one place,
+        so the envelope and the heat ledger cannot disagree (F1b)."""
         f_gen = min(self.edrive.wheel_force_max(v), self.adhesion_axleB())
         if v > 0.5:
             blend = regen_blend(v)
-            f_regen = min(f_gen, self.pack.p_cont_chg_kw * 1e3 / v) * blend
+            chg = 0.0 if pack_saturated else self.pack_chg_limit_kw()
+            f_regen = min(f_gen, chg * 1e3 / v) * blend
             f_res = min(max(0.0, f_gen - f_regen),
                         self.resistor_kw * 1e3 / v) * blend
         else:
@@ -1222,7 +1818,11 @@ class S3(Candidate):
             rpm = float(self._rpm_at_v(v))
             f_eb = min(self.p_engine_brake_kw * (rpm / 2100.0) * 1e3
                        / max(v, 0.5), self.adhesion_axleA())
-        return f_t, f_regen, f_res + f_eb
+        return f_regen, f_res, f_eb
+
+    def retard_split(self, v, pack_saturated=False):
+        _, f_res, f_eb = self._retard_channels(v, pack_saturated)
+        return f_res, f_eb
 
     def grade_hold(self, grade, mu=None):
         """The fixed-ratio grade-hold question, answered directly.
@@ -1353,7 +1953,12 @@ class S3(Candidate):
         p_rg_wheel = tr["F_regen"] * v / 1e3
         eta_g = self.edrive.eta_wheel_to_bus(v, p_rg_wheel)
         p_rg_bus = p_rg_wheel * eta_g
-        p_rx_wheel = np.where(coupled, 0.0, tr["F_retard"] * v / 1e3)
+        # the retard channel, split by physical location (F1b): in r1 the
+        # whole channel was booked to the resistor when uncoupled and to
+        # the engine brake when coupled, which is a coupling-state split,
+        # not a channel split.
+        f_res_applied, f_eb_applied = self.retard_split_arrays(tr)
+        p_rx_wheel = f_res_applied * v / 1e3
         p_rx_bus = p_rx_wheel * self.edrive.eta_wheel_to_bus(v, p_rx_wheel)
 
         # e-axle disconnect: open whenever the machine has no job. Spin
@@ -1363,6 +1968,14 @@ class S3(Candidate):
         busy = (f_b > 1.0) | (tr["F_regen"] > 1.0) | (p_rx_wheel > 0.1)
         connected = _moving_average(busy.astype(float), w) > 1e-9
         spin_rate = self.edrive.spin_drag_kw(v)
+        # r1 finding F5(3): the zero-torque loss used to be added on
+        # EVERY connected sample, including the 91% on which the machine
+        # was delivering torque or regenerating - on top of the WS2
+        # measured loss already evaluated at that operating point. It is
+        # charged here only where the machine is geared AND unloaded, the
+        # same rule every other candidate is held to.
+        spin_charge = (connected & machine_idle_mask(tr)
+                       if errata_on("f5_spin_rule") else connected)
 
         # through-the-road charging headroom on axle A
         f_a_head = np.clip(f_a_cap - f_a, 0.0, None)
@@ -1370,6 +1983,8 @@ class S3(Candidate):
         p_chg_head_bus = f_a_head * v / 1e3 * eta_g
 
         idle_g = EN.idle_fuel_gps(self.engine)
+        # pack charge acceptance AT THIS CORNER'S AMBIENT (F2)
+        p_chg_max = self.pack_chg_limit_kw()
         usable = max(self.pack.usable_kwh, 1e-9)
         e = usable * self.SOC_TARGET
         e_lo, e_hi = usable * self.SOC_FLOOR, usable * self.SOC_CEIL
@@ -1384,13 +1999,13 @@ class S3(Candidate):
         for i in range(n):
             soc_now = e / usable
             demand = p_b_bus[i] + aux[i] - p_rg_bus[i]
-            if connected[i]:
+            if spin_charge[i]:
                 demand += spin_rate[i]
                 p_spin[i] = spin_rate[i]
             chg = 0.0
             if coupled[i] and soc_now < self.SOC_TARGET \
                     and p_chg_head_bus[i] > 0.0:
-                want = (self.pack.p_cont_chg_kw
+                want = (p_chg_max
                         * (self.SOC_TARGET - soc_now)
                         / (self.SOC_TARGET - self.SOC_FLOOR))
                 chg = min(want, p_chg_head_bus[i])
@@ -1409,7 +2024,7 @@ class S3(Candidate):
                 unserved += (net - pd) * h
                 e -= de
             else:
-                pc = min(-net, self.pack.p_cont_chg_kw)
+                pc = min(-net, p_chg_max)
                 de = pc * h * self.pack.eta_chg
                 room = e_hi - e
                 if de > room:
@@ -1443,20 +2058,57 @@ class S3(Candidate):
             phi_a = np.clip(t_a / np.maximum(t_a_max, 1e-9), 0.0, 1.0)
             g = g * (1.0 - self.whr.gain(phi_a))
         fuel_g = float(np.sum(g) * dt)
+        sp = spin_report(self.edrive, tr, p_spin, geared=connected)
+
+        # ---- heat rows (rule 7), from the same quantities as the fuel --
+        eta_red = self.edrive.eta_red
+        gear_m, mach_m = edrive_heat_split(p_b_wheel, p_b_bus, eta_red)
+        gear_g, mach_g = edrive_heat_split(p_rg_wheel, p_rg_bus, eta_red,
+                                           generating=True)
+        gear_x, mach_x = edrive_heat_split(p_rx_wheel, p_rx_bus, eta_red,
+                                           generating=True)
+        q_eng_s3 = engine_reject_kw(g, p_a_shaft)
+        # The pack's own loss, from its net bus power. Clipped to the
+        # pack's own limits for the same reason `series_dispatch` clips
+        # them: demand the pack cannot meet is UNSERVED energy, not pack
+        # current, and charging its loss would put heat in a component
+        # that never carried the power.
+        p_pack_s3 = np.clip(
+            p_b_bus + aux - p_rg_bus + p_spin
+            - np.where(f_chg_wheel > 0.0, f_chg_wheel * v / 1e3 * eta_g,
+                       0.0),
+            -p_chg_max, self.pack.p_cont_dis_kw)
+        hr = OrderedDict([
+            ("engine_coolant_kW", q_eng_s3 * ENGINE_HEAT_TO_COOLANT_FRAC),
+            ("engine_exhaust_kW",
+             q_eng_s3 * (1.0 - ENGINE_HEAT_TO_COOLANT_FRAC)
+             + f_eb_applied * v / 1e3),
+            ("generator_rectifier_kW", np.zeros_like(v)),
+            ("traction_machine_inverter_kW",
+             mach_m + mach_g + mach_x + p_spin),
+            ("driveline_kW", gear_m + gear_g + gear_x
+             + np.clip(f_a * v / 1e3 * (1.0 / self.eta_A - 1.0), 0.0, None)),
+            ("pack_kW", pack_heat_kw(p_pack_s3, self.pack)),
+            ("brake_resistor_kW", p_rx_bus),
+            ("friction_brake_kW", tr["F_friction"] * v / 1e3),
+            ("accessory_kW", np.asarray(aux, float) * np.ones_like(v)),
+        ])
 
         return dict(
             fuel_g=fuel_g, e_fuel_MJ=EN.fuel_energy_MJ(fuel_g),
             ratio_A=self.ratio_a,
+            # S3 has no genset: the correction efficiency (F6) is priced
+            # on the mechanical path it actually has, not on a genset
+            # locus it does not.
+            fuel_g_genset=0.0, e_genset_bus_kWh=0.0,
             e_axleA_wheel_kWh=float(np.sum(f_a * v)) * dt / 3.6e6,
+            e_mech_wheel_kWh=float(np.sum(f_a * v)) * dt / 3.6e6,
             e_axleB_bus_kWh=float(np.sum(p_b_bus)) * h,
             e_ttr_charge_bus_kWh=float(np.sum(f_chg_wheel * v)) * dt / 3.6e6,
             e_aux_kWh=float(np.sum(aux)) * h,
-            e_spin_kWh=float(np.sum(p_spin)) * h,
             e_regen_bus_kWh=float(np.sum(p_rg_bus)) * h,
             e_resistor_kWh=float(np.sum(p_rx_bus)) * h,
-            e_engine_brake_kWh=float(
-                np.sum(np.where(coupled, tr["F_retard"] * v, 0.0)))
-            * dt / 3.6e6,
+            e_engine_brake_kWh=float(np.sum(f_eb_applied * v)) * dt / 3.6e6,
             e_friction_brake_kWh=float(
                 np.sum(tr["F_friction"] * v)) * dt / 3.6e6,
             e_clutch_slip_kWh=0.0,
@@ -1477,7 +2129,11 @@ class S3(Candidate):
             genset_starts=0, genset_on_fraction=float(np.mean(coupled)),
             p_genset_mean_on_kW=float("nan"),
             resistor_peak_kW=float(np.max(p_rx_bus)),
+            engine_brake_peak_kW=float(np.max(f_eb_applied * v)) / 1e3,
+            friction_brake_peak_kW=float(np.max(tr["F_friction"] * v)) / 1e3,
             idle_fuel_g=0.0,
+            heat_peaks_kW=heat_peaks(v, hr, dt),
+            **sp,
         )
 
 
@@ -1487,7 +2143,13 @@ class S3(Candidate):
 # =====================================================================
 class S4(Candidate):
     name = "S4"
-    title = "Range-extended BEV - large pack + ~170 kW sustainer genset"
+    # r1 finding F8: the title used to be the literal string "~170 kW
+    # sustainer genset" while the model ran a 7 L flat-rated to ~194 kW
+    # shaft / ~185 kW bus - a 14% error, rendered verbatim into the
+    # headline table because `verify_ws8.py` checked numbers and not
+    # class titles. The title is now FORMATTED from the rating the model
+    # actually built, in setup(), and verify_ws8.py checks it.
+    title = "Range-extended BEV - large pack + sustainer genset"
     policy = (
         "Electric traction only; a small sustainer genset holds charge. "
         "Run CHARGE-SUSTAINING over the mission (the pack ends where it "
@@ -1510,15 +2172,28 @@ class S4(Candidate):
                                       n_machines=2, label="S4 tandem e-drive")
         # 7 L class: flat-rates (R18) to ~200 kW, the TOP of the
         # assignment's 150-200 kW sustainer band.
-        self.engine = EN.ENG_7L
-        self.sustainer_shaft_kw = EN.flat_rated_cont_kw(self.engine)
+        self.engine = self.engine_for_ctx(EN.ENG_7L)
+        # sized once at the nominal rating; the corner derate reduces
+        # what it delivers, not what it weighs (see S1.setup)
+        self.sustainer_shaft_kw = EN.flat_rated_cont_kw(EN.ENG_7L)
         self.generator, _ = EL.scaled_generator("GEN-S4",
                                                 self.sustainer_shaft_kw)
+        self.sustainer_shaft_cap_kw = EN.flat_rated_cont_kw(self.engine)
         self.pack = EL.Pack8(self.PACK_CELL, self.PACK_KWH, 0.80,
                              label="S4 traction pack")
         self.line = GensetLine(self.engine, self.generator,
-                               self.generator.cont_kw_in * 0.955)
+                               min(self.generator.cont_kw_in,
+                                   self.sustainer_shaft_cap_kw) * 0.955)
         self.resistor_kw = self.RESISTOR_KW
+        # F8: the headline SPECIFICATION, rendered from what was built.
+        # It is the nominal rating of the hardware fitted, so it is the
+        # same string at every corner; what the corner derate does to the
+        # DELIVERABLE output is reported in spec()["genset"].
+        self.title = (
+            f"Range-extended BEV - large pack + "
+            f"{self.sustainer_shaft_kw:.0f} kW-shaft / "
+            f"{self.generator.cont_kw_in * 0.955:.0f} kW-bus sustainer "
+            f"genset")
 
     def pack_sustained_kw(self):
         return (self.pack.usable_kwh * (self.SOC_TARGET - self.SOC_FLOOR)
@@ -1555,15 +2230,22 @@ class S4(Candidate):
                 v, min(p_bus_cap, self.edrive.wheel_power_max_kw(v))))
             f_t = min(f_t, p_bus_cap * eta * 1e3 / v)
         f_t = min(f_t, self.adhesion_force_N())
+        f_regen, f_res, _ = self._retard_channels(v)
+        return f_t, f_regen, f_res
+
+    def _retard_channels(self, v, pack_saturated=False):
+        """(regen, resistor, compression brake) [N]. S4's sustainer is
+        not geared to the road, so there is no compression brake."""
         f_gen = min(self.edrive.wheel_force_max(v), self.adhesion_force_N())
         if v > 0.5:
             blend = regen_blend(v)
-            f_regen = min(f_gen, self.pack.p_cont_chg_kw * 1e3 / v) * blend
+            chg = 0.0 if pack_saturated else self.pack_chg_limit_kw()
+            f_regen = min(f_gen, chg * 1e3 / v) * blend
             f_res = min(max(0.0, f_gen - f_regen),
                         self.resistor_kw * 1e3 / v) * blend
         else:
             f_regen = f_res = 0.0
-        return f_t, f_regen, f_res
+        return f_regen, f_res, 0.0
 
     def account(self, tr):
         dt = tr["dt"]
@@ -1573,14 +2255,18 @@ class S4(Candidate):
         d = series_dispatch(net, dt, self.line, self.pack,
                             p_on_kw=25.0, p_off_kw=15.0,
                             soc_target=self.SOC_TARGET,
-                            soc_lo=self.SOC_FLOOR, whr=self.whr)
+                            soc_lo=self.SOC_FLOOR, whr=self.whr,
+                            p_chg_max_kw=self.pack_chg_limit_kw())
         h = dt / 3600.0
         soc = d["soc"]
+        sp = spin_report(self.edrive, tr, p_sp, geared=None)
+        hr = series_heat_rows(self, tr, aux, p_t, p_rg, p_rx, p_sp, d)
         return dict(
             fuel_g=d["fuel_g"], e_fuel_MJ=EN.fuel_energy_MJ(d["fuel_g"]),
+            fuel_g_genset=d["fuel_g"],
+            e_genset_bus_kWh=d["e_genset_bus_kWh"],
             e_bus_traction_kWh=float(np.sum(p_t)) * h,
             e_aux_kWh=float(np.sum(aux)) * h,
-            e_spin_kWh=float(np.sum(p_sp)) * h,
             e_regen_bus_kWh=float(np.sum(p_rg)) * h,
             e_resistor_kWh=float(np.sum(p_rx)) * h,
             e_engine_brake_kWh=0.0,
@@ -1599,6 +2285,11 @@ class S4(Candidate):
             mean_bsfc_g_per_kWh=float("nan"),
             top_gear_fraction=float("nan"),
             resistor_peak_kW=float(np.max(p_rx)),
+            engine_brake_peak_kW=0.0,
+            friction_brake_peak_kW=float(
+                np.max(tr["F_friction"] * tr["v"])) / 1e3,
+            heat_peaks_kW=heat_peaks(tr["v"], hr, dt),
+            **sp,
         )
 
 

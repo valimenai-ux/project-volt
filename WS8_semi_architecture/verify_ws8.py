@@ -114,10 +114,73 @@ CHECKS += [
 # --- S3 capability, the reason for its verdict -----------------------
 CHECKS += [
     ("task5_s3_specific/fixed_ratio_grade_hold/max_ratio_without_overspeed",
-     "{:.2f}", "S3 max ratio without overspeed"),
+     "{:.2f}", "S3 max ratio without overspeed (swept set)"),
+    # r1 finding F12: the report must render the PHYSICS bound, not only
+    # the swept-set property.
+    ("task5_s3_specific/fixed_ratio_grade_hold/ratio_ceiling_closed_form/"
+     "value", "{:.4f}", "S3 ratio ceiling, closed form"),
+    ("task5_s3_specific/fixed_ratio_grade_hold/ratio_needed_to_hold_6pct/"
+     "ratio", "{:.2f}", "S3 ratio needed to hold 6%"),
     ("interface_ws8/S3_diesel_axle_adhesion_grade_limit/value", "{:.4f}",
      "S3 adhesion grade limit"),
 ]
+
+# --- r2 errata: the fields the round exists to correct ---------------
+# F7: the cross-check is an ENSEMBLE, not a median.
+CHECKS += [
+    ("task2_s0_calibration/flat_corridor_crosscheck/L_per_100km/min",
+     "{:.2f}", "S0 flat cross-check min"),
+    ("task2_s0_calibration/flat_corridor_crosscheck/L_per_100km/median",
+     "{:.2f}", "S0 flat cross-check median"),
+    ("task2_s0_calibration/flat_corridor_crosscheck/L_per_100km/max",
+     "{:.2f}", "S0 flat cross-check max"),
+    ("task2_s0_calibration/flat_corridor_crosscheck/mass_cases/"
+     "mass_matched_to_ICCT_19p3t_payload/L_per_100km/median", "{:.2f}",
+     "S0 flat cross-check, mass-matched to the reference payload"),
+    ("task2_s0_calibration/flat_corridor_crosscheck/mass_cases/"
+     "EU_regulatory_40000kg_GCW/L_per_100km/median", "{:.2f}",
+     "S0 flat cross-check at 40 t GCW"),
+]
+# F13: the climb figure is formatted from the ensemble, never a literal.
+CHECKS += [
+    ("task1_cycles/cycles/LH-520/ensemble/total_climb_m/min", "{:,.0f} m",
+     "LH-520 climb min"),
+    ("task1_cycles/cycles/LH-520/ensemble/total_climb_m/max", "{:,.0f} m",
+     "LH-520 climb max"),
+]
+# F1: the rebuilt heat ledger's worst cases, per candidate.
+for c in ("S0", "S1", "S2", "S3", "S4"):
+    CHECKS += [
+        (f"heat_ledger/candidates/{c}/worst_case/brake_resistor_kW/value",
+         "{:.0f}", f"{c} worst resistor heat"),
+        (f"heat_ledger/candidates/{c}/worst_case/engine_exhaust_kW/value",
+         "{:.0f}", f"{c} worst exhaust heat"),
+        (f"heat_ledger/candidates/{c}/worst_case/friction_brake_kW/value",
+         "{:.0f}", f"{c} worst friction-brake heat"),
+    ]
+# F3/F4/F5/F6: the one-factor rows that decide the S1-vs-S2 ordering.
+for row in ("r2_as_reported", "F4_reverted_credit_removed",
+            "F6_reverted_peak_point_pricing",
+            "F3_reverted_engine_dual_use", "F5_reverted_spin_rule",
+            "F3_and_F5_reverted"):
+    for c in ("S1", "S2"):
+        CHECKS.append((f"one_factor/rows/{row}/{c}/median", "{:+.2f}%",
+                       f"one-factor {row} {c} median"))
+# F2: the cold corner now applies WS3's cold charge acceptance.
+CHECKS += [
+    ("task3_trial/cold_minus10C/S1/spec/pack/p_cont_chg_kW_at_corner",
+     "{:.1f} kW", "S1 pack charge acceptance at -10 C"),
+    ("task3_trial/cold_minus10C/S1/spec/pack/p_cont_chg_kW", "{:.1f} kW",
+     "S1 pack charge acceptance, warm"),
+]
+# F11/R28: the added altitude/hot corner, and the derate it exercises.
+CHECKS += [
+    ("task3_trial/hot_alt_2000m_45C/S0/spec/corner/engine_derate_factor",
+     "{:.4f}", "WS4 derate factor at the R28 corner"),
+]
+for c in ("S1", "S2", "S3", "S4"):
+    CHECKS.append((f"task3_margins/hot_alt_2000m_45C/{c}/ensemble/min",
+                   "{:+.2f}%", f"{c} hot/altitude corner min"))
 
 # --- sanity ----------------------------------------------------------
 CHECKS += [
@@ -164,6 +227,95 @@ def main():
                     "INTERFACE BLOCK != results_ws8.json['interface_ws8']")
             else:
                 checked += 1
+
+    # r1 finding F8: class TITLES are rendered verbatim into the headline
+    # table and were not checked, so S4's "~170 kW sustainer genset" sat
+    # in the report against a model running ~194 kW shaft / ~185 kW bus.
+    for c in ("S0", "S1", "S2", "S3", "S4"):
+        title = get(f"task3_trial/nominal/{c}/spec/title")
+        if title not in REPORT:
+            fails.append(f"TITLE NOT IN REPORT: {c}\n"
+                         f"    expected {title!r}")
+        else:
+            checked += 1
+        policy = get(f"task3_trial/nominal/{c}/spec/policy")
+        if policy not in REPORT:
+            fails.append(f"POLICY NOT IN REPORT: {c}")
+        else:
+            checked += 1
+
+    # r2: the verdicts block must carry the executed status, the numbers
+    # block must be versioned, and the inputs must be SHA-pinned.
+    iface = R.get("interface_ws8", {})
+    if iface.get("numbers_version") != "r2":
+        fails.append("INTERFACE numbers_version is not 'r2'")
+    else:
+        checked += 1
+    if iface.get("verdicts", {}).get("status") != "executed_kill_2026-08-30":
+        fails.append("INTERFACE verdicts.status is not "
+                     "'executed_kill_2026-08-30'")
+    else:
+        checked += 1
+    shas = iface.get("inputs_sha256") or {}
+    missing = [k for k, v in shas.items() if not v]
+    if not shas or missing:
+        fails.append(f"INPUT SHA PINS MISSING: {missing or 'block absent'}")
+    else:
+        checked += 1
+
+    # r2: no verdict may have flipped (R2_DIRECTIVE item 3)
+    vs = R.get("verdict_stability", {})
+    if not vs:
+        fails.append("VERDICT STABILITY BLOCK MISSING")
+    elif not vs.get("all_unchanged"):
+        fails.append("A VERDICT FLIPPED ON THE r2 NUMBERS - the round must "
+                     "STOP and report rather than publish")
+    else:
+        checked += 1
+
+    # r2: the heat ledger must close and stay inside its ratings (F1)
+    hl = R.get("heat_ledger", {})
+    if not hl.get("all_cases_close_and_within_rating"):
+        fails.append("HEAT LEDGER does not close, or a component exceeds "
+                     "the rating of the hardware whose mass was charged")
+    else:
+        checked += 1
+
+    # r2: cold charge acceptance must actually bite in the cold corner
+    # (F2 - in r1 the envelope was identical at nominal and at -10 C)
+    try:
+        warm = get("task3_trial/nominal/S1/spec/pack/p_cont_chg_kW_at_corner")
+        cold = get("task3_trial/cold_minus10C/S1/spec/pack/"
+                   "p_cont_chg_kW_at_corner")
+        if not (cold < warm * 0.2):
+            fails.append(f"COLD CHARGE ACCEPTANCE NOT APPLIED: warm {warm}, "
+                         f"cold {cold}")
+        else:
+            checked += 1
+    except (KeyError, TypeError):
+        fails.append("COLD CHARGE ACCEPTANCE FIELDS MISSING")
+
+    # the standalone changelog is generated from the same lines as
+    # report section 15, so every line of it (bar its own header) must
+    # appear in the report verbatim
+    cpath = os.path.join(HERE, "CHANGELOG_WS8_r2.md")
+    if not os.path.exists(cpath):
+        fails.append("CHANGELOG_WS8_r2.md MISSING")
+    else:
+        body = open(cpath).read().split("\n---\n", 1)
+        drifted = []
+        if len(body) == 2:
+            for ln in body[1].split("\n"):
+                t = ln.strip()
+                if len(t) < 40 or t.startswith("### ") or t.startswith("## "):
+                    continue
+                if t not in REPORT:
+                    drifted.append(t[:70])
+        if drifted:
+            fails.append(f"CHANGELOG DRIFTED FROM THE REPORT: "
+                         f"{len(drifted)} lines, e.g. {drifted[:2]}")
+        else:
+            checked += 1
 
     # every escalation must be named in the report
     for e in R.get("escalations", []):

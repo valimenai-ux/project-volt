@@ -13,20 +13,23 @@ the rendered strings are present.
 """
 import json
 import os
+import re
 from collections import OrderedDict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 R = json.load(open(os.path.join(HERE, "results_ws8.json")))
 OUT = os.path.join(HERE, "REPORT_WS8.md")
+OUT_CHANGELOG = os.path.join(HERE, "CHANGELOG_WS8_r2.md")
 
 CANDS = ["S0", "S1", "S2", "S3", "S4"]
 CORNERS = ["payload_plus20", "payload_minus20", "grade_heavy",
-           "cold_minus10C"]
+           "cold_minus10C", "hot_alt_2000m_45C"]
 CORNER_LABEL = {
     "payload_plus20": "payload +20%",
     "payload_minus20": "payload -20%",
     "grade_heavy": "grade-heavy corridor",
     "cold_minus10C": "-10 C",
+    "hot_alt_2000m_45C": "2,000 m / +45 C",
 }
 
 
@@ -60,6 +63,15 @@ def m4(x):
 ICCT_TYPICAL = g("task2_s0_calibration/flat_corridor_crosscheck/reference/"
                  "typical_EU_L_per_100km", 32.6)
 
+
+def climb_txt():
+    """LH-520's total climb, formatted from the ensemble. r1 finding F13:
+    this was the hard-coded literal '~3,800 m', which is the TOP of the
+    ensemble, used twice to justify why S0 misses the fuel corridor."""
+    e = g("task1_cycles/cycles/LH-520/ensemble/total_climb_m")
+    return (f"{e['median']:,.0f} m of climb over 520 km "
+            f"(8-seed ensemble {e['min']:,.0f} m to {e['max']:,.0f} m)")
+
 L = []
 w = L.append
 
@@ -70,7 +82,20 @@ def header():
     w("# REPORT WS8 - VEHICLE ONE: SEMI-SCALE ARCHITECTURE TRIAL")
     w("")
     w("Workstream WS8, Vehicle One. Executes "
-      "`WS8_semi_architecture/ASSIGNMENT.md` against `BASELINE_v3.md`.")
+      "`WS8_semi_architecture/ASSIGNMENT.md`, and the errata round "
+      "ordered by `WS8_semi_architecture/R2_DIRECTIVE.md` under R26, "
+      "against `BASELINE_v4.md`.")
+    w("")
+    iface = g("interface_ws8")
+    vd = iface["verdicts"]
+    w(f"**Numbers version {iface['numbers_version']}.** The verdicts are "
+      f"`{vd['status']}` - R25 executed all four kills and the WHR drop "
+      f"on the pre-committed criteria, and **this round does not reopen "
+      f"them**. What r2 does is make the NUMBERS of record correct: the "
+      f"two blocking findings and the eleven material and minor ones from "
+      f"`FINDINGS_WS8_r1.md` are closed here, every corner is "
+      f"re-simulated, and section 15 states which direction each "
+      f"candidate moved and why.")
     w("")
     w("**Nothing here is ratified.** The lead ratifies in a separate chat "
       "(CLAUDE.md rule 11). This report states what the physics gave and "
@@ -125,6 +150,8 @@ def summary():
     inband = g("task2_s0_calibration/in_corridor_all_seeds")
     fxm = g("task2_s0_calibration/flat_corridor_crosscheck/L_per_100km/"
             "median")
+    fxlo = g("task2_s0_calibration/flat_corridor_crosscheck/L_per_100km/min")
+    fxhi = g("task2_s0_calibration/flat_corridor_crosscheck/L_per_100km/max")
     if inband:
         w(f"S0, the ruler, burns **{f2(s0_fuel)} L/100 km** on the fleet "
           f"mission - inside the assignment's 30-38 L/100 km sanity "
@@ -135,12 +162,14 @@ def summary():
           f"mission. That is above the assignment's 30-38 L/100 km "
           f"corridor, and the reason is the corridor itself rather than "
           f"the model: run over the same road with the grade zeroed, S0 "
-          f"burns **{f2(fxm)} L/100 km** against a published "
+          f"burns **{f2(fxm)} L/100 km** median on an 8-seed envelope of "
+          f"{f2(fxlo)} to {f2(fxhi)}, against a published "
           f"{ICCT_TYPICAL} L/100 km for a typical EU tractor-trailer over "
-          f"the regulatory Long Haul cycle - a match to about one percent, "
-          f"with nothing fitted to it. Task 1 ordered ~3,800 m of climb; a "
-          f"30-38 band describes a freeway. Reported, not tuned away, and "
-          f"escalated as ESC-WS8-7.")
+          f"the regulatory Long Haul cycle - consistent with the public "
+          f"band, with nothing fitted to it (section 3.4 states what that "
+          f"envelope does and does not support). Task 1 ordered "
+          f"{climb_txt()}; a 30-38 band describes a freeway. Reported, not "
+          f"tuned away, and escalated as ESC-WS8-7.")
     w("")
     rows = hl["table"]
     for r in rows:
@@ -161,13 +190,18 @@ def summary():
     w("")
     fr = g("task5_s3_specific/fixed_ratio_grade_hold")
     if not fr["any_ratio_holds_6pct"]:
-        w("S3 fails for a reason that has nothing to do with fuel, and it "
-          "is the most useful result in this report: **no fixed ratio "
-          "exists that lets a diesel axle both cruise at 105 km/h and "
-          "hold the 6% mountain grade at 36,300 kg.** The two "
-          "requirements are not close; they are separated by a factor of "
-          "two in ratio. That is not a tuning problem, and it is the "
-          "answer to the question S3 was posed to ask.")
+        cf = fr["ratio_ceiling_closed_form"]["value"]
+        need = fr["ratio_needed_to_hold_6pct"]
+        w(f"S3 fails for a reason that has nothing to do with fuel, and it "
+          f"is the most useful result in this report: **no fixed ratio "
+          f"exists that lets a diesel axle both cruise at 105 km/h and "
+          f"hold the 6% mountain grade at 36,300 kg.** The two "
+          f"requirements are not close, and in r2 the gap is stated in "
+          f"closed form rather than off a swept grid (finding F12): the "
+          f"cruise ceiling is **{cf:.2f}:1** and the grade needs "
+          f"**{need['ratio']:.2f}:1**, a factor of "
+          f"{need['ratio']/cf:.1f}. That is not a tuning problem, and it "
+          f"is the answer to the question S3 was posed to ask.")
         w("")
     w("---")
     w("")
@@ -324,20 +358,29 @@ def task2():
         w("### 3.4 Cross-check against the public reference band")
         w("")
         w("The corridor this trial runs is not a regulatory cycle - Task 1 "
-          "ordered a 6% mountain and sustained 2-3% sections, about "
-          "3,800 m of climb over 520 km. Comparing its fuel directly "
+          "ordered a 6% mountain and sustained 2-3% sections, "
+          + climb_txt() + ". Comparing its fuel directly "
           "against a freeway-dominated published figure would compare two "
           "different roads. So the cross-check runs S0 over the **same "
           "corridor with the grade zeroed** - same distance, same speeds, "
           "same wind, same driver, same vehicle, nothing else touched - "
           "which isolates terrain and makes the comparison like-for-like.")
         w("")
-        w("| | L/100 km |")
+        w("**This is stated as an ENSEMBLE, not a median** (rule 4, and "
+          "r1 finding F7: r1 rested the whole calibration argument on a "
+          "single median while the envelope for the same quantity was "
+          "already computed, stored, and wider than the public band).")
+        w("")
+        w("| | L/100 km, 8-seed min / median / max |")
         w("|---|---|")
-        w(f"| S0, LH-520 as ordered (median) | "
-          f"{f2(c['linehaul_L_per_100km']['median'])} |")
-        w(f"| **S0, same corridor with grade zeroed (median)** | "
-          f"**{f2(fx['L_per_100km']['median'])}** |")
+        w(f"| S0, LH-520 as ordered | "
+          f"{f2(c['linehaul_L_per_100km']['min'])} / "
+          f"{f2(c['linehaul_L_per_100km']['median'])} / "
+          f"{f2(c['linehaul_L_per_100km']['max'])} |")
+        w(f"| **S0, same corridor with grade zeroed** | "
+          f"**{f2(fx['L_per_100km']['min'])} / "
+          f"{f2(fx['L_per_100km']['median'])} / "
+          f"{f2(fx['L_per_100km']['max'])}** |")
         w(f"| ICCT / TUV NORD, typical EU tractor-trailer, "
           f"regulatory Long Haul | {ref['typical_EU_L_per_100km']} |")
         w(f"| ICCT / TUV NORD, at that cycle's regulatory payload "
@@ -349,8 +392,30 @@ def task2():
         w(f"Source: {ref['source']}. Evidence quality: "
           f"{ref['evidence_quality']}.")
         w("")
-        w("**The model lands on the public band to about one percent, "
-          "with nothing fitted to it.** " + fx["note"])
+        ev = fx["envelope_vs_band"]
+        w("**And it is not mass-matched.** The reference cycle carries "
+          "19.3 t of payload; WS8's S0 carries more, at the assignment's "
+          "fixed 36,300 kg GCW. The three enumerated mass cases say what "
+          "that is worth:")
+        w("")
+        w("| combination | payload | GCW | L/100 km, min / median / max |")
+        w("|---|---|---|---|")
+        for k, mc in fx["mass_cases"].items():
+            me = mc["L_per_100km"]
+            w(f"| {k.replace('_', ' ')} | {kg(mc['payload_kg'])} | "
+              f"{kg(mc['gcw_kg'])} | {f2(me['min'])} / "
+              f"{f2(me['median'])} / {f2(me['max'])} |")
+        w("")
+        w(f"**What the evidence supports.** The grade-zeroed median sits "
+          f"{ev['median_offset_pct_vs_typical']:+.1f}% from the published "
+          f"typical figure - but the 8-seed envelope spans "
+          f"{ev['envelope_width_L_per_100km']:.2f} L/100 km against a "
+          f"public band {ev['band_width_L_per_100km']:.2f} L/100 km wide, "
+          f"so the envelope is "
+          f"{'wider than' if ev['envelope_wider_than_band'] else 'narrower than'} "
+          f"the band it is being compared against. " + ev["what_it_supports"])
+        w("")
+        w(fx["note"])
         w("")
         if not c["in_corridor_all_seeds"]:
             w(f"On the corridor as ordered, S0 exceeds the assignment's "
@@ -404,12 +469,42 @@ def task3():
       "**correction** rather than fuel the model watched it burn: energy "
       "its prime mover and pack could not deliver, charged back as fuel "
       "so that every candidate is compared having completed the same "
-      "mission at the same speeds, plus the make-up for any pack it "
-      "finished flatter than it started. A small share is bookkeeping. A "
-      "large share means the candidate did not really do the mission, and "
-      "the fuel number is flattering it - which is why the raw shortfall "
-      "is reported separately in section 7 rather than left inside a "
-      "single figure.")
+      "mission at the same speeds, plus the charge-sustaining correction. "
+      "A small share is bookkeeping. A large positive share means the "
+      "candidate did not really do the mission, and the fuel number is "
+      "flattering it - which is why the raw shortfall is reported "
+      "separately in section 7 rather than left inside a single figure.")
+    w("")
+    w("**The charge-sustaining correction is SYMMETRIC, and r1 did not "
+      "say so** (finding F4). A pack that ends the mission FLATTER than "
+      "it started is charged the make-up; a pack that ends FULLER earns "
+      "the corresponding **credit**. That is the convention of record - "
+      "SAE J1711 in spirit - applied identically to every candidate with "
+      "a pack, and it is declared here rather than left for a reader to "
+      "discover. It matters:")
+    w("")
+    w("| | correction share, min / median / max | charge-sustaining "
+      "direction over the (cycle, seed) set | margin of record | margin "
+      "with the CREDIT suppressed |")
+    w("|---|---|---|---|---|")
+    for c in CANDS[1:]:
+        cs = g(f"interface_ws8/candidates/{c}/fuel_correction_share")
+        cd = g(f"interface_ws8/candidates/{c}/charge_correction_direction")
+        m = g(f"task3_margins/nominal/{c}/ensemble")
+        mcf = g(f"task3_margins/nominal/{c}/ensemble_deficit_only")
+        n_credit = len(cd["credit_cases"])
+        n_def = len(cd["deficit_cases"])
+        direction = ("**credit** on {}/{} (cycle, seed) cases".format(
+            n_credit, n_credit + n_def) if n_credit else
+            "make-up on {}/{} cases".format(n_def, n_credit + n_def))
+        w(f"| **{c}** | {cs['min']*100:+.1f}% / {cs['median']*100:+.1f}% / "
+          f"{cs['max']*100:+.1f}% | {direction} | "
+          f"{pct(m['min'])} / {pct(m['median'])} | "
+          f"{pct(mcf['min'])} / {pct(mcf['median'])} |")
+    w("")
+    w("Section 4.4 takes that apart one factor at a time, because the "
+      "round-1 adjudication found these corrections were what decided "
+      "the order of the two leading candidates.")
     w("")
     w("Margins are computed **per seed against S0 on the same seed**, then "
       "enveloped. The seed sets the corridor, the wind and the driver, so "
@@ -559,12 +654,62 @@ def two_speed():
           f"{pct(v['margin_vs_S0_pct_two_speed'])} | "
           f"{v['margin_gain_pp']:+.2f} pp |")
     w("")
+    w(f"Margins here are on the **{tb['margin_basis']}**.")
+    w("")
     w(f"**{tb['basis']}.** Fuel per kilometre is held at the "
       f"single-speed value, which makes the bracket conservative: a "
       f"smaller machine at a higher per-unit load is slightly more "
       f"efficient at cruise, not less. It changes no verdict in this "
       f"report - the gains are fractions of a point - but it says where "
       f"the next mass is, and it says the industry already knew.")
+    w("")
+    w("---")
+    w("")
+
+
+def one_factor():
+    of = g("one_factor")
+    if not of:
+        return
+    w("### 4.4 What decides the S1-vs-S2 ordering, one factor at a time")
+    w("")
+    w("r1 put S2 ahead of S1 on the nominal median. The round-1 "
+      "adjudication showed that about half of S2's advantage was the "
+      "charge-sustaining **credit** (F4), and that S2's single engine was "
+      "being run as a locked mechanical drive and a free-speed genset at "
+      "the same time, with nothing capping their sum at the full-load "
+      "curve (F3). Both are corrected in r2, and both move S2 and not S1. "
+      "So the ordering is shown factor by factor rather than only at the "
+      "end.")
+    w("")
+    w(of["rule"])
+    w("")
+    w("| row | S1 min / median / max | S2 min / median / max | ordering |")
+    w("|---|---|---|---|")
+    for label, r in of["rows"].items():
+        cells = []
+        for c in of["candidates"]:
+            v = r[c]
+            cells.append(f"{pct(v['min'])} / **{pct(v['median'])}** / "
+                         f"{pct(v['max'])}")
+        w(f"| `{label}` | " + " | ".join(cells)
+          + f" | {r['ordering_on_median']} |")
+    w("")
+    for label, r in of["rows"].items():
+        w(f"- **`{label}`** - {r['_note']}")
+    w("")
+    if of["ordering_changes"]:
+        w("**The ordering is not robust to these corrections.** It changes "
+          "between the rows above, which is the whole reason this table "
+          "exists: the two leading candidates are separated by less than "
+          "the corrections are worth. Neither candidate advances on the "
+          "pre-committed criteria under any row, so nothing here touches "
+          "a verdict - but a reader who takes 'S2 beat S1' out of this "
+          "report without this table would be taking a bookkeeping "
+          "convention for an architectural result.")
+    else:
+        w("**The ordering is robust to these corrections**: it is the same "
+          "in every row above.")
     w("")
     w("---")
     w("")
@@ -579,6 +724,24 @@ def task5():
       "that at the payload corners GCW moves with payload: the fixed-GCW "
       "condition is a Task-3 condition, not a Task-5 one.")
     w("")
+    pk = g("task3_trial/cold_minus10C/S1/spec/pack") or {}
+    der = g("task3_trial/hot_alt_2000m_45C/S0/spec/corner/"
+            "engine_derate_factor")
+    if pk and der is not None:
+        w(f"**Two things about this table changed in r2.** The **-10 C** "
+      f"corner now applies WS3's cold charge acceptance, which r1 named "
+      f"in the corner label, in the provenance list and in "
+      f"Recommendation 5 but never called: S1's buffer takes "
+      f"{pk.get('p_cont_chg_kW_at_corner', float('nan')):.1f} kW there "
+      f"against {pk.get('p_cont_chg_kW', float('nan')):.1f} kW warm, so "
+      f"descent regen goes to the resistor instead of the pack and every "
+      f"cold margin below is worse than r1's. And **2,000 m / +45 C** is "
+      f"a new corner, added under R28: it is the corner that became worst "
+      f"at Vehicle Zero, and it is the one that exercises WS4's ruled "
+      f"`derate_factor` (={der:.4f} here), which r1 listed as inherited "
+          f"and never called. Both corrections cut AGAINST the "
+          f"candidates.")
+        w("")
     w("| candidate | nominal | " + " | ".join(CORNER_LABEL[c]
                                               for c in CORNERS) + " |")
     w("|---|---|" + "---|" * len(CORNERS))
@@ -611,10 +774,32 @@ def task5():
           f"{r['grade_4pct']['status']} | {r['grade_6pct']['status']} | "
           f"{'yes' if cl['feasible'] else 'no'} |")
     w("")
-    w(f"Highest ratio that does not over-speed the engine at 105 km/h: "
-      f"**{fr['max_ratio_without_overspeed']:.2f}**. Ratios that hold the "
-      f"6% grade: **{fr['feasible_ratios_for_6pct'] or 'none'}**.")
+    cf = fr["ratio_ceiling_closed_form"]
+    need = fr["ratio_needed_to_hold_6pct"]
+    w(f"**The ratio ceiling is a physics bound, not a property of the "
+      f"table above** (r1 finding F12: r1 stated the swept-set figure "
+      f"flatly, and it is 3.60 only because the next ratio in the "
+      f"enumerated list lands five hundredths of an rpm over the "
+      f"ceiling). Solved in closed form from "
+      f"`ratio <= rpm_ceiling * 2*pi * r_dyn / (60 * v_cruise)` at "
+      f"{cf['rpm_ceiling']:.0f} rpm, {cf['r_dyn_m']:.2f} m and "
+      f"{cf['v_cruise_kmh']:.0f} km/h, the ceiling is "
+      f"**{cf['value']:.4f}**. The highest ratio the enumerated sweep "
+      f"contains under it is **{fr['max_ratio_without_overspeed']:.2f}**, "
+      f"and that is an illustration. Ratios in the sweep that hold the 6% "
+      f"grade: **{fr['feasible_ratios_for_6pct'] or 'none'}**.")
     w("")
+    if need.get("ratio"):
+        w(f"**And the gap is closed in closed form too.** The lowest ratio "
+          f"at which axle A holds the 6% grade anywhere above its own "
+          f"lugging floor is **{need['ratio']:.2f}**, which puts the "
+          f"engine at **{need['engine_rpm_at_105kmh']:,.0f} rpm** at "
+          f"105 km/h - {need['over_ceiling_by_rpm']:,.0f} rpm over the "
+          f"{need['rpm_ceiling']:.0f} rpm ceiling. The ratio the grade "
+          f"demands and the ratio the cruise permits differ by a factor "
+          f"of about {need['ratio']/cf['value']:.1f}. No swept grid is "
+          f"doing any work in that conclusion.")
+        w("")
     if not fr["any_ratio_holds_6pct"]:
         ex = next(r for r in fr["sweep"]
                   if abs(r["ratio_A"] - fr["max_ratio_without_overspeed"])
@@ -840,23 +1025,56 @@ def recommendation():
       "efficiency.** Every electrified candidate wins on fuel per "
       "kilometre and gives it back on payload. Any future work that does "
       "not attack the powertrain mass ledger is not attacking the problem.")
-    w("4. **What decides these architectures is the fleet's duty, not "
-      "the architecture.** The corner sweep in section 6.1 spans about "
-      "fourteen points for S1 - from roughly +10% on the grade-heavy "
-      "corridor to about -4% at -10 C - and the sign flips inside that "
-      "span. An operator running loaded over mountains and an operator "
-      "running light in winter are not looking at the same vehicle. If "
-      "Vehicle One is to be specified for a duty rather than for an "
-      "average, that duty needs naming before any of these numbers mean "
-      "much.")
-    w("5. **The cold corner is the one to attack first.** It is binding "
-      "for all four candidates, and its cause is specific and fixable "
-      "rather than fundamental: WS3's cells accept about an eighth of "
-      "their warm charge power at -10 C, so descent regen goes to the "
-      "resistor instead of the pack, while the conventional truck heats "
-      "its cab from engine coolant for free. Pack preconditioning and a "
-      "heat-recovery path for cab heat are the obvious counters, and "
-      "neither is modelled here.")
+    # r1 finding F13's class of defect: this paragraph carried
+    # hand-written "about fourteen points ... roughly +10% ... about
+    # -4%", and r2's cold corner moved all three. Formatted from the
+    # data, and it is the widest span across the corner set for the
+    # named candidate rather than an eyeballed pair.
+    spans = {}
+    for c in CANDS[1:]:
+        vals = {}
+        for corner in ["nominal"] + CORNERS:
+            m = g(f"task3_margins/{corner}/{c}/ensemble/median")
+            if m is not None:
+                vals[corner] = m
+        if vals:
+            hi = max(vals, key=lambda k: vals[k])
+            lo = min(vals, key=lambda k: vals[k])
+            spans[c] = (vals[hi] - vals[lo], hi, vals[hi], lo, vals[lo])
+    if spans:
+        c = max(spans, key=lambda k: spans[k][0])
+        sp, hi, hv, lo, lv = spans[c]
+        w(f"4. **What decides these architectures is the fleet's duty, not "
+          f"the architecture.** The corner sweep in section 6.1 spans "
+          f"**{sp:.0f} percentage points** for {c} alone - from "
+          f"{pct(hv)} at `{hi}` to {pct(lv)} at `{lo}` - and the sign "
+          f"flips inside that span for every candidate. An operator "
+          f"running loaded over mountains and an operator running light "
+          f"in winter are not looking at the same vehicle. R29 has since "
+          f"named the duty (grade-heavy regional) for exactly this "
+          f"reason; these numbers are the evidence it was named on, and "
+          f"r2 widened the span rather than narrowing it, because the "
+          f"cold corner the sweep now models honestly is far harsher "
+          f"than the one r1 reported.")
+    pk = g("task3_trial/cold_minus10C/S1/spec/pack") or {}
+    warm = pk.get("p_cont_chg_kW", float("nan"))
+    cold = pk.get("p_cont_chg_kW_at_corner", float("nan"))
+    fac = pk.get("cold_charge_acceptance_factor_minus10C", float("nan"))
+    w(f"5. **The cold corner is the one to attack first.** It is binding "
+      f"for all four candidates, and its cause is specific and fixable "
+      f"rather than fundamental. In r1 this recommendation described a "
+      f"mechanism the model did not contain (finding F2, blocking): "
+      f"`Pack8.p_cont_chg_kw_at()` and `COLD_CHG_FACTOR` were defined and "
+      f"never called, so every corner ran on the warm nameplate. **In r2 "
+      f"the mechanism is in the model.** S1's buffer accepts "
+      f"**{cold:.1f} kW** at -10 C against **{warm:.1f} kW** warm - a "
+      f"factor of {1.0/fac:.1f} - so descent regen goes to the resistor "
+      f"instead of the pack, and every cold-corner margin in section 6.1 "
+      f"is computed with that collapse applied rather than asserted "
+      f"beside it. The conventional truck still heats its cab from engine "
+      f"coolant for free. Pack preconditioning and a heat-recovery path "
+      f"for cab heat are the obvious counters; neither is modelled here, "
+      f"and R30 now requires both of every WS9 electrified candidate.")
     w("6. **The escalations in section 11 change the answer if ruled the "
       "other way**, ESC-WS8-1 and ESC-WS8-3 especially. They are not "
       "footnotes.")
@@ -953,14 +1171,29 @@ def heat():
     hl = g("heat_ledger")
     w("## 12. Heat ledger for WS6 (rule 7)")
     w("")
+    w("**Rebuilt in r2.** Round 1's blocking finding F1 was three defects "
+      "in one export: the governing case sat OUTSIDE the enumerated case "
+      "set (the ledger priced the 6% descent with the pack accepting its "
+      "full charge power throughout, when the pack fills in about four "
+      "minutes of a ten-minute descent); compression-brake heat was "
+      "booked as resistor heat with the exhaust row explicitly zeroed, so "
+      "S1, S2 and S3 exported the identical figure despite three "
+      "different retarder architectures; and foundation-brake heat had no "
+      "row at all, so the S0 descent case did not close. All three are "
+      "closed here.")
+    w("")
     w(hl["convention"] + ".")
     w("")
-    w("Worst-case rejection by component, an explicit max over the "
-      "enumerated case set with the governing case labelled (R14):")
+    w("Enumerated case set (R14): " + ", ".join(f"`{c}`"
+                                                for c in hl["cases"]) + ".")
     w("")
     comps = ["engine_coolant_kW", "engine_exhaust_kW",
              "traction_machine_inverter_kW", "generator_rectifier_kW",
-             "pack_kW", "brake_resistor_kW", "total_rejected_kW"]
+             "pack_kW", "brake_resistor_kW", "friction_brake_kW",
+             "total_rejected_kW"]
+    w("Worst-case rejection by component [kW], an explicit max over that "
+      "set with the governing case labelled:")
+    w("")
     w("| candidate | " + " | ".join(c.replace("_kW", "").replace("_", " ")
                                     for c in comps) + " |")
     w("|---|" + "---|" * len(comps))
@@ -972,10 +1205,68 @@ def heat():
                          if v else "-")
         w(f"| **{c}** | " + " | ".join(cells) + " |")
     w("")
+    w("**The resistor and the compression brake are now separate rows, "
+      "because they reject to different places.** An air-cooled grid "
+      "resistor is a packaging and airflow problem; an exhaust-side "
+      "compression brake is not. On the pack-saturated 6% descent:")
+    w("")
+    w("| candidate | resistor kW | compression brake kW | foundation "
+      "brakes kW | resistor rating kW |")
+    w("|---|---|---|---|---|")
+    for c in CANDS:
+        row = g(f"heat_ledger/candidates/{c}/cases/"
+                "descent_6pct_pack_saturated")
+        rating = g(f"task3_trial/nominal/{c}/spec/brake_resistor_rating_kW")
+        if not row:
+            continue
+        w(f"| **{c}** | {row['brake_resistor_kW']:.0f} | "
+          f"{row['engine_exhaust_kW']:.0f} | "
+          f"{row['friction_brake_kW']:.0f} | "
+          f"{('%.0f' % rating) if rating else '-'} |")
+    w("")
+    w("**Every case closes and every component stays inside the rating of "
+      "the hardware whose mass was charged**: "
+      f"`all_cases_close_and_within_rating = "
+      f"{hl['all_cases_close_and_within_rating']}`. In r1 S3 exported "
+      "210.71 kW of resistor heat against the 200 kW resistor it had been "
+      "charged 71.8 kg for (`FINDINGS_WS8_r1.md`, F1b); that check now "
+      "exists and runs.")
+    w("")
+    adv = hl.get("advisory_exceedances") or {}
+    if adv:
+        n = sum(len(v) for v in adv.values())
+        w(f"**{n} ADVISORY exceedance{'s' if n != 1 else ''}, and "
+          f"{'they are' if n != 1 else 'it is'} a finding rather than an "
+          f"error.** " + hl["advisory_note"][0].upper()
+          + hl["advisory_note"][1:])
+        w("")
+        w("| candidate | component | declared allowance kW | worst "
+          "sustained kW | governing case |")
+        w("|---|---|---|---|---|")
+        for c, rows in adv.items():
+            for r in rows:
+                w(f"| **{c}** | {r['component']} | {r['rated_kW']:.0f} | "
+                  f"{r['worst_case_kW']:.0f} | {r['governing_case']} |")
+        w("")
+    w("**And every candidate exceeds it, not only S0.** That is the same "
+      "mechanism F1(a) named, seen from the other end: the descent "
+      "governor sets the speed a candidate may descend at from the "
+      "retarding capability of a pack that has not yet filled, so once "
+      "the buffer saturates part-way down the grade the retarding "
+      "channel it was counting on is gone and the foundation brakes make "
+      "up the difference until the truck slows. A pack-saturated "
+      "governor would have every electrified candidate descending "
+      "slower. That is a WS9 requirement rather than a WS8 correction - "
+      "it changes trip time and therefore the metric - and it is flagged "
+      "here rather than changed under an errata order.")
+    w("")
     w("The descent case is the one that matters to WS6: a series "
       "candidate holding the 6% grade puts several hundred kilowatts into "
       "a resistor bank that has to reject it to air, and that is a "
-      "packaging and airflow problem, not an electrical one.")
+      "packaging and airflow problem, not an electrical one. The number "
+      "to size on is the PACK-SATURATED one, not the pack-accepting one, "
+      "because a buffer with a few tens of kWh of headroom does not "
+      "survive a mountain descent.")
     w("")
     w("---")
     w("")
@@ -1011,10 +1302,29 @@ def provenance():
       f"`{ws2['loader']}`")
     w("- **WS2** stack-length scaling rule and `mass_end_kg = 18.0` split, "
       "used verbatim as WS8's machine mass law")
+    pk = g("task3_trial/cold_minus10C/S1/spec/pack") or {}
+    der = g("task3_trial/hot_alt_2000m_45C/S0/spec/corner/"
+            "engine_derate_factor") or float("nan")
+    pk = pk or dict(p_cont_chg_kW_at_corner=float("nan"),
+                    p_cont_chg_kW=float("nan"))
     w("- **WS3** cell definitions, pack overhead model "
-      "(1.55 x cell + 35 kg) and cold charge-acceptance figures")
+      "(1.55 x cell + 35 kg) and cold charge-acceptance figures - the "
+      f"last of these APPLIED in r2 at the -10 C corner "
+      f"({pk.get('p_cont_chg_kW_at_corner', float('nan')):.1f} kW against "
+      f"{pk.get('p_cont_chg_kW', float('nan')):.1f} kW warm), where in r1 "
+      "it was listed here and never called (finding F2)")
     w("- **WS4** `WillansEngine`, `PMGenerator`, `derate_factor` and the "
-      "R12 chain conventions; `WS2TractionChain` as the ruled map loader")
+      "R12 chain conventions; `WS2TractionChain` as the ruled map loader. "
+      f"`derate_factor` is APPLIED in r2 at the added 2,000 m / +45 C "
+      f"corner (R28), where it returns {der:.4f} and shrinks every "
+      "engine's full-load curve and therefore every R18 continuous "
+      "rating; in r1 it was imported, re-exported and never called "
+      "(finding F11)")
+    w("")
+    w("**Every inherited object listed above is now exercised by the "
+      "pipeline.** That is the point of the two corrections just named: "
+      "a provenance list is a claim about what the numbers were built "
+      "from, and an inert entry in it is a false claim.")
     w("")
     w("Conventions carried:")
     w("")
@@ -1059,6 +1369,271 @@ def provenance():
         w("")
 
 
+R1_MARGINS = {
+    # BASELINE_v4 R25, quoted: the r1 numbers of record, nominal
+    # ensemble-min / median and the r1 worst corner (all cold_minus10C).
+    "S1": dict(nom_min=-0.66, nom_med=+0.75, worst=-4.37),
+    "S2": dict(nom_min=+0.36, nom_med=+1.70, worst=-1.90),
+    "S3": dict(nom_min=-6.22, nom_med=-3.83, worst=-11.17),
+    "S4": dict(nom_min=-3.67, nom_med=-0.95, worst=-8.26),
+}
+"""r1's numbers of record, quoted from R25 in BASELINE_v4 so the movement
+table below is against the RATIFIED record rather than against a file
+this round overwrote.
+
+These are the only hand-entered NUMBERS in this report. Every other
+figure is formatted out of `results_ws8.json`. Where the prose quotes a
+round-1 figure - the 210.71 kW resistor export, S3's 71.8 kg resistor -
+it is quoting `FINDINGS_WS8_r1.md`, which is sha-pinned in the interface
+block, and it is labelled as a quotation at the point of use. No result
+in this report depends on any of them."""
+
+
+def changelog():
+    """Section 15 of the report AND, byte-for-byte, the standalone
+    CHANGELOG_WS8_r2.md. One generator, one set of numbers: the
+    changelog cannot drift from the report, and neither can drift from
+    `results_ws8.json` (rule 2)."""
+    start = len(L)
+    w("## 15. r2 changelog - what moved, and which way")
+    w("")
+    iface = g("interface_ws8")
+    vs = g("verdict_stability")
+    w("This round executed `R2_DIRECTIVE.md` against "
+      "`FINDINGS_WS8_r1.md`. The verdicts were **not** reopened: R25 "
+      "executed all four kills and the WHR drop on the pre-committed "
+      "criteria, and the directive's instruction was to make the numbers "
+      "of record correct and to STOP and report if any verdict flipped. "
+      "None did.")
+    w("")
+    w("### 15.1 Which direction each candidate moved")
+    w("")
+    w("Against r1's numbers of record as quoted in R25 (BASELINE_v4):")
+    w("")
+    w("| candidate | nominal min, r1 -> r2 | nominal median, r1 -> r2 | "
+      "worst corner, r1 -> r2 | direction | verdict |")
+    w("|---|---|---|---|---|---|")
+    for c in CANDS[1:]:
+        r1 = R1_MARGINS[c]
+        m = g(f"task3_margins/nominal/{c}/ensemble")
+        ak = g(f"advance_kill/candidates/{c}")
+        d_med = m["median"] - r1["nom_med"]
+        wc = ak["worst_corner_margin_pct_min"]
+        arrow = "WORSE" if d_med < 0 else "BETTER"
+        wtxt = ("no corners run" if wc is None else
+                f"{pct(r1['worst'])} -> {pct(wc)} "
+                f"({wc - r1['worst']:+.2f} pp, now at "
+                f"`{ak['worst_corner']}`)")
+        w(f"| **{c}** | {pct(r1['nom_min'])} -> {pct(m['min'])} | "
+          f"{pct(r1['nom_med'])} -> {pct(m['median'])} "
+          f"({d_med:+.2f} pp) | {wtxt} | **{arrow}** on the nominal "
+          f"median | **{ak['verdict']}** |")
+    w("")
+    w("The worst-corner column is not like-for-like and should not be "
+      "read as one: r1's worst corner was -10 C for every candidate, and "
+      "r2 both made that corner harder (F2, the cold charge acceptance "
+      "that was never applied) and added a corner that did not exist "
+      "(R28's 2,000 m / +45 C). Both changes can only move a worst corner "
+      "down.")
+    w("")
+    hot = {c: g(f"task3_margins/hot_alt_2000m_45C/{c}/ensemble/min")
+           for c in CANDS[1:]}
+    cold = {c: g(f"task3_margins/cold_minus10C/{c}/ensemble/min")
+            for c in CANDS[1:]}
+    if all(v is not None for v in hot.values()):
+        w(f"**The R28 corner did not become the worst one, and that is "
+          f"itself a result.** R28 named 2,000 m / +45 C on the Vehicle "
+          f"Zero precedent that the altitude/hot corner became worst "
+          f"there. At Vehicle One it does not: the thin air at 2,000 m "
+          f"takes about 27% off the aerodynamic bill, which is the "
+          f"dominant term on a line-haul corridor, and that outweighs "
+          f"the {(1 - g('task3_trial/hot_alt_2000m_45C/S0/spec/corner/engine_derate_factor')) * 100:.1f}% "
+          f"engine derate it also imposes.")
+        w("")
+        nom = {c: g(f"task3_margins/nominal/{c}/ensemble/min")
+               for c in CANDS[1:]}
+        better = [c for c in hot if hot[c] > nom[c]]
+        worse = [c for c in hot if hot[c] <= nom[c]]
+        w("| candidate | nominal min | 2,000 m / +45 C min | -10 C min |")
+        w("|---|---|---|---|")
+        for c in hot:
+            w(f"| **{c}** | {pct(nom[c])} | {pct(hot[c])} | "
+              f"{pct(cold[c])} |")
+        w("")
+        w(f"{', '.join(better) or 'No candidate'} gain at the R28 corner "
+          f"relative to nominal"
+          + (f"; {', '.join(worse)} "
+             f"{'lose' if len(worse) != 1 else 'loses'} there, because "
+             f"the derate falls "
+             f"on a mechanical path that has no genset behind it and "
+             f"pushes the shortfall onto the pack" if worse else "")
+          + ". Either way the R28 corner is nowhere near the -10 C "
+            "column. **The cold wall is Vehicle One's binding corner, "
+            "and nothing in this round moved that** - it deepened it. "
+            "R30 already reads it that way.")
+        w("")
+    w("### 15.2 The findings, and what each one did")
+    w("")
+    w("| finding | severity | what r2 did | direction |")
+    w("|---|---|---|---|")
+    for row in [
+        ("F1", "blocking",
+         "heat ledger rebuilt: a pack-saturated descent case and the "
+         "simulated worst run added to the enumerated set, the retard "
+         "channel split so compression-brake heat is booked to the "
+         "exhaust and resistor heat to the resistor, foundation-brake and "
+         "accessory rows added, every case closed against the energy that "
+         "entered it, and every component asserted against the rating of "
+         "the hardware whose mass was charged",
+         "no fuel number moves; the exported sink case rises "
+         "substantially and the attribution changes for S2 and S3"),
+        ("F2", "blocking",
+         "`Pack8.p_cont_chg_kw_at()` / `COLD_CHG_FACTOR` wired into every "
+         "regen envelope, every dispatch charge limit and S3's own SOC "
+         "loop, at the corner's ambient",
+         "AGAINST every electrified candidate, at the cold corner only"),
+        ("F3", "material",
+         "S2's single engine given one crankshaft: traction torque first, "
+         "then accessories, then the generator on what is left, priced at "
+         "the road-imposed speed; accessory duty the crank cannot carry "
+         "moves to the bus",
+         "AGAINST S2"),
+        ("F4", "material",
+         "the symmetric charge-sustaining convention declared, the "
+         "correction share exported signed with min AND max, and the "
+         "credit-free margin reported alongside (section 4.4)",
+         "disclosure only - no number of record moves"),
+        ("F5", "material",
+         "R22(d) charged on one rule for every candidate - geared AND "
+         "unloaded - which removes S3's double count, and the "
+         "coast-permitting bracket reported so the near-zero charge is "
+         "not mistaken for a result",
+         "FOR S3 (it was paying twice); negligible elsewhere"),
+        ("F6", "material",
+         "unserved and stored energy priced at the candidate's own "
+         "duty-averaged fuel-to-bus efficiency over the run being "
+         "corrected, not at the locus maximum (rule 5)",
+         "AGAINST S1, S3 and S4; slightly FOR S2, whose correction is a "
+         "credit"),
+        ("F7", "material",
+         "the S0 grade-zeroed cross-check restated as an 8-seed envelope "
+         "against the public band, with three enumerated combination "
+         "masses and the reference payload stated",
+         "weakens the evidence ESC-WS8-7 rests on; no margin moves"),
+        ("F8", "minor",
+         "S4's headline specification rendered from the rating the model "
+         "built, and class titles and policies added to the verify set",
+         "record precision"),
+        ("F9", "minor",
+         "the road-load sanity note formatted from the computed values "
+         "instead of hand-written prose inside the data file",
+         "record precision"),
+        ("F10", "minor",
+         "the two-speed bracket computed on paired per-seed margins, the "
+         "same statistic as the headline, with the basis stated",
+         "record precision"),
+        ("F11", "minor",
+         "`derate_factor` exercised in an added 2,000 m / +45 C corner "
+         "(R28) rather than removed from the provenance list",
+         "AGAINST every candidate with an engine on the load"),
+        ("F12", "minor",
+         "the ratio ceiling solved in closed form as a physics bound, "
+         "with the swept set kept as the illustration, and the ratio the "
+         "6% grade demands solved too",
+         "record precision; S3's conclusion is unchanged and now rests on "
+         "no grid at all"),
+        ("F13", "minor",
+         "the LH-520 climb figure formatted from the ensemble everywhere "
+         "it appears",
+         "record precision"),
+    ]:
+        w(f"| **{row[0]}** | {row[1]} | {row[2]} | {row[3]} |")
+    w("")
+    w("### 15.3 Verdict stability")
+    w("")
+    w("| candidate | verdict executed under R25 | verdict the same "
+      "criteria give on the r2 numbers | headroom to the >= 3% nominal "
+      "bar |")
+    w("|---|---|---|---|")
+    for c, v in vs["candidates"].items():
+        w(f"| **{c}** | {v['executed_verdict']} | "
+          f"{v['r2_verdict_on_same_criteria']} | "
+          f"{v['headroom_to_advance_pp']:.2f} pp short |")
+    w("")
+    w(f"WHR on the r2 numbers: "
+      + ", ".join(f"{k} {v}" for k, v in vs["whr_on_r2_numbers"].items())
+      + f" - {'unchanged' if vs['whr_unchanged'] else 'CHANGED'}.")
+    w("")
+    _n = vs["note"]
+    w(f"**`all_unchanged = {vs['all_unchanged']}`.** "
+      + _n[0].upper() + _n[1:])
+    w("")
+    w("### 15.4 Environment")
+    w("")
+    meta = g("_meta")
+    w(f"r1's artifacts were produced on Python 3.11.15 / numpy 2.4.6 on "
+      f"x86-64 Linux; r2's are produced on Python {meta['python']} / "
+      f"numpy {meta['numpy']} on arm64 macOS. The two platforms differ in "
+      f"the last one or two units in the last place of a double - a "
+      f"relative difference around 1e-16, from libm and SIMD reduction "
+      f"order, not from any change here. Byte-stable regeneration (rule "
+      f"1) is a property of a run reproducing ITSELF on one machine, and "
+      f"it is checked in section 14 on this one. Nothing in the errata "
+      f"depends on that difference, and no reported figure is quoted to "
+      f"anything like that precision.")
+    w("")
+    w("### 15.5 Inputs, SHA-pinned")
+    w("")
+    w("Every source file and every read-only object inherited from "
+      "another workstream is pinned by sha256 in "
+      "`interface_ws8.inputs_sha256`, so a consumer can tell from the "
+      "export alone whether the numbers it holds came from these exact "
+      "inputs. " + str(len(iface["inputs_sha256"])) + " files are pinned.")
+    w("")
+    w("---")
+    w("")
+    _write_changelog_file(L[start:])
+
+
+def _write_changelog_file(lines):
+    meta = g("_meta")
+    iface = g("interface_ws8")
+    head = [
+        "# CHANGELOG - WS8 round 2 (errata)",
+        "",
+        "**Generated**, not written: every figure below is formatted out "
+        "of `results_ws8.json` by `make_report_ws8.py`, which emits this "
+        "file and section 15 of `REPORT_WS8.md` from the same lines. "
+        "Nothing here is transcribed by hand (rule 2).",
+        "",
+        f"| | |",
+        f"|---|---|",
+        f"| Order executed | `WS8_semi_architecture/R2_DIRECTIVE.md` "
+        f"(lead-issued 2026-08-30, under R26) |",
+        f"| Findings closed | `FINDINGS_WS8_r1.md` F1-F13 |",
+        f"| Baseline of record | {meta['baseline_of_record']} |",
+        f"| Numbers version | {iface['numbers_version']} |",
+        f"| Verdicts | `{iface['verdicts']['status']}` - not reopened by "
+        f"this round |",
+        f"| Seeds | {meta['seeds'][0]}..{meta['seeds'][-1]} "
+        f"({meta['n_seeds']} seeds) |",
+        f"| Python / numpy | {meta['python']} / {meta['numpy']} |",
+        "",
+        "Full context, tables and the interface block: `REPORT_WS8.md`.",
+        "",
+        "---",
+        "",
+    ]
+    body = [ln for ln in lines]
+    if body and body[0].startswith("## 15."):
+        body[0] = "## What moved, and which way"
+    body = [re.sub(r"^### 15\.(\d+) ", r"### \1. ", ln) for ln in body]
+    with open(OUT_CHANGELOG, "w") as f:
+        f.write("\n".join(head + body).rstrip() + "\n")
+    print(f"wrote {OUT_CHANGELOG} "
+          f"({os.path.getsize(OUT_CHANGELOG):,} bytes)")
+
+
 def main():
     header()
     summary()
@@ -1067,6 +1642,7 @@ def main():
     task2()
     task3()
     two_speed()
+    one_factor()
     task4()
     task5()
     unserved()
@@ -1077,6 +1653,7 @@ def main():
     heat()
     interface()
     provenance()
+    changelog()
     with open(OUT, "w") as f:
         f.write("\n".join(L).rstrip() + "\n")
     print(f"wrote {OUT} ({os.path.getsize(OUT):,} bytes)")

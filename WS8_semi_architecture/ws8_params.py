@@ -30,6 +30,15 @@ LHV_KJ_PER_G = 42.8                     # diesel lower heating value
 DIESEL_DENSITY_KG_PER_L = 0.832         # [WS8-PROV] EN590 class, 15 C
 BSFC_FROM_ETA = 3600.0 / LHV_KJ_PER_G   # 84.112 / eta_b -> g/kWh
 
+# --------------------------------------------------------- heat rejection
+ENGINE_HEAT_TO_COOLANT_FRAC = 0.42
+"""Of the heat a heavy-duty diesel rejects (fuel power less brake power),
+the share that leaves through the coolant and charge-air cooler rather
+than the exhaust and surface radiation. [WS8-PROV] class-typical; the
+split matters to WS6 because the two go to different places. Declared
+HERE rather than in run_ws8.py so that the simulated heat peaks and the
+analytic ledger cases cannot use two different splits (rule 7)."""
+
 
 @dataclass(frozen=True)
 class Vehicle:
@@ -47,6 +56,14 @@ class Vehicle:
     # ---- environment ----
     rho_air: float = 1.196        # kg/m^3 [WS8-PROV] 20 C, 101.325 kPa dry
     rho_air_cold: float = 1.341   # kg/m^3 [WS8-PROV] -10 C, same pressure
+    # 2,000 m ISA pressure (79.50 kPa) at +45 C: rho = p/(R_d T) =
+    # 79495 / (287.05 * 318.15). The R28 corner is thin AND hot, so the
+    # air is 27% less dense than at sea level - which HELPS every
+    # candidate identically (fixed GCW, same CdA) while the engine
+    # derate below hurts only the ones with an engine on the load.
+    rho_air_hot_alt: float = 0.871   # kg/m^3 [WS8-PROV] 2,000 m, +45 C
+    alt_m_hot_alt: float = 2000.0    # m [R28] altitude of the R28 corner
+    t_amb_c_hot_alt: float = 45.0    # C [R28] ambient of the R28 corner
 
     # ---- rotating inertia referred to the road ------------------------
     # A geared truck in a low gear carries a large engine-side term; at
@@ -105,6 +122,17 @@ class Aux:
                                        # net of the belt/pump losses deleted
     p_aux_bus_cold_kW: float = 6.6     # -10 C: cab heat + battery thermal
     p_hotel_idle_kW: float = 2.2       # stationary hotel load
+    # +45 C (the R28 corner). Cab cooling is the mirror image of cab
+    # heating and it is NOT free to anybody: there is no waste-heat path
+    # to an air-conditioner, so the conventional truck pays a belt-driven
+    # compressor and the electrified truck pays an electric one. Both are
+    # charged, so this corner cannot be won or lost on the accessory
+    # bookkeeping the way the cold corner legitimately is. [WS8-PROV]
+    # class-typical HD sleeper A/C duty at +45 C: ~3 kW at the crank,
+    # ~2.6 kW at the bus (variable-speed electric compressor, no belt or
+    # clutch loss), on top of the same base accessory duty.
+    p_aux_mech_hot_kW: float = 7.0     # +45 C: base 4.0 + A/C 3.0
+    p_aux_bus_hot_kW: float = 6.0      # +45 C: base 3.4 + A/C 2.6
 
 
 @dataclass(frozen=True)
@@ -275,5 +303,8 @@ def params_dump():
             "LHV_kJ_per_g": LHV_KJ_PER_G,
             "density_kg_per_L": DIESEL_DENSITY_KG_PER_L,
             "bsfc_from_eta": BSFC_FROM_ETA,
+        },
+        "heat": {
+            "engine_heat_to_coolant_frac": ENGINE_HEAT_TO_COOLANT_FRAC,
         },
     }

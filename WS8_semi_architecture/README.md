@@ -1,8 +1,17 @@
 # WS8 - Vehicle One, semi-scale architecture trial
 
-Executes `ASSIGNMENT.md` against `../BASELINE_v3.md`. This folder is
+Executes `ASSIGNMENT.md`, and the errata round ordered by
+`R2_DIRECTIVE.md` (R26), against `../BASELINE_v4.md`. This folder is
 self-contained and deterministic; it reads Vehicle Zero's workstreams
 **read-only** and modifies nothing outside itself (CLAUDE.md rule 10).
+
+**Round 2 (errata).** The verdicts are `executed_kill_2026-08-30` under
+R25 and are **not reopened here**; this round makes the numbers of
+record correct against `FINDINGS_WS8_r1.md` (F1-F13). Read
+`CHANGELOG_WS8_r2.md` first if you are returning to this folder - it
+says which direction every candidate moved and why. The interface block
+carries `numbers_version: r2` and a sha256 pin of every input the
+numbers depend on.
 
 ## Run it
 
@@ -14,7 +23,9 @@ cd WS8_semi_architecture
 ```
 
 `run_ws8.py --quick` runs 2 seeds at the nominal corner only, for
-development. The committed artifacts are from a full run.
+development; `--jobs N` runs candidates in parallel (identical results,
+less wall clock); `--resume` reuses corners already in the checkpoint.
+The committed artifacts are from a full serial-equivalent run.
 
 Dependencies: `requirements.txt` (numpy only). The repository venv at
 `../.venv` has it.
@@ -34,8 +45,11 @@ Dependencies: `requirements.txt` (numpy only). The repository venv at
 | `ws8_whr.py` | waste-heat-recovery systems and the pre-committed gate |
 | `make_report_ws8.py` | renders `REPORT_WS8.md` from `results_ws8.json` |
 | `verify_ws8.py` | asserts every headline number renders a results value verbatim (rule 2) |
+| `R2_DIRECTIVE.md` | the errata order this round executes |
+| `FINDINGS_WS8_r1.md` | the round-1 adjudication this round closes |
+| `CHANGELOG_WS8_r2.md` | generated: what moved in r2 and which way |
 | `results_ws8.json` | the data file of record |
-| `data/*.csv` | per-seed tables, the S3 ratio sweep, the WS6 heat ledger |
+| `data/*.csv` | per-seed tables, the S3 ratio sweep, the WS6 heat ledger and its R14 worst cases, the one-factor rows |
 | `PRIOR_ART_WS8.md` | Task 0 claim map |
 
 ## What is inherited, and from where
@@ -48,10 +62,16 @@ Nothing electrical or thermodynamic is re-invented here.
   `mass_end_kg = 18.0` split, the 7,200 rpm rotor limit, the brake
   resistor's kg-per-kW.
 - **WS3** - cell definitions, the `1.55 x cell + 35 kg` pack overhead
-  model, the chemistry trade, cold charge acceptance.
+  model, the chemistry trade, cold charge acceptance (APPLIED at the
+  -10 C corner in r2; in r1 it was listed here and never called).
 - **WS4** - `WillansEngine`, `PMGenerator`, `derate_factor`,
   `WS2TractionChain` (the ruled map loader), the R12 chain convention,
-  the R18 flat-rating ratio.
+  the R18 flat-rating ratio. `derate_factor` is APPLIED at the added
+  2,000 m / +45 C corner (R28); in r1 it was imported and never called.
+
+Every inherited object in this list is exercised by the pipeline. An
+inert entry in a provenance list is a false claim about what the numbers
+were built from, and closing two of those was half of this round.
 - **WS1** - the road-load formulation and the cycle-construction method,
   mirrored rather than imported (the vehicle is a different one).
 

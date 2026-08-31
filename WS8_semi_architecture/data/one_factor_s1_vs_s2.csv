@@ -1,0 +1,13 @@
+row,candidate,margin_min_pct,margin_median_pct,margin_max_pct,ordering_on_median
+r2_as_reported,S1,-0.691174,0.730917,2.56686,S2 ahead of S1
+r2_as_reported,S2,0.475251,1.79994,3.18167,S2 ahead of S1
+F4_reverted_credit_removed,S1,-0.691174,0.730917,2.56686,S2 ahead of S1
+F4_reverted_credit_removed,S2,0.432623,0.977873,2.38618,S2 ahead of S1
+F6_reverted_peak_point_pricing,S1,-0.660397,0.749159,2.58441,S2 ahead of S1
+F6_reverted_peak_point_pricing,S2,0.525283,1.81335,3.19447,S2 ahead of S1
+F3_reverted_engine_dual_use,S1,-0.691174,0.730917,2.56686,S2 ahead of S1
+F3_reverted_engine_dual_use,S2,0.401179,1.75375,2.77044,S2 ahead of S1
+F5_reverted_spin_rule,S1,-0.691174,0.730917,2.56686,S2 ahead of S1
+F5_reverted_spin_rule,S2,0.420269,1.74774,3.13176,S2 ahead of S1
+F3_and_F5_reverted,S1,-0.691174,0.730917,2.56686,S2 ahead of S1
+F3_and_F5_reverted,S2,0.342293,1.70989,2.74173,S2 ahead of S1

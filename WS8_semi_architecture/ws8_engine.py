@@ -181,6 +181,46 @@ ENGINES = {"ENG-13L": ENG_13L, "ENG-11L": ENG_11L, "ENG-5L": ENG_5L,
            "ENG-7L": ENG_7L}
 
 
+# --------------------------------------------------- ambient/altitude derate
+# WS4's ruled `derate_factor(alt_m, t_amb_c)` - none to 1,000 m then 4% per
+# 1,000 m, none to 30 C then 1% per 5 C, multiplicative - is APPLIED here
+# rather than merely imported. (r1 finding F11: it was imported, re-exported
+# and never called, while the report's provenance list claimed it.)
+#
+# HOW IT IS APPLIED, declared: the derate shrinks the FULL-LOAD TORQUE CURVE
+# by the factor and leaves the Willans calibration (eta_i0, f_N, FMEP)
+# untouched. That is the physically right shape for an air-limited derate:
+# thin, hot air moves the smoke limit down, so the engine can make less
+# torque, and a given torque is then a LARGER fraction of what remains - so
+# load-fraction effects (f_phi) follow automatically. Because
+# `peak_power_kw()` reads the same curve, the R18 flat rating and therefore
+# every genset's continuous rating derate with it, which is the point.
+#
+# NOT modelled, stated rather than hidden: the compression brake is left at
+# its sea-level rating (a retarder is also air-limited, and charging it
+# would make the derated corner harder for S0 and S2/S3, so leaving it is
+# the direction that does NOT flatter the electrified candidates); and no
+# aftertreatment or cooling-capacity limit is applied at +45 C.
+_DERATE_CACHE = {}
+
+
+def derated_engine(engine, alt_m=0.0, t_amb_c=20.0):
+    """`engine` with WS4's ruled ambient/altitude derate applied."""
+    f = float(derate_factor(alt_m, t_amb_c))
+    if f >= 1.0 - 1e-12:
+        return engine
+    key = (engine.name, round(f, 12))
+    if key not in _DERATE_CACHE:
+        _DERATE_CACHE[key] = HDWillansEngine(
+            f"{engine.name}-derate{f:.4f}", engine.disp_m3 * 1e3,
+            engine.rpm_pts, engine.trq_pts * f, engine.eta_i0,
+            fmep_a=engine.fmep_a, idle_rpm=engine.idle_rpm,
+            rated_cont_rpm=engine.rated_cont_rpm, mass_kg=engine.mass_kg,
+            label=(f"{engine.label} - WS4 derate_factor("
+                   f"{alt_m:.0f} m, {t_amb_c:+.0f} C) = {f:.4f}"))
+    return _DERATE_CACHE[key]
+
+
 # ------------------------------------------------------------ idle fuel
 def idle_fuel_gps(engine, rpm=None):
     """Fuel rate at idle [g/s].
@@ -359,5 +399,6 @@ def flat_rated_cont_kw(engine):
 
 __all__ = ["ENG_13L", "ENG_11L", "ENG_5L", "ENG_7L", "ENGINES", "AMT", "idle_fuel_gps",
            "fuel_L_per_100km", "fuel_energy_MJ", "derate_factor",
+           "derated_engine",
            "BSFC_ISLAND_TARGET", "HDWillansEngine", "flat_rated_cont_kw",
            "R18_FLAT_RATING_RATIO"]

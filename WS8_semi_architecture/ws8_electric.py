@@ -334,25 +334,49 @@ class Pack8:
                        "LFP": 0.30364 / 2.0,
                        "LTO": 4.3967 / 4.0}
 
-    def p_cont_chg_kw_at(self, temp_c):
-        """Continuous charge acceptance at temperature [kW, bus-side]."""
+    def cold_chg_factor_at(self, temp_c):
+        """Fraction of warm charge acceptance available at `temp_c` [-]."""
         f_cold = self.COLD_CHG_FACTOR.get(self.cell["chem"], 0.3)
-        f = float(np.interp(temp_c, [-10.0, 15.0], [f_cold, 1.0]))
-        return self.p_cont_chg_kw * min(f, 1.0)
+        return min(float(np.interp(temp_c, [-10.0, 15.0], [f_cold, 1.0])),
+                   1.0)
 
-    def spec(self):
-        return dict(label=self.label, cell=self.cell_name,
-                    chemistry=self.cell["chem"], n_cells=self.n_cells,
-                    nameplate_kWh=self.nameplate_kwh,
-                    usable_kWh=self.usable_kwh,
-                    usable_fraction=self.usable_frac,
-                    cell_mass_kg=self.cell_mass_kg,
-                    pack_mass_kg=self.mass_kg,
-                    pack_Wh_per_kg=self.nameplate_kwh * 1000.0 / self.mass_kg,
-                    p_cont_dis_kW=self.p_cont_dis_kw,
-                    p_cont_chg_kW=self.p_cont_chg_kw,
-                    p_pulse10_dis_kW=self.p_pulse_dis_kw,
-                    p_pulse10_chg_kW=self.p_pulse_chg_kw)
+    def p_cont_chg_kw_at(self, temp_c):
+        """Continuous charge acceptance at temperature [kW, bus-side].
+
+        r2: this is now WIRED IN. In r1 it was defined and never called,
+        so every corner - including -10 C - ran on the warm nameplate
+        (finding F2, blocking). Every regen envelope, every dispatch
+        charge limit and S3's own SOC loop now take their charge ceiling
+        from here, evaluated at the corner's ambient. At >= 15 C it
+        returns the warm value exactly, so the nominal corner is
+        untouched by the fix; at -10 C it returns 0.127 of it for NMC.
+
+        The DISCHARGE limit is deliberately NOT derated: the figures WS3
+        hands over are charge-acceptance figures, and inventing a cold
+        discharge derate WS3 never characterised would be WS8 writing
+        WS3's trade study. Stated rather than assumed away."""
+        return self.p_cont_chg_kw * self.cold_chg_factor_at(temp_c)
+
+    def spec(self, t_amb_c=None):
+        d = dict(label=self.label, cell=self.cell_name,
+                 chemistry=self.cell["chem"], n_cells=self.n_cells,
+                 nameplate_kWh=self.nameplate_kwh,
+                 usable_kWh=self.usable_kwh,
+                 usable_fraction=self.usable_frac,
+                 cell_mass_kg=self.cell_mass_kg,
+                 pack_mass_kg=self.mass_kg,
+                 pack_Wh_per_kg=self.nameplate_kwh * 1000.0 / self.mass_kg,
+                 p_cont_dis_kW=self.p_cont_dis_kw,
+                 p_cont_chg_kW=self.p_cont_chg_kw,
+                 p_cont_chg_kW_at_minus10C=self.p_cont_chg_kw_at(-10.0),
+                 cold_charge_acceptance_factor_minus10C=(
+                     self.cold_chg_factor_at(-10.0)),
+                 p_pulse10_dis_kW=self.p_pulse_dis_kw,
+                 p_pulse10_chg_kW=self.p_pulse_chg_kw)
+        if t_amb_c is not None:
+            d["t_amb_C"] = float(t_amb_c)
+            d["p_cont_chg_kW_at_corner"] = self.p_cont_chg_kw_at(t_amb_c)
+        return d
 
 
 # =====================================================================

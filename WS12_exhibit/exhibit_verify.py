@@ -283,7 +283,129 @@ def check_file_facts(manifest):
 
 
 # ==================================================================== 5
-def check_derived(manifest):
+def check_srclines(manifest):
+    """A constant declared in a Python source line is a fact on disk. This
+    verifier re-opens the file, re-reads the line, re-parses the
+    declaration and re-formats it, exactly as it does for a JSON field."""
+    for m in manifest["entries"]:
+        if m["kind"] != "srcline":
+            continue
+        p = os.path.join(ROOT, m["file"])
+        if not os.path.exists(p):
+            fail("4 FILE FACTS", "%s: %s missing" % (m["key"], m["file"]))
+            continue
+        with open(p, encoding="utf-8") as fh:
+            lines = fh.read().splitlines()
+        if m["line"] > len(lines):
+            fail("4 FILE FACTS", "%s: %s has no line %d"
+                 % (m["key"], m["file"], m["line"]))
+            continue
+        raw = lines[m["line"] - 1]
+        if " ".join(raw.split()) != m["declaration"]:
+            fail("4 FILE FACTS", "%s: %s:%d reads %r, manifest says %r"
+                 % (m["key"], m["file"], m["line"], " ".join(raw.split()),
+                    m["declaration"]))
+            continue
+        name, _, tail = raw.partition("=")
+        if name.strip() != m["name"]:
+            fail("4 FILE FACTS", "%s: %s:%d declares %r, not %r"
+                 % (m["key"], m["file"], m["line"], name.strip(), m["name"]))
+            continue
+        try:
+            value = float(tail.split("#")[0].strip())
+        except ValueError:
+            fail("4 FILE FACTS", "%s: cannot parse %r" % (m["key"], tail))
+            continue
+        if value != m["v"]:
+            fail("4 FILE FACTS", "%s: source says %r, manifest says %r"
+                 % (m["key"], value, m["v"]))
+            continue
+        got = shape(value, m["fmt"], m.get("pre", ""), m.get("suf", ""))
+        if got != m["s"]:
+            fail("4 FILE FACTS", "%s: formats to %r, screen shows %r"
+                 % (m["key"], got, m["s"]))
+            continue
+        tick("4 FILE FACTS")
+
+
+# The derived values the exhibit's argument rests on. Each is recomputed
+# here from the record, independently of the builder (adjudication r1/m1).
+def _rederive(bundle):
+    out = {}
+    ws4 = doc("WS4_genset/results_ws4.json")
+
+    # --- the G1 waterfall's interaction term
+    att = ws4["interface_ws4"]["gate_g1"]["attribution_rows"]
+    out["$.screens.verdict.cards[0].waterfall[3].value"] = (
+        att["both_g1r"]["delta_pp_min"]
+        - att["map_vs_scalar_alone"]["delta_pp_min"]
+        - att["spin_drag_alone"]["delta_pp_min"])
+
+    # --- the KX chain: the blocking number and its exceedance
+    probe = ws4["series_duty_v2"]["r6_rating_family_probe"]["cases"][
+        "r6_rating_corner_full"]["per_seed"]
+    reject = max(v["engine_reject_2min_max_kW"] for v in probe.values())
+    share = ws4["heat_ledger_ws6"][
+        "series_duty_v2_nominal_cycle_average"]["radiator_package_share"]
+    design = ws4["heat_ledger_ws6"][
+        "series_duty_v2_transient_vs_R20_design_point"][
+            "r20_design_point_radiator_package_kW"]
+    r6 = reject * share
+    out["$.screens.rounds.kx.r6Radiator"] = r6
+    out["$.screens.rounds.kx.exceedance"] = 100.0 * (r6 - design) / design
+
+    # --- the sandbox's "about half the grade force"
+    ws9 = doc("WS9_vehicle_one_wave2/results_ws9.json")
+    cf = ws9["two_walls"]["single_ratio_closed_form"]["ENG-11L"]
+    fr = ws9["two_walls"]["two_speed_solve"]["ENG-13L"]["solve"][
+        "force_required"]
+    out["$.screens.sandbox.s3.forceFraction"] = (
+        100.0 * cf["F_available_at_ceiling_kN"] * 1000.0 / fr["total_N"])
+
+    # --- the race screen's record gap, per dataset
+    ws11 = doc("WS11_vehicle_zero_ruler/results_ws11.json")
+    for i, p in enumerate(bundle["screens"]["race"]["pairs"]):
+        base = ws11["results"][
+            {"V1": "V1_on_VOLT-SUB", "V2": "V2_on_VOLT-REG"}[p["vehicle"]]
+        ][p["case"]]
+        seed = p["seed"]
+        out["$.screens.race.pairs[%d].record.gapPp" % i] = (
+            base["margin_pct_per_km_paired"]["per_seed"][seed]
+            - base["margin_pct_per_payload_tkm_paired"]["per_seed"][seed])
+
+    # --- the first-pass detection counts
+    adj = bundle["screens"]["rounds"]["adjudications"]
+    firsts = [a for a in adj if a["firstPass"]]
+    out["$.screens.rounds.defectRate.firstPassRounds"] = float(len(firsts))
+    out["$.screens.rounds.defectRate.firstPassWithDefects"] = float(len(
+        [a for a in firsts
+         if a["blocking"]["v"] + a["material"]["v"] > 0]))
+    return out
+
+
+def check_derived(manifest, bundle):
+    want = _rederive(bundle)
+    by_key = {m["key"]: m for m in manifest["entries"]}
+    for key, value in sorted(want.items()):
+        m = by_key.get(key)
+        if m is None:
+            fail("5 DERIVED", "%s is re-derivable but not in the manifest"
+                 % key)
+            continue
+        if abs(float(m["v"]) - value) > 1e-9:
+            fail("5 DERIVED", "%s: re-derived %r, the screen shows %r"
+                 % (key, value, m["v"]))
+            continue
+        # `d` formats an int; a re-derivation that lands on a whole number
+        # is re-cast the way the builder's own value is typed.
+        recast = int(round(value)) if m["fmt"].endswith("d") else value
+        got = shape(recast, m["fmt"], m.get("pre", ""), m.get("suf", ""))
+        if got != m["s"]:
+            fail("5 DERIVED", "%s: re-derives to %r, the screen shows %r"
+                 % (key, got, m["s"]))
+            continue
+        tick("5 DERIVED")
+
     for m in manifest["entries"]:
         if m["kind"] != "derived":
             continue
@@ -301,20 +423,37 @@ def check_derived(manifest):
 # ==================================================================== 6
 def check_badges(bundle, manifest):
     for b in manifest.get("badges", []):
-        if b["badge"] not in BADGE_ALLOWED:
-            fail("6 BADGES", "%s renders badge %r, which is not one of "
-                 "BASELINE_v7_FREEZE's labels" % (b["key"], b["badge"]))
-            continue
+        if b.get("isStatus"):
+            if b["badge"] not in BADGE_ALLOWED:
+                fail("6 BADGES", "%s renders badge %r, which is not one of "
+                     "BASELINE_v7_FREEZE's labels" % (b["key"], b["badge"]))
+                continue
+        else:
+            # A non-status badge string (the decimation sentence, the tier
+            # legend). It may not be a status word at all.
+            up = b["badge"].upper()
+            if any(t in up for t in BADGE_FORBIDDEN):
+                fail("6 BADGES", "%s carries a status token in a non-status "
+                     "badge: %r" % (b["key"], b["badge"]))
+                continue
         tick("6 BADGES")
-    # And nothing anywhere in the bundle may put a bare RATIFIED or
-    # PROVISIONAL in a badge position.
+    # Nothing anywhere in the bundle may put a bare RATIFIED or PROVISIONAL
+    # in a badge position. The walk keys on the SUFFIX, not on a list of
+    # literal names, so a badge slot cannot escape it by being called
+    # something new (adjudication r1/M2).
     hits = []
+    seen = []
+
+    def is_badge_key(k):
+        return k in ("modeBadge", "tag", "badge") or k.endswith("Badge")
 
     def walk(node, path):
+        if path == "$.interface_ws12":
+            return
         if isinstance(node, dict):
             for k, v in node.items():
-                if k in ("statusBadge", "badge", "modeBadge", "tag") \
-                        and isinstance(v, str):
+                if is_badge_key(k) and isinstance(v, str):
+                    seen.append(path + "." + k)
                     up = v.upper()
                     for tok in BADGE_FORBIDDEN:
                         if tok in up and v not in BADGE_ALLOWED:
@@ -327,7 +466,36 @@ def check_badges(bundle, manifest):
     walk(bundle, "$")
     for path, v in hits:
         fail("6 BADGES", "promoted status %r at %s" % (v, path))
+
+    # Every badge-keyed string the walk finds must also be enumerated in
+    # the manifest's badge list. This is the leg that caught nothing when
+    # the harvest keyed on one literal name.
+    listed = {b["key"] for b in manifest.get("badges", [])}
+    for k in seen:
+        if k not in listed:
+            fail("6 BADGES", "%s is a badge position and is not enumerated "
+                             "in the manifest" % k)
     if not hits:
+        tick("6 BADGES")
+
+    # And no bare status token may sit in a JSX <Label>, where a walk of
+    # the DATA could never see it (adjudication r1/m8).
+    if os.path.isdir(SRC):
+        label_re = re.compile(r"<Label>([^<{]{1,160})</Label>")
+        for base, _, names in os.walk(SRC):
+            for n in sorted(names):
+                if not n.endswith((".ts", ".tsx")):
+                    continue
+                with open(os.path.join(base, n), encoding="utf-8") as fh:
+                    src = fh.read()
+                for hit in label_re.finditer(src):
+                    body = hit.group(1)
+                    for tok in BADGE_FORBIDDEN:
+                        for word in re.findall(r"[A-Za-z-]+", body):
+                            if word.upper() == tok:
+                                fail("6 BADGES",
+                                     "%s renders a bare %s in a Label: %r"
+                                     % (n, tok, body.strip()))
         tick("6 BADGES")
 
 
@@ -407,6 +575,14 @@ def check_app_source(manifest):
                     fail("7 APP SOURCE",
                          "the built bundle assets/%s contains the rendered "
                          "string %r" % (n, s))
+    # The built-bundle scan is the leg that covers what a visitor actually
+    # downloads. A missing build made it a silent no-op that still passed
+    # (adjudication r1/m3); it is now a failure.
+    if n_bundles == 0:
+        fail("7 APP SOURCE",
+             "app/dist/assets holds no .js - the built-bundle scan cannot "
+             "run. Build the app (run_ws12.py builds it by default) before "
+             "verifying.")
     tick("7 APP SOURCE", len(files) + n_bundles)
 
 
@@ -541,6 +717,31 @@ def check_decimation_badge(bundle, dec):
         return
     tick("10 DECIMATION BADGE")
 
+    # The directive names this string as verbatim. Checking it three ways
+    # in the DATA and never in the RENDERING let an up-casing survive
+    # (adjudication r1/m2). The app must render the string as-is; any
+    # visual up-casing belongs in CSS.
+    for name in ("screens/RaceMode.tsx", "screens/Simulator.tsx"):
+        p = os.path.join(SRC, name)
+        if not os.path.exists(p):
+            fail("10 DECIMATION BADGE", "%s missing" % name)
+            continue
+        with open(p, encoding="utf-8") as fh:
+            src = fh.read()
+        bad = re.search(r"(?:decimationBadge|\bbadge)\s*\.toUpperCase\(\)",
+                        src)
+        if bad:
+            fail("10 DECIMATION BADGE",
+                 "%s up-cases the badge in JS (%r); render it verbatim and "
+                 "use text-transform" % (name, bad.group(0)))
+            continue
+        if "textTransform: 'uppercase'" not in src:
+            fail("10 DECIMATION BADGE",
+                 "%s neither up-cases nor declares text-transform; the "
+                 "rendered form is unproven" % name)
+            continue
+        tick("10 DECIMATION BADGE")
+
 
 # =================================================================== 12
 WORDS = {"no": 0, "none": 0, "zero": 0, "one": 1, "two": 2, "three": 3,
@@ -654,7 +855,8 @@ def main():
     check_citations(manifest)
     check_quotes(manifest, bundle)
     check_file_facts(manifest)
-    check_derived(manifest)
+    check_srclines(manifest)
+    check_derived(manifest, bundle)
     check_badges(bundle, manifest)
     check_app_source(manifest)
     check_decimation(dec, bundle)

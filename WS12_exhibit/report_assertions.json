@@ -53,7 +53,7 @@
     "entries_total"
    ],
    "pre": "",
-   "s": "488",
+   "s": "512",
    "suf": ""
   },
   {
@@ -65,7 +65,7 @@
     "cite"
    ],
    "pre": "",
-   "s": "239",
+   "s": "249",
    "suf": ""
   },
   {
@@ -77,7 +77,7 @@
     "quote"
    ],
    "pre": "",
-   "s": "46",
+   "s": "47",
    "suf": ""
   },
   {
@@ -90,6 +90,18 @@
    ],
    "pre": "",
    "s": "53",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "manifest",
+    "by_kind",
+    "srcline"
+   ],
+   "pre": "",
+   "s": "10",
    "suf": ""
   },
   {
@@ -113,7 +125,7 @@
     "derived"
    ],
    "pre": "",
-   "s": "149",
+   "s": "152",
    "suf": ""
   },
   {
@@ -143,10 +155,21 @@
    "path": [
     "interface_ws12",
     "badges",
-    "positions_total"
+    "status_positions_total"
    ],
    "pre": "",
    "s": "19",
+   "suf": ""
+  },
+  {
+   "fmt": "d",
+   "path": [
+    "interface_ws12",
+    "badges",
+    "positions_total"
+   ],
+   "pre": "",
+   "s": "24",
    "suf": ""
   },
   {
@@ -333,7 +356,7 @@
     "cite"
    ],
    "pre": "",
-   "s": "239",
+   "s": "249",
    "suf": ""
   },
   {
@@ -520,5 +543,5 @@
    "suf": ""
   }
  ],
- "n": 43
+ "n": 45
 }

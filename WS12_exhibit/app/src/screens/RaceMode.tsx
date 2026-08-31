@@ -16,9 +16,9 @@ import { loadScrub } from '../trace'
 import type { Loaded } from '../trace'
 import type { Cited, TraceEntry } from '../types'
 
-// LHV 42.8 kJ/g — WS4_genset/ws4_models.py:26, the program constant.
-const LHV = 42.8
-
+// The lower heating value is not a literal here: it arrives in the data
+// bundle as a source-line citation (WS4_genset/ws4_models.py:26) that the
+// verifier re-parses. See `p.derived.lhv`.
 interface Run {
   km: Float64Array
   kwh: Float64Array
@@ -28,7 +28,7 @@ interface Run {
   v: Float64Array
 }
 
-function integrate(d: Loaded, dt: number): Run {
+function integrate(d: Loaded, dt: number, lhv: number): Run {
   const v = d.col('v_kmh')
   const f = d.col('fuel_g_per_s')
   const km = new Float64Array(d.n)
@@ -39,7 +39,7 @@ function integrate(d: Loaded, dt: number): Run {
     m += (v[i] / 3.6) * dt
     g += f[i] * dt
     km[i] = m / 1000
-    kwh[i] = (g * LHV) / 3600
+    kwh[i] = (g * lhv) / 3600
   }
   return {
     km,
@@ -112,9 +112,10 @@ function DecimationBadge({ path, badge }: { path: string; badge: string }) {
           font: '500 9.5px/1.4 ' + F.mono,
           letterSpacing: '.14em',
           color: C.mechanical,
+          textTransform: 'uppercase',
         }}
       >
-        {badge.toUpperCase()}
+        {badge}
       </span>
       <span style={{ font: '400 9.5px/1.4 ' + F.mono, color: C.faint }}>
         {path}
@@ -207,14 +208,15 @@ function Pair({ p, traces, badge }: { p: any; traces: any; badge: string }) {
         if (!live) return
         // The scrub tier is 1 Hz: its own step is stride x the 10 Hz step.
         const dt = tc.stride * 0.1
-        setCand(integrate(a, dt))
-        setRuler(integrate(b, dt))
+        const lhv = Number(p.derived.lhv.v)
+        setCand(integrate(a, dt, lhv))
+        setRuler(integrate(b, dt, lhv))
       })
       .catch((e) => live && setErr(String(e)))
     return () => {
       live = false
     }
-  }, [p.id, tc, tr])
+  }, [p.id, tc, tr, p.derived.lhv.v])
 
   useEffect(() => {
     if (!playing) return
@@ -358,7 +360,10 @@ function Pair({ p, traces, badge }: { p: any; traces: any; badge: string }) {
 
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-          <Label>THE ROUTE, FROM v_kmh AND grade_pct</Label>
+          <span style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <Label>THE ROUTE, FROM v_kmh AND grade_pct</Label>
+            <TierBadge tier="DERIVED" />
+          </span>
           <span style={{ font: '300 9.5px/1.4 ' + F.sans, color: C.faint }}>
             {'z_m is absent from this file, so no elevation profile is drawn'}
           </span>
@@ -723,7 +728,7 @@ function SemiPanel({ s }: { s: any }) {
             </span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
-            <Label>WHY THESE STAY PROVISIONAL</Label>
+            <Label>WHY THE STATUS DOES NOT MOVE</Label>
             <Quote c={s.statusQuote} />
             <Quote c={s.openFindings} />
           </div>
@@ -769,8 +774,29 @@ export default function RaceMode({ d, bundle }: { d: any; bundle: any }) {
               <Num c={d.headline.perPayload} size={30} color={C.heat} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <Label>THE FREIGHT IT HANDED BACK TO GET THERE</Label>
+              <Label>
+                {'THE FREIGHT IT HANDED BACK TO GET THERE — ' +
+                  d.headline.freightStatistic.label}
+              </Label>
               <Num c={d.headline.freightGiven} size={30} color={C.mechanical} />
+              <span style={{ font: '400 9.5px/1.45 ' + F.mono, color: C.faint }}>
+                {'governing case: ' +
+                  d.headline.freightStatistic.governingCase.s}
+              </span>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                {d.headline.freightStatistic.enumeratedSet.map((e: any) => (
+                  <span
+                    key={e.k}
+                    style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}
+                  >
+                    <Label>{e.k}</Label>
+                    <Num c={e.v} size={11} />
+                  </span>
+                ))}
+              </div>
+              <span style={{ font: '300 10px/1.5 ' + F.sans, color: C.faint }}>
+                {d.headline.freightStatistic.note}
+              </span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <Body style={{ fontSize: '12.5px' }}>{d.headline.text}</Body>

@@ -149,6 +149,51 @@ def lit(value, spec, pre="", suf="", tier=TIER_DERIVED, note=None,
     return out
 
 
+_SRC_CACHE = {}
+
+
+def source_lines(rel):
+    if rel not in _SRC_CACHE:
+        with open(repo_path(rel), "r", encoding="utf-8") as fh:
+            _SRC_CACHE[rel] = fh.read().splitlines()
+    return _SRC_CACHE[rel]
+
+
+def const_from_source(file_rel, lineno, name, spec, pre="", suf="",
+                      note=None):
+    """A program constant declared in a Python source line rather than in a
+    results file — `LHV_KJ_PER_G = 42.8` and `DENSITY_G_PER_L = 832.0`.
+
+    The value is PARSED out of the declaration at build time, never typed
+    here, and `exhibit_verify.py` re-opens the file, re-reads the same
+    line, re-parses it and re-formats it. A source line is as much a fact
+    on disk as a JSON field; it just needs its own resolver.
+    """
+    line = source_lines(file_rel)[lineno - 1]
+    head, _, tail = line.partition("=")
+    if head.strip() != name:
+        raise ValueError("%s:%d declares %r, not %r"
+                         % (file_rel, lineno, head.strip(), name))
+    rhs = tail.split("#")[0].strip()
+    value = float(rhs)
+    out = {
+        "v": value,
+        "s": fmt_value(value, spec, pre, suf),
+        "file": file_rel,
+        "line": lineno,
+        "name": name,
+        "declaration": " ".join(line.split()),
+        "fmt": spec,
+        "pre": pre,
+        "suf": suf,
+        "kind": "srcline",
+        "tier": TIER_RECORD,
+    }
+    if note:
+        out["note"] = note
+    return out
+
+
 def check_badge(text):
     """Raise if `text` is a promoted status in a badge position."""
     if text in ALLOWED_STATUS_BADGES:

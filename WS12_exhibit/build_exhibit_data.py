@@ -27,8 +27,8 @@ import sys
 
 from ws12_record import (ALLOWED_STATUS_BADGES, TIER_DERIVED,
                          TIER_RECORD, TIER_SANDBOX, check_badge, cite,
-                         load_json, lit, repo_path, resolve, sha256_of,
-                         status_badge)
+                         const_from_source, load_json, lit, repo_path,
+                         resolve, sha256_of, status_badge)
 import ws12_sandbox as SB
 import ws12_traces as TR
 
@@ -442,7 +442,35 @@ def card_ws11_pair():
                          "V1 Postal vs stock NPR: FROZEN-PROVISIONAL "
                          "ADVANCE, +20.11% nominal\nensemble-min per payload "
                          "tonne-km, worst corner +19.12%, robust to\nall "
-                         "ruler-modelling brackets"),
+                         "ruler-modelling brackets; conditional on "
+                         "R43(a)-(d) (cab heat,\nwarm-up model, corner "
+                         "convention, CdA bracket), which were ordered\nand "
+                         "not run."),
+        "conditionality": {
+            "headline": "The +20.11% is conditional, and v7 says on what.",
+            "rulings": "R43(a) cab heat · R43(b) warm-up model · "
+                       "R43(c) corner convention · R43(d) CdA bracket",
+            "state": "ordered and not run",
+            "priced": ("WS11 prices two of them together: with the cab-heat "
+                       "member and the CdA 5.4 bracket both applied, V1's "
+                       "governing corner falls from its ordered gate value "
+                       "to the figure beside it."),
+            "orderedGateValue": cite(WS11, ["interface_ws11",
+                                            "cold_corner_pending_items",
+                                            "V1_on_VOLT-SUB",
+                                            "ordered_gate_value_pct"],
+                                     "+.2f", suf="%"),
+            "bothPendingItems": cite(WS11, ["interface_ws11",
+                                            "cold_corner_pending_items",
+                                            "V1_on_VOLT-SUB",
+                                            "with_cab_heat_and_CdA_5p4_pct"],
+                                     "+.2f", suf="%"),
+            "conditionedOn": cite(WS11, ["interface_ws11",
+                                         "cold_corner_pending_items",
+                                         "V1_on_VOLT-SUB",
+                                         "conditioned_on_rulings", 0],
+                                  "str"),
+        },
         "killQuote": q(BASELINE,
                        "V2 Trucker: FROZEN-KILL, -7.93% headline, a draw at "
                        "the\nruler's pessimistic end, never reaching the "
@@ -720,8 +748,13 @@ def build_race_screen(trace_index):
             "derived": {
                 "_basis": ("rectangle-rule integration of the trace's own "
                            "fuel_g_per_s and v_kmh columns at the file's own "
-                           "0.1 s step, LHV 42.8 kJ/g "
-                           "(WS4_genset/ws4_models.py:26)"),
+                           "0.1 s step"),
+                "lhv": const_from_source("WS4_genset/ws4_models.py", 26,
+                                         "LHV_KJ_PER_G", ".1f",
+                                         suf=" kJ/g"),
+                "density": const_from_source(
+                    "WS11_vehicle_zero_ruler/ws11_params.py", 37,
+                    "DENSITY_G_PER_L", ".0f", suf=" g/L"),
                 "rulerKm": lit(di_r["km"], ".3f", suf=" km",
                                source=p["rulerTrace"] + " -> v_kmh"),
                 "candKm": lit(di_c["km"], ".3f", suf=" km",
@@ -813,7 +846,44 @@ def build_race_screen(trace_index):
             "freightGiven": cite(WS11, ["one_factor", "rows",
                                         "V2_on_VOLT-REG",
                                         "mass_payload_denominator",
-                                        "cost_pp"], ".2f", suf=" pp"),
+                                        "cost_pp_paired_min"], ".2f",
+                                 suf=" pp"),
+            "freightStatistic": {
+                "label": "ENSEMBLE-MIN, PAIRED PER SEED",
+                "governingCase": cite(WS11, ["one_factor", "rows",
+                                             "V2_on_VOLT-REG",
+                                             "mass_payload_denominator",
+                                             "cost_pp_paired_min_"
+                                             "governing_case"], "str"),
+                "statistic": cite(WS11, ["one_factor", "rows",
+                                         "V2_on_VOLT-REG",
+                                         "mass_payload_denominator",
+                                         "statistic"], "str"),
+                "enumeratedSet": [
+                    {"k": "MIN", "v": cite(WS11, ["one_factor", "rows",
+                                                  "V2_on_VOLT-REG",
+                                                  "mass_payload_denominator",
+                                                  "cost_pp_paired_min"],
+                                           ".2f", suf=" pp")},
+                    {"k": "MEDIAN", "v": cite(WS11, ["one_factor", "rows",
+                                                     "V2_on_VOLT-REG",
+                                                     "mass_payload_"
+                                                     "denominator",
+                                                     "cost_pp_paired_median"],
+                                              ".2f", suf=" pp")},
+                    {"k": "MAX", "v": cite(WS11, ["one_factor", "rows",
+                                                  "V2_on_VOLT-REG",
+                                                  "mass_payload_denominator",
+                                                  "cost_pp_paired_max"],
+                                           ".2f", suf=" pp")},
+                ],
+                "note": ("R14 puts the governing case inline. This is a "
+                         "COST, and the member shown is its ensemble "
+                         "minimum - the least freight given back over the "
+                         "eight seeds. The other two members of the "
+                         "enumerated set are printed beside it so the "
+                         "reader can see which one is on the headline."),
+            },
             "text": ("V2 wins on the road and loses on the invoice. It is "
                      "the same fuel, the same kilometres and the same "
                      "second-by-second record — only the denominator "
@@ -1438,7 +1508,21 @@ def build_sim_screen(trace_index, registry):
                  "the R15 blend cascade from the four braking channels, the "
                  "engine dot on the map it was actually run against. Nothing "
                  "here is simulated in the browser."),
-        "statusBadge": status_badge("NOT CUT"),
+        "disposition": {
+            "_why_no_badge": (
+                "WS5 carries no status badge on this screen. "
+                "BASELINE_v7_FREEZE R54 defines the NOT CUT set "
+                "exhaustively - WS6, WS7, WS10, Vehicle Zero wave two and "
+                "Vehicle One wave three - and WS5 is not in it. v7's line "
+                "for WS5 points at a packet instead. Rather than apply a v7 "
+                "label to a workstream v7 does not apply it to, this panel "
+                "renders WS5's disposition in WS5's own words, from WS5's "
+                "own results file, as text rather than as a status badge."),
+            "text": cite(WS5, ["_meta", "adjudication"], "str"),
+            "shortForm": "GATED BUT UNADJUDICATED",
+            "shortFormSource": ("the same string this exhibit's "
+                                "per-workstream table already uses for WS5"),
+        },
         "statusNote": {
             "headline": "WS5 was never adjudicated.",
             "quote": cite(WS5, ["_meta", "adjudication"], "str"),
@@ -1503,6 +1587,21 @@ def build_sim_screen(trace_index, registry):
             "pinnedBsfc": cite(WS5, i5 + ["dispatch_v2_r22b", "pinned_point",
                                           "bsfc"], ".2f", suf=" g/kWh"),
             "architecture": cite(WS5, i5 + ["_architecture"], "str"),
+        },
+        "counterConstants": {
+            "_why": ("The simulator's fuel counters divide by a fuel density "
+                     "and multiply by a lower heating value. Both are "
+                     "program constants declared in Python source rather "
+                     "than in a results file, so they are resolved by line "
+                     "and re-parsed by the verifier rather than typed into "
+                     "the app (adjudication r1/M4)."),
+            "lhv": const_from_source("WS4_genset/ws4_models.py", 26,
+                                     "LHV_KJ_PER_G", ".1f", suf=" kJ/g",
+                                     note="diesel lower heating value"),
+            "density": const_from_source(
+                "WS11_vehicle_zero_ruler/ws11_params.py", 37,
+                "DENSITY_G_PER_L", ".0f", suf=" g/L",
+                note="diesel EN590 at 15 C (WS4 convention)"),
         },
         "busLoadNote": ("TRACE_SCHEMA describes P_bus_load_kW as "
                         "'accessories + heater'. In these two files it is "
@@ -1571,6 +1670,29 @@ def build_sandbox_screen():
                              ".1f", suf=" km/h"),
         "eta_driveline": cite(WS1, ["params", "driveline", "eta_direct"],
                               ".3f"),
+        # adjudication r1/m6: three constants that drive the interpolation
+        # and were absent from the citation map. Two are max() reductions
+        # over exported arrays and are DERIVED with the array named; the
+        # third is a WS12 declaration keyed to WS1's own cross-check row and
+        # says so rather than posing as a citation.
+        "T_peak_Nm": lit(ends["zero"]["T_peak_Nm"], ",.0f", suf=" Nm",
+                         tier=TIER_DERIVED,
+                         source="max() over %s -> params -> engine -> "
+                                "trq_pts" % WS1),
+        "rpm_ceiling": lit(ends["zero"]["rpm_ceiling"], ",.0f", suf=" rpm",
+                           tier=TIER_DERIVED,
+                           source="max() over %s -> params -> engine -> "
+                                  "rpm_pts" % WS1),
+        "v_climb_kmh": lit(ends["zero"]["v_climb_kmh"], ".0f", suf=" km/h",
+                           tier=TIER_DERIVED,
+                           source=("WS12-DECLARED (ws12_sandbox.py, "
+                                   "VEHICLE_ZERO['v_climb_kmh']): the speed "
+                                   "WS1's own 6% grade cross-check is "
+                                   "stated at, " + WS1 + " -> sensitivity "
+                                   "-> climb_10km_6pc -> per_speed -> "
+                                   "'60kmh'. It is a key name in the "
+                                   "record, not a value, so it is declared "
+                                   "rather than cited.")),
     }
     one_cites = {
         "m_kg": cite(WS8, ["params", "vehicle", "m_gcw"], ",.0f", suf=" kg"),
@@ -1627,6 +1749,29 @@ def build_sandbox_screen():
             "zero": endpoint_block("zero", zero_cites),
             "one": endpoint_block("one", one_cites),
         },
+        "endpointFlags": [
+            {"field": "CdA_m2",
+             "endpoint": "zero",
+             "flag": "DECLARED PROVISIONAL IN THE RECORD",
+             "quote": q("WS11_vehicle_zero_ruler/REPORT_WS11.md",
+                        "CdA 4.2 m^2 is a WS1 fitted value, declared "
+                        "PROVISIONAL in BASELINE_v1 pending the WS7 "
+                        "coastdown, and the program already carries CdA 5.4 "
+                        "as a sizing case (E13)."),
+             "bracket": cite(WS8, ["params", "vehicle", "CdA"], ".2f",
+                             suf=" m²",
+                             note="Vehicle One's CdA, for scale; Vehicle "
+                                  "Zero's CdA 5.4 bracket is WS11's, not "
+                                  "WS8's"),
+             "note": ("The sandbox interpolates from an input the record "
+                      "itself marks provisional and flatters the "
+                      "candidates. The screen says so rather than "
+                      "inheriting it silently. It changes no verdict: this "
+                      "screen carries none."),
+             "why_minor": ("the screen is badged SANDBOX throughout and its "
+                           "disclaimer forbids quoting anything on it as a "
+                           "verdict")},
+        ],
         "airDensity": {
             "label": "AIR DENSITY",
             "members": [
@@ -2108,7 +2253,8 @@ def build_interface(bundle, manifest, decimation, maps, registry, sources):
     badges = collect_badges(bundle)
     badge_counts = {}
     for b in badges:
-        badge_counts[b["badge"]] = badge_counts.get(b["badge"], 0) + 1
+        if b["isStatus"]:
+            badge_counts[b["badge"]] = badge_counts.get(b["badge"], 0) + 1
     conforming = [r for r in registry if r["validation"]["conforms"]]
     refused = [r for r in registry
                if r["validation"]["schemaClass"] == "R34"
@@ -2140,8 +2286,17 @@ def build_interface(bundle, manifest, decimation, maps, registry, sources):
             "by_tier": tiers,
         },
         "badges": {
+            "_rule": ("every key in the bundle named `badge` or ending "
+                      "`Badge` is a badge render site and is enumerated "
+                      "here. Status positions carry one of v7's five "
+                      "labels; the non-status ones are the decimation "
+                      "badge, which is a sentence and not a status."),
             "positions_total": len(badges),
+            "status_positions_total": sum(1 for b in badges
+                                          if b["isStatus"]),
             "by_label": badge_counts,
+            "non_status_badge_keys": sorted(b["key"] for b in badges
+                                            if not b["isStatus"]),
         },
         "traces": {
             "published_n": len(decimation),
@@ -2211,6 +2366,16 @@ def collect_manifest(bundle):
                 elif node.get("kind") == "fileref":
                     row["kind"] = "fileref"
                     row["file"] = node["file"]
+                elif node.get("kind") == "srcline":
+                    row["kind"] = "srcline"
+                    row["file"] = node["file"]
+                    row["line"] = node["line"]
+                    row["name"] = node["name"]
+                    row["declaration"] = node["declaration"]
+                    row["fmt"] = node["fmt"]
+                    row["pre"] = node["pre"]
+                    row["suf"] = node["suf"]
+                    row["v"] = node["v"]
                 elif "file" in node and "path" in node:
                     row["kind"] = "cite"
                     row["file"] = node["file"]
@@ -2223,6 +2388,9 @@ def collect_manifest(bundle):
                     row["kind"] = "derived"
                     row["derivedFrom"] = node.get("derivedFrom", "")
                     row["v"] = node.get("v")
+                    row["fmt"] = node.get("fmt", "str")
+                    row["pre"] = node.get("pre", "")
+                    row["suf"] = node.get("suf", "")
                 out.append(row)
                 return
             for k in sorted(node):
@@ -2235,15 +2403,36 @@ def collect_manifest(bundle):
     return out
 
 
+def is_badge_key(k):
+    """Every key that names a badge render site.
+
+    Harvesting only the key spelled `statusBadge` let a second badge slot —
+    `numbersBadge`, rendered by the same component in the same panel head —
+    escape both the manifest and the promoted-status check (adjudication
+    r1/M2). The rule is now the key SUFFIX, so a new badge slot cannot be
+    added without being enumerated.
+    """
+    return k in ("badge", "modeBadge", "tag") or k.endswith("Badge")
+
+
 def collect_badges(bundle):
     found = []
 
     def walk(node, path):
+        # `interface_ws12` is a SUMMARY of the render sites, not one of
+        # them; harvesting it would count the description of a badge as a
+        # badge and make the block self-referential.
+        if path == "$.interface_ws12":
+            return
         if isinstance(node, dict):
             for k in sorted(node):
                 v = node[k]
-                if k == "statusBadge" and isinstance(v, str):
-                    found.append({"key": path + "." + k, "badge": v})
+                if is_badge_key(k) and isinstance(v, str):
+                    found.append({
+                        "key": path + "." + k,
+                        "badge": v,
+                        "isStatus": v in ALLOWED_STATUS_BADGES,
+                    })
                 walk(v, path + "." + str(k))
         elif isinstance(node, list):
             for i, v in enumerate(node):
@@ -2417,6 +2606,7 @@ def main():
             "quote": sum(1 for m in manifest if m["kind"] == "quote"),
             "file": sum(1 for m in manifest if m["kind"] == "file"),
             "fileref": sum(1 for m in manifest if m["kind"] == "fileref"),
+            "srcline": sum(1 for m in manifest if m["kind"] == "srcline"),
             "derived": sum(1 for m in manifest if m["kind"] == "derived"),
         },
         "badges": badges,

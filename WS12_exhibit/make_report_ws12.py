@@ -246,7 +246,9 @@ are enumerated in a build-time manifest;
 resolved from a results file, {N(I + ("manifest", "by_kind", "quote"))} are
 verbatim quotations lifted from documents of record,
 {N(I + ("manifest", "by_kind", "file"))} are file identities pinned by
-sha256, {N(I + ("manifest", "by_kind", "fileref"))} is a reference to a
+sha256, {N(I + ("manifest", "by_kind", "srcline"))} are program constants
+resolved by file and line out of Python source and re-parsed by the
+verifier, {N(I + ("manifest", "by_kind", "fileref"))} is a reference to a
 living log that is deliberately not hash-pinned, and
 {N(I + ("manifest", "by_kind", "derived"))} are derived values that name
 what they were computed from and claim no key path.
@@ -263,10 +265,71 @@ with itself. Result: **{"" if not SUMMARY else SUMMARY["result"]}**.
 "{N(I + ("guard_rails", "method_claim_never"), "str")}"; no hardware was
 built and the ruler is uncalibrated, and the exhibit says so on the
 front door, in the rail, and on the Method screen. No status is promoted:
-{N(I + ("badges", "positions_total"))} badge positions render only the five
-labels `BASELINE_v7_FREEZE.md` uses, the build refuses to emit any other,
-and the verifier fails on a bare `RATIFIED` or `PROVISIONAL` anywhere in a
-badge position.
+{N(I + ("badges", "status_positions_total"))} status badge positions render
+only the labels `BASELINE_v7_FREEZE.md` uses, out of
+{N(I + ("badges", "positions_total"))} badge-keyed strings in the bundle;
+the build refuses to emit any other, and the verifier fails on a bare
+`RATIFIED` or `PROVISIONAL` in a badge position **or in a section label**.
+Badge render sites are harvested by key SUFFIX, so a new badge slot cannot
+be added without being enumerated.
+
+---
+
+## 0. Round-1 changelog — the citation-check adjudication, folded
+
+`FINDINGS_WS12_r1.md`: **NOT CLEAN — 0 blocking, 4 material, 8 minor.** No
+finding moved a number, a verdict or a status; all 239 citations, 46
+quotations, 53 file identities and 10 published traces were certified clean
+under the adjudicator's own resolver. The defects were labelling,
+enumeration, truncation and self-description. **All twelve are folded
+below.** This was the one fold CLOSEOUT §4 permits; nothing here entered a
+bounce cycle.
+
+| # | finding | what changed | where |
+|---|---|---|---|
+| **M1** | the simulator wore a `NOT CUT` badge; R54's NOT CUT set is exhaustive and WS5 is not in it, and the cited record on the same panel says CUT | the status badge is **removed from that panel**. WS5's disposition now renders as text in WS5's own words, cited to `results_ws5.json → _meta → adjudication`, with a dashed non-badge chip carrying `GATED BUT UNADJUDICATED` — the same string the per-workstream table already used — and the reason no v7 label is applied stated on the panel | `screens.sim.disposition`, `Simulator.tsx` |
+| **M2** | a twentieth badge position (`numbersBadge`) escaped both the manifest and check 6, so an exported interface count was wrong about the app | badge render sites are harvested by key **suffix** in the builder AND in check 6, which are now written to the same rule; check 6 additionally asserts every badge-keyed string it finds is enumerated in the manifest, so the blind spot cannot reopen. `interface_ws12.badges` now separates `status_positions_total` from `positions_total` and lists the non-status keys | `collect_badges()`, `exhibit_verify.py` check 6 |
+| **M3** | the front door quoted v7's V1 sentence up to the semicolon, dropping the R43(a)-(d) conditionality from the card carrying +20.11% | the quote is **extended to the end of v7's sentence**, and a conditionality block beside it names all four rulings, states they were ordered and not run, and prices the two WS11 itself prices: V1's governing corner falls from its ordered gate value to the value with cab heat and CdA 5.4 applied together | `verdict.cards[3].statusQuote`, `.conditionality` |
+| **M4** | a class of rendered numbers carried neither a tier badge nor verifier coverage, against a report claim of "every renderable value" | DERIVED tier badges on the simulator's power-flow and fuel-counter panels and on race mode's route strip; `42.8` and `832` removed from the app source and bound as **source-line citations** (`WS4_genset/ws4_models.py:26`, `WS11_vehicle_zero_ruler/ws11_params.py:37`) that the verifier re-opens, re-reads, re-parses and re-formats; and the claim narrowed from "every renderable value" to "every value of record" in both the report and the Method screen | `sim.counterConstants`, `race.pairs[*].derived.lhv/density`, `Method.tsx` |
+| m1 | check 5 was a presence check; 149 derived entries carried no numeric re-check, including the KX blocking figure | check 5 now **recomputes** the load-bearing derived values from the record with its own code: the KX chain (8-seed max engine rejection × the declared radiator share, and its exceedance against R20's design point), the G1 waterfall's interaction term, the four race datasets' record gap, the sandbox force fraction, and the first-pass detection counts | `_rederive()` in `exhibit_verify.py` |
+| m2 | the decimation badge was up-cased in JS, so the rendered string was not the verbatim string the directive names | both screens render `{{badge}}` and up-case with `text-transform: uppercase`; check 10 now asserts the rendered form — no `.toUpperCase()` on the badge, and a declared `textTransform` — in both files | `RaceMode.tsx`, `Simulator.tsx`, check 10 |
+| m3 | check 7's built-bundle scan was a silent no-op on a clean checkout and still passed | check 7 **fails** when `app/dist/assets` holds no `.js`, and `run_ws12.py` builds the app by default (`--no-app` to skip, which then correctly fails) | check 7, `run_ws12.py` |
+| m4 | the Method screen listed 11 of 13 checks | all 13 are listed, and each line is rewritten to describe what the strengthened check now does | `Method.tsx` |
+| m5 | `16.19 pp` is the ensemble-MIN of a cost and the screen did not say so | the headline binds to `cost_pp_paired_min` rather than the alias `cost_pp`, the label carries `ENSEMBLE-MIN, PAIRED PER SEED`, the governing case is printed inline per R14, and the enumerated set's min / median / max are shown beside it. **The convention question the adjudicator left to the lead is untouched** | `race.headline.freightStatistic` |
+| m6 | three sandbox constants drove the interpolation and were absent from the citation map; CdA 4.2 was inherited without its provisional flag | `T_peak_Nm` and `rpm_ceiling` are added as DERIVED with their `max()` reductions and the exported arrays named; `v_climb_kmh` is added and **declared** rather than cited, because its only trace in the record is a JSON key name; and `CdA_m2` now carries a `DECLARED PROVISIONAL IN THE RECORD` flag with REPORT_WS11's own sentence quoted beside it | `sandbox.endpoints.zero.citations`, `.endpointFlags` |
+| m7 | the draft in `design/` carries a `RATIFIED RECORD` badge, a v4 header and a synthetic generator into a repository about to be made public | `design/README.md` added, marking the draft superseded, synthetic and kept as visual provenance only | `design/README.md` |
+| m8 | a bare `PROVISIONAL` reached the built bundle in a section Label, where check 6 could not see it | the label is reworded to `WHY THE STATUS DOES NOT MOVE`, and check 6 now **scans JSX `<Label>` text** for bare status tokens — closing the shape of the exposure, not just the instance | `RaceMode.tsx`, check 6 |
+
+**One thing the fold changed that no finding asked for, stated so it is not
+a surprise:** dropping M1's badge removes the exhibit's only `NOT CUT`, so
+`badges.by_label` no longer carries that key. That is correct — the label
+belongs to R54's open-frontier set, and this exhibit has no screen for it.
+
+**What the fold did not close, stated rather than implied.** Two residuals
+survive, both by construction and both now consistent with what the report
+and the Method screen claim:
+
+- **M4's residual class.** Values the app formats at run time from raw
+  bundle fields — the trace registry's blend residuals, the elevation
+  span, the twelve power-flow kW labels, the source index's KiB sizes,
+  race mode's peak speed and grade — are outside the manifest because the
+  manifest enumerates Cited-shaped objects, and a run-time `.toFixed()` on
+  a raw field produces no such object. The panels that carry them are now
+  badged DERIVED and the claim is narrowed to "every value of record", so
+  nothing on screen over-claims. Extending the manifest to cover them
+  would mean binding every run-time format call at build time, which is a
+  design change rather than a copy or binding fix, and is therefore
+  recorded here rather than attempted under a one-fold rule.
+- **m1's residual coverage.** Check 5 now recomputes the load-bearing
+  derived values; it does not recompute all of them. The uncovered
+  remainder is dominated by the race screen's build-time trace integrals,
+  which check 9 already proves byte-for-byte against their source files
+  and which the adjudicator re-derived independently and confirmed to the
+  last printed digit. The verifier's summary line now reports assertions,
+  not coverage, and §7 states what each check proves.
+
+Both are for `LIMITATIONS.md` via WS13 if the lead wants them carried
+further. Neither moves a number, a status or a verdict.
 
 ---
 
@@ -284,7 +347,7 @@ discipline were kept. Everything synthetic was replaced by the record.**
 |---|---|
 | palette, typography, panel grid, hairlines, tabular numerals | ported verbatim into `app/src/theme.ts` and used everywhere |
 | the narrative rail | six screens, re-ordered by the lead's ruling so the verdict wall is first |
-| the three-tier badge discipline (RECORD / DERIVED / SANDBOX) | now enforced mechanically: every renderable value carries a tier, and the verifier checks that a DERIVED value never claims a key path |
+| the three-tier badge discipline (RECORD / DERIVED / SANDBOX) | now enforced mechanically for every **value of record**: each carries a tier, the verifier recomputes the load-bearing derived ones, and checks that a DERIVED value never claims a key path. Values the app formats at run time from raw bundle fields sit outside the manifest by construction; the panels that carry them are badged DERIVED |
 | the provenance strip | now READ from the record per screen — baseline label and file identity come from the emitted bundle, not from a literal |
 | the G1 waterfall | same shape, same five bars; every bar is now a citation |
 | the sandbox ratio window | same interaction, all constants re-derived (see §5) |

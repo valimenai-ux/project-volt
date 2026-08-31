@@ -1,6 +1,6 @@
 """WS12 — the single entry point.
 
-    ../.venv/bin/python3 run_ws12.py [--with-app]
+    ../.venv/bin/python3 run_ws12.py [--no-app]
 
 Runs the pipeline in the order the artifacts depend on each other:
 
@@ -18,9 +18,11 @@ Step 5 exists because the report prints the verifier's own counts, so the
 last two passes must agree byte for byte. If they do not, this script
 says so and fails.
 
-`--with-app` additionally runs `npm ci`/`npm run build` in `app/` before
-the final verify, so that check 7's built-bundle scan has something to
-read.
+The app is built **by default**: check 7's built-bundle scan is the leg
+that covers the artifact a visitor actually downloads, and it now FAILS
+rather than silently passing when `app/dist/assets` holds no `.js`
+(adjudication r1/m3). `--no-app` skips the build, in which case the verify
+correctly fails — that is the point.
 """
 
 import hashlib
@@ -47,7 +49,7 @@ def digest(path):
 
 
 def main():
-    with_app = "--with-app" in sys.argv
+    with_app = "--no-app" not in sys.argv
 
     print("\n[1/6] build_exhibit_data.py")
     if run("build_exhibit_data.py"):

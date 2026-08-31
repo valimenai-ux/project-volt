@@ -504,7 +504,46 @@ function CardWS11({ c }: { c: any }) {
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <Body>{c.body}</Body>
+          <Quote c={c.statusQuote} />
           <Quote c={c.killQuote} />
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            border: '1px solid ' + C.mechanicalLine,
+            background: C.mechanicalBg,
+            padding: '13px 15px',
+          }}
+        >
+          <Label>{c.conditionality.headline}</Label>
+          <span style={{ font: '400 11px/1.6 ' + F.mono, color: C.text3 }}>
+            {c.conditionality.rulings}
+          </span>
+          <span
+            style={{
+              font: '500 11px/1.4 ' + F.mono,
+              letterSpacing: '.1em',
+              color: C.mechanical,
+            }}
+          >
+            {c.conditionality.state}
+          </span>
+          <Body style={{ fontSize: '12px' }}>{c.conditionality.priced}</Body>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <Field
+              k="V1 GOVERNING CORNER, ORDERED GATE"
+              v={c.conditionality.orderedGateValue}
+            />
+            <Field
+              k="WITH CAB HEAT AND CdA 5.4 TOGETHER"
+              v={c.conditionality.bothPendingItems}
+            />
+          </div>
+          <span style={{ font: '300 10.5px/1.5 ' + F.sans, color: C.faint }}>
+            {c.conditionality.conditionedOn.s}
+          </span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <Label>ESC-1 — THE RULER WAS NEVER CALIBRATED</Label>

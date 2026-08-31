@@ -7,7 +7,6 @@ import {
   Panel,
   PanelHead,
   Quote,
-  StatusBadge,
   TierBadge,
 } from '../ui'
 import { loadScrub, loadSegment, validateLoaded } from '../trace'
@@ -650,12 +649,14 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
 
   const engOn = g('engine_state') >= 2 || g('P_shaft_eng_kW') > 0.5
   const kmNow = g('x_m') / 1000
-  const litres = g('fuel_cum_g') / 832
+  const lhvKJ = Number(d.counterConstants.lhv.v)
+  const densGL = Number(d.counterConstants.density.v)
+  const litres = g('fuel_cum_g') / densGL
   const l100 = kmNow > 0.05 ? (litres / kmNow) * 100 : 0
   const payloadKg = Number(t.meta.payload_kg ?? 0)
   const mjPtkm =
     kmNow > 0.05 && payloadKg > 0
-      ? ((g('fuel_cum_g') * 42.8) / 1000) / (kmNow * (payloadKg / 1000))
+      ? ((g('fuel_cum_g') * lhvKJ) / 1000) / (kmNow * (payloadKg / 1000))
       : 0
 
   const P = {
@@ -708,7 +709,22 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
         <PanelHead
           kicker="SELECT A TRACE"
           title={meta.label}
-          right={<StatusBadge s={d.statusBadge} />}
+          right={
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '5px 11px',
+                border: '1px dashed ' + C.lineHard,
+                font: '500 9.5px/1 ' + F.mono,
+                letterSpacing: '.16em',
+                color: C.muted,
+              }}
+              title={d.disposition._why_no_badge}
+            >
+              {d.disposition.shortForm}
+            </span>
+          }
         />
         <div
           style={{
@@ -819,9 +835,10 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
                 font: '500 10px/1.4 ' + F.mono,
                 letterSpacing: '.14em',
                 color: C.mechanical,
+                textTransform: 'uppercase',
               }}
             >
-              {bundle.decimationBadge.toUpperCase()}
+              {bundle.decimationBadge}
             </span>
             <span style={{ font: '400 10px/1.4 ' + F.mono, color: C.faint }}>
               {t.sourcePath}
@@ -865,7 +882,10 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <Label>POWER FLOW — WIDTH IS THE SQUARE ROOT OF KILOWATTS, ONE SCALE</Label>
+              <span style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <Label>POWER FLOW — WIDTH IS THE SQUARE ROOT OF KILOWATTS, ONE SCALE</Label>
+                <TierBadge tier="DERIVED" />
+              </span>
               <PowerFlow flows={flows} scale={1} />
               <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
                 {[
@@ -968,7 +988,10 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
               </span>
             </div>
             <div>
-              <Label>CUMULATIVE FUEL, fuel_cum_g</Label>
+              <span style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <Label>CUMULATIVE FUEL, fuel_cum_g</Label>
+                <TierBadge tier="DERIVED" />
+              </span>
               <Profile x={x} y={fuelAll} pos={pos} color={C.mechanical} height={80} />
               <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                 {[
@@ -1020,6 +1043,20 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
               {d.payloadNote.headline}
             </span>
             <Body style={{ fontSize: '12px' }}>{d.payloadNote.body}</Body>
+            <div style={{ display: 'flex', gap: '18px', flexWrap: 'wrap' }}>
+              {[
+                ['LOWER HEATING VALUE', d.counterConstants.lhv],
+                ['FUEL DENSITY', d.counterConstants.density],
+              ].map(([k, v]) => (
+                <div
+                  key={k as string}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+                >
+                  <Label>{k as string}</Label>
+                  <Num c={v as Cited} size={12} />
+                </div>
+              ))}
+            </div>
             <div style={{ display: 'flex', gap: '18px', flexWrap: 'wrap' }}>
               {[
                 ["WS11 LEDGER, RULER", d.payloadNote.ledgerRuler],
@@ -1088,6 +1125,9 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
         />
         <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <Num c={d.statusNote.quote as Cited} size={12} />
+          <Body style={{ fontSize: '12px', color: C.faint }}>
+            {d.disposition._why_no_badge}
+          </Body>
           <Quote c={d.statusNote.baselineQuote} />
           <Body style={{ fontSize: '12.5px' }}>{d.statusNote.packetGap}</Body>
           <div

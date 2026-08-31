@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { C, F } from '../theme'
-import { Body, Label, Num, Panel, PanelHead } from '../ui'
+import { Body, Label, Num, Panel, PanelHead, Quote } from '../ui'
 import {
   crossingMass,
   ratioCeiling,
@@ -522,20 +522,56 @@ export default function Sandbox({ d }: { d: any }) {
                     gap: '12px',
                   }}
                 >
-                  {Object.keys(e.citations).map((k) => (
-                    <div
-                      key={k}
-                      style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-                    >
-                      <Label>{k}</Label>
-                      <Num c={e.citations[k]} size={12} />
-                    </div>
-                  ))}
+                  {Object.keys(e.citations).map((k) => {
+                    const flag = d.endpointFlags.find(
+                      (f: any) => f.endpoint === which && f.field === k,
+                    )
+                    return (
+                      <div
+                        key={k}
+                        style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+                      >
+                        <Label>{k}</Label>
+                        <Num c={e.citations[k]} size={12} />
+                        {flag ? (
+                          <span
+                            style={{
+                              font: '500 8px/1.3 ' + F.mono,
+                              letterSpacing: '.12em',
+                              color: C.mechanical,
+                            }}
+                          >
+                            {flag.flag}
+                          </span>
+                        ) : null}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )
           })}
         </div>
+        {d.endpointFlags.map((f: any) => (
+          <div
+            key={f.field + f.endpoint}
+            style={{
+              padding: '14px 20px',
+              borderTop: '1px solid ' + C.line,
+              background: C.mechanicalBg,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '9px',
+            }}
+          >
+            <Label>{f.field + ' — ' + f.flag}</Label>
+            <Quote c={f.quote} />
+            <Body style={{ fontSize: '12px' }}>{f.note}</Body>
+            <span style={{ font: '300 11px/1.55 ' + F.sans, color: C.faint }}>
+              {'Why this is recorded and not a defect: ' + f.why_minor + '.'}
+            </span>
+          </div>
+        ))}
         <div
           style={{
             padding: '16px 20px',

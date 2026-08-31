@@ -8,14 +8,16 @@ Workstream WS12 · bound to `../BASELINE_v7_FREEZE.md` · entry point
 TypeScript, static, no server), Vite `base` set to `/project-volt/`,
 deployable to GitHub Pages at a repo subpath. 6 screens, front door
 `verdict`. Every number of record on every screen resolves to a file and an
-explicit key path, and clicking it opens that provenance. 488 renderable
-strings are enumerated in a build-time manifest; 239 of them are numbers of
-record resolved from a results file, 46 are verbatim quotations lifted from
-documents of record, 53 are file identities pinned by sha256, 1 is a
-reference to a living log that is deliberately not hash-pinned, and 149 are
-derived values that name what they were computed from and claim no key path.
+explicit key path, and clicking it opens that provenance. 512 renderable
+strings are enumerated in a build-time manifest; 249 of them are numbers of
+record resolved from a results file, 47 are verbatim quotations lifted from
+documents of record, 53 are file identities pinned by sha256, 10 are program
+constants resolved by file and line out of Python source and re-parsed by
+the verifier, 1 is a reference to a living log that is deliberately not
+hash-pinned, and 152 are derived values that name what they were computed
+from and claim no key path.
 
-**Verification.** `exhibit_verify.py` runs 13 checks and 1119 assertions
+**Verification.** `exhibit_verify.py` runs 13 checks and 1187 assertions
 with its own resolver, its own formatter and its own findings-file parser,
 written separately from the builder's so that a shared bug cannot agree with
 itself. Result: **PASS**.
@@ -23,10 +25,70 @@ itself. Result: **PASS**.
 **The two guard rails hold.** The method claim is "catches internal
 inconsistency" and never "catches wrong physics"; no hardware was built and
 the ruler is uncalibrated, and the exhibit says so on the front door, in the
-rail, and on the Method screen. No status is promoted: 19 badge positions
-render only the five labels `BASELINE_v7_FREEZE.md` uses, the build refuses
-to emit any other, and the verifier fails on a bare `RATIFIED` or
-`PROVISIONAL` anywhere in a badge position.
+rail, and on the Method screen. No status is promoted: 19 status badge
+positions render only the labels `BASELINE_v7_FREEZE.md` uses, out of 24
+badge-keyed strings in the bundle; the build refuses to emit any other, and
+the verifier fails on a bare `RATIFIED` or `PROVISIONAL` in a badge position
+**or in a section label**. Badge render sites are harvested by key SUFFIX,
+so a new badge slot cannot be added without being enumerated.
+
+---
+
+## 0. Round-1 changelog — the citation-check adjudication, folded
+
+`FINDINGS_WS12_r1.md`: **NOT CLEAN — 0 blocking, 4 material, 8 minor.** No
+finding moved a number, a verdict or a status; all 239 citations, 46
+quotations, 53 file identities and 10 published traces were certified clean
+under the adjudicator's own resolver. The defects were labelling,
+enumeration, truncation and self-description. **All twelve are folded
+below.** This was the one fold CLOSEOUT §4 permits; nothing here entered a
+bounce cycle.
+
+| # | finding | what changed | where |
+|---|---|---|---|
+| **M1** | the simulator wore a `NOT CUT` badge; R54's NOT CUT set is exhaustive and WS5 is not in it, and the cited record on the same panel says CUT | the status badge is **removed from that panel**. WS5's disposition now renders as text in WS5's own words, cited to `results_ws5.json → _meta → adjudication`, with a dashed non-badge chip carrying `GATED BUT UNADJUDICATED` — the same string the per-workstream table already used — and the reason no v7 label is applied stated on the panel | `screens.sim.disposition`, `Simulator.tsx` |
+| **M2** | a twentieth badge position (`numbersBadge`) escaped both the manifest and check 6, so an exported interface count was wrong about the app | badge render sites are harvested by key **suffix** in the builder AND in check 6, which are now written to the same rule; check 6 additionally asserts every badge-keyed string it finds is enumerated in the manifest, so the blind spot cannot reopen. `interface_ws12.badges` now separates `status_positions_total` from `positions_total` and lists the non-status keys | `collect_badges()`, `exhibit_verify.py` check 6 |
+| **M3** | the front door quoted v7's V1 sentence up to the semicolon, dropping the R43(a)-(d) conditionality from the card carrying +20.11% | the quote is **extended to the end of v7's sentence**, and a conditionality block beside it names all four rulings, states they were ordered and not run, and prices the two WS11 itself prices: V1's governing corner falls from its ordered gate value to the value with cab heat and CdA 5.4 applied together | `verdict.cards[3].statusQuote`, `.conditionality` |
+| **M4** | a class of rendered numbers carried neither a tier badge nor verifier coverage, against a report claim of "every renderable value" | DERIVED tier badges on the simulator's power-flow and fuel-counter panels and on race mode's route strip; `42.8` and `832` removed from the app source and bound as **source-line citations** (`WS4_genset/ws4_models.py:26`, `WS11_vehicle_zero_ruler/ws11_params.py:37`) that the verifier re-opens, re-reads, re-parses and re-formats; and the claim narrowed from "every renderable value" to "every value of record" in both the report and the Method screen | `sim.counterConstants`, `race.pairs[*].derived.lhv/density`, `Method.tsx` |
+| m1 | check 5 was a presence check; 149 derived entries carried no numeric re-check, including the KX blocking figure | check 5 now **recomputes** the load-bearing derived values from the record with its own code: the KX chain (8-seed max engine rejection × the declared radiator share, and its exceedance against R20's design point), the G1 waterfall's interaction term, the four race datasets' record gap, the sandbox force fraction, and the first-pass detection counts | `_rederive()` in `exhibit_verify.py` |
+| m2 | the decimation badge was up-cased in JS, so the rendered string was not the verbatim string the directive names | both screens render `{badge}` and up-case with `text-transform: uppercase`; check 10 now asserts the rendered form — no `.toUpperCase()` on the badge, and a declared `textTransform` — in both files | `RaceMode.tsx`, `Simulator.tsx`, check 10 |
+| m3 | check 7's built-bundle scan was a silent no-op on a clean checkout and still passed | check 7 **fails** when `app/dist/assets` holds no `.js`, and `run_ws12.py` builds the app by default (`--no-app` to skip, which then correctly fails) | check 7, `run_ws12.py` |
+| m4 | the Method screen listed 11 of 13 checks | all 13 are listed, and each line is rewritten to describe what the strengthened check now does | `Method.tsx` |
+| m5 | `16.19 pp` is the ensemble-MIN of a cost and the screen did not say so | the headline binds to `cost_pp_paired_min` rather than the alias `cost_pp`, the label carries `ENSEMBLE-MIN, PAIRED PER SEED`, the governing case is printed inline per R14, and the enumerated set's min / median / max are shown beside it. **The convention question the adjudicator left to the lead is untouched** | `race.headline.freightStatistic` |
+| m6 | three sandbox constants drove the interpolation and were absent from the citation map; CdA 4.2 was inherited without its provisional flag | `T_peak_Nm` and `rpm_ceiling` are added as DERIVED with their `max()` reductions and the exported arrays named; `v_climb_kmh` is added and **declared** rather than cited, because its only trace in the record is a JSON key name; and `CdA_m2` now carries a `DECLARED PROVISIONAL IN THE RECORD` flag with REPORT_WS11's own sentence quoted beside it | `sandbox.endpoints.zero.citations`, `.endpointFlags` |
+| m7 | the draft in `design/` carries a `RATIFIED RECORD` badge, a v4 header and a synthetic generator into a repository about to be made public | `design/README.md` added, marking the draft superseded, synthetic and kept as visual provenance only | `design/README.md` |
+| m8 | a bare `PROVISIONAL` reached the built bundle in a section Label, where check 6 could not see it | the label is reworded to `WHY THE STATUS DOES NOT MOVE`, and check 6 now **scans JSX `<Label>` text** for bare status tokens — closing the shape of the exposure, not just the instance | `RaceMode.tsx`, check 6 |
+
+**One thing the fold changed that no finding asked for, stated so it is not
+a surprise:** dropping M1's badge removes the exhibit's only `NOT CUT`, so
+`badges.by_label` no longer carries that key. That is correct — the label
+belongs to R54's open-frontier set, and this exhibit has no screen for it.
+
+**What the fold did not close, stated rather than implied.** Two residuals
+survive, both by construction and both now consistent with what the report
+and the Method screen claim:
+
+- **M4's residual class.** Values the app formats at run time from raw
+  bundle fields — the trace registry's blend residuals, the elevation span,
+  the twelve power-flow kW labels, the source index's KiB sizes, race mode's
+  peak speed and grade — are outside the manifest because the manifest
+  enumerates Cited-shaped objects, and a run-time `.toFixed()` on a raw
+  field produces no such object. The panels that carry them are now badged
+  DERIVED and the claim is narrowed to "every value of record", so nothing
+  on screen over-claims. Extending the manifest to cover them would mean
+  binding every run-time format call at build time, which is a design change
+  rather than a copy or binding fix, and is therefore recorded here rather
+  than attempted under a one-fold rule.
+- **m1's residual coverage.** Check 5 now recomputes the load-bearing
+  derived values; it does not recompute all of them. The uncovered remainder
+  is dominated by the race screen's build-time trace integrals, which check
+  9 already proves byte-for-byte against their source files and which the
+  adjudicator re-derived independently and confirmed to the last printed
+  digit. The verifier's summary line now reports assertions, not coverage,
+  and §7 states what each check proves.
+
+Both are for `LIMITATIONS.md` via WS13 if the lead wants them carried
+further. Neither moves a number, a status or a verdict.
 
 ---
 
@@ -44,7 +106,7 @@ kept. Everything synthetic was replaced by the record.**
 |---|---|
 | palette, typography, panel grid, hairlines, tabular numerals | ported verbatim into `app/src/theme.ts` and used everywhere |
 | the narrative rail | six screens, re-ordered by the lead's ruling so the verdict wall is first |
-| the three-tier badge discipline (RECORD / DERIVED / SANDBOX) | now enforced mechanically: every renderable value carries a tier, and the verifier checks that a DERIVED value never claims a key path |
+| the three-tier badge discipline (RECORD / DERIVED / SANDBOX) | now enforced mechanically for every **value of record**: each carries a tier, the verifier recomputes the load-bearing derived ones, and checks that a DERIVED value never claims a key path. Values the app formats at run time from raw bundle fields sit outside the manifest by construction; the panels that carry them are badged DERIVED |
 | the provenance strip | now READ from the record per screen — baseline label and file identity come from the emitted bundle, not from a literal |
 | the G1 waterfall | same shape, same five bars; every bar is now a citation |
 | the sandbox ratio window | same interaction, all constants re-derived (see §5) |
@@ -158,6 +220,7 @@ Quotations, all lifted from the file and re-lifted by the verifier:
 | `PM_PACKET_KX.md` | 2 |
 | `TRACE_SCHEMA.md` | 1 |
 | `WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md` | 1 |
+| `WS11_vehicle_zero_ruler/REPORT_WS11.md` | 1 |
 | `WS2_traction_motor/FINDINGS_WS2_r1.md` | 1 |
 | `WS2_traction_motor/FINDINGS_WS2_r2.md` | 1 |
 | `WS2_traction_motor/FINDINGS_WS2_r3.md` | 1 |
@@ -176,7 +239,7 @@ Quotations, all lifted from the file and re-lifted by the verifier:
 | `WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md` | 1 |
 | `WS9_vehicle_one_wave2/data/trace_S6_GH-REG-165_nominal_seed8101_10Hz.csv` | 1 |
 
-The full binding table — 239 rows, screen element → file → key path →
+The full binding table — 249 rows, screen element → file → key path →
 rendered string — is in **Appendix A**.
 
 ---
@@ -383,20 +446,20 @@ validated by it.
 
 | check | assertions | failures | result |
 |---|---|---|---|
-| 1 MANIFEST/BUNDLE | 488 | 0 | PASS |
-| 2 CITATIONS | 239 | 0 | PASS |
-| 3 QUOTES | 46 | 0 | PASS |
-| 4 FILE FACTS | 54 | 0 | PASS |
-| 5 DERIVED | 149 | 0 | PASS |
-| 6 BADGES | 20 | 0 | PASS |
+| 1 MANIFEST/BUNDLE | 512 | 0 | PASS |
+| 2 CITATIONS | 249 | 0 | PASS |
+| 3 QUOTES | 47 | 0 | PASS |
+| 4 FILE FACTS | 64 | 0 | PASS |
+| 5 DERIVED | 162 | 0 | PASS |
+| 6 BADGES | 26 | 0 | PASS |
 | 7 APP SOURCE | 15 | 0 | PASS |
 | 8 DECIMATION | 10 | 0 | PASS |
 | 9 SUBSEQUENCE | 10 | 0 | PASS |
-| 10 DECIMATION BADGE | 1 | 0 | PASS |
+| 10 DECIMATION BADGE | 3 | 0 | PASS |
 | 11 SANDBOX | 27 | 0 | PASS |
 | 12 SEVERITIES | 17 | 0 | PASS |
-| 13 REPORT | 43 | 0 | PASS |
-| **total** | **1119** | **0** | **PASS** |
+| 13 REPORT | 45 | 0 | PASS |
+| **total** | **1187** | **0** | **PASS** |
 
 Determinism: `check_determinism_ws12.py --with-app` builds the data pipeline
 twice and the app twice and compares every emitted artifact by sha256.
@@ -577,14 +640,22 @@ verbatim.
   "vite_base": "/project-volt/"
  },
  "badges": {
+  "_rule": "every key in the bundle named `badge` or ending `Badge` is a badge render site and is enumerated here. Status positions carry one of v7's five labels; the non-status ones are the decimation badge, which is a sentence and not a status.",
   "by_label": {
    "FROZEN-KILL": 8,
-   "FROZEN-PROVISIONAL": 8,
+   "FROZEN-PROVISIONAL": 9,
    "FROZEN-RATIFIED": 1,
-   "NOT CONVERGED": 1,
-   "NOT CUT": 1
+   "NOT CONVERGED": 1
   },
-  "positions_total": 19
+  "non_status_badge_keys": [
+   "$.decimationBadge",
+   "$.screens.method.tiers[0].tag",
+   "$.screens.method.tiers[1].tag",
+   "$.screens.method.tiers[2].tag",
+   "$.screens.sim.decimation.badge"
+  ],
+  "positions_total": 24,
+  "status_positions_total": 19
  },
  "cut_elements": [
   {
@@ -737,17 +808,18 @@ verbatim.
  },
  "manifest": {
   "by_kind": {
-   "cite": 239,
-   "derived": 149,
+   "cite": 249,
+   "derived": 152,
    "file": 53,
    "fileref": 1,
-   "quote": 46
+   "quote": 47,
+   "srcline": 10
   },
   "by_tier": {
-   "DERIVED": 95,
-   "RECORD": 393
+   "DERIVED": 98,
+   "RECORD": 414
   },
-  "entries_total": 488
+  "entries_total": 512
  },
  "maps_published": [
   "bsfc_map_V1_candidate.csv",
@@ -795,11 +867,16 @@ allowed to pass.
 | `guardRails.methodClaim.evidence[1]` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → ruler → anchor → calibrate_order_satisfied` | `False` |
 | `guardRails.methodClaim.evidence[2]` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → ruler → anchor → calibrate_order_statement` | `The assignment orders 'Calibrate to a public NPR fuel-economy reference and state it'. WS11 obtained the reference and did NOT calibrate to it: no ruler parameter was moved to close the residual, because the anchor is an in-use aggregate over an unknown duty, load, body and driver mix and cannot resolve a cycle-specific level. This is recorded as a NON-SATISFACTION of the order, not as a treatment choice (adjudication r1/B3). The consequence for each verdict is priced in `ruler_fuel_flip_points`: V2's KILL is being put to the lead on an UNCALIBRATED ruler.` |
 
-#### race — 102 bound values
+#### race — 107 bound values
 
 | screen element | file | key path | renders |
 |---|---|---|---|
-| `headline.freightGiven` | `WS11_vehicle_zero_ruler/results_ws11.json` | `one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp` | `16.19 pp` |
+| `headline.freightGiven` | `WS11_vehicle_zero_ruler/results_ws11.json` | `one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_min` | `16.19 pp` |
+| `headline.freightStatistic.enumeratedSet[0].v` | `WS11_vehicle_zero_ruler/results_ws11.json` | `one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_min` | `16.19 pp` |
+| `headline.freightStatistic.enumeratedSet[1].v` | `WS11_vehicle_zero_ruler/results_ws11.json` | `one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_median` | `16.24 pp` |
+| `headline.freightStatistic.enumeratedSet[2].v` | `WS11_vehicle_zero_ruler/results_ws11.json` | `one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_max` | `16.34 pp` |
+| `headline.freightStatistic.governingCase` | `WS11_vehicle_zero_ruler/results_ws11.json` | `one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_min_governing_case` | `seed 23 of the enumerated 8-seed VOLT-REG ensemble` |
+| `headline.freightStatistic.statistic` | `WS11_vehicle_zero_ruler/results_ws11.json` | `one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → statistic` | `PAIRED: formed per seed, then enveloped. `cost_pp` is the ensemble-MIN of the per-seed differences.` |
 | `headline.perKm` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V2_on_VOLT-REG → nominal → margin_pct_per_km_paired → min` | `+8.41%` |
 | `headline.perPayload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V2_on_VOLT-REG → nominal → margin_pct_per_payload_tkm_paired → min` | `-7.93%` |
 | `pairs[0].massRuler` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V1_on_VOLT-SUB → nominal → mass_kg_ruler` | `6,600 kg` |
@@ -912,7 +989,7 @@ allowed to pass.
 | `kx.r6Reject` | `WS4_genset/results_ws4.json` | `series_duty_v2 → r6_rating_family_probe → cases → r6_rating_corner_full → per_seed → 3 → engine_reject_2min_max_kW` | `215.67010 kW` |
 | `kx.radiatorShare` | `WS4_genset/results_ws4.json` | `heat_ledger_ws6 → series_duty_v2_nominal_cycle_average → radiator_package_share` | `0.48` |
 
-#### sandbox — 31 bound values
+#### sandbox — 32 bound values
 
 | screen element | file | key path | renders |
 |---|---|---|---|
@@ -923,6 +1000,7 @@ allowed to pass.
 | `anchors.rows[0].record` | `WS1_loads_duty_cycles/results.json` | `baseline_crosscheck → cruise85_force_N` | `1987.5751 N` |
 | `anchors.rows[1].record` | `WS1_loads_duty_cycles/results.json` | `sensitivity → climb_10km_6pc → per_speed → 60kmh → wheel_force_N` | `5159.4542 N` |
 | `anchors.rows[2].record` | `WS9_vehicle_one_wave2/results_ws9.json` | `two_walls → two_speed_solve → ENG-13L → solve → force_required → total_N` | `23796.7812 N` |
+| `endpointFlags[0].bracket` | `WS8_semi_architecture/results_ws8.json` | `params → vehicle → CdA` | `5.50 m²` |
 | `endpoints.one.citations.CdA_m2` | `WS8_semi_architecture/results_ws8.json` | `params → vehicle → CdA` | `5.50 m²` |
 | `endpoints.one.citations.Crr` | `WS8_semi_architecture/results_ws8.json` | `params → vehicle → Crr` | `0.0055` |
 | `endpoints.one.citations.T_peak_Nm` | `WS8_semi_architecture/results_ws8.json` | `task2_s0_calibration → engine → peak_torque_Nm` | `2,373 Nm` |
@@ -948,7 +1026,7 @@ allowed to pass.
 | `s3.ratioNeeded` | `WS8_semi_architecture/results_ws8.json` | `interface_ws8 → S3_fixed_ratio_feasibility → ratio_needed_to_hold_6pct → ratio` | `6.88:1` |
 | `s3.spanNeeded` | `WS9_vehicle_one_wave2/results_ws9.json` | `two_walls → single_ratio_closed_form → ENG-11L → span_needed` | `1.91:1` |
 
-#### sim — 10 bound values
+#### sim — 11 bound values
 
 | screen element | file | key path | renders |
 |---|---|---|---|
@@ -958,12 +1036,13 @@ allowed to pass.
 | `controlConstants.pinnedBsfc` | `WS5_controls/results_ws5.json` | `interface_ws5 → dispatch_v2_r22b → pinned_point → bsfc` | `203.62 g/kWh` |
 | `controlConstants.v1FixedPoint` | `WS5_controls/results_ws5.json` | `interface_ws5 → dispatch_v1_r19 → fixed_point_bus_kW` | `35.0 kW` |
 | `controlConstants.v2Strategy` | `WS5_controls/results_ws5.json` | `interface_ws5 → dispatch_v2_r22b → recommended` | `load_follow` |
+| `disposition.text` | `WS5_controls/results_ws5.json` | `_meta → adjudication` | `CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one.` |
 | `payloadNote.ledgerRuler` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → masses → payload_at_gvw_kg → ruler` | `2,900 kg` |
 | `payloadNote.ledgerV1` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → masses → payload_at_gvw_kg → V1` | `2,712 kg` |
 | `payloadNote.ledgerV2` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → masses → payload_at_gvw_kg → V2` | `2,461 kg` |
 | `statusNote.quote` | `WS5_controls/results_ws5.json` | `_meta → adjudication` | `CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one.` |
 
-#### verdict — 89 bound values
+#### verdict — 92 bound values
 
 | screen element | file | key path | renders |
 |---|---|---|---|
@@ -1031,6 +1110,9 @@ allowed to pass.
 | `cards[2].rows[1].perPayload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V2_on_VOLT-REG → nominal → margin_pct_per_payload_tkm_paired → min` | `-7.93%` |
 | `cards[2].rows[2].perKm` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V1_on_VOLT-SUB → nominal → margin_pct_per_km_paired → min` | `+25.29%` |
 | `cards[2].rows[2].perPayload` | `WS11_vehicle_zero_ruler/results_ws11.json` | `results → V1_on_VOLT-SUB → nominal → margin_pct_per_payload_tkm_paired → min` | `+20.11%` |
+| `cards[3].conditionality.bothPendingItems` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → cold_corner_pending_items → V1_on_VOLT-SUB → with_cab_heat_and_CdA_5p4_pct` | `+3.66%` |
+| `cards[3].conditionality.conditionedOn` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → cold_corner_pending_items → V1_on_VOLT-SUB → conditioned_on_rulings → 0` | `ESC-2 (pending)` |
+| `cards[3].conditionality.orderedGateValue` | `WS11_vehicle_zero_ruler/results_ws11.json` | `interface_ws11 → cold_corner_pending_items → V1_on_VOLT-SUB → ordered_gate_value_pct` | `+19.12%` |
 | `cards[3].criterionCorner` | `WS11_vehicle_zero_ruler/results_ws11.json` | `advance_kill → criterion → corner_threshold_pct` | `0.0%` |
 | `cards[3].criterionNominal` | `WS11_vehicle_zero_ruler/results_ws11.json` | `advance_kill → criterion → nominal_threshold_pct` | `3.0%` |
 | `cards[3].criterionText` | `WS11_vehicle_zero_ruler/results_ws11.json` | `advance_kill → criterion → statement` | `ADVANCE only if >= 3% better than the ruler on the candidate's design duty at nominal, ensemble-min, AND >= 0% at every corner. Metric: fuel energy per payload tonne-km, paired per-seed.` |

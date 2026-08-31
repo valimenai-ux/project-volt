@@ -89,14 +89,22 @@
    "vite_base": "/project-volt/"
   },
   "badges": {
+   "_rule": "every key in the bundle named `badge` or ending `Badge` is a badge render site and is enumerated here. Status positions carry one of v7's five labels; the non-status ones are the decimation badge, which is a sentence and not a status.",
    "by_label": {
     "FROZEN-KILL": 8,
-    "FROZEN-PROVISIONAL": 8,
+    "FROZEN-PROVISIONAL": 9,
     "FROZEN-RATIFIED": 1,
-    "NOT CONVERGED": 1,
-    "NOT CUT": 1
+    "NOT CONVERGED": 1
    },
-   "positions_total": 19
+   "non_status_badge_keys": [
+    "$.decimationBadge",
+    "$.screens.method.tiers[0].tag",
+    "$.screens.method.tiers[1].tag",
+    "$.screens.method.tiers[2].tag",
+    "$.screens.sim.decimation.badge"
+   ],
+   "positions_total": 24,
+   "status_positions_total": 19
   },
   "cut_elements": [
    {
@@ -249,17 +257,18 @@
   },
   "manifest": {
    "by_kind": {
-    "cite": 239,
-    "derived": 149,
+    "cite": 249,
+    "derived": 152,
     "file": 53,
     "fileref": 1,
-    "quote": 46
+    "quote": 47,
+    "srcline": 10
    },
    "by_tier": {
-    "DERIVED": 95,
-    "RECORD": 393
+    "DERIVED": 98,
+    "RECORD": 414
    },
-   "entries_total": 488
+   "entries_total": 512
   },
   "maps_published": [
    "bsfc_map_V1_candidate.csv",
@@ -758,14 +767,114 @@
       "rows",
       "V2_on_VOLT-REG",
       "mass_payload_denominator",
-      "cost_pp"
+      "cost_pp_paired_min"
      ],
-     "pathText": "one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp",
+     "pathText": "one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_min",
      "pre": "",
      "s": "16.19 pp",
      "suf": " pp",
      "tier": "RECORD",
      "v": 16.187444937496835
+    },
+    "freightStatistic": {
+     "enumeratedSet": [
+      {
+       "k": "MIN",
+       "v": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ".2f",
+        "path": [
+         "one_factor",
+         "rows",
+         "V2_on_VOLT-REG",
+         "mass_payload_denominator",
+         "cost_pp_paired_min"
+        ],
+        "pathText": "one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_min",
+        "pre": "",
+        "s": "16.19 pp",
+        "suf": " pp",
+        "tier": "RECORD",
+        "v": 16.187444937496835
+       }
+      },
+      {
+       "k": "MEDIAN",
+       "v": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ".2f",
+        "path": [
+         "one_factor",
+         "rows",
+         "V2_on_VOLT-REG",
+         "mass_payload_denominator",
+         "cost_pp_paired_median"
+        ],
+        "pathText": "one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_median",
+        "pre": "",
+        "s": "16.24 pp",
+        "suf": " pp",
+        "tier": "RECORD",
+        "v": 16.239174488345746
+       }
+      },
+      {
+       "k": "MAX",
+       "v": {
+        "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+        "fmt": ".2f",
+        "path": [
+         "one_factor",
+         "rows",
+         "V2_on_VOLT-REG",
+         "mass_payload_denominator",
+         "cost_pp_paired_max"
+        ],
+        "pathText": "one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_max",
+        "pre": "",
+        "s": "16.34 pp",
+        "suf": " pp",
+        "tier": "RECORD",
+        "v": 16.33763934740105
+       }
+      }
+     ],
+     "governingCase": {
+      "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+      "fmt": "str",
+      "path": [
+       "one_factor",
+       "rows",
+       "V2_on_VOLT-REG",
+       "mass_payload_denominator",
+       "cost_pp_paired_min_governing_case"
+      ],
+      "pathText": "one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → cost_pp_paired_min_governing_case",
+      "pre": "",
+      "s": "seed 23 of the enumerated 8-seed VOLT-REG ensemble",
+      "suf": "",
+      "tier": "RECORD",
+      "v": "seed 23 of the enumerated 8-seed VOLT-REG ensemble"
+     },
+     "label": "ENSEMBLE-MIN, PAIRED PER SEED",
+     "note": "R14 puts the governing case inline. This is a COST, and the member shown is its ensemble minimum - the least freight given back over the eight seeds. The other two members of the enumerated set are printed beside it so the reader can see which one is on the headline.",
+     "statistic": {
+      "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+      "fmt": "str",
+      "path": [
+       "one_factor",
+       "rows",
+       "V2_on_VOLT-REG",
+       "mass_payload_denominator",
+       "statistic"
+      ],
+      "pathText": "one_factor → rows → V2_on_VOLT-REG → mass_payload_denominator → statistic",
+      "pre": "",
+      "s": "PAIRED: formed per seed, then enveloped. `cost_pp` is the ensemble-MIN of the per-seed differences.",
+      "suf": "",
+      "tier": "RECORD",
+      "v": "PAIRED: formed per seed, then enveloped. `cost_pp` is the ensemble-MIN of the per-seed differences."
+     }
     },
     "perKm": {
      "file": "WS11_vehicle_zero_ruler/results_ws11.json",
@@ -818,7 +927,7 @@
      "candTraceId": "ws11-V1_VOLT-SUB_nominal_seed11",
      "case": "nominal",
      "derived": {
-      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step, LHV 42.8 kJ/g (WS4_genset/ws4_models.py:26)",
+      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step",
       "candFuelG": {
        "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> fuel_g_per_s",
        "fmt": ",.1f",
@@ -864,6 +973,19 @@
        "tier": "DERIVED",
        "v": 0.454247782324936
       },
+      "density": {
+       "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+       "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+       "fmt": ".0f",
+       "kind": "srcline",
+       "line": 37,
+       "name": "DENSITY_G_PER_L",
+       "pre": "",
+       "s": "832 g/L",
+       "suf": " g/L",
+       "tier": "RECORD",
+       "v": 832.0
+      },
       "gapPp": {
        "derivedFrom": "integrated",
        "fmt": "+.2f",
@@ -872,6 +994,19 @@
        "suf": " pp",
        "tier": "DERIVED",
        "v": 4.5001321940420915
+      },
+      "lhv": {
+       "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+       "file": "WS4_genset/ws4_models.py",
+       "fmt": ".1f",
+       "kind": "srcline",
+       "line": 26,
+       "name": "LHV_KJ_PER_G",
+       "pre": "",
+       "s": "42.8 kJ/g",
+       "suf": " kJ/g",
+       "tier": "RECORD",
+       "v": 42.8
       },
       "marginPerKm": {
        "derivedFrom": "integrated",
@@ -1300,7 +1435,7 @@
      "candTraceId": "ws11-V1_VOLT-SUB_cold_-10C_seed11",
      "case": "cold_-10C",
      "derived": {
-      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step, LHV 42.8 kJ/g (WS4_genset/ws4_models.py:26)",
+      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step",
       "candFuelG": {
        "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> fuel_g_per_s",
        "fmt": ",.1f",
@@ -1346,6 +1481,19 @@
        "tier": "DERIVED",
        "v": 0.46552828965556536
       },
+      "density": {
+       "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+       "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+       "fmt": ".0f",
+       "kind": "srcline",
+       "line": 37,
+       "name": "DENSITY_G_PER_L",
+       "pre": "",
+       "s": "832 g/L",
+       "suf": " g/L",
+       "tier": "RECORD",
+       "v": 832.0
+      },
       "gapPp": {
        "derivedFrom": "integrated",
        "fmt": "+.2f",
@@ -1354,6 +1502,19 @@
        "suf": " pp",
        "tier": "DERIVED",
        "v": 4.54081636307351
+      },
+      "lhv": {
+       "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+       "file": "WS4_genset/ws4_models.py",
+       "fmt": ".1f",
+       "kind": "srcline",
+       "line": 26,
+       "name": "LHV_KJ_PER_G",
+       "pre": "",
+       "s": "42.8 kJ/g",
+       "suf": " kJ/g",
+       "tier": "RECORD",
+       "v": 42.8
       },
       "marginPerKm": {
        "derivedFrom": "integrated",
@@ -1782,7 +1943,7 @@
      "candTraceId": "ws11-V2_VOLT-REG_nominal_seed23",
      "case": "nominal",
      "derived": {
-      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step, LHV 42.8 kJ/g (WS4_genset/ws4_models.py:26)",
+      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step",
       "candFuelG": {
        "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> fuel_g_per_s",
        "fmt": ",.1f",
@@ -1828,6 +1989,19 @@
        "tier": "DERIVED",
        "v": 0.6866853283272286
       },
+      "density": {
+       "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+       "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+       "fmt": ".0f",
+       "kind": "srcline",
+       "line": 37,
+       "name": "DENSITY_G_PER_L",
+       "pre": "",
+       "s": "832 g/L",
+       "suf": " g/L",
+       "tier": "RECORD",
+       "v": 832.0
+      },
       "gapPp": {
        "derivedFrom": "integrated",
        "fmt": "+.2f",
@@ -1836,6 +2010,19 @@
        "suf": " pp",
        "tier": "DERIVED",
        "v": 16.140511476383097
+      },
+      "lhv": {
+       "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+       "file": "WS4_genset/ws4_models.py",
+       "fmt": ".1f",
+       "kind": "srcline",
+       "line": 26,
+       "name": "LHV_KJ_PER_G",
+       "pre": "",
+       "s": "42.8 kJ/g",
+       "suf": " kJ/g",
+       "tier": "RECORD",
+       "v": 42.8
       },
       "marginPerKm": {
        "derivedFrom": "integrated",
@@ -2264,7 +2451,7 @@
      "candTraceId": "ws11-V2_VOLT-REG_climb_10km_6pct_seed23",
      "case": "climb_10km_6pct",
      "derived": {
-      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step, LHV 42.8 kJ/g (WS4_genset/ws4_models.py:26)",
+      "_basis": "rectangle-rule integration of the trace's own fuel_g_per_s and v_kmh columns at the file's own 0.1 s step",
       "candFuelG": {
        "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> fuel_g_per_s",
        "fmt": ",.1f",
@@ -2310,6 +2497,19 @@
        "tier": "DERIVED",
        "v": 0.7827833636325969
       },
+      "density": {
+       "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+       "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+       "fmt": ".0f",
+       "kind": "srcline",
+       "line": 37,
+       "name": "DENSITY_G_PER_L",
+       "pre": "",
+       "s": "832 g/L",
+       "suf": " g/L",
+       "tier": "RECORD",
+       "v": 832.0
+      },
       "gapPp": {
        "derivedFrom": "integrated",
        "fmt": "+.2f",
@@ -2318,6 +2518,19 @@
        "suf": " pp",
        "tier": "DERIVED",
        "v": 16.81970476258292
+      },
+      "lhv": {
+       "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+       "file": "WS4_genset/ws4_models.py",
+       "fmt": ".1f",
+       "kind": "srcline",
+       "line": 26,
+       "name": "LHV_KJ_PER_G",
+       "pre": "",
+       "s": "42.8 kJ/g",
+       "suf": " kJ/g",
+       "tier": "RECORD",
+       "v": 42.8
       },
       "marginPerKm": {
        "derivedFrom": "integrated",
@@ -4939,6 +5152,38 @@
     ]
    },
    "disclaimer": "Nothing on this screen is a verdict, and nothing on it may be quoted as one. It exists to show where a boundary lies, using the same two closed forms the trial used.",
+   "endpointFlags": [
+    {
+     "bracket": {
+      "file": "WS8_semi_architecture/results_ws8.json",
+      "fmt": ".2f",
+      "note": "Vehicle One's CdA, for scale; Vehicle Zero's CdA 5.4 bracket is WS11's, not WS8's",
+      "path": [
+       "params",
+       "vehicle",
+       "CdA"
+      ],
+      "pathText": "params → vehicle → CdA",
+      "pre": "",
+      "s": "5.50 m²",
+      "suf": " m²",
+      "tier": "RECORD",
+      "v": 5.5
+     },
+     "endpoint": "zero",
+     "field": "CdA_m2",
+     "flag": "DECLARED PROVISIONAL IN THE RECORD",
+     "note": "The sandbox interpolates from an input the record itself marks provisional and flatters the candidates. The screen says so rather than inheriting it silently. It changes no verdict: this screen carries none.",
+     "quote": {
+      "file": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+      "kind": "quote",
+      "probe": "CdA 4.2 m^2 is a WS1 fitted value, declared PROVISIONAL in BASELINE_v1 pending the WS7 coastdown, and the program already carries CdA 5.4 as a sizing case (E13).",
+      "s": "CdA 4.2 m^2 is a WS1 fitted value, declared PROVISIONAL in BASELINE_v1 pending the WS7 coastdown, and the program already carries CdA 5.4 as a sizing case (E13).",
+      "tier": "RECORD"
+     },
+     "why_minor": "the screen is badged SANDBOX throughout and its disclaimer forbids quoting anything on it as a verdict"
+    }
+   ],
    "endpoints": {
     "one": {
      "CdA_m2": 5.5,
@@ -5129,6 +5374,15 @@
        "tier": "RECORD",
        "v": 0.009
       },
+      "T_peak_Nm": {
+       "derivedFrom": "max() over WS1_loads_duty_cycles/results.json -> params -> engine -> trq_pts",
+       "fmt": ",.0f",
+       "pre": "",
+       "s": "700 Nm",
+       "suf": " Nm",
+       "tier": "DERIVED",
+       "v": 700.0
+      },
       "eta_driveline": {
        "file": "WS1_loads_duty_cycles/results.json",
        "fmt": ".3f",
@@ -5188,6 +5442,24 @@
        "suf": " kg/m³",
        "tier": "RECORD",
        "v": 1.2
+      },
+      "rpm_ceiling": {
+       "derivedFrom": "max() over WS1_loads_duty_cycles/results.json -> params -> engine -> rpm_pts",
+       "fmt": ",.0f",
+       "pre": "",
+       "s": "3,000 rpm",
+       "suf": " rpm",
+       "tier": "DERIVED",
+       "v": 3000.0
+      },
+      "v_climb_kmh": {
+       "derivedFrom": "WS12-DECLARED (ws12_sandbox.py, VEHICLE_ZERO['v_climb_kmh']): the speed WS1's own 6% grade cross-check is stated at, WS1_loads_duty_cycles/results.json -> sensitivity -> climb_10km_6pc -> per_speed -> '60kmh'. It is a key name in the record, not a value, so it is declared rather than cited.",
+       "fmt": ".0f",
+       "pre": "",
+       "s": "60 km/h",
+       "suf": " km/h",
+       "tier": "DERIVED",
+       "v": 60.0
       },
       "v_cruise_kmh": {
        "file": "WS1_loads_duty_cycles/results.json",
@@ -5492,9 +5764,59 @@
      "v": "load_follow"
     }
    },
+   "counterConstants": {
+    "_why": "The simulator's fuel counters divide by a fuel density and multiply by a lower heating value. Both are program constants declared in Python source rather than in a results file, so they are resolved by line and re-parsed by the verifier rather than typed into the app (adjudication r1/M4).",
+    "density": {
+     "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+     "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+     "fmt": ".0f",
+     "kind": "srcline",
+     "line": 37,
+     "name": "DENSITY_G_PER_L",
+     "note": "diesel EN590 at 15 C (WS4 convention)",
+     "pre": "",
+     "s": "832 g/L",
+     "suf": " g/L",
+     "tier": "RECORD",
+     "v": 832.0
+    },
+    "lhv": {
+     "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+     "file": "WS4_genset/ws4_models.py",
+     "fmt": ".1f",
+     "kind": "srcline",
+     "line": 26,
+     "name": "LHV_KJ_PER_G",
+     "note": "diesel lower heating value",
+     "pre": "",
+     "s": "42.8 kJ/g",
+     "suf": " kJ/g",
+     "tier": "RECORD",
+     "v": 42.8
+    }
+   },
    "decimation": {
     "badge": "the replay is decimated; the record is not",
     "rule": "Scrub tier is 1 Hz, decimated by strided sample and never by averaging - averaging would invent samples that are not in the record. The detail tier is the full 10 Hz record, fetched one segment at a time for the segment in view."
+   },
+   "disposition": {
+    "_why_no_badge": "WS5 carries no status badge on this screen. BASELINE_v7_FREEZE R54 defines the NOT CUT set exhaustively - WS6, WS7, WS10, Vehicle Zero wave two and Vehicle One wave three - and WS5 is not in it. v7's line for WS5 points at a packet instead. Rather than apply a v7 label to a workstream v7 does not apply it to, this panel renders WS5's disposition in WS5's own words, from WS5's own results file, as text rather than as a status badge.",
+    "shortForm": "GATED BUT UNADJUDICATED",
+    "shortFormSource": "the same string this exhibit's per-workstream table already uses for WS5",
+    "text": {
+     "file": "WS5_controls/results_ws5.json",
+     "fmt": "str",
+     "path": [
+      "_meta",
+      "adjudication"
+     ],
+     "pathText": "_meta → adjudication",
+     "pre": "",
+     "s": "CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one.",
+     "suf": "",
+     "tier": "RECORD",
+     "v": "CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one."
+    }
    },
    "id": "sim",
    "kicker": "RECORD REPLAY · TRACE_SCHEMA (R34)",
@@ -7148,7 +7470,6 @@
     "seedsAvailable": 1,
     "seedsNeeded": 8
    },
-   "statusBadge": "NOT CUT",
    "statusNote": {
     "baselineQuote": {
      "file": "BASELINE_v7_FREEZE.md",
@@ -8468,6 +8789,61 @@
     },
     {
      "body": "The two verdicts are not symmetric in their exposure. V1's advance improves under every ruler-modelling reversal, so its margin is a lower bound. V2's kill does the opposite: bound the ruler by the ranges WS11's own file declares and the kill becomes a draw. A lower bound is the wrong guarantee for a kill.",
+     "conditionality": {
+      "bothPendingItems": {
+       "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+       "fmt": "+.2f",
+       "path": [
+        "interface_ws11",
+        "cold_corner_pending_items",
+        "V1_on_VOLT-SUB",
+        "with_cab_heat_and_CdA_5p4_pct"
+       ],
+       "pathText": "interface_ws11 → cold_corner_pending_items → V1_on_VOLT-SUB → with_cab_heat_and_CdA_5p4_pct",
+       "pre": "",
+       "s": "+3.66%",
+       "suf": "%",
+       "tier": "RECORD",
+       "v": 3.662210971402807
+      },
+      "conditionedOn": {
+       "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+       "fmt": "str",
+       "path": [
+        "interface_ws11",
+        "cold_corner_pending_items",
+        "V1_on_VOLT-SUB",
+        "conditioned_on_rulings",
+        0
+       ],
+       "pathText": "interface_ws11 → cold_corner_pending_items → V1_on_VOLT-SUB → conditioned_on_rulings → 0",
+       "pre": "",
+       "s": "ESC-2 (pending)",
+       "suf": "",
+       "tier": "RECORD",
+       "v": "ESC-2 (pending)"
+      },
+      "headline": "The +20.11% is conditional, and v7 says on what.",
+      "orderedGateValue": {
+       "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+       "fmt": "+.2f",
+       "path": [
+        "interface_ws11",
+        "cold_corner_pending_items",
+        "V1_on_VOLT-SUB",
+        "ordered_gate_value_pct"
+       ],
+       "pathText": "interface_ws11 → cold_corner_pending_items → V1_on_VOLT-SUB → ordered_gate_value_pct",
+       "pre": "",
+       "s": "+19.12%",
+       "suf": "%",
+       "tier": "RECORD",
+       "v": 19.12403661613544
+      },
+      "priced": "WS11 prices two of them together: with the cab-heat member and the CdA 5.4 bracket both applied, V1's governing corner falls from its ordered gate value to the figure beside it.",
+      "rulings": "R43(a) cab heat · R43(b) warm-up model · R43(c) corner convention · R43(d) CdA bracket",
+      "state": "ordered and not run"
+     },
      "criterionCorner": {
       "file": "WS11_vehicle_zero_ruler/results_ws11.json",
       "fmt": ".1f",
@@ -8906,8 +9282,8 @@
      "statusQuote": {
       "file": "BASELINE_v7_FREEZE.md",
       "kind": "quote",
-      "probe": "V1 Postal vs stock NPR: FROZEN-PROVISIONAL ADVANCE, +20.11% nominal ensemble-min per payload tonne-km, worst corner +19.12%, robust to all ruler-modelling brackets",
-      "s": "V1 Postal vs stock NPR: FROZEN-PROVISIONAL ADVANCE, +20.11% nominal ensemble-min per payload tonne-km, worst corner +19.12%, robust to all ruler-modelling brackets",
+      "probe": "V1 Postal vs stock NPR: FROZEN-PROVISIONAL ADVANCE, +20.11% nominal ensemble-min per payload tonne-km, worst corner +19.12%, robust to all ruler-modelling brackets; conditional on R43(a)-(d) (cab heat, warm-up model, corner convention, CdA bracket), which were ordered and not run.",
+      "s": "V1 Postal vs stock NPR: FROZEN-PROVISIONAL ADVANCE, +20.11% nominal ensemble-min per payload tonne-km, worst corner +19.12%, robust to all ruler-modelling brackets; conditional on R43(a)-(d) (cab heat, warm-up model, corner convention, CdA bracket), which were ordered and not run.",
       "tier": "RECORD"
      },
      "title": "One advance, one kill, one ruler nobody calibrated"

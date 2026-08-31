@@ -2,89 +2,134 @@
  "_rule": "every number of record the app can render, with the file and key path it resolves to and the string it formats to. exhibit_verify.py re-opens each file with its own resolver and its own formatter and asserts the string.",
  "badges": [
   {
+   "badge": "the replay is decimated; the record is not",
+   "isStatus": false,
+   "key": "$.decimationBadge"
+  },
+  {
+   "badge": "RECORD",
+   "isStatus": false,
+   "key": "$.screens.method.tiers[0].tag"
+  },
+  {
+   "badge": "DERIVED",
+   "isStatus": false,
+   "key": "$.screens.method.tiers[1].tag"
+  },
+  {
+   "badge": "SANDBOX",
+   "isStatus": false,
+   "key": "$.screens.method.tiers[2].tag"
+  },
+  {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.race.semi.rows[0].statusBadge"
   },
   {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.race.semi.rows[1].statusBadge"
   },
   {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.race.semi.rows[2].statusBadge"
   },
   {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.race.semi.rows[3].statusBadge"
   },
   {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.race.semi.rows[4].statusBadge"
   },
   {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.race.semi.statusBadge"
   },
   {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.rounds.gap.statusBadge"
   },
   {
    "badge": "NOT CONVERGED",
+   "isStatus": true,
    "key": "$.screens.rounds.kx.statusBadge"
   },
   {
-   "badge": "NOT CUT",
-   "key": "$.screens.sim.statusBadge"
+   "badge": "the replay is decimated; the record is not",
+   "isStatus": false,
+   "key": "$.screens.sim.decimation.badge"
   },
   {
    "badge": "FROZEN-RATIFIED",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[0].statusBadge"
   },
   {
+   "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
+   "key": "$.screens.verdict.cards[1].numbersBadge"
+  },
+  {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[1].rows[0].statusBadge"
   },
   {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[1].rows[1].statusBadge"
   },
   {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[1].rows[2].statusBadge"
   },
   {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[1].rows[3].statusBadge"
   },
   {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[1].statusBadge"
   },
   {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[2].rows[1].statusBadge"
   },
   {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[2].rows[2].statusBadge"
   },
   {
    "badge": "FROZEN-PROVISIONAL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[3].rows[0].statusBadge"
   },
   {
    "badge": "FROZEN-KILL",
+   "isStatus": true,
    "key": "$.screens.verdict.cards[3].rows[1].statusBadge"
   }
  ],
  "counts": {
-  "cite": 239,
-  "derived": 149,
+  "cite": 249,
+  "derived": 152,
   "file": 53,
   "fileref": 1,
-  "quote": 46,
-  "total": 488
+  "quote": 47,
+  "srcline": 10,
+  "total": 512
  },
  "entries": [
   {
@@ -472,13 +517,103 @@
     "rows",
     "V2_on_VOLT-REG",
     "mass_payload_denominator",
-    "cost_pp"
+    "cost_pp_paired_min"
    ],
    "pre": "",
    "s": "16.19 pp",
    "suf": " pp",
    "tier": "RECORD",
    "v": 16.187444937496835
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".2f",
+   "key": "$.screens.race.headline.freightStatistic.enumeratedSet[0].v",
+   "kind": "cite",
+   "path": [
+    "one_factor",
+    "rows",
+    "V2_on_VOLT-REG",
+    "mass_payload_denominator",
+    "cost_pp_paired_min"
+   ],
+   "pre": "",
+   "s": "16.19 pp",
+   "suf": " pp",
+   "tier": "RECORD",
+   "v": 16.187444937496835
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".2f",
+   "key": "$.screens.race.headline.freightStatistic.enumeratedSet[1].v",
+   "kind": "cite",
+   "path": [
+    "one_factor",
+    "rows",
+    "V2_on_VOLT-REG",
+    "mass_payload_denominator",
+    "cost_pp_paired_median"
+   ],
+   "pre": "",
+   "s": "16.24 pp",
+   "suf": " pp",
+   "tier": "RECORD",
+   "v": 16.239174488345746
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": ".2f",
+   "key": "$.screens.race.headline.freightStatistic.enumeratedSet[2].v",
+   "kind": "cite",
+   "path": [
+    "one_factor",
+    "rows",
+    "V2_on_VOLT-REG",
+    "mass_payload_denominator",
+    "cost_pp_paired_max"
+   ],
+   "pre": "",
+   "s": "16.34 pp",
+   "suf": " pp",
+   "tier": "RECORD",
+   "v": 16.33763934740105
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.race.headline.freightStatistic.governingCase",
+   "kind": "cite",
+   "path": [
+    "one_factor",
+    "rows",
+    "V2_on_VOLT-REG",
+    "mass_payload_denominator",
+    "cost_pp_paired_min_governing_case"
+   ],
+   "pre": "",
+   "s": "seed 23 of the enumerated 8-seed VOLT-REG ensemble",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "seed 23 of the enumerated 8-seed VOLT-REG ensemble"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.race.headline.freightStatistic.statistic",
+   "kind": "cite",
+   "path": [
+    "one_factor",
+    "rows",
+    "V2_on_VOLT-REG",
+    "mass_payload_denominator",
+    "statistic"
+   ],
+   "pre": "",
+   "s": "PAIRED: formed per seed, then enveloped. `cost_pp` is the ensemble-MIN of the per-seed differences.",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "PAIRED: formed per seed, then enveloped. `cost_pp` is the ensemble-MIN of the per-seed differences."
   },
   {
    "file": "WS11_vehicle_zero_ruler/results_ws11.json",
@@ -525,129 +660,205 @@
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[0].derived.candFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "2,053.7 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 2053.6875
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[0].derived.candKm",
    "kind": "derived",
+   "pre": "",
    "s": "19.820 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 19.819519761111376
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[0].derived.candLitres",
    "kind": "derived",
+   "pre": "",
    "s": "2.47 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 2.4683743990384617
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[0].derived.candPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "1.2319 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 1.2319199856652265
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[0].derived.candPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.4542 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.454247782324936
   },
   {
+   "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+   "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+   "fmt": ".0f",
+   "key": "$.screens.race.pairs[0].derived.density",
+   "kind": "srcline",
+   "line": 37,
+   "name": "DENSITY_G_PER_L",
+   "pre": "",
+   "s": "832 g/L",
+   "suf": " g/L",
+   "tier": "RECORD",
+   "v": 832.0
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[0].derived.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+4.50 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 4.5001321940420915
   },
   {
+   "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+   "file": "WS4_genset/ws4_models.py",
+   "fmt": ".1f",
+   "key": "$.screens.race.pairs[0].derived.lhv",
+   "kind": "srcline",
+   "line": 26,
+   "name": "LHV_KJ_PER_G",
+   "pre": "",
+   "s": "42.8 kJ/g",
+   "suf": " kJ/g",
+   "tier": "RECORD",
+   "v": 42.8
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[0].derived.marginPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "+35.08%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 35.08319941360555
   },
   {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[0].derived.marginPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "+30.58%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 30.583067219563457
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[0].derived.rulerFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "3,163.6 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 3163.5685699988435
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_nominal_seed11_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[0].derived.rulerKm",
    "kind": "derived",
+   "pre": "",
    "s": "19.820 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 19.819519761111376
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[0].derived.rulerLitres",
    "kind": "derived",
+   "pre": "",
    "s": "3.80 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 3.8023660697101485
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[0].derived.rulerPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "1.8977 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 1.8976905431833893
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[0].derived.rulerPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.6544 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.6543760493735825
   },
   {
    "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[0].derived.socDriftKWh",
    "kind": "derived",
+   "pre": "",
    "s": "+1.114 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": 1.1139026040000004
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> SOC, last row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[0].derived.socEnd",
    "kind": "derived",
+   "pre": "",
    "s": "44.95%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 44.95
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> SOC, first row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[0].derived.socStart",
    "kind": "derived",
+   "pre": "",
    "s": "55.00%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 55.00000000000001
   },
@@ -704,33 +915,45 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[0].reconciliation.candDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-12.874%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -12.873512899846489
   },
   {
    "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "fmt": ".1f",
    "key": "$.screens.race.pairs[0].reconciliation.candImpliedBsfc",
    "kind": "derived",
+   "pre": "",
    "s": "228.7 g/kWh",
+   "suf": " g/kWh",
    "tier": "DERIVED",
    "v": 228.7212954773986
   },
   {
    "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[0].reconciliation.candImpliedGenEta",
    "kind": "derived",
+   "pre": "",
    "s": "0.9394",
+   "suf": "",
    "tier": "DERIVED",
    "v": 0.9394379894211597
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_nominal_seed11_10Hz.csv -> P_batt_bus_kW, integrated",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[0].reconciliation.candNetPackBus",
    "kind": "derived",
+   "pre": "",
    "s": "-0.571 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": -0.5713815111108812
   },
@@ -790,9 +1013,12 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[0].reconciliation.rulerDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-0.002%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -0.002155656924726456
   },
@@ -838,9 +1064,12 @@
   },
   {
    "derivedFrom": "margin_pct_per_km_paired.per_seed[11] minus margin_pct_per_payload_tkm_paired.per_seed[11], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V1_on_VOLT-SUB -> nominal",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[0].record.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+5.16 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 5.164945054490669
   },
@@ -960,129 +1189,205 @@
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[1].derived.candFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "2,104.7 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 2104.6875
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[1].derived.candKm",
    "kind": "derived",
+   "pre": "",
    "s": "19.820 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 19.819519761111376
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[1].derived.candLitres",
    "kind": "derived",
+   "pre": "",
    "s": "2.53 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 2.5296724759615383
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[1].derived.candPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "1.2625 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 1.2625127215458931
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[1].derived.candPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.4655 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.46552828965556536
   },
   {
+   "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+   "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+   "fmt": ".0f",
+   "key": "$.screens.race.pairs[1].derived.density",
+   "kind": "srcline",
+   "line": 37,
+   "name": "DENSITY_G_PER_L",
+   "pre": "",
+   "s": "832 g/L",
+   "suf": " g/L",
+   "tier": "RECORD",
+   "v": 832.0
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[1].derived.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+4.54 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 4.54081636307351
   },
   {
+   "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+   "file": "WS4_genset/ws4_models.py",
+   "fmt": ".1f",
+   "key": "$.screens.race.pairs[1].derived.lhv",
+   "kind": "srcline",
+   "line": 26,
+   "name": "LHV_KJ_PER_G",
+   "pre": "",
+   "s": "42.8 kJ/g",
+   "suf": " kJ/g",
+   "tier": "RECORD",
+   "v": 42.8
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[1].derived.marginPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "+34.50%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 34.49630863481213
   },
   {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[1].derived.marginPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "+29.96%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 29.95549227173862
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[1].derived.rulerFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "3,213.1 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 3213.082279998868
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[1].derived.rulerKm",
    "kind": "derived",
+   "pre": "",
    "s": "19.820 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 19.819519761111376
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[1].derived.rulerLitres",
    "kind": "derived",
+   "pre": "",
    "s": "3.86 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 3.861877740383255
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[1].derived.rulerPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "1.9274 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 1.9273917167618728
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[1].derived.rulerPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.6646 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.664617833366163
   },
   {
    "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[1].derived.socDriftKWh",
    "kind": "derived",
+   "pre": "",
    "s": "+1.178 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": 1.1781875304000007
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> SOC, last row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[1].derived.socEnd",
    "kind": "derived",
+   "pre": "",
    "s": "44.37%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 44.37
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> SOC, first row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[1].derived.socStart",
    "kind": "derived",
+   "pre": "",
    "s": "55.00%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 55.00000000000001
   },
@@ -1139,33 +1444,45 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[1].reconciliation.candDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-13.185%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -13.184598248886173
   },
   {
    "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "fmt": ".1f",
    "key": "$.screens.race.pairs[1].reconciliation.candImpliedBsfc",
    "kind": "derived",
+   "pre": "",
    "s": "228.7 g/kWh",
+   "suf": " g/kWh",
    "tier": "DERIVED",
    "v": 228.72129547739854
   },
   {
    "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[1].reconciliation.candImpliedGenEta",
    "kind": "derived",
+   "pre": "",
    "s": "0.9394",
+   "suf": "",
    "tier": "DERIVED",
    "v": 0.9394379894211349
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V1_VOLT-SUB_cold_-10C_seed11_10Hz.csv -> P_batt_bus_kW, integrated",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[1].reconciliation.candNetPackBus",
    "kind": "derived",
+   "pre": "",
    "s": "-0.632 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": -0.6319615666663501
   },
@@ -1225,9 +1542,12 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[1].reconciliation.rulerDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-0.002%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -0.002204224135213849
   },
@@ -1273,9 +1593,12 @@
   },
   {
    "derivedFrom": "margin_pct_per_km_paired.per_seed[11] minus margin_pct_per_payload_tkm_paired.per_seed[11], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V1_on_VOLT-SUB -> cold_-10C",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[1].record.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+5.23 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 5.230311882125267
   },
@@ -1395,129 +1718,205 @@
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[2].derived.candFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "18,757.1 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 18757.115239998973
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[2].derived.candKm",
    "kind": "derived",
+   "pre": "",
    "s": "131.959 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 131.95867094722394
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[2].derived.candLitres",
    "kind": "derived",
+   "pre": "",
    "s": "22.54 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 22.544609663460303
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[2].derived.candPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "1.6899 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 1.6899325930133096
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[2].derived.candPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.6867 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.6866853283272286
   },
   {
+   "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+   "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+   "fmt": ".0f",
+   "key": "$.screens.race.pairs[2].derived.density",
+   "kind": "srcline",
+   "line": 37,
+   "name": "DENSITY_G_PER_L",
+   "pre": "",
+   "s": "832 g/L",
+   "suf": " g/L",
+   "tier": "RECORD",
+   "v": 832.0
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[2].derived.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+16.14 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 16.140511476383097
   },
   {
+   "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+   "file": "WS4_genset/ws4_models.py",
+   "fmt": ".1f",
+   "key": "$.screens.race.pairs[2].derived.lhv",
+   "kind": "srcline",
+   "line": 26,
+   "name": "LHV_KJ_PER_G",
+   "pre": "",
+   "s": "42.8 kJ/g",
+   "suf": " kJ/g",
+   "tier": "RECORD",
+   "v": 42.8
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[2].derived.marginPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "+9.52%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 9.51754272578858
   },
   {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[2].derived.marginPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "-6.62%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -6.622968750594516
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[2].derived.rulerFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "20,730.1 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 20730.112560001147
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_nominal_seed23_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[2].derived.rulerKm",
    "kind": "derived",
+   "pre": "",
    "s": "131.959 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 131.95867094722394
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[2].derived.rulerLitres",
    "kind": "derived",
+   "pre": "",
    "s": "24.92 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 24.9160006730783
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[2].derived.rulerPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "1.8677 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 1.8676908695040055
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[2].derived.rulerPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.6440 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.6440313343117261
   },
   {
    "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[2].derived.socDriftKWh",
    "kind": "derived",
+   "pre": "",
    "s": "+0.285 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": 0.28484872560000063
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> SOC, last row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[2].derived.socEnd",
    "kind": "derived",
+   "pre": "",
    "s": "52.43%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 52.43
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> SOC, first row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[2].derived.socStart",
    "kind": "derived",
+   "pre": "",
    "s": "55.00%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 55.00000000000001
   },
@@ -1574,33 +1973,45 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[2].reconciliation.candDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-0.651%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -0.6511332837246908
   },
   {
    "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "fmt": ".1f",
    "key": "$.screens.race.pairs[2].reconciliation.candImpliedBsfc",
    "kind": "derived",
+   "pre": "",
    "s": "203.6 g/kWh",
+   "suf": " g/kWh",
    "tier": "DERIVED",
    "v": 203.61536109344408
   },
   {
    "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[2].reconciliation.candImpliedGenEta",
    "kind": "derived",
+   "pre": "",
    "s": "0.9518",
+   "suf": "",
    "tier": "DERIVED",
    "v": 0.9517613403588643
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_nominal_seed23_10Hz.csv -> P_batt_bus_kW, integrated",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[2].reconciliation.candNetPackBus",
    "kind": "derived",
+   "pre": "",
    "s": "+1.650 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": 1.6504523194448424
   },
@@ -1660,9 +2071,12 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[2].reconciliation.rulerDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-0.362%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -0.36224614532491445
   },
@@ -1708,9 +2122,12 @@
   },
   {
    "derivedFrom": "margin_pct_per_km_paired.per_seed[23] minus margin_pct_per_payload_tkm_paired.per_seed[23], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V2_on_VOLT-REG -> nominal",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[2].record.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+16.19 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 16.187444937496835
   },
@@ -1830,129 +2247,205 @@
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[3].derived.candFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "23,002.2 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 23002.2368700171
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[3].derived.candKm",
    "kind": "derived",
+   "pre": "",
    "s": "141.957 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 141.95743344721234
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[3].derived.candLitres",
    "kind": "derived",
+   "pre": "",
    "s": "27.65 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 27.646919314924396
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[3].derived.candPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "1.9264 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 1.9264298578998211
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[3].derived.candPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.7828 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.7827833636325969
   },
   {
+   "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+   "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+   "fmt": ".0f",
+   "key": "$.screens.race.pairs[3].derived.density",
+   "kind": "srcline",
+   "line": 37,
+   "name": "DENSITY_G_PER_L",
+   "pre": "",
+   "s": "832 g/L",
+   "suf": " g/L",
+   "tier": "RECORD",
+   "v": 832.0
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[3].derived.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+16.82 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 16.81970476258292
   },
   {
+   "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+   "file": "WS4_genset/ws4_models.py",
+   "fmt": ".1f",
+   "key": "$.screens.race.pairs[3].derived.lhv",
+   "kind": "srcline",
+   "line": 26,
+   "name": "LHV_KJ_PER_G",
+   "pre": "",
+   "s": "42.8 kJ/g",
+   "suf": " kJ/g",
+   "tier": "RECORD",
+   "v": 42.8
+  },
+  {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[3].derived.marginPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "+5.71%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 5.710037766021388
   },
   {
    "derivedFrom": "integrated",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[3].derived.marginPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "-11.11%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -11.109666996561531
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> fuel_g_per_s",
+   "fmt": ",.1f",
    "key": "$.screens.race.pairs[3].derived.rulerFuelG",
    "kind": "derived",
+   "pre": "",
    "s": "24,395.2 g",
+   "suf": " g",
    "tier": "DERIVED",
    "v": 24395.21273000144
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_ruler_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> v_kmh",
+   "fmt": ".3f",
    "key": "$.screens.race.pairs[3].derived.rulerKm",
    "kind": "derived",
+   "pre": "",
    "s": "141.957 km",
+   "suf": " km",
    "tier": "DERIVED",
    "v": 141.95743344721234
   },
   {
    "derivedFrom": "fuel_g / 832 g/L (ws11_params.py:37)",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[3].derived.rulerLitres",
    "kind": "derived",
+   "pre": "",
    "s": "29.32 L",
+   "suf": " L",
    "tier": "DERIVED",
    "v": 29.321169146636347
   },
   {
    "derivedFrom": "integrated",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[3].derived.rulerPerKm",
    "kind": "derived",
+   "pre": "",
    "s": "2.0431 kWh/km",
+   "suf": " kWh/km",
    "tier": "DERIVED",
    "v": 2.043091133199762
   },
   {
    "derivedFrom": "integrated / payload of record",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[3].derived.rulerPerPayload",
    "kind": "derived",
+   "pre": "",
    "s": "0.7045 kWh/t-km",
+   "suf": " kWh/t-km",
    "tier": "DERIVED",
    "v": 0.7045141838619869
   },
   {
    "derivedFrom": "(SOC first - SOC last) x 11.083608 kWh usable, the pack size declared in the trace's own header line",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[3].derived.socDriftKWh",
    "kind": "derived",
+   "pre": "",
    "s": "+0.285 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": 0.28484872560000063
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> SOC, last row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[3].derived.socEnd",
    "kind": "derived",
+   "pre": "",
    "s": "52.43%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 52.43
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> SOC, first row",
+   "fmt": ".2f",
    "key": "$.screens.race.pairs[3].derived.socStart",
    "kind": "derived",
+   "pre": "",
    "s": "55.00%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 55.00000000000001
   },
@@ -2009,33 +2502,45 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[3].reconciliation.candDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-1.292%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -1.292117613295435
   },
   {
    "derivedFrom": "this file's own fuel_g_per_s over its own P_shaft_eng_kW",
+   "fmt": ".1f",
    "key": "$.screens.race.pairs[3].reconciliation.candImpliedBsfc",
    "kind": "derived",
+   "pre": "",
    "s": "206.9 g/kWh",
+   "suf": " g/kWh",
    "tier": "DERIVED",
    "v": 206.9342770387572
   },
   {
    "derivedFrom": "this file's own P_gen_bus_kW over its own P_shaft_eng_kW",
+   "fmt": ".4f",
    "key": "$.screens.race.pairs[3].reconciliation.candImpliedGenEta",
    "kind": "derived",
+   "pre": "",
    "s": "0.9537",
+   "suf": "",
    "tier": "DERIVED",
    "v": 0.9537065861358177
   },
   {
    "derivedFrom": "WS11_vehicle_zero_ruler/data/trace_V2_VOLT-REG_climb_10km_6pct_seed23_10Hz.csv -> P_batt_bus_kW, integrated",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[3].reconciliation.candNetPackBus",
    "kind": "derived",
+   "pre": "",
    "s": "+1.034 kWh",
+   "suf": " kWh",
    "tier": "DERIVED",
    "v": 1.0342100944449877
   },
@@ -2129,9 +2634,12 @@
   },
   {
    "derivedFrom": "live integral vs the fuel implied by the record's own per-seed kWh/km over the same distance",
+   "fmt": "+.3f",
    "key": "$.screens.race.pairs[3].reconciliation.rulerDeltaPct",
    "kind": "derived",
+   "pre": "",
    "s": "-2.929%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": -2.929072572880419
   },
@@ -2177,9 +2685,12 @@
   },
   {
    "derivedFrom": "margin_pct_per_km_paired.per_seed[23] minus margin_pct_per_payload_tkm_paired.per_seed[23], both from WS11_vehicle_zero_ruler/results_ws11.json -> results -> V2_on_VOLT-REG -> climb_10km_6pct",
+   "fmt": "+.2f",
    "key": "$.screens.race.pairs[3].record.gapPp",
    "kind": "derived",
+   "pre": "",
    "s": "+16.54 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": 16.54076960093089
   },
@@ -3059,9 +3570,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[0].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3076,17 +3590,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[0].material",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[0].minor",
    "kind": "derived",
+   "pre": "",
    "s": "5",
+   "suf": "",
    "tier": "RECORD",
    "v": 5
   },
@@ -3099,9 +3619,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[1].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3116,17 +3639,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[1].material",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[1].minor",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
@@ -3139,9 +3668,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[2].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3156,17 +3688,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[2].material",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[2].minor",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
@@ -3179,9 +3717,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[3].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3196,17 +3737,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[3].material",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
   {
    "derivedFrom": "read from the verdict line of WS2_traction_motor/FINDINGS_WS2_r4.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[3].minor",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
@@ -3219,9 +3766,12 @@
   },
   {
    "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[4].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
@@ -3236,17 +3786,23 @@
   },
   {
    "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[4].material",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
   {
    "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[4].minor",
    "kind": "derived",
+   "pre": "",
    "s": "4",
+   "suf": "",
    "tier": "RECORD",
    "v": 4
   },
@@ -3259,9 +3815,12 @@
   },
   {
    "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[5].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3276,17 +3835,23 @@
   },
   {
    "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[5].material",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
   {
    "derivedFrom": "counted from the severity-tagged finding headings in WS3_battery/FINDINGS_WS3_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[5].minor",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
@@ -3299,9 +3864,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[6].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3316,17 +3884,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[6].material",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[6].minor",
    "kind": "derived",
+   "pre": "",
    "s": "5",
+   "suf": "",
    "tier": "RECORD",
    "v": 5
   },
@@ -3339,9 +3913,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r2.md ('no new findings of any severity')",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[7].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3356,17 +3933,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r2.md ('no new findings of any severity')",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[7].material",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r2.md ('no new findings of any severity')",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[7].minor",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3379,9 +3962,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[8].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3396,17 +3982,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[8].material",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_WS4_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[8].minor",
    "kind": "derived",
+   "pre": "",
    "s": "4",
+   "suf": "",
    "tier": "RECORD",
    "v": 4
   },
@@ -3419,9 +4011,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[9].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
@@ -3436,17 +4031,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[9].material",
    "kind": "derived",
+   "pre": "",
    "s": "3",
+   "suf": "",
    "tier": "RECORD",
    "v": 3
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[9].minor",
    "kind": "derived",
+   "pre": "",
    "s": "8",
+   "suf": "",
    "tier": "RECORD",
    "v": 8
   },
@@ -3459,9 +4060,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[10].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "0",
+   "suf": "",
    "tier": "RECORD",
    "v": 0
   },
@@ -3476,17 +4080,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[10].material",
    "kind": "derived",
+   "pre": "",
    "s": "3",
+   "suf": "",
    "tier": "RECORD",
    "v": 3
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[10].minor",
    "kind": "derived",
+   "pre": "",
    "s": "4",
+   "suf": "",
    "tier": "RECORD",
    "v": 4
   },
@@ -3499,9 +4109,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[11].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
@@ -3516,17 +4129,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[11].material",
    "kind": "derived",
+   "pre": "",
    "s": "3",
+   "suf": "",
    "tier": "RECORD",
    "v": 3
   },
   {
    "derivedFrom": "read from the verdict line of WS4_genset/FINDINGS_KX_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[11].minor",
    "kind": "derived",
+   "pre": "",
    "s": "6",
+   "suf": "",
    "tier": "RECORD",
    "v": 6
   },
@@ -3539,9 +4158,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[12].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
@@ -3556,17 +4178,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[12].material",
    "kind": "derived",
+   "pre": "",
    "s": "5",
+   "suf": "",
    "tier": "RECORD",
    "v": 5
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[12].minor",
    "kind": "derived",
+   "pre": "",
    "s": "6",
+   "suf": "",
    "tier": "RECORD",
    "v": 6
   },
@@ -3579,9 +4207,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[13].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "1",
+   "suf": "",
    "tier": "RECORD",
    "v": 1
   },
@@ -3596,17 +4227,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[13].material",
    "kind": "derived",
+   "pre": "",
    "s": "4",
+   "suf": "",
    "tier": "RECORD",
    "v": 4
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r2.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[13].minor",
    "kind": "derived",
+   "pre": "",
    "s": "7",
+   "suf": "",
    "tier": "RECORD",
    "v": 7
   },
@@ -3619,9 +4256,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[14].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "2",
+   "suf": "",
    "tier": "RECORD",
    "v": 2
   },
@@ -3636,17 +4276,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[14].material",
    "kind": "derived",
+   "pre": "",
    "s": "6",
+   "suf": "",
    "tier": "RECORD",
    "v": 6
   },
   {
    "derivedFrom": "read from the verdict line of WS8_semi_architecture/FINDINGS_WS8_r3.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[14].minor",
    "kind": "derived",
+   "pre": "",
    "s": "12",
+   "suf": "",
    "tier": "RECORD",
    "v": 12
   },
@@ -3659,9 +4305,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[15].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "4",
+   "suf": "",
    "tier": "RECORD",
    "v": 4
   },
@@ -3676,17 +4325,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[15].material",
    "kind": "derived",
+   "pre": "",
    "s": "6",
+   "suf": "",
    "tier": "RECORD",
    "v": 6
   },
   {
    "derivedFrom": "read from the verdict line of WS9_vehicle_one_wave2/FINDINGS_WS9_PRE_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[15].minor",
    "kind": "derived",
+   "pre": "",
    "s": "9",
+   "suf": "",
    "tier": "RECORD",
    "v": 9
   },
@@ -3699,9 +4354,12 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[16].blocking",
    "kind": "derived",
+   "pre": "",
    "s": "3",
+   "suf": "",
    "tier": "RECORD",
    "v": 3
   },
@@ -3716,17 +4374,23 @@
   },
   {
    "derivedFrom": "read from the verdict line of WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[16].material",
    "kind": "derived",
+   "pre": "",
    "s": "8",
+   "suf": "",
    "tier": "RECORD",
    "v": 8
   },
   {
    "derivedFrom": "read from the verdict line of WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.adjudications[16].minor",
    "kind": "derived",
+   "pre": "",
    "s": "13",
+   "suf": "",
    "tier": "RECORD",
    "v": 13
   },
@@ -3739,17 +4403,23 @@
   },
   {
    "derivedFrom": "count of first-pass rounds with a findings file on disk",
+   "fmt": "d",
    "key": "$.screens.rounds.defectRate.firstPassRounds",
    "kind": "derived",
+   "pre": "",
    "s": "7",
+   "suf": "",
    "tier": "DERIVED",
    "v": 7
   },
   {
    "derivedFrom": "count of those whose verdict line records at least one blocking or material finding",
+   "fmt": "d",
    "key": "$.screens.rounds.defectRate.firstPassWithDefects",
    "kind": "derived",
+   "pre": "",
    "s": "7",
+   "suf": "",
    "tier": "DERIVED",
    "v": 7
   },
@@ -3769,9 +4439,12 @@
   },
   {
    "derivedFrom": "PM_LOG.md 2026-08-31 07:40 entry, and WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.gap.blocking",
    "kind": "derived",
+   "pre": "",
    "s": "3",
+   "suf": "",
    "tier": "RECORD",
    "v": 3
   },
@@ -3798,17 +4471,23 @@
   },
   {
    "derivedFrom": "PM_LOG.md 2026-08-31 07:40 entry, and WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.gap.material",
    "kind": "derived",
+   "pre": "",
    "s": "8",
+   "suf": "",
    "tier": "RECORD",
    "v": 8
   },
   {
    "derivedFrom": "PM_LOG.md 2026-08-31 07:40 entry, and WS11_vehicle_zero_ruler/FINDINGS_WS11_r1.md",
+   "fmt": "d",
    "key": "$.screens.rounds.gap.minor",
    "kind": "derived",
+   "pre": "",
    "s": "13",
+   "suf": "",
    "tier": "RECORD",
    "v": 13
   },
@@ -3878,9 +4557,12 @@
   },
   {
    "derivedFrom": "the derived R6-corner radiator package against the exported R20 design point",
+   "fmt": "+.2f",
    "key": "$.screens.rounds.kx.exceedance",
    "kind": "derived",
+   "pre": "",
    "s": "+8.95%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 8.949243664277082
   },
@@ -3900,9 +4582,12 @@
   },
   {
    "derivedFrom": "WS4_genset/results_ws4.json -> series_duty_v2 -> r6_rating_family_probe -> cases -> r6_rating_corner_full -> per_seed -> 3 -> engine_reject_2min_max_kW (max over the 8-seed set) x the declared radiator package share",
+   "fmt": ".3f",
    "key": "$.screens.rounds.kx.r6Radiator",
    "kind": "derived",
+   "pre": "",
    "s": "103.522 kW",
+   "suf": " kW",
    "tier": "DERIVED",
    "v": 103.52164637820512
   },
@@ -4072,6 +4757,29 @@
    "suf": " N",
    "tier": "RECORD",
    "v": 23796.78122556096
+  },
+  {
+   "file": "WS8_semi_architecture/results_ws8.json",
+   "fmt": ".2f",
+   "key": "$.screens.sandbox.endpointFlags[0].bracket",
+   "kind": "cite",
+   "path": [
+    "params",
+    "vehicle",
+    "CdA"
+   ],
+   "pre": "",
+   "s": "5.50 m²",
+   "suf": " m²",
+   "tier": "RECORD",
+   "v": 5.5
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/REPORT_WS11.md",
+   "key": "$.screens.sandbox.endpointFlags[0].quote",
+   "kind": "quote",
+   "s": "CdA 4.2 m^2 is a WS1 fitted value, declared PROVISIONAL in BASELINE_v1 pending the WS7 coastdown, and the program already carries CdA 5.4 as a sizing case (E13).",
+   "tier": "RECORD"
   },
   {
    "file": "WS8_semi_architecture/results_ws8.json",
@@ -4254,6 +4962,17 @@
    "v": 0.009
   },
   {
+   "derivedFrom": "max() over WS1_loads_duty_cycles/results.json -> params -> engine -> trq_pts",
+   "fmt": ",.0f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.T_peak_Nm",
+   "kind": "derived",
+   "pre": "",
+   "s": "700 Nm",
+   "suf": " Nm",
+   "tier": "DERIVED",
+   "v": 700.0
+  },
+  {
    "file": "WS1_loads_duty_cycles/results.json",
    "fmt": ".3f",
    "key": "$.screens.sandbox.endpoints.zero.citations.eta_driveline",
@@ -4316,6 +5035,28 @@
    "suf": " kg/m³",
    "tier": "RECORD",
    "v": 1.2
+  },
+  {
+   "derivedFrom": "max() over WS1_loads_duty_cycles/results.json -> params -> engine -> rpm_pts",
+   "fmt": ",.0f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.rpm_ceiling",
+   "kind": "derived",
+   "pre": "",
+   "s": "3,000 rpm",
+   "suf": " rpm",
+   "tier": "DERIVED",
+   "v": 3000.0
+  },
+  {
+   "derivedFrom": "WS12-DECLARED (ws12_sandbox.py, VEHICLE_ZERO['v_climb_kmh']): the speed WS1's own 6% grade cross-check is stated at, WS1_loads_duty_cycles/results.json -> sensitivity -> climb_10km_6pc -> per_speed -> '60kmh'. It is a key name in the record, not a value, so it is declared rather than cited.",
+   "fmt": ".0f",
+   "key": "$.screens.sandbox.endpoints.zero.citations.v_climb_kmh",
+   "kind": "derived",
+   "pre": "",
+   "s": "60 km/h",
+   "suf": " km/h",
+   "tier": "DERIVED",
+   "v": 60.0
   },
   {
    "file": "WS1_loads_duty_cycles/results.json",
@@ -4385,9 +5126,12 @@
   },
   {
    "derivedFrom": "F_available_at_ceiling_kN / force_required.total_N, both exported",
+   "fmt": ".2f",
    "key": "$.screens.sandbox.s3.forceFraction",
    "kind": "derived",
+   "pre": "",
    "s": "52.30%",
+   "suf": "%",
    "tier": "DERIVED",
    "v": 52.29608372110722
   },
@@ -4460,9 +5204,12 @@
   },
   {
    "derivedFrom": "ws12_sandbox.ratio_ceiling() on the exported rpm ceiling, r_dyn and cruise speed",
+   "fmt": ".6f",
    "key": "$.screens.sandbox.s3.recomputedCeiling",
    "kind": "derived",
+   "pre": "",
    "s": "3.769911:1",
+   "suf": ":1",
    "tier": "DERIVED",
    "v": 3.769911184307752
   },
@@ -4585,6 +5332,49 @@
    "suf": "",
    "tier": "RECORD",
    "v": "load_follow"
+  },
+  {
+   "declaration": "DENSITY_G_PER_L = 832.0 # diesel EN590 at 15 C (WS4 convention)",
+   "file": "WS11_vehicle_zero_ruler/ws11_params.py",
+   "fmt": ".0f",
+   "key": "$.screens.sim.counterConstants.density",
+   "kind": "srcline",
+   "line": 37,
+   "name": "DENSITY_G_PER_L",
+   "pre": "",
+   "s": "832 g/L",
+   "suf": " g/L",
+   "tier": "RECORD",
+   "v": 832.0
+  },
+  {
+   "declaration": "LHV_KJ_PER_G = 42.8 # diesel lower heating value",
+   "file": "WS4_genset/ws4_models.py",
+   "fmt": ".1f",
+   "key": "$.screens.sim.counterConstants.lhv",
+   "kind": "srcline",
+   "line": 26,
+   "name": "LHV_KJ_PER_G",
+   "pre": "",
+   "s": "42.8 kJ/g",
+   "suf": " kJ/g",
+   "tier": "RECORD",
+   "v": 42.8
+  },
+  {
+   "file": "WS5_controls/results_ws5.json",
+   "fmt": "str",
+   "key": "$.screens.sim.disposition.text",
+   "kind": "cite",
+   "path": [
+    "_meta",
+    "adjudication"
+   ],
+   "pre": "",
+   "s": "CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one.",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "CUT by BASELINE_v7's research freeze. This packet is gated-but-unadjudicated; REPORT_WS5.md section 14 is WS5's own statement of what is weak in its own work, written because no adversarial reviewer will supply one."
   },
   {
    "file": "WS11_vehicle_zero_ruler/results_ws11.json",
@@ -4896,9 +5686,12 @@
   },
   {
    "derivedFrom": "both_g1r.delta_pp_min minus map_vs_scalar_alone.delta_pp_min minus spin_drag_alone.delta_pp_min, all three from WS4_genset/results_ws4.json -> interface_ws4 -> gate_g1 -> attribution_rows",
+   "fmt": "+.2f",
    "key": "$.screens.verdict.cards[0].waterfall[3].value",
    "kind": "derived",
+   "pre": "",
    "s": "-0.06 pp",
+   "suf": " pp",
    "tier": "DERIVED",
    "v": -0.06121754760556186
   },
@@ -5813,6 +6606,58 @@
   },
   {
    "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].conditionality.bothPendingItems",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "cold_corner_pending_items",
+    "V1_on_VOLT-SUB",
+    "with_cab_heat_and_CdA_5p4_pct"
+   ],
+   "pre": "",
+   "s": "+3.66%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 3.662210971402807
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "str",
+   "key": "$.screens.verdict.cards[3].conditionality.conditionedOn",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "cold_corner_pending_items",
+    "V1_on_VOLT-SUB",
+    "conditioned_on_rulings",
+    0
+   ],
+   "pre": "",
+   "s": "ESC-2 (pending)",
+   "suf": "",
+   "tier": "RECORD",
+   "v": "ESC-2 (pending)"
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
+   "fmt": "+.2f",
+   "key": "$.screens.verdict.cards[3].conditionality.orderedGateValue",
+   "kind": "cite",
+   "path": [
+    "interface_ws11",
+    "cold_corner_pending_items",
+    "V1_on_VOLT-SUB",
+    "ordered_gate_value_pct"
+   ],
+   "pre": "",
+   "s": "+19.12%",
+   "suf": "%",
+   "tier": "RECORD",
+   "v": 19.12403661613544
+  },
+  {
+   "file": "WS11_vehicle_zero_ruler/results_ws11.json",
    "fmt": ".1f",
    "key": "$.screens.verdict.cards[3].criterionCorner",
    "kind": "cite",
@@ -6254,7 +7099,7 @@
    "file": "BASELINE_v7_FREEZE.md",
    "key": "$.screens.verdict.cards[3].statusQuote",
    "kind": "quote",
-   "s": "V1 Postal vs stock NPR: FROZEN-PROVISIONAL ADVANCE, +20.11% nominal ensemble-min per payload tonne-km, worst corner +19.12%, robust to all ruler-modelling brackets",
+   "s": "V1 Postal vs stock NPR: FROZEN-PROVISIONAL ADVANCE, +20.11% nominal ensemble-min per payload tonne-km, worst corner +19.12%, robust to all ruler-modelling brackets; conditional on R43(a)-(d) (cab heat, warm-up model, corner convention, CdA bracket), which were ordered and not run.",
    "tier": "RECORD"
   }
  ]

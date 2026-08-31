@@ -112,7 +112,7 @@ export default function Method({ d, bundle }: { d: any; bundle: any }) {
       <Panel>
         <PanelHead
           kicker="THE THREE TIERS, ALWAYS VISIBLE"
-          title="Every number on every screen belongs to exactly one"
+          title="Every value of record belongs to exactly one, and the verifier proves it"
         />
         <div
           style={{
@@ -266,17 +266,19 @@ export default function Method({ d, bundle }: { d: any; bundle: any }) {
         <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <Kicker>exhibit_verify.py</Kicker>
           {[
-            'the manifest is exactly the set of renderable strings in the bundle, re-walked independently',
+            'the manifest is exactly the set of values of record in the bundle, re-walked independently',
             'every cited number re-resolves and re-formats to the displayed string, verbatim',
             'every quotation is lifted from its file again and matches character for character',
-            'every file fact re-hashes to its stated sha256 and size',
-            'every derived number names what it came from, and claims no key path',
-            'no promoted status appears in any badge position',
-            "the app's own source contains no numeral of record",
+            'every file fact re-hashes to its stated sha256 and size, and every source-line constant re-parses from its own line',
+            'the load-bearing derived numbers are recomputed from the record, and every other derived number names what it came from and claims no key path',
+            'no promoted status appears in any badge position, no badge position escapes the enumeration, and no bare status word sits in a section label',
+            "the app's own source and its built bundle contain no numeral of record",
             'one decimation row per published trace, with source path, sha256, stride and row count',
             'every 1 Hz file is a strict subsequence of its 10 Hz source and of the published segments',
-            'the on-screen decimation badge is present verbatim',
+            'the decimation badge is present verbatim in the data and rendered verbatim on screen',
             "the sandbox model reproduces the record's own force ledgers and ratio ceiling",
+            'every adjudication severity count re-parses from its own findings file',
+            "every headline number in this workstream's report resolves to the results data and appears in it verbatim",
           ].map((t, i) => (
             <div
               key={i}

@@ -1,0 +1,397 @@
+json_path,format,rendered
+advance_kill/verdicts/V1_on_VOLT-SUB/nominal_margin_pct_min,+.2f,+20.11
+advance_kill/verdicts/V2_on_VOLT-REG/nominal_margin_pct_min,+.2f,-7.93
+results/V2_on_VOLT-REG/nominal/margin_pct_per_km_paired/min,+.2f,+8.41
+one_factor/V2_on_VOLT-REG/mass_payload_denominator/cost_pp,.2f,16.34
+mass_ledger/sourced_specification/document,raw,"2023 ISUZU N-SERIES NPR-HD spec sheet (14,500 lbs. GVWR, Class 4)"
+mass_ledger/sourced_specification/url,raw,https://www.isuzucv.com/pdfs/npr-hd_diesel_specs.pdf
+mass_ledger/sourced_specification/gvwr_lb,",.0f","14,500"
+mass_ledger/gvw_kg,",.0f","6,600"
+mass_ledger/sourced_specification/engine,raw,Isuzu 4HK1-TC turbocharged intercooled diesel
+mass_ledger/sourced_specification/displacement_l,raw,5.2
+input_vintages/ruler_engine_map/name,raw,4HK1-TC-ref-W
+input_vintages/ruler_engine_map/island_bsfc_g_per_kWh,.3f,205.198
+mass_ledger/sourced_specification/transmission,raw,Aisin A465id 6-speed auto with double overdrive and lock-up 2nd-6th gears
+mass_ledger/sourced_transmission/url,raw,https://www.transmissionrepaircostguide.com/as68rc/
+mass_ledger/sourced_specification/rear_axle_ratio,raw,4.555
+mass_ledger/sourced_specification/tires,raw,215/85R16E (10-pr)
+mass_ledger/sourced_specification/alternator_A,.0f,140
+input_vintages/ruler_engine_map/label,raw,"baseline reference curve 700 Nm @ 1,600 rpm / ~153 kW"
+mass_ledger/sourced_specification/rated_power_hp_at_rpm/0,.0f,215
+mass_ledger/sourced_specification/rated_power_hp_at_rpm/1,.0f,2500
+mass_ledger/sourced_specification/rated_torque_lbft_at_rpm/0,.0f,452
+mass_ledger/sourced_specification/rated_torque_lbft_at_rpm/1,.0f,1850
+ruler_calibration/anchor/name,raw,"Fuelly - Isuzu NPR-HD, all model years (owner fuel logs)"
+ruler_calibration/anchor/url,raw,https://www.fuelly.com/truck/isuzu/npr-hd/all
+ruler_calibration/anchor/retrieved,raw,2026-08-31
+ruler_calibration/anchor/page_statement,raw,21 Isuzu NPR-HDs have provided 180 thousand miles of real world fuel economy & MPG data.
+ruler_calibration/anchor_distance_weighted_all_years/mpg,.3f,8.378
+ruler_calibration/anchor_distance_weighted_all_years/l_per_100km,.2f,28.07
+ruler_calibration/anchor_distance_weighted_all_years/miles,",.0f","179,702"
+ruler_calibration/anchor_distance_weighted_all_years/fuel_ups,",.0f","1,044"
+ruler_calibration/anchor_distance_weighted_4HK1_era/mpg,.3f,7.347
+ruler_calibration/anchor_distance_weighted_4HK1_era/l_per_100km,.2f,32.01
+ruler_calibration/corridor_check/ruler_VOLT_SUB_headline_median,.2f,19.18
+ruler_calibration/corridor_check/ruler_VOLT_SUB_headline_min,.2f,19.11
+ruler_calibration/corridor_check/ruler_VOLT_SUB_headline_max,.2f,19.22
+ruler_calibration/corridor_check/residual_vs_anchor_pct_headline,.2f,-31.69
+ruler_calibration/corridor_check/ruler_VOLT_SUB_all_reversed_median,.2f,24.20
+ruler_calibration/corridor_check/residual_vs_anchor_pct_all_reversed,.2f,-13.81
+ruler_calibration/brackets/headline_ruler_favourable/VOLT-SUB/l_per_100km/median,.2f,19.18
+ruler_calibration/brackets/headline_ruler_favourable/VOLT-REG/l_per_100km/median,.2f,19.03
+ruler_bracket_effect_on_margin/rows/V1_on_VOLT-SUB/headline_ruler_favourable/min,+.2f,+20.11
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/headline_ruler_favourable/min,+.2f,-7.93
+ruler_calibration/brackets/physical_accessories/VOLT-SUB/l_per_100km/median,.2f,19.83
+ruler_calibration/brackets/physical_accessories/VOLT-REG/l_per_100km/median,.2f,19.21
+ruler_bracket_effect_on_margin/rows/V1_on_VOLT-SUB/physical_accessories/min,+.2f,+22.76
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/physical_accessories/min,+.2f,-6.91
+ruler_calibration/brackets/converter_stalled_at_idle/VOLT-SUB/l_per_100km/median,.2f,22.50
+ruler_calibration/brackets/converter_stalled_at_idle/VOLT-REG/l_per_100km/median,.2f,19.21
+ruler_bracket_effect_on_margin/rows/V1_on_VOLT-SUB/converter_stalled_at_idle/min,+.2f,+31.93
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/converter_stalled_at_idle/min,+.2f,-6.96
+ruler_calibration/brackets/CdA_5.4/VOLT-SUB/l_per_100km/median,.2f,19.90
+ruler_calibration/brackets/CdA_5.4/VOLT-REG/l_per_100km/median,.2f,21.92
+ruler_bracket_effect_on_margin/rows/V1_on_VOLT-SUB/CdA_5.4/min,+.2f,+18.06
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/CdA_5.4/min,+.2f,-10.52
+ruler_calibration/brackets/sequential_shift_schedule/VOLT-SUB/l_per_100km/median,.2f,19.19
+ruler_calibration/brackets/sequential_shift_schedule/VOLT-REG/l_per_100km/median,.2f,19.03
+ruler_bracket_effect_on_margin/rows/V1_on_VOLT-SUB/sequential_shift_schedule/min,+.2f,+20.16
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/sequential_shift_schedule/min,+.2f,-7.91
+ruler_calibration/brackets/rotating_inertia_charged/VOLT-SUB/l_per_100km/median,.2f,19.51
+ruler_calibration/brackets/rotating_inertia_charged/VOLT-REG/l_per_100km/median,.2f,19.07
+ruler_bracket_effect_on_margin/rows/V1_on_VOLT-SUB/rotating_inertia_charged/min,+.2f,+21.50
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/rotating_inertia_charged/min,+.2f,-7.72
+ruler_calibration/brackets/all_ruler_favourable_choices_reversed/VOLT-SUB/l_per_100km/median,.2f,24.20
+ruler_calibration/brackets/all_ruler_favourable_choices_reversed/VOLT-REG/l_per_100km/median,.2f,22.31
+ruler_bracket_effect_on_margin/rows/V1_on_VOLT-SUB/all_ruler_favourable_choices_reversed/min,+.2f,+32.62
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/all_ruler_favourable_choices_reversed/min,+.2f,-8.57
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/physical_accessories/min,+.2f,-6.91
+ruler_bracket_effect_on_margin/rows/V2_on_VOLT-REG/CdA_5.4/min,+.2f,-10.52
+mass_ledger/gvw_kg,",.0f","6,600"
+mass_ledger/ruler_build/0/item,raw,"chassis-cab curb, 150 in WB"
+mass_ledger/ruler_build/0/kg,raw,2985
+mass_ledger/ruler_build/0/source,raw,"[SOURCED] GVWR 14,500 lb minus body/payload allowance interpolated to the 150 in wheelbase (7,920 lb)"
+mass_ledger/ruler_build/1/item,raw,16 ft dry-freight body + subframe + rear door
+mass_ledger/ruler_build/1/kg,raw,545
+mass_ledger/ruler_build/1/source,raw,[WS11-DECLARED] reconciliation item to WS1's ratified operating curb
+mass_ledger/ruler_build/2/item,raw,driver + kit
+mass_ledger/ruler_build/2/kg,raw,90
+mass_ledger/ruler_build/2/source,raw,[WS11-DECLARED]
+mass_ledger/ruler_build/3/item,raw,"fuel to full (30 gal tank), increment over chassis tare"
+mass_ledger/ruler_build/3/kg,raw,75
+mass_ledger/ruler_build/3/source,raw,[WS11-DECLARED]
+mass_ledger/ruler_build/4/item,raw,"DEF, tools, spare"
+mass_ledger/ruler_build/4/kg,raw,5
+mass_ledger/ruler_build/4/source,raw,[WS11-DECLARED]
+mass_ledger/totals/ruler/curb_kg,.0f,3700
+mass_ledger/totals/ruler/payload_at_gvw_kg,.0f,2900
+mass_ledger/chassis_cab_curb_derivation/allowance_range_lb/0,",.0f","7,545"
+mass_ledger/chassis_cab_curb_derivation/allowance_range_lb/1,",.0f","8,511"
+mass_ledger/chassis_cab_curb_derivation/wheelbase_in,.0f,150
+mass_ledger/chassis_cab_curb_derivation/allowance_lb_at_wheelbase,.0f,7920
+mass_ledger/chassis_cab_curb_derivation/chassis_cab_curb_kg,.2f,2984.70
+mass_ledger/totals/ruler/curb_kg,.0f,3700
+mass_ledger/totals/V1/curb_kg,.0f,3888
+mass_ledger/totals/V2/curb_kg,.0f,4139
+mass_ledger/totals/ruler/payload_at_gvw_kg,.0f,2900
+mass_ledger/totals/V1/payload_at_gvw_kg,.0f,2712
+mass_ledger/totals/V2/payload_at_gvw_kg,.0f,2461
+one_factor/V1_on_VOLT-SUB/mass_payload_denominator/curb_delta_kg,.0f,188
+one_factor/V2_on_VOLT-REG/mass_payload_denominator/curb_delta_kg,.0f,439
+mass_ledger/payload_ratio_ruler_over_candidate/V1,.6f,1.069322
+mass_ledger/payload_ratio_ruler_over_candidate/V2,.6f,1.178383
+mass_ledger/break_even_per_km_advantage_pct/V1,.2f,6.48
+mass_ledger/break_even_per_km_advantage_pct/V2,.2f,15.14
+mass_ledger/deleted_by_both_candidates/0/item,raw,Aisin A465id 6-speed AT + torque converter + fluid
+mass_ledger/deleted_by_both_candidates/0/kg,raw,227
+mass_ledger/deleted_by_both_candidates/1/item,raw,transmission oil cooler + lines
+mass_ledger/deleted_by_both_candidates/1/kg,raw,5
+mass_ledger/deleted_by_both_candidates/2/item,raw,"alternator, 140 A"
+mass_ledger/deleted_by_both_candidates/2/kg,raw,10
+mass_ledger/deleted_by_both_candidates/3/item,raw,starter motor + solenoid
+mass_ledger/deleted_by_both_candidates/3/kg,raw,8
+mass_ledger/v2_aftertreatment_bracket_kg,.0f,60
+mass_ledger/totals/V2_aftertreatment_bracket/curb_kg,.0f,4199
+mass_ledger/totals/V2_aftertreatment_bracket/payload_at_gvw_kg,.0f,2401
+mass_ledger/break_even_per_km_advantage_pct/V2_aftertreatment_bracket,.2f,17.21
+break_even_curb/V1_on_VOLT-SUB/actual_curb_kg,.0f,3888
+break_even_curb/V1_on_VOLT-SUB/break_even_curb_kg/min,.0f,4433
+break_even_curb/V1_on_VOLT-SUB/headroom_kg_worst,+.0f,+545
+break_even_curb/V2_on_VOLT-REG/actual_curb_kg,.0f,4139
+break_even_curb/V2_on_VOLT-REG/break_even_curb_kg/min,.0f,3944
+break_even_curb/V2_on_VOLT-REG/headroom_kg_worst,+.0f,-195
+break_even_curb/V1_on_VOLT-SUB/headroom_kg_worst,.0f,545
+break_even_curb/V2_on_VOLT-REG/headroom_kg_worst,.0f,-195
+results/V1_on_VOLT-SUB/nominal/ruler/per_km/median,.4f,1.8969
+results/V1_on_VOLT-SUB/nominal/candidate/per_km/median,.4f,1.4051
+results/V1_on_VOLT-SUB/nominal/margin_pct_per_km_paired/min,+.2f,+25.29
+results/V1_on_VOLT-SUB/nominal/margin_pct_per_km_paired/median,+.2f,+25.96
+results/V1_on_VOLT-SUB/nominal/margin_pct_per_km_paired/max,+.2f,+26.24
+results/V1_on_VOLT-SUB/nominal/margin_pct_per_payload_tkm_paired/min,+.2f,+20.11
+results/V1_on_VOLT-SUB/nominal/margin_pct_per_payload_tkm_paired/median,+.2f,+20.83
+results/V1_on_VOLT-SUB/nominal/margin_pct_per_payload_tkm_paired/max,+.2f,+21.13
+results/V1_on_VOLT-SUB/payload_p20/ruler/per_km/median,.4f,1.9775
+results/V1_on_VOLT-SUB/payload_p20/candidate/per_km/median,.4f,1.5132
+results/V1_on_VOLT-SUB/payload_p20/margin_pct_per_km_paired/min,+.2f,+22.84
+results/V1_on_VOLT-SUB/payload_p20/margin_pct_per_km_paired/median,+.2f,+23.34
+results/V1_on_VOLT-SUB/payload_p20/margin_pct_per_km_paired/max,+.2f,+23.91
+results/V1_on_VOLT-SUB/payload_p20/margin_pct_per_payload_tkm_paired/min,+.2f,+22.84
+results/V1_on_VOLT-SUB/payload_p20/margin_pct_per_payload_tkm_paired/median,+.2f,+23.34
+results/V1_on_VOLT-SUB/payload_p20/margin_pct_per_payload_tkm_paired/max,+.2f,+23.91
+results/V1_on_VOLT-SUB/payload_m20/ruler/per_km/median,.4f,1.8165
+results/V1_on_VOLT-SUB/payload_m20/candidate/per_km/median,.4f,1.3528
+results/V1_on_VOLT-SUB/payload_m20/margin_pct_per_km_paired/min,+.2f,+24.66
+results/V1_on_VOLT-SUB/payload_m20/margin_pct_per_km_paired/median,+.2f,+25.44
+results/V1_on_VOLT-SUB/payload_m20/margin_pct_per_km_paired/max,+.2f,+25.61
+results/V1_on_VOLT-SUB/payload_m20/margin_pct_per_payload_tkm_paired/min,+.2f,+24.66
+results/V1_on_VOLT-SUB/payload_m20/margin_pct_per_payload_tkm_paired/median,+.2f,+25.44
+results/V1_on_VOLT-SUB/payload_m20/margin_pct_per_payload_tkm_paired/max,+.2f,+25.61
+results/V1_on_VOLT-SUB/cold_-10C/ruler/per_km/median,.4f,1.9266
+results/V1_on_VOLT-SUB/cold_-10C/candidate/per_km/median,.4f,1.4467
+results/V1_on_VOLT-SUB/cold_-10C/margin_pct_per_km_paired/min,+.2f,+24.37
+results/V1_on_VOLT-SUB/cold_-10C/margin_pct_per_km_paired/median,+.2f,+25.01
+results/V1_on_VOLT-SUB/cold_-10C/margin_pct_per_km_paired/max,+.2f,+25.25
+results/V1_on_VOLT-SUB/cold_-10C/margin_pct_per_payload_tkm_paired/min,+.2f,+19.12
+results/V1_on_VOLT-SUB/cold_-10C/margin_pct_per_payload_tkm_paired/median,+.2f,+19.81
+results/V1_on_VOLT-SUB/cold_-10C/margin_pct_per_payload_tkm_paired/max,+.2f,+20.07
+results/V1_on_VOLT-SUB/alt2000m_45C/ruler/per_km/median,.4f,1.8282
+results/V1_on_VOLT-SUB/alt2000m_45C/candidate/per_km/median,.4f,1.3161
+results/V1_on_VOLT-SUB/alt2000m_45C/margin_pct_per_km_paired/min,+.2f,+27.31
+results/V1_on_VOLT-SUB/alt2000m_45C/margin_pct_per_km_paired/median,+.2f,+28.02
+results/V1_on_VOLT-SUB/alt2000m_45C/margin_pct_per_km_paired/max,+.2f,+28.12
+results/V1_on_VOLT-SUB/alt2000m_45C/margin_pct_per_payload_tkm_paired/min,+.2f,+22.27
+results/V1_on_VOLT-SUB/alt2000m_45C/margin_pct_per_payload_tkm_paired/median,+.2f,+23.03
+results/V1_on_VOLT-SUB/alt2000m_45C/margin_pct_per_payload_tkm_paired/max,+.2f,+23.14
+results/V1_on_VOLT-SUB/nominal/ruler/l_per_100km/median,.2f,19.18
+results/V1_on_VOLT-SUB/nominal/candidate/l_per_100km/median,.2f,14.20
+results/V2_on_VOLT-REG/nominal/ruler/per_km/median,.4f,1.8827
+results/V2_on_VOLT-REG/nominal/candidate/per_km/median,.4f,1.7154
+results/V2_on_VOLT-REG/nominal/margin_pct_per_km_paired/min,+.2f,+8.41
+results/V2_on_VOLT-REG/nominal/margin_pct_per_km_paired/median,+.2f,+8.96
+results/V2_on_VOLT-REG/nominal/margin_pct_per_km_paired/max,+.2f,+9.25
+results/V2_on_VOLT-REG/nominal/margin_pct_per_payload_tkm_paired/min,+.2f,-7.93
+results/V2_on_VOLT-REG/nominal/margin_pct_per_payload_tkm_paired/median,+.2f,-7.27
+results/V2_on_VOLT-REG/nominal/margin_pct_per_payload_tkm_paired/max,+.2f,-6.93
+results/V2_on_VOLT-REG/payload_p20/ruler/per_km/median,.4f,1.9307
+results/V2_on_VOLT-REG/payload_p20/candidate/per_km/median,.4f,1.8076
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_km_paired/min,+.2f,+6.27
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_km_paired/median,+.2f,+6.38
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_km_paired/max,+.2f,+6.55
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_payload_tkm_paired/min,+.2f,+6.27
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_payload_tkm_paired/median,+.2f,+6.38
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_payload_tkm_paired/max,+.2f,+6.55
+results/V2_on_VOLT-REG/payload_m20/ruler/per_km/median,.4f,1.8364
+results/V2_on_VOLT-REG/payload_m20/candidate/per_km/median,.4f,1.7014
+results/V2_on_VOLT-REG/payload_m20/margin_pct_per_km_paired/min,+.2f,+7.21
+results/V2_on_VOLT-REG/payload_m20/margin_pct_per_km_paired/median,+.2f,+7.27
+results/V2_on_VOLT-REG/payload_m20/margin_pct_per_km_paired/max,+.2f,+7.58
+results/V2_on_VOLT-REG/payload_m20/margin_pct_per_payload_tkm_paired/min,+.2f,+7.21
+results/V2_on_VOLT-REG/payload_m20/margin_pct_per_payload_tkm_paired/median,+.2f,+7.27
+results/V2_on_VOLT-REG/payload_m20/margin_pct_per_payload_tkm_paired/max,+.2f,+7.58
+results/V2_on_VOLT-REG/cold_-10C/ruler/per_km/median,.4f,1.9976
+results/V2_on_VOLT-REG/cold_-10C/candidate/per_km/median,.4f,1.8413
+results/V2_on_VOLT-REG/cold_-10C/margin_pct_per_km_paired/min,+.2f,+7.69
+results/V2_on_VOLT-REG/cold_-10C/margin_pct_per_km_paired/median,+.2f,+7.86
+results/V2_on_VOLT-REG/cold_-10C/margin_pct_per_km_paired/max,+.2f,+8.21
+results/V2_on_VOLT-REG/cold_-10C/margin_pct_per_payload_tkm_paired/min,+.2f,-8.77
+results/V2_on_VOLT-REG/cold_-10C/margin_pct_per_payload_tkm_paired/median,+.2f,-8.58
+results/V2_on_VOLT-REG/cold_-10C/margin_pct_per_payload_tkm_paired/max,+.2f,-8.17
+results/V2_on_VOLT-REG/alt2000m_45C/ruler/per_km/median,.4f,1.6202
+results/V2_on_VOLT-REG/alt2000m_45C/candidate/per_km/median,.4f,1.4218
+results/V2_on_VOLT-REG/alt2000m_45C/margin_pct_per_km_paired/min,+.2f,+12.15
+results/V2_on_VOLT-REG/alt2000m_45C/margin_pct_per_km_paired/median,+.2f,+12.24
+results/V2_on_VOLT-REG/alt2000m_45C/margin_pct_per_km_paired/max,+.2f,+12.42
+results/V2_on_VOLT-REG/alt2000m_45C/margin_pct_per_payload_tkm_paired/min,+.2f,-3.52
+results/V2_on_VOLT-REG/alt2000m_45C/margin_pct_per_payload_tkm_paired/median,+.2f,-3.42
+results/V2_on_VOLT-REG/alt2000m_45C/margin_pct_per_payload_tkm_paired/max,+.2f,-3.20
+results/V2_on_VOLT-REG/climb_10km_6pct/ruler/per_km/median,.4f,2.1117
+results/V2_on_VOLT-REG/climb_10km_6pct/candidate/per_km/median,.4f,1.9639
+results/V2_on_VOLT-REG/climb_10km_6pct/margin_pct_per_km_paired/min,+.2f,+6.67
+results/V2_on_VOLT-REG/climb_10km_6pct/margin_pct_per_km_paired/median,+.2f,+7.04
+results/V2_on_VOLT-REG/climb_10km_6pct/margin_pct_per_km_paired/max,+.2f,+7.27
+results/V2_on_VOLT-REG/climb_10km_6pct/margin_pct_per_payload_tkm_paired/min,+.2f,-9.98
+results/V2_on_VOLT-REG/climb_10km_6pct/margin_pct_per_payload_tkm_paired/median,+.2f,-9.55
+results/V2_on_VOLT-REG/climb_10km_6pct/margin_pct_per_payload_tkm_paired/max,+.2f,-9.27
+results/V2_on_VOLT-REG/nominal/ruler/l_per_100km/median,.2f,19.03
+results/V2_on_VOLT-REG/nominal/candidate/l_per_100km/median,.2f,17.34
+results/V2_on_VOLT-SUB/nominal/ruler/per_km/median,.4f,1.8969
+results/V2_on_VOLT-SUB/nominal/candidate/per_km/median,.4f,1.2544
+results/V2_on_VOLT-SUB/nominal/margin_pct_per_km_paired/min,+.2f,+33.56
+results/V2_on_VOLT-SUB/nominal/margin_pct_per_km_paired/median,+.2f,+33.87
+results/V2_on_VOLT-SUB/nominal/margin_pct_per_km_paired/max,+.2f,+34.05
+results/V2_on_VOLT-SUB/nominal/margin_pct_per_payload_tkm_paired/min,+.2f,+21.71
+results/V2_on_VOLT-SUB/nominal/margin_pct_per_payload_tkm_paired/median,+.2f,+22.07
+results/V2_on_VOLT-SUB/nominal/margin_pct_per_payload_tkm_paired/max,+.2f,+22.29
+results/V2_on_VOLT-SUB/payload_p20/ruler/per_km/median,.4f,1.9775
+results/V2_on_VOLT-SUB/payload_p20/candidate/per_km/median,.4f,1.3740
+results/V2_on_VOLT-SUB/payload_p20/margin_pct_per_km_paired/min,+.2f,+30.00
+results/V2_on_VOLT-SUB/payload_p20/margin_pct_per_km_paired/median,+.2f,+30.56
+results/V2_on_VOLT-SUB/payload_p20/margin_pct_per_km_paired/max,+.2f,+30.92
+results/V2_on_VOLT-SUB/payload_p20/margin_pct_per_payload_tkm_paired/min,+.2f,+30.00
+results/V2_on_VOLT-SUB/payload_p20/margin_pct_per_payload_tkm_paired/median,+.2f,+30.56
+results/V2_on_VOLT-SUB/payload_p20/margin_pct_per_payload_tkm_paired/max,+.2f,+30.92
+results/V2_on_VOLT-SUB/payload_m20/ruler/per_km/median,.4f,1.8165
+results/V2_on_VOLT-SUB/payload_m20/candidate/per_km/median,.4f,1.2385
+results/V2_on_VOLT-SUB/payload_m20/margin_pct_per_km_paired/min,+.2f,+31.51
+results/V2_on_VOLT-SUB/payload_m20/margin_pct_per_km_paired/median,+.2f,+31.81
+results/V2_on_VOLT-SUB/payload_m20/margin_pct_per_km_paired/max,+.2f,+31.99
+results/V2_on_VOLT-SUB/payload_m20/margin_pct_per_payload_tkm_paired/min,+.2f,+31.51
+results/V2_on_VOLT-SUB/payload_m20/margin_pct_per_payload_tkm_paired/median,+.2f,+31.81
+results/V2_on_VOLT-SUB/payload_m20/margin_pct_per_payload_tkm_paired/max,+.2f,+31.99
+results/V2_on_VOLT-SUB/cold_-10C/ruler/per_km/median,.4f,1.9266
+results/V2_on_VOLT-SUB/cold_-10C/candidate/per_km/median,.4f,1.2883
+results/V2_on_VOLT-SUB/cold_-10C/margin_pct_per_km_paired/min,+.2f,+32.81
+results/V2_on_VOLT-SUB/cold_-10C/margin_pct_per_km_paired/median,+.2f,+33.14
+results/V2_on_VOLT-SUB/cold_-10C/margin_pct_per_km_paired/max,+.2f,+33.37
+results/V2_on_VOLT-SUB/cold_-10C/margin_pct_per_payload_tkm_paired/min,+.2f,+20.82
+results/V2_on_VOLT-SUB/cold_-10C/margin_pct_per_payload_tkm_paired/median,+.2f,+21.21
+results/V2_on_VOLT-SUB/cold_-10C/margin_pct_per_payload_tkm_paired/max,+.2f,+21.48
+results/V2_on_VOLT-SUB/alt2000m_45C/ruler/per_km/median,.4f,1.8282
+results/V2_on_VOLT-SUB/alt2000m_45C/candidate/per_km/median,.4f,1.1770
+results/V2_on_VOLT-SUB/alt2000m_45C/margin_pct_per_km_paired/min,+.2f,+35.31
+results/V2_on_VOLT-SUB/alt2000m_45C/margin_pct_per_km_paired/median,+.2f,+35.55
+results/V2_on_VOLT-SUB/alt2000m_45C/margin_pct_per_km_paired/max,+.2f,+35.79
+results/V2_on_VOLT-SUB/alt2000m_45C/margin_pct_per_payload_tkm_paired/min,+.2f,+23.77
+results/V2_on_VOLT-SUB/alt2000m_45C/margin_pct_per_payload_tkm_paired/median,+.2f,+24.05
+results/V2_on_VOLT-SUB/alt2000m_45C/margin_pct_per_payload_tkm_paired/max,+.2f,+24.33
+results/V2_on_VOLT-SUB/nominal/margin_pct_per_payload_tkm_paired/min,+.2f,+21.71
+results/V2_on_VOLT-REG/nominal/margin_pct_per_payload_tkm_paired/min,+.2f,-7.93
+one_factor/V1_on_VOLT-SUB/mass_payload_denominator/cost_pp,.2f,5.18
+one_factor/V2_on_VOLT-REG/mass_payload_denominator/cost_pp,.2f,16.34
+one_factor/V1_on_VOLT-SUB/regen/worth_pp,.2f,24.02
+one_factor/V2_on_VOLT-REG/regen/worth_pp,.2f,4.38
+one_factor/V1_on_VOLT-SUB/start_stop_engine_off/worth_pp,.2f,74.88
+one_factor/V2_on_VOLT-REG/start_stop_engine_off/worth_pp,.2f,0.31
+one_factor/V1_on_VOLT-SUB/start_stop_engine_off_pinned_variant/worth_pp,.2f,103.84
+one_factor/V2_on_VOLT-REG/start_stop_engine_off_pinned_variant/worth_pp,.2f,65.75
+one_factor/V1_on_VOLT-SUB/engine_operating_point/worth_pp,.2f,11.41
+one_factor/V2_on_VOLT-REG/engine_operating_point/worth_pp,.2f,12.59
+one_factor/V1_on_VOLT-SUB/engine_operating_point/ruler_duty_mean_effective_bsfc_g_per_kWh/median,.2f,261.35
+one_factor/V2_on_VOLT-REG/engine_operating_point/ruler_duty_mean_effective_bsfc_g_per_kWh/median,.2f,227.43
+one_factor/V1_on_VOLT-SUB/engine_operating_point/candidate_pinned_bsfc_g_per_kWh,.2f,228.72
+one_factor/V2_on_VOLT-REG/engine_operating_point/candidate_pinned_bsfc_g_per_kWh,.2f,203.62
+one_factor/V2_on_VOLT-REG/start_stop_engine_off/worth_pp,.2f,0.31
+one_factor/V2_on_VOLT-REG/start_stop_engine_off_pinned_variant/worth_pp,.2f,65.75
+results/V1_on_VOLT-SUB/payload_p20/margin_pct_per_payload_tkm_paired/min,+.2f,+22.84
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_payload_tkm_paired/min,+.2f,+6.27
+results/V1_on_VOLT-SUB/payload_m20/margin_pct_per_payload_tkm_paired/min,+.2f,+24.66
+results/V2_on_VOLT-REG/payload_m20/margin_pct_per_payload_tkm_paired/min,+.2f,+7.21
+results/V1_on_VOLT-SUB/cold_-10C/margin_pct_per_payload_tkm_paired/min,+.2f,+19.12
+results/V2_on_VOLT-REG/cold_-10C/margin_pct_per_payload_tkm_paired/min,+.2f,-8.77
+results/V1_on_VOLT-SUB/alt2000m_45C/margin_pct_per_payload_tkm_paired/min,+.2f,+22.27
+results/V2_on_VOLT-REG/alt2000m_45C/margin_pct_per_payload_tkm_paired/min,+.2f,-3.52
+results/V2_on_VOLT-REG/climb_10km_6pct/margin_pct_per_payload_tkm_paired/min,+.2f,-9.98
+results/V2_on_VOLT-REG/payload_p20/margin_pct_per_payload_tkm_paired/min,+.2f,+6.27
+results/V2_on_VOLT-REG/nominal/margin_pct_per_payload_tkm_paired/min,+.2f,-7.93
+payload_corner_reading_variant/variant/V2_on_VOLT-REG/payload_p20_own/margin_pct_per_payload_tkm_paired/min,+.2f,-7.73
+payload_corner_reading_variant/variant/V2_on_VOLT-REG/payload_m20_own/margin_pct_per_payload_tkm_paired/min,+.2f,-7.57
+payload_corner_reading_variant/variant/V1_on_VOLT-SUB/payload_p20_own/margin_pct_per_payload_tkm_paired/min,+.2f,+19.44
+payload_corner_reading_variant/variant/V1_on_VOLT-SUB/payload_m20_own/margin_pct_per_payload_tkm_paired/min,+.2f,+20.51
+cold_cab_heat_bracket/V1_on_VOLT-SUB/aux_kW_used/median,.2f,4.00
+cold_cab_heat_bracket/V1_on_VOLT-SUB/margin_ordered_corner,+.2f,+19.12
+cold_cab_heat_bracket/V1_on_VOLT-SUB/margin_pct_per_payload_tkm_paired/min,+.2f,+2.64
+cold_cab_heat_bracket/V2_on_VOLT-REG/margin_ordered_corner,+.2f,-8.77
+cold_cab_heat_bracket/V2_on_VOLT-REG/margin_pct_per_payload_tkm_paired/min,+.2f,-11.58
+trip_time_r38/V1_on_VOLT-SUB[nominal]/ruler_trip_time_s/median,.2f,3490.80
+trip_time_r38/V1_on_VOLT-SUB[nominal]/candidate_trip_time_s/median,.2f,3490.80
+trip_time_r38/V1_on_VOLT-SUB[nominal]/ratio_worst,.5f,1.00000
+trip_time_r38/V1_on_VOLT-SUB[nominal]/pct_worse_than_ruler_worst,+.3f,+0.000
+trip_time_r38/V2_on_VOLT-REG[nominal]/ruler_trip_time_s/median,.2f,6582.27
+trip_time_r38/V2_on_VOLT-REG[nominal]/candidate_trip_time_s/median,.2f,6577.05
+trip_time_r38/V2_on_VOLT-REG[nominal]/ratio_worst,.5f,0.99936
+trip_time_r38/V2_on_VOLT-REG[nominal]/pct_worse_than_ruler_worst,+.3f,-0.064
+trip_time_r38/V2_on_VOLT-REG[climb_10km_6pct]/ruler_trip_time_s/median,.2f,6963.13
+trip_time_r38/V2_on_VOLT-REG[climb_10km_6pct]/candidate_trip_time_s/median,.2f,6963.39
+trip_time_r38/V2_on_VOLT-REG[climb_10km_6pct]/ratio_worst,.5f,1.00044
+trip_time_r38/V2_on_VOLT-REG[climb_10km_6pct]/pct_worse_than_ruler_worst,+.3f,+0.044
+sustained_6pct_capability/ruler_kmh,.2f,82.01
+sustained_6pct_capability/V2_kmh,.2f,74.63
+sustained_6pct_capability/V2_genset_bus_kW_continuous,.2f,126.91
+sustained_6pct_capability/V1_kmh,.2f,31.76
+advance_kill/criterion/statement,raw,"ADVANCE only if >= 3% better than the ruler on the candidate's design duty at nominal, ensemble-min, AND >= 0% at every corner. Metric: fuel energy per payload tonne-km, paired per-seed."
+advance_kill/verdicts/V1_on_VOLT-SUB/verdict,raw,ADVANCE
+advance_kill/verdicts/V1_on_VOLT-SUB/nominal_margin_pct_min,+.2f,+20.11
+advance_kill/verdicts/V1_on_VOLT-SUB/nominal_margin_pct_min_governing_case,raw,seed 4 of the enumerated 8-seed VOLT-SUB ensemble
+advance_kill/verdicts/V1_on_VOLT-SUB/nominal_margin_pct_median,+.2f,+20.83
+advance_kill/verdicts/V1_on_VOLT-SUB/nominal_margin_pct_max,+.2f,+21.13
+advance_kill/verdicts/V1_on_VOLT-SUB/margin_vs_nominal_bar_pp,+.2f,+17.11
+advance_kill/verdicts/V1_on_VOLT-SUB/worst_corner_margin_pct,+.2f,+19.12
+advance_kill/verdicts/V1_on_VOLT-SUB/worst_corner_governing_case,raw,"cold_-10C (min over the enumerated corner set ['alt2000m_45C', 'cold_-10C', 'payload_m20', 'payload_p20']), itself at seed 4 of the enumerated 8-seed VOLT-SUB ensemble"
+advance_kill/verdicts/V1_on_VOLT-SUB/margin_vs_corner_bar_pp,+.2f,+19.12
+trip_time_r38/V1_on_VOLT-SUB[nominal]/pct_worse_than_ruler_worst,+.3f,+0.000
+advance_kill/verdicts/V2_on_VOLT-REG/verdict,raw,KILL
+advance_kill/verdicts/V2_on_VOLT-REG/nominal_margin_pct_min,+.2f,-7.93
+advance_kill/verdicts/V2_on_VOLT-REG/nominal_margin_pct_min_governing_case,raw,seed 5 of the enumerated 8-seed VOLT-REG ensemble
+advance_kill/verdicts/V2_on_VOLT-REG/nominal_margin_pct_median,+.2f,-7.27
+advance_kill/verdicts/V2_on_VOLT-REG/nominal_margin_pct_max,+.2f,-6.93
+advance_kill/verdicts/V2_on_VOLT-REG/margin_vs_nominal_bar_pp,+.2f,-10.93
+advance_kill/verdicts/V2_on_VOLT-REG/worst_corner_margin_pct,+.2f,-9.98
+advance_kill/verdicts/V2_on_VOLT-REG/worst_corner_governing_case,raw,"climb_10km_6pct (min over the enumerated corner set ['alt2000m_45C', 'climb_10km_6pct', 'cold_-10C', 'payload_m20', 'payload_p20']), itself at seed 5 of the enumerated 8-seed VOLT-REG+CLIMB ensemble"
+advance_kill/verdicts/V2_on_VOLT-REG/margin_vs_corner_bar_pp,+.2f,-9.98
+trip_time_r38/V2_on_VOLT-REG[nominal]/pct_worse_than_ruler_worst,+.3f,-0.064
+interface_ws11/verdicts/V1_on_VOLT-SUB/verdict,raw,ADVANCE
+interface_ws11/verdicts/V1_on_VOLT-SUB/nominal_margin_pct_min,.6f,20.114012
+interface_ws11/verdicts/V1_on_VOLT-SUB/worst_corner_margin_pct,.6f,19.124037
+interface_ws11/verdicts/V2_on_VOLT-REG/verdict,raw,KILL
+interface_ws11/verdicts/V2_on_VOLT-REG/nominal_margin_pct_min,.6f,-7.925180
+interface_ws11/verdicts/V2_on_VOLT-REG/worst_corner_margin_pct,.6f,-9.978769
+interface_ws11/masses/payload_at_gvw_kg/ruler,.0f,2900
+interface_ws11/masses/payload_at_gvw_kg/V1,.0f,2712
+interface_ws11/masses/payload_at_gvw_kg/V2,.0f,2461
+interface_ws11/sustained_6pct_capability_kmh/worst_case_value,.2f,31.76
+interface_ws11/sustained_6pct_capability_kmh/governing_case,raw,V1
+interface_ws11/ws4_hot_swap_seam/max_abs_difference,.1e,0.0e+00
+input_vintages/ws4_series_duty_v2/status,raw,live_design_input
+input_vintages/ws4_series_duty_v2/usable_bus_kWh,.6f,11.083608
+input_vintages/ws4_series_duty_v2/gate_g1_archived_status,raw,executed_kill_2026-08-30
+input_vintages/ws2_chain_of_record/ws2_rework_round,raw,4
+input_vintages/ws2_chain_of_record/map_file,raw,data/effmap_motor_inverter_662V.csv
+input_vintages/ws2_chain_of_record/map_voltage_V,.0f,662
+input_vintages/ws2_chain_of_record/ratio,raw,10.0
+input_vintages/ws3_pack/usable_bus_kWh,.6f,11.083608
+input_vintages/ws3_pack/mass_kg,.2f,280.52
+input_vintages/ws3_pack/v1_genset_hysteresis_kWh,.2f,3.00
+ws4_regression/max_abs_difference,.1e,0.0e+00
+sanity_checks/cruise_85kmh_wheel_kW,.2f,46.93
+sanity_checks/ws1_crosscheck_wheel_kW,.2f,46.93
+sanity_checks/ws1_baseline_says,raw,"~2.0 kN, ~47 kW"
+sanity_checks/ruler_engine_rpm_at_85kmh_top_gear,.0f,1749
+sanity_checks/ruler_engine_rpm_at_100kmh_top_gear,.0f,2057
+sustained_6pct_capability/V1_kmh,.2f,31.76
+sanity_checks/per_km_vs_per_payload_identity/max_abs_residual,.3e,4.441e-16
+ws4_regression/max_abs_difference,.1e,0.0e+00
+escalations/0/id,raw,ESC-1
+escalations/0/title,raw,"The only public NPR fuel-economy reference I could obtain is a crowdsourced in-use aggregate, and it cannot calibrate a drive cycle"
+escalations/0/challenges,raw,the assignment's ruler-anchor requirement
+escalations/0/text,raw,"The assignment makes a sourced public anchor mandatory and forbids a corridor fit. I obtained one: Fuelly's Isuzu NPR-HD page (owner fuel logs), distance-weighted over its own per-model-year table to 8.378 mpg = 28.07 L/100 km over 179,702 miles. I also obtained the manufacturer's own 2023 NPR-HD specification sheet, which fixes the axle ratio, transmission, lock-up range, engine, tyre, GVWR and chassis mass - but publishes NO fuel economy, because US medium-duty trucks are not fuel-economy rated. What I could NOT obtain is a cycle-resolved NPR measurement. The anchor's duty, load, body and driver mix are unknown; 56% of its tracked miles are a MY2002 truck with the earlier 4HE1 engine. Its 4HK1-era subset alone reads 32.01 L/100 km. I have therefore used it as a VALIDATION with the residual stated, not as a calibration target, and tuned nothing to it. The lead should know that the ruler's absolute level rests on declared physics, not on a measured NPR."
+escalations/0/requested,raw,"either accept the validation-not-fit treatment on the record, or fund a cycle-resolved chassis-dyno or logged-route measurement of an NPR-HD as a WS7 item"
+escalations/1/id,raw,ESC-2
+escalations/1/title,raw,The cold corner as ordered does not charge cab heat; I have bracketed it rather than smuggling it into the gate
+escalations/1/challenges,raw,R30 / D19 (Vehicle One doctrine) as applied to Vehicle Zero
+escalations/1/text,raw,"BASELINE_v4 R30 makes pack preconditioning and a coolant/waste-heat cab path a modelled requirement for every Vehicle One electrified candidate, on the ground that 'the conventional truck heats itself for free and the comparison must charge that'. My assignment orders the Vehicle Zero cold corner as '-10 C with WS3 cold acceptance applied' and orders no cab-heat member. Vehicle Zero's candidates are not BEVs - both carry a running diesel, so the cab path is free whenever the genset runs and electric only in the engine-off windows. I have run the corner exactly as ordered for the gate and exported the cab-heat member as a declared bracket beside it. The lead should rule whether R30 extends to Vehicle Zero; if it does, the bracket becomes the corner of record."
+escalations/1/requested,raw,a ruling extending or not extending R30 to Vehicle Zero
+escalations/2/id,raw,ESC-3
+escalations/2/title,raw,WS4's `aftertreatment_extra: 60 kg` is ambiguous and it moves V2's payload by 60 kg
+escalations/2/challenges,raw,WS4 interface_ws4.v2_genset.mass_kg
+escalations/2/text,raw,"WS4 exports the V2 genset as total_dry 637 kg PLUS a separate `aftertreatment_extra: 60.0`. The 4HK1-V2C is declared to be the same production hardware as the ruler's 4HK1-TC, so on one reading its aftertreatment is the stock truck's aftertreatment and cancels; on the other reading it is 60 kg the candidate carries and the ruler does not. 60 kg is 2.4% of V2's payload and therefore 2.4 points of the metric of record. I have taken the cancelling reading for the headline (the reading FAVOURABLE to the candidate) and exported the other as a bracket. V2's verdict does not turn on it, but the lead should close the ambiguity before any later candidate does."
+escalations/2/requested,raw,a ruling on whether `aftertreatment_extra` is incremental to a stock 4HK1 installation
+escalations/3/id,raw,ESC-4
+escalations/3/title,raw,"The whole Vehicle Zero comparison is being run at a CdA that the baseline itself calls provisional, and the ruler is the vehicle that suffers"
+escalations/3/challenges,raw,"BASELINE_v1 vehicle parameters (CdA 4.2, PROVISIONAL pending WS7 coastdown)"
+escalations/3/text,raw,"CdA 4.2 m^2 is a WS1 fitted value, declared PROVISIONAL in BASELINE_v1 pending the WS7 coastdown, and the program already carries CdA 5.4 as a sizing case (E13). A 16 ft dry-freight box on an NPR-HD cab is a 5-6 m^2 object. Aero work is the one load a series hybrid cannot recover, so a larger CdA moves the comparison AGAINST the candidates. My CdA 5.4 bracket is exported for both duties. The coastdown is not a nicety here: it is the single input most able to move a Vehicle Zero verdict."
+escalations/3/requested,raw,WS7 coastdown scheduled before any Vehicle Zero efficiency claim is ratified
+escalations/4/id,raw,ESC-5
+escalations/4/title,raw,"The metric of record cannot see time, and on the sustained climb that hides the real difference between these vehicles"
+escalations/4/challenges,raw,R9 (ensembles) and the demand-trace convention inherited from Gate G1
+escalations/4/text,raw,"Every fuel number here follows the identical demanded wheel-power trace, with shortfalls booked as unserved energy and fuel-corrected - the convention WS4's ratified simulator uses, adopted so the two vehicles are differenced without a convention step. It is the right convention for energy and the wrong one for capability. On WS1 s4.4's 10 km 6% climb the ruler settles at 82.0 km/h and holds it indefinitely; V2 holds the demanded speed only while its buffer lasts and its genset-only sustainable speed is 74.6 km/h. Make the climb 20 km instead of 10 and the sign of that comparison changes. R38's trip-time gate catches some of this; it does not catch a candidate that passes a 10 km climb and fails a 20 km one. I have exported the sustained-capability numbers separately so the lead can see what the metric cannot."
+escalations/4/requested,raw,"a ruling on whether a sustained-gradeability floor joins the Vehicle Zero criteria, as D16 did for Vehicle One"
+escalations/5/id,raw,ESC-6
+escalations/5/title,raw,R32 asks whether the Vehicle Zero design is more efficient than the truck it replaces; the answer is duty-indexed and the two variants land on opposite sides
+escalations/5/challenges,raw,R32's own framing
+escalations/5/text,raw,"D15 says architecture is duty-indexed. This trial confirms it inside a single vehicle programme: V1 on its suburban duty and V2 on its regional duty return verdicts of opposite sign on the same criterion, the same ruler and the same code. Any sentence of the form 'Vehicle Zero is more efficient than an NPR-HD' is false without the duty and the variant attached. I ask that the baseline record the answer to R32 as a pair of duty-indexed results, not as a programme-level claim."
+escalations/5/requested,raw,baseline wording that names the duty and the variant
+escalations/6/id,raw,ESC-7
+escalations/6/title,raw,'payload +/-20% of ruler payload' erases the metric's own penalty at two of the four corners
+escalations/6/challenges,raw,the assignment's corner definition
+escalations/6/text,raw,"Read literally - and I have gated on the literal reading - the payload corners put the SAME freight on the ruler and on the candidate. The payload denominators are then equal, so at those two corners the per-payload metric IS the per-km metric and the candidate's curb penalty shows up only as extra road load, which is several times weaker. The visible symptom is that V2 scores +6.27% and +7.21% at the two payload corners while scoring -7.93% at nominal on the same metric. I have exported the variant reading (each vehicle scales its own payload), which preserves the denominator and is consistent with the nominal convention. Neither verdict changes under either reading, so nothing here is load-bearing tonight - but the next candidate set should not inherit a corner that switches the metric off."
+escalations/6/requested,raw,a ruling fixing the payload-corner convention for Vehicle Zero and Vehicle One alike

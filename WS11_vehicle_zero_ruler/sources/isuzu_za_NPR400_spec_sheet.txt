@@ -1,0 +1,114 @@
+NPR 4OO
+Specification
+Sheet
+www.isuzu.co.za
+N-SERIES
+MODEL NPR 400 
+AXLE LAYOUT 4X2
+CONTROL FORWARD
+DRIVE AXLE
+Model Drive Axle Rear R066
+Reduction Type Single
+Final Ratio : 1 4.556
+SUSPENSION
+Front Semi-Elliptic Springs
+Rear Semi-Elliptic Springs
+Shock Absorbers Front & Rear
+Stabilisers Yes
+STEERING
+Operation Power
+BRAKES
+System Type Hydraulic Brake Boost 
+Front Drums
+Rear Drums
+Anti-Lock Braking System (ABS) Standard
+Park / Emergency System Drum on Propshaft
+Exhaust Brake Standard
+ELECTRICAL & FUEL
+Fuel Tank 1 Capacity (litres) 100
+Fuel Tank 2 Capacity (litres) 0
+TYRES
+Size & Ply Rating – Front 7.50 R16-12PR
+Size & Ply Rating – Rear 7.50 R16-12PR
+CAB & EXTRAS
+Type Day
+Roof Low
+No. of Bunks 0
+No. of Seats (Lap Rear & Centre) 3
+Air-Conditioning Optional
+Radio Optional
+Tilt Cab Yes
+10211/55952 ADMAKERS. COM
+MODEL NPR 400 
+AXLE LAYOUT 4X2
+CONTROL FORWARD
+MASS
+Permissible Body + Payload (kg) 4880
+Tare – Total (T) (kg) 2620
+Tare – Front (kg) 1710
+Tare – Rear (kg) 900
+GVM (kg) 7500
+V (kg) 7500
+GCM (kg) 11000
+D/T (kg) 11000
+Axle – Front GA/GAU (kg) 3100
+Axle – Front A/AU (kg) 2900
+Axle – Rear GA/GAU (kg) 6600
+Axle – Rear A/AU (kg) 5600
+Litres of Fuel Tank 1 Included in Tare (litres) 15
+Litres of Fuel Tank 2 Included in Tare (litres) 0
+Tools Included in Tare Jack, Warning Triangle,  
+Basic Tool Kit
+Spare Wheel Included in Tare Yes
+PERFORMANCE
+Gradeability at V (%) 32
+Gradeability at D/T (%) 22
+Max. Geared Road Speed (km/h) 116
+MAJOR DIMENSIONS
+OL – Overall Length (mm) 6635
+OW – Overall Width (mm) 1995
+WB – Wheelbase (mm) 3815
+CA – Cab to Bogie/Rear Axle (mm) 3242
+CE – Cab to End of Chassis (mm) 4952
+OH – Overall Height (mm) 2255
+FOH – Front Overhang (mm) 1110
+ROH – Rear Overhang (mm) 1710
+EH – Chassis Rear End Height (mm) 845
+HH – Ground Clearance (mm) 195
+MODEL NPR 400 
+AXLE LAYOUT 4X2
+CONTROL FORWARD
+MAJOR DIMENSIONS
+Chassis Width – Rear (mm) 850
+Turning Radius – Curb to Curb (mm) 7150
+Turning Radius – Wall to Wall (mm) 7900
+ENGINE
+Make Isuzu
+Model 4HK1-TCN
+Capacity (cm3) 5193
+Layout Diesel Inline 4
+Type Turbocharged  
+Intercooled Common Rail
+Power @ r/min (kW) 110 @ 2600
+Torque @ r/min (Nm) 404 @ 1500 – 2600
+Emissions Standard Euro 2
+CLUTCH
+Make Exedy
+Model 325
+Type Single
+Diameter (mm) 325
+Operation Hydraulic-Assisted
+TRANSMISSION
+Make Isuzu
+Model MYY6S
+Type 6-Speed Synchromesh
+Shift Manual Gearshift
+No. of Gears Forward 6
+First Gear Ratio : 1 5.979
+Top Gear Ratio : 1 0.759
+Transfer Case No
+PTO (Power Take-Off) Optional
+DRIVE AXLE
+Make Isuzu
+Model  Axle Front F031
+The information above is provided as a guide only. Specification is subject to change at any time. Please contact your nearest dealer to confirm current specification. Model/s shown may differ. E&OE. Date of print December 2017

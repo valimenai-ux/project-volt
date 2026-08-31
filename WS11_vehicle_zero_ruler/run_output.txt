@@ -1,0 +1,65 @@
+Project Volt WS11 - Vehicle Zero ruler trial - run log
+Elapsed times are printed to stdout but deliberately NOT written here: this file is a committed artefact and must regenerate byte-identically.
+========================================================================
+provenance pinned
+mass ledgers: ruler 3700.0 kg / payload 2900.0 kg; V1 3888.0/2712.0; V2 4139.0/2461.0
+building cycles ...
+regression: reproducing WS4 interface_ws4.series_duty_v2 [nominal] ...
+regression OK - exact float agreement with the live design input
+headline runs ...
+  V1_on_VOLT-SUB [nominal] per-payload margin min +20.11% median +20.83%
+  V1_on_VOLT-SUB [payload_p20] per-payload margin min +22.84% median +23.34%
+  V1_on_VOLT-SUB [payload_m20] per-payload margin min +24.66% median +25.44%
+  V1_on_VOLT-SUB [cold_-10C] per-payload margin min +19.12% median +19.81%
+  V1_on_VOLT-SUB [alt2000m_45C] per-payload margin min +22.27% median +23.03%
+  V2_on_VOLT-REG [nominal] per-payload margin min -7.93% median -7.27%
+  V2_on_VOLT-REG [payload_p20] per-payload margin min +6.27% median +6.38%
+  V2_on_VOLT-REG [payload_m20] per-payload margin min +7.21% median +7.27%
+  V2_on_VOLT-REG [cold_-10C] per-payload margin min -8.77% median -8.58%
+  V2_on_VOLT-REG [alt2000m_45C] per-payload margin min -3.52% median -3.42%
+  V2_on_VOLT-REG [climb_10km_6pct] per-payload margin min -9.98% median -9.55%
+  V2_on_VOLT-SUB [nominal] per-payload margin min +21.71% median +22.07%
+  V2_on_VOLT-SUB [payload_p20] per-payload margin min +30.00% median +30.56%
+  V2_on_VOLT-SUB [payload_m20] per-payload margin min +31.51% median +31.81%
+  V2_on_VOLT-SUB [cold_-10C] per-payload margin min +20.82% median +21.21%
+  V2_on_VOLT-SUB [alt2000m_45C] per-payload margin min +23.77% median +24.05%
+payload-corner reading variant (each vehicle scales its OWN payload) ...
+  V1_on_VOLT-SUB [payload_p20_own] per-payload margin min +19.44%
+  V1_on_VOLT-SUB [payload_m20_own] per-payload margin min +20.51%
+  V2_on_VOLT-REG [payload_p20_own] per-payload margin min -7.73%
+  V2_on_VOLT-REG [payload_m20_own] per-payload margin min -7.57%
+break-even curb mass ...
+  V1: break-even curb 4433-4461 kg vs actual 3888.0 kg (headroom +545 kg worst)
+  V2: break-even curb 3944-3968 kg vs actual 4139.0 kg (headroom -195 kg worst)
+verdicts ...
+  V1_on_VOLT-SUB: ADVANCE (nominal min +20.11%, worst corner +19.12% at cold_-10C)
+  V2_on_VOLT-REG: KILL (nominal min -7.93%, worst corner -9.98% at climb_10km_6pct)
+one-factor decomposition ...
+  V1_on_VOLT-SUB one-factor: mass +5.18 pp, regen +24.02 pp, start-stop +74.88 pp, operating point +11.41 pp
+  V2_on_VOLT-REG one-factor: mass +16.34 pp, regen +4.38 pp, start-stop +0.31 pp, operating point +12.59 pp
+trip time (R38) ...
+  V1/VOLT-SUB[nominal] trip-time ratio worst 1.00000 (+0.000%)
+  V2/VOLT-REG[nominal] trip-time ratio worst 0.99936 (-0.064%)
+  V2/VOLT-REG[climb_10km_6pct] trip-time ratio worst 1.00044 (+0.044%)
+sustained 6% capability ...
+  sustained 6%: ruler 82.0 km/h, V1 31.8, V2 74.6
+ruler calibration against the sourced anchor, and ruler brackets ...
+  ruler bracket headline_ruler_favourable: VOLT-SUB median 19.18 L/100km, VOLT-REG median 19.03
+  ruler bracket physical_accessories: VOLT-SUB median 19.83 L/100km, VOLT-REG median 19.21
+  ruler bracket converter_stalled_at_idle: VOLT-SUB median 22.50 L/100km, VOLT-REG median 19.21
+  ruler bracket CdA_5.4: VOLT-SUB median 19.90 L/100km, VOLT-REG median 21.92
+  ruler bracket sequential_shift_schedule: VOLT-SUB median 19.19 L/100km, VOLT-REG median 19.03
+  ruler bracket rotating_inertia_charged: VOLT-SUB median 19.51 L/100km, VOLT-REG median 19.07
+  ruler bracket all_ruler_favourable_choices_reversed: VOLT-SUB median 24.20 L/100km, VOLT-REG median 22.31
+bracket effect on the verdicts ...
+  V1/VOLT-SUB: headline min +20.11%, all-reversed min +32.62%
+  V2/VOLT-REG: headline min -7.93%, all-reversed min -8.57%
+cold corner cab-heat bracket ...
+  V1 cold + cab heat: min +2.64%
+  V2 cold + cab heat: min -11.58%
+heat ledger ...
+interface block ...
+first-principles sanity checks ...
+  per-km/per-payload identity residual 4.441e-16
+writing CSVs ...
+results_ws11.json written

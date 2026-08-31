@@ -1,0 +1,30 @@
+vehicle,kind,item,kg,source
+ruler,build,"chassis-cab curb, 150 in WB",2985,"[SOURCED] GVWR 14,500 lb minus body/payload allowance interpolated to the 150 in wheelbase (7,920 lb)"
+ruler,build,16 ft dry-freight body + subframe + rear door,545,[WS11-DECLARED] reconciliation item to WS1's ratified operating curb
+ruler,build,driver + kit,90,[WS11-DECLARED]
+ruler,build,"fuel to full (30 gal tank), increment over chassis tare",75,[WS11-DECLARED]
+ruler,build,"DEF, tools, spare",5,[WS11-DECLARED]
+V1+V2,deleted,Aisin A465id 6-speed AT + torque converter + fluid,-227,[SOURCED] ~500 lb including the torque converter
+V1+V2,deleted,transmission oil cooler + lines,-5,[WS11-DECLARED]
+V1+V2,deleted,"alternator, 140 A",-10,[WS11-DECLARED]
+V1+V2,deleted,starter motor + solenoid,-8,[WS11-DECLARED] the generator is the starter (R19 ISG)
+V1,deleted,"Isuzu 4HK1-TC engine, dry",-500,[PROGRAM] WS4 interface_ws4.v2_genset.mass_kg.engine_dry - the same figure is used on both sides so it cancels for V2
+V1+V2,added,"WS2 spine rollup (motor 96, inverter 16, motor-stage reduction 32, brake resistor assembly 53.9, chopper 6, HV cables 17.9, contactors/precharge 9)",+230.8,[PROGRAM] WS2 results.json interface.mass_kg.total_kg
+V1+V2,added,WS3 288s1p LTO-23 pack,+280.52,[PROGRAM] WS3 results.json interface_WS3.packs.V2.mass_kg
+V1+V2,added,added cooling: LT loop radiator/pump/lines + pack loop,+35,[WS11-DECLARED]
+V1+V2,added,"DC-DC converter, 24 V supply (replaces the alternator)",+6,[WS11-DECLARED]
+V1,added,"V3307-V1C engine, dry",+305,[PROGRAM] WS4 v1_genset.mass_kg
+V1,added,GEN-V1 IPM 60 generator,+48,[PROGRAM] WS4 v1_genset.mass_kg
+V1,added,active rectifier,+8,[PROGRAM] WS4 v1_genset.mass_kg
+V1,added,mounts / adaptation,+25,[PROGRAM] WS4 v1_genset.mass_kg
+V2,added,GEN-V2 IPM 135 generator,+90,[PROGRAM] WS4 v2_genset.mass_kg
+V2,added,active rectifier,+12,[PROGRAM] WS4 v2_genset.mass_kg
+V2,added,mounts / adaptation,+35,[PROGRAM] WS4 v2_genset.mass_kg
+ruler,TOTAL curb,,3700,
+ruler,TOTAL payload at GVW 6600,,2900,
+V1,TOTAL curb,,3888,
+V1,TOTAL payload at GVW 6600,,2712,
+V2,TOTAL curb,,4139,
+V2,TOTAL payload at GVW 6600,,2461,
+V2_aftertreatment_bracket,TOTAL curb,,4199,
+V2_aftertreatment_bracket,TOTAL payload at GVW 6600,,2401,

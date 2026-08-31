@@ -1,0 +1,15 @@
+run,bracket,margin_per_payload_min_pct,margin_per_payload_median_pct,margin_per_payload_max_pct
+V1_on_VOLT-SUB,headline_ruler_favourable,+20.1140,+20.8309,+21.1285
+V1_on_VOLT-SUB,physical_accessories,+22.7623,+23.4630,+23.7429
+V1_on_VOLT-SUB,converter_stalled_at_idle,+31.9278,+32.5495,+32.7813
+V1_on_VOLT-SUB,CdA_5.4,+18.0597,+18.2805,+18.9201
+V1_on_VOLT-SUB,sequential_shift_schedule,+20.1586,+20.8809,+21.1678
+V1_on_VOLT-SUB,rotating_inertia_charged,+21.4973,+22.1782,+22.5148
+V1_on_VOLT-SUB,all_ruler_favourable_choices_reversed,+32.6176,+32.7977,+33.2975
+V2_on_VOLT-REG,headline_ruler_favourable,-7.9252,-7.2747,-6.9330
+V2_on_VOLT-REG,physical_accessories,-6.9059,-6.2717,-5.9228
+V2_on_VOLT-REG,converter_stalled_at_idle,-6.9566,-6.3123,-5.9634
+V2_on_VOLT-REG,CdA_5.4,-10.5248,-10.4793,-10.3312
+V2_on_VOLT-REG,sequential_shift_schedule,-7.9142,-7.2652,-6.9216
+V2_on_VOLT-REG,rotating_inertia_charged,-7.7234,-7.0789,-6.7303
+V2_on_VOLT-REG,all_ruler_favourable_choices_reversed,-8.5676,-8.5244,-8.3694

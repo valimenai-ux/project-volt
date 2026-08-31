@@ -1,0 +1,15 @@
+bracket,duty,l_per_100km_min,l_per_100km_median,l_per_100km_max
+headline_ruler_favourable,VOLT-SUB,19.1141,19.1770,19.2169
+headline_ruler_favourable,VOLT-REG,18.9503,19.0334,19.0751
+physical_accessories,VOLT-SUB,19.7722,19.8347,19.8739
+physical_accessories,VOLT-REG,19.1310,19.2140,19.2570
+converter_stalled_at_idle,VOLT-SUB,22.4392,22.5033,22.5442
+converter_stalled_at_idle,VOLT-REG,19.1237,19.2059,19.2479
+CdA_5.4,VOLT-SUB,19.8361,19.9014,19.9412
+CdA_5.4,VOLT-REG,21.7829,21.9150,21.9915
+sequential_shift_schedule,VOLT-SUB,19.1235,19.1865,19.2284
+sequential_shift_schedule,VOLT-REG,18.9523,19.0349,19.0771
+rotating_inertia_charged,VOLT-SUB,19.4440,19.5123,19.5549
+rotating_inertia_charged,VOLT-REG,18.9863,19.0682,19.1109
+all_ruler_favourable_choices_reversed,VOLT-SUB,24.1260,24.1963,24.2396
+all_ruler_favourable_choices_reversed,VOLT-REG,22.1878,22.3078,22.3897

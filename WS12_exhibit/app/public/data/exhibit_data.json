@@ -75,7 +75,8 @@
   "_basis": "facts about the EXHIBIT, not about the trucks. Every number here is derived from the emitted bundle and the two manifests, and exhibit_verify.py re-derives each of them from the artifacts on disk before the build is allowed to pass.",
   "_status": "WS12 exhibit, first pass, bound to BASELINE_v7_FREEZE.md",
   "app": {
-   "front_door": "verdict",
+   "front_door": "intro",
+   "front_door_carries_record": false,
    "screens": [
     "method",
     "race",

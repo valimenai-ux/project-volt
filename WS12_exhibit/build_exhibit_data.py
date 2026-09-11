@@ -2534,7 +2534,13 @@ def build_interface(bundle, manifest, decimation, maps, registry, sources):
             "vite_base": "/project-volt/",
             "screens": sorted(bundle["screens"].keys()),
             "screens_n": len(bundle["screens"]),
-            "front_door": "verdict",
+            # `screens`/`screens_n` enumerate the screens OF RECORD - the
+            # ones that carry a value this bundle binds. The front door is
+            # prose only: it has no entry here because it renders nothing
+            # from the record, and saying so explicitly is the point of the
+            # flag beside it.
+            "front_door": "intro",
+            "front_door_carries_record": False,
         },
         "manifest": {
             "entries_total": len(manifest),

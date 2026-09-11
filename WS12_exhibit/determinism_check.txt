@@ -2,7 +2,7 @@ WS12 DETERMINISM CHECK
 ====================================================================
 pass 1 snapshot: 192 artifacts
 build_exhibit_data.py exit 0
-    exhibit_data.json     363495 bytes
+    exhibit_data.json     363532 bytes
     manifest.json         191785 bytes, 550 entries
     traces published    10, 34.36 MB
     maps published      2

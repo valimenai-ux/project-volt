@@ -254,10 +254,11 @@ verifier `exhibit_verify.py`
 **What was built.** A static web app at `WS12_exhibit/app/`
 ({N(I + ("app", "stack"), "str")}), Vite `base` set to
 `{N(I + ("app", "vite_base"), "str")}`, deployable to GitHub Pages at a repo
-subpath. {N(I + ("app", "screens_n"))} screens, front door
-`{N(I + ("app", "front_door"), "str")}`. Every number of record on every
-screen resolves to a file and an explicit key path, and clicking it opens
-that provenance. {N(I + ("manifest", "entries_total"))} renderable strings
+subpath. {N(I + ("app", "screens_n"))} screens of record, entered through a
+prose-only front door, `{N(I + ("app", "front_door"), "str")}`, which
+carries no value of record and is not one of them. Every number of record
+on every screen resolves to a file and an explicit key path, and clicking
+it opens that provenance. {N(I + ("manifest", "entries_total"))} renderable strings
 are enumerated in a build-time manifest;
 {N(I + ("manifest", "by_kind", "cite"))} of them are numbers of record
 resolved from a results file, {N(I + ("manifest", "by_kind", "quote"))} are
@@ -431,7 +432,7 @@ discipline were kept. Everything synthetic was replaced by the record.**
 | element | how it survives |
 |---|---|
 | palette, typography, panel grid, hairlines, tabular numerals | ported verbatim into `app/src/theme.ts` and used everywhere |
-| the narrative rail | six screens, re-ordered by the lead's ruling so the verdict wall is first |
+| the narrative rail | six screens of record, re-ordered by the lead's ruling so the verdict wall leads them, behind a seventh prose-only screen added after the close-out as the entry point |
 | the three-tier badge discipline (RECORD / DERIVED / SANDBOX) | now enforced mechanically for every **value of record**: each carries a tier, the verifier recomputes the load-bearing derived ones, and checks that a DERIVED value never claims a key path. Values the app formats at run time from raw bundle fields sit outside the manifest by construction; the panels that carry them are badged DERIVED |
 | the provenance strip | now READ from the record per screen — baseline label and file identity come from the emitted bundle, not from a literal |
 | the G1 waterfall | same shape, same five bars; every bar is now a citation |
@@ -455,7 +456,16 @@ discipline were kept. Everything synthetic was replaced by the record.**
 
 ## 2. The screens
 
-**1. Verdict wall — the front door.** The G1 waterfall leads: prior
+**1. The question — the front door.** Prose, and nothing else. It is the
+only screen that carries no value of record: no citation, no badge, no
+numeral, and so no entry in the manifest and none in the bundle. It states
+what was asked, what came back, how the program was run, and what the
+method has never been shown to do, in plain English, and then hands the
+visitor to the race or to the verdict wall. Added after the close-out; it
+supersedes the close-out's ruling that the verdict wall is the front door,
+and changes nothing below it.
+
+**2. Verdict wall.** The G1 waterfall leads: prior
 convention {N(("screens", "verdict", "cards", 0, "waterfall", 0, "value",
                 "s"), "str")}, the map-vs-scalar swap
 {N(("screens", "verdict", "cards", 0, "waterfall", 1, "value", "s"), "str")},
@@ -476,7 +486,7 @@ that effect. Then the WS8 paired bars (per km beside per payload tonne-km,
 the criterion read on the right-hand bar), the duty sign-flip, and the WS11
 pair.
 
-**2. Race mode.** Four paired-seed WS11 datasets. Two counters run live —
+**3. Race mode.** Four paired-seed WS11 datasets. Two counters run live —
 fuel per kilometre and fuel per payload tonne-km — and diverge as the
 replay runs. The headline pair is bound to the record: V2 wins
 {N(("screens", "race", "headline", "perKm", "s"), "str")} per km, loses
@@ -486,7 +496,7 @@ tonne-km, and the freight it hands back to get there is
 race is wired as a fifth dataset and renders FROZEN-PROVISIONAL without a
 replay; §4 records why.
 
-**3. Round history.** Every adjudication round in the program, with its
+**4. Round history.** Every adjudication round in the program, with its
 verdict line quoted verbatim and its severity counts parsed out of the
 findings file rather than transcribed (§3). The 07:40 gap is the first card
 on the screen, not the last: it is rendered as the control condition, with
@@ -495,7 +505,7 @@ nothing checked. KX's NOT CONVERGED disposition follows, including the one
 number on the verdict-bearing screens that could not be cited — which is
 itself the finding.
 
-**4. Simulator.** WS5's two R34-conforming duty traces, replayed. Elevation
+**5. Simulator.** WS5's two R34-conforming duty traces, replayed. Elevation
 from `z_m`, the R15 blend cascade from the four braking channels, SOC and
 pack temperature, the engine dot on WS4's exported map for the engine that
 trace actually ran, and fuel counters in litres, L/100 km and MJ per
@@ -503,11 +513,11 @@ payload tonne-km from the header's own payload. A trace registry measures
 every 10 Hz file in the repository against TRACE_SCHEMA and shows what each
 one lacks.
 
-**5. Sandbox.** The ratio window, re-derived (§5), with an on-screen
+**6. Sandbox.** The ratio window, re-derived (§5), with an on-screen
 anchor table in which the browser's own model is run against the record's
 own force ledgers and ratio ceiling.
 
-**6. Method.** The two guard rails, the tier legend, the eight publishable
+**7. Method.** The two guard rails, the tier legend, the eight publishable
 claims with the status each holds at the freeze, the limitations, the
 source index with every file's sha256, and the verifier's own checklist.
 

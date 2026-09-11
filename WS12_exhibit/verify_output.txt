@@ -6,7 +6,7 @@ EXHIBIT VERIFY — WS12
 4 FILE FACTS               64 checked       0 failed  PASS
 5 DERIVED                 210 checked       0 failed  PASS
 6 BADGES                   30 checked       0 failed  PASS
-7 APP SOURCE               16 checked       0 failed  PASS
+7 APP SOURCE               17 checked       0 failed  PASS
 8 DECIMATION               10 checked       0 failed  PASS
 9 SUBSEQUENCE              10 checked       0 failed  PASS
 10 DECIMATION BADGE         3 checked       0 failed  PASS
@@ -15,7 +15,7 @@ EXHIBIT VERIFY — WS12
 13 REPORT                  51 checked       0 failed  PASS
 ====================================================================
 
-1298 assertions, 0 failures.
+1299 assertions, 0 failures.
 Traces published: 10, 34.36 MB, 512557 rows at 10 Hz, 51263 at 1 Hz.
 Manifest: 550 entries (263 cited, 47 quoted, 53 file facts, 1 file refs, 176 derived).
 

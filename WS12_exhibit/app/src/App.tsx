@@ -8,17 +8,20 @@ import RoundHistory from './screens/RoundHistory'
 import Simulator from './screens/Simulator'
 import Sandbox from './screens/Sandbox'
 import Method from './screens/Method'
+import Intro from './screens/Intro'
 
 const RAIL = [
-  { id: 'verdict', n: '01', name: 'Verdict wall', sub: 'criteria, and what came back' },
-  { id: 'race', n: '02', name: 'Race mode', sub: 'two counters, one road' },
-  { id: 'rounds', n: '03', name: 'Round history', sub: 'what the review caught' },
-  { id: 'sim', n: '04', name: 'Simulator', sub: 'a trace file, played back' },
-  { id: 'sandbox', n: '05', name: 'Sandbox', sub: 'where the boundary lies' },
-  { id: 'method', n: '06', name: 'Method', sub: 'claims, tiers, sources' },
+  { id: 'intro', n: '01', name: 'The question', sub: 'what was asked, and what came back' },
+  { id: 'verdict', n: '02', name: 'Verdict wall', sub: 'criteria, and what came back' },
+  { id: 'race', n: '03', name: 'Race mode', sub: 'two counters, one road' },
+  { id: 'rounds', n: '04', name: 'Round history', sub: 'what the review caught' },
+  { id: 'sim', n: '05', name: 'Simulator', sub: 'a trace file, played back' },
+  { id: 'sandbox', n: '06', name: 'Sandbox', sub: 'where the boundary lies' },
+  { id: 'method', n: '07', name: 'Method', sub: 'claims, tiers, sources' },
 ]
 
 const MODE_BADGE: Record<string, string> = {
+  intro: 'REFERENCE',
   verdict: 'RECORD',
   race: 'RECORD REPLAY · PAIRED SEED',
   rounds: 'RECORD',
@@ -30,7 +33,7 @@ const MODE_BADGE: Record<string, string> = {
 export default function App() {
   const [bundle, setBundle] = useState<Bundle | null>(null)
   const [err, setErr] = useState<string | null>(null)
-  const [screen, setScreen] = useState('verdict')
+  const [screen, setScreen] = useState('intro')
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
@@ -68,8 +71,30 @@ export default function App() {
       </div>
     )
 
+  // Screen 01 is prose. It carries no value of record, so the bundle holds
+  // no entry for it and the record holds no provenance row: its head falls
+  // back to its own rail label, and its strip says plainly that there is
+  // nothing to resolve rather than borrowing another screen's sources.
   const S = bundle.screens[screen]
   const prov = bundle.provenance.screens[screen]
+  const rail = RAIL.find((r) => r.id === screen)
+  const headTitle = S ? S.title : rail ? rail.name : ''
+  const provRows: [string, string][] = [
+    ['BASELINE', bundle.provenance.baseline.label],
+  ]
+  if (prov) {
+    provRows.push(
+      ['RESULTS FILE', prov.resultsFile],
+      ['CRITERION', prov.criterion],
+      ['SEED', prov.seed],
+      ['CORNER', prov.corner],
+    )
+  } else {
+    provRows.push([
+      'RESULTS FILE',
+      'none — this screen carries no value of record',
+    ])
+  }
 
   return (
     <CiteProvider>
@@ -124,7 +149,7 @@ export default function App() {
               textTransform: 'uppercase',
             }}
           >
-            {S.title}
+            {headTitle}
           </div>
           <div style={{ flex: 1 }} />
           <div
@@ -273,6 +298,7 @@ export default function App() {
             }}
           >
             <div style={{ flex: 1, padding: '26px 26px 8px' }}>
+              {screen === 'intro' ? <Intro setScreen={setScreen} /> : null}
               {screen === 'verdict' ? <VerdictWall d={S} /> : null}
               {screen === 'race' ? <RaceMode d={S} bundle={bundle} /> : null}
               {screen === 'rounds' ? <RoundHistory d={S} /> : null}
@@ -293,13 +319,7 @@ export default function App() {
                 flexWrap: 'wrap',
               }}
             >
-              {[
-                ['BASELINE', bundle.provenance.baseline.label],
-                ['RESULTS FILE', prov.resultsFile],
-                ['CRITERION', prov.criterion],
-                ['SEED', prov.seed],
-                ['CORNER', prov.corner],
-              ].map(([k, v]) => (
+              {provRows.map(([k, v]) => (
                 <div
                   key={k}
                   style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}

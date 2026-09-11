@@ -1,5 +1,5 @@
 {
- "assertions_total": 1298,
+ "assertions_total": 1299,
  "checks": {
   "1 MANIFEST/BUNDLE": {
    "checked": 550,
@@ -42,7 +42,7 @@
    "failed": 0
   },
   "7 APP SOURCE": {
-   "checked": 16,
+   "checked": 17,
    "failed": 0
   },
   "8 DECIMATION": {

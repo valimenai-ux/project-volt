@@ -6,18 +6,19 @@ Workstream WS12 · bound to `../BASELINE_v7_FREEZE.md` · entry point
 
 **What was built.** A static web app at `WS12_exhibit/app/` (Vite + React +
 TypeScript, static, no server), Vite `base` set to `/project-volt/`,
-deployable to GitHub Pages at a repo subpath. 6 screens, front door
-`verdict`. Every number of record on every screen resolves to a file and an
-explicit key path, and clicking it opens that provenance. 550 renderable
-strings are enumerated in a build-time manifest; 263 of them are numbers of
-record resolved from a results file, 47 are verbatim quotations lifted from
-documents of record, 53 are file identities pinned by sha256, 10 are program
-constants resolved by file and line out of Python source and re-parsed by
-the verifier, 1 is a reference to a living log that is deliberately not
-hash-pinned, and 176 are derived values that name what they were computed
-from and claim no key path.
+deployable to GitHub Pages at a repo subpath. 6 screens of record, entered
+through a prose-only front door, `intro`, which carries no value of record
+and is not one of them. Every number of record on every screen resolves to a
+file and an explicit key path, and clicking it opens that provenance. 550
+renderable strings are enumerated in a build-time manifest; 263 of them are
+numbers of record resolved from a results file, 47 are verbatim quotations
+lifted from documents of record, 53 are file identities pinned by sha256, 10
+are program constants resolved by file and line out of Python source and re-
+parsed by the verifier, 1 is a reference to a living log that is
+deliberately not hash-pinned, and 176 are derived values that name what they
+were computed from and claim no key path.
 
-**Verification.** `exhibit_verify.py` runs 13 checks and 1298 assertions
+**Verification.** `exhibit_verify.py` runs 13 checks and 1299 assertions
 with its own resolver, its own formatter and its own findings-file parser,
 written separately from the builder's so that a shared bug cannot agree with
 itself. Result: **PASS**.
@@ -179,7 +180,7 @@ kept. Everything synthetic was replaced by the record.**
 | element | how it survives |
 |---|---|
 | palette, typography, panel grid, hairlines, tabular numerals | ported verbatim into `app/src/theme.ts` and used everywhere |
-| the narrative rail | six screens, re-ordered by the lead's ruling so the verdict wall is first |
+| the narrative rail | six screens of record, re-ordered by the lead's ruling so the verdict wall leads them, behind a seventh prose-only screen added after the close-out as the entry point |
 | the three-tier badge discipline (RECORD / DERIVED / SANDBOX) | now enforced mechanically for every **value of record**: each carries a tier, the verifier recomputes the load-bearing derived ones, and checks that a DERIVED value never claims a key path. Values the app formats at run time from raw bundle fields sit outside the manifest by construction; the panels that carry them are badged DERIVED |
 | the provenance strip | now READ from the record per screen — baseline label and file identity come from the emitted bundle, not from a literal |
 | the G1 waterfall | same shape, same five bars; every bar is now a citation |
@@ -203,24 +204,32 @@ kept. Everything synthetic was replaced by the record.**
 
 ## 2. The screens
 
-**1. Verdict wall — the front door.** The G1 waterfall leads: prior
-convention +6.26%, the map-vs-scalar swap -7.01 pp, the spin-drag member
--1.77 pp, their interaction -0.06 pp, and the gate of record -2.58% against
-a kill criterion of 5.0%, missed by 7.58 pp on 8 seeds with 0 above zero.
-The card's copy makes plain that the criterion was written before the number
-existed and could not be renegotiated, and quotes doctrine D1 to that
-effect. Then the WS8 paired bars (per km beside per payload tonne-km, the
-criterion read on the right-hand bar), the duty sign-flip, and the WS11
-pair.
+**1. The question — the front door.** Prose, and nothing else. It is the
+only screen that carries no value of record: no citation, no badge, no
+numeral, and so no entry in the manifest and none in the bundle. It states
+what was asked, what came back, how the program was run, and what the method
+has never been shown to do, in plain English, and then hands the visitor to
+the race or to the verdict wall. Added after the close-out; it supersedes
+the close-out's ruling that the verdict wall is the front door, and changes
+nothing below it.
 
-**2. Race mode.** Four paired-seed WS11 datasets. Two counters run live —
+**2. Verdict wall.** The G1 waterfall leads: prior convention +6.26%, the
+map-vs-scalar swap -7.01 pp, the spin-drag member -1.77 pp, their
+interaction -0.06 pp, and the gate of record -2.58% against a kill criterion
+of 5.0%, missed by 7.58 pp on 8 seeds with 0 above zero. The card's copy
+makes plain that the criterion was written before the number existed and
+could not be renegotiated, and quotes doctrine D1 to that effect. Then the
+WS8 paired bars (per km beside per payload tonne-km, the criterion read on
+the right-hand bar), the duty sign-flip, and the WS11 pair.
+
+**3. Race mode.** Four paired-seed WS11 datasets. Two counters run live —
 fuel per kilometre and fuel per payload tonne-km — and diverge as the replay
 runs. The headline pair is bound to the record: V2 wins +8.41% per km, loses
 -7.93% per payload tonne-km, and the freight it hands back to get there is
 16.19 pp. The semi race is wired as a fifth dataset and renders FROZEN-
 PROVISIONAL without a replay; §4 records why.
 
-**3. Round history.** Every adjudication round in the program, with its
+**4. Round history.** Every adjudication round in the program, with its
 verdict line quoted verbatim and its severity counts parsed out of the
 findings file rather than transcribed (§3). The 07:40 gap is the first card
 on the screen, not the last: it is rendered as the control condition, with
@@ -229,7 +238,7 @@ nothing checked. KX's NOT CONVERGED disposition follows, including the one
 number on the verdict-bearing screens that could not be cited — which is
 itself the finding.
 
-**4. Simulator.** WS5's two R34-conforming duty traces, replayed. Elevation
+**5. Simulator.** WS5's two R34-conforming duty traces, replayed. Elevation
 from `z_m`, the R15 blend cascade from the four braking channels, SOC and
 pack temperature, the engine dot on WS4's exported map for the engine that
 trace actually ran, and fuel counters in litres, L/100 km and MJ per payload
@@ -237,11 +246,11 @@ tonne-km from the header's own payload. A trace registry measures every 10
 Hz file in the repository against TRACE_SCHEMA and shows what each one
 lacks.
 
-**5. Sandbox.** The ratio window, re-derived (§5), with an on-screen anchor
+**6. Sandbox.** The ratio window, re-derived (§5), with an on-screen anchor
 table in which the browser's own model is run against the record's own force
 ledgers and ratio ceiling.
 
-**6. Method.** The two guard rails, the tier legend, the eight publishable
+**7. Method.** The two guard rails, the tier legend, the eight publishable
 claims with the status each holds at the freeze, the limitations, the source
 index with every file's sha256, and the verifier's own checklist.
 
@@ -526,14 +535,14 @@ validated by it.
 | 4 FILE FACTS | 64 | 0 | PASS |
 | 5 DERIVED | 210 | 0 | PASS |
 | 6 BADGES | 30 | 0 | PASS |
-| 7 APP SOURCE | 16 | 0 | PASS |
+| 7 APP SOURCE | 17 | 0 | PASS |
 | 8 DECIMATION | 10 | 0 | PASS |
 | 9 SUBSEQUENCE | 10 | 0 | PASS |
 | 10 DECIMATION BADGE | 3 | 0 | PASS |
 | 11 SANDBOX | 27 | 0 | PASS |
 | 12 SEVERITIES | 17 | 0 | PASS |
 | 13 REPORT | 51 | 0 | PASS |
-| **total** | **1298** | **0** | **PASS** |
+| **total** | **1299** | **0** | **PASS** |
 
 Determinism: `check_determinism_ws12.py --with-app` builds the data pipeline
 twice and the app twice and compares every emitted artifact by sha256.
@@ -700,7 +709,8 @@ verbatim.
  "_basis": "facts about the EXHIBIT, not about the trucks. Every number here is derived from the emitted bundle and the two manifests, and exhibit_verify.py re-derives each of them from the artifacts on disk before the build is allowed to pass.",
  "_status": "WS12 exhibit, first pass, bound to BASELINE_v7_FREEZE.md",
  "app": {
-  "front_door": "verdict",
+  "front_door": "intro",
+  "front_door_carries_record": false,
   "screens": [
    "method",
    "race",

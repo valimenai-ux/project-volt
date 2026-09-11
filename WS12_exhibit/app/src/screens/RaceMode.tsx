@@ -8,8 +8,11 @@ import {
   Num,
   Panel,
   PanelHead,
+  Primer,
   Quote,
   StatusBadge,
+  StatusLegend,
+  Terms,
   TierBadge,
 } from '../ui'
 import { loadScrub } from '../trace'
@@ -739,12 +742,29 @@ function SemiPanel({ s }: { s: any }) {
 }
 
 export default function RaceMode({ d, bundle }: { d: any; bundle: any }) {
-  const [sel, setSel] = useState<string>(d.pairs[0].id)
+  // Open on the pair the screen is ABOUT. The lede says "watch them come
+  // apart" and the headline above prints a win per kilometre beside a loss
+  // per payload tonne-km; the first pair in the table is a V1 suburban run
+  // where both counters are positive, so the screen opened by disproving
+  // its own sentence. Fall back to the first pair if the table ever moves.
+  const [sel, setSel] = useState<string>(
+    (d.pairs.find((p: any) => p.vehicle === 'V2' && p.case === 'nominal') ??
+      d.pairs[0]).id,
+  )
   const pair = d.pairs.find((p: any) => p.id === sel)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
       <div>
+        <Primer>
+          The same route, driven twice: once by an ordinary diesel truck —
+          labelled STOCK NPR-HD below — and once by the redesigned one,
+          labelled V1 or V2. Two fuel counters run side by side. One measures
+          fuel for every kilometre driven. The other measures fuel for the
+          goods actually carried, and that is the one the trial judged on. On
+          the regional run loaded here, the redesigned truck wins the first
+          counter and loses the second.
+        </Primer>
         <p
           style={{
             margin: '0 0 18px',
@@ -755,6 +775,10 @@ export default function RaceMode({ d, bundle }: { d: any; bundle: any }) {
         >
           {d.lede}
         </p>
+        <Terms
+          of={['ruler', 'seed', 'duty', 'pp', 'per tonne-km', 'kWh/km']}
+        />
+        <StatusLegend allowed={bundle.guardRails.noPromotion.allowed} />
         <Panel accent={C.electricalLine}>
           <div
             style={{

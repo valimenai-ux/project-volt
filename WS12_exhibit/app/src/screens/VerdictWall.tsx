@@ -7,8 +7,11 @@ import {
   Num,
   Panel,
   PanelHead,
+  Primer,
   Quote,
   StatusBadge,
+  StatusLegend,
+  Terms,
 } from '../ui'
 import type { Cited } from '../types'
 
@@ -572,7 +575,7 @@ function CardWS11({ c }: { c: any }) {
   )
 }
 
-export default function VerdictWall({ d }: { d: any }) {
+export default function VerdictWall({ d, bundle }: { d: any; bundle: any }) {
   const map: Record<string, (p: { c: any }) => JSX.Element> = {
     g1: CardG1,
     ws8: CardWS8,
@@ -581,7 +584,22 @@ export default function VerdictWall({ d }: { d: any }) {
   }
   return (
     <div>
+      <Primer>
+        Four panels. First a single part of the small truck that its own
+        designers wanted to keep, and that a test they had written down in
+        advance forced them to delete. Then the heavy semi: four designs,
+        each using less fuel per kilometre than the truck it replaces, and
+        each rejected anyway, because the equipment it adds comes out of the
+        load the truck is paid to carry. Then the same small truck on two
+        kinds of route, winning on one and losing on the other. Every panel
+        shows the pass mark, written before anyone knew the answer, beside
+        the answer that came back — and the last carries the project's own
+        admission that the ordinary truck it measured against was never
+        checked against a real one.
+      </Primer>
       <Lede>{d.lede}</Lede>
+      <Terms of={['ruler', 'corner', 'pp', 'per tonne-km']} />
+      <StatusLegend allowed={bundle.guardRails.noPromotion.allowed} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
         {d.cards.map((c: any) => {
           const Cmp = map[c.id]

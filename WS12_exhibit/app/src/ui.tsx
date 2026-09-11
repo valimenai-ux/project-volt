@@ -508,3 +508,147 @@ export function MarginBar({
     </div>
   )
 }
+
+// ---------------------------------------------------------- plain English
+
+/**
+ * The guide's voice, above the program's.
+ *
+ * Every screen already opens with a lede written from inside the program.
+ * Those ledes are good, and they are the record's own words — but they
+ * assume the reader knows what a ruler, a corner, a seed and a duty are.
+ * A `Primer` is the sentence that makes the lede legible to someone who
+ * does not, and it carries no numeral and no status label, so it stays
+ * outside the citation manifest exactly as screen 01 does.
+ */
+export function Primer({ children }: { children: ReactNode }) {
+  return (
+    <p
+      style={{
+        margin: '0 0 14px',
+        maxWidth: '820px',
+        font: '300 15px/1.65 ' + F.sans,
+        color: C.text2,
+        textWrap: 'pretty',
+      }}
+    >
+      {children}
+    </p>
+  )
+}
+
+/**
+ * What the five frozen labels mean, in English.
+ *
+ * The labels themselves are read from the record's own allow-list, never
+ * typed here, so this can never render a sixth. The glosses say what each
+ * label meant at the freeze and nothing more: none of them upgrades a
+ * result, and the two that describe unfinished work say so plainly.
+ */
+const STATUS_GLOSS: Record<string, string> = {
+  'FROZEN-RATIFIED':
+    'checked, challenged and agreed. The strongest thing this project says.',
+  'FROZEN-PROVISIONAL':
+    'it passed the test written for it, but the review that would have confirmed it was never run. Frozen as it stood.',
+  'FROZEN-KILL':
+    'it failed a test that was written down before anyone knew the answer.',
+  'NOT CONVERGED':
+    'asked more than once, and the answers did not agree. No result.',
+  'NOT CUT':
+    'never ruled out and never finished — work that was planned when the project stopped.',
+}
+
+export function StatusLegend({ allowed }: { allowed: string[] }) {
+  return (
+    <div
+      style={{
+        border: '1px solid ' + C.lineSoft,
+        background: C.panelAlt,
+        padding: '13px 16px',
+        marginBottom: '18px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+      }}
+    >
+      <Label>THE LABELS ON THIS SCREEN, IN PLAIN ENGLISH</Label>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))',
+          gap: '10px 20px',
+        }}
+      >
+        {allowed.map((a) => (
+          <div
+            key={a}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '6px',
+            }}
+          >
+            <StatusBadge s={a} small />
+            <span
+              style={{
+                font: '300 11.5px/1.5 ' + F.sans,
+                color: C.faint,
+              }}
+            >
+              {STATUS_GLOSS[a] ?? ''}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * The handful of words each screen borrows from the program's own
+ * vocabulary, defined where they are first met. Each screen passes only
+ * the terms it actually uses.
+ */
+const TERM_GLOSS: Record<string, string> = {
+  ruler: 'the ordinary diesel truck every design was measured against',
+  corner:
+    'a harsher version of the same trip — cold, hot and high, or carrying more — used to check the answer holds',
+  seed: 'one run of the simulation with its own random variation; every case was run several times',
+  duty: 'the kind of driving: stop-start town deliveries, or longer regional runs',
+  pp: 'percentage points — the gap between two percentages',
+  'per tonne-km':
+    'fuel for carrying one tonne of goods one kilometre — the measure the trial judged on',
+  'kWh/km': 'energy used per kilometre driven',
+  BSFC: 'how much fuel an engine burns for the work it does, at a given speed and load',
+  SOC: 'how full the battery is',
+}
+
+export function Terms({ of }: { of: string[] }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '6px 22px',
+        marginBottom: '18px',
+        paddingBottom: '14px',
+        borderBottom: '1px solid ' + C.lineSoft,
+      }}
+    >
+      {of.map((k) => (
+        <span
+          key={k}
+          style={{
+            font: '300 11.5px/1.5 ' + F.sans,
+            color: C.faint,
+            maxWidth: '330px',
+          }}
+        >
+          <span style={{ fontFamily: F.mono, color: C.text3 }}>{k}</span>
+          {' — ' + (TERM_GLOSS[k] ?? '')}
+        </span>
+      ))}
+    </div>
+  )
+}

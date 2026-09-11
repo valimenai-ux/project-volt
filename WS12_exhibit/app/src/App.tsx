@@ -299,9 +299,9 @@ export default function App() {
           >
             <div style={{ flex: 1, padding: '26px 26px 8px' }}>
               {screen === 'intro' ? <Intro setScreen={setScreen} /> : null}
-              {screen === 'verdict' ? <VerdictWall d={S} /> : null}
+              {screen === 'verdict' ? <VerdictWall d={S} bundle={bundle} /> : null}
               {screen === 'race' ? <RaceMode d={S} bundle={bundle} /> : null}
-              {screen === 'rounds' ? <RoundHistory d={S} /> : null}
+              {screen === 'rounds' ? <RoundHistory d={S} bundle={bundle} /> : null}
               {screen === 'sim' ? <Simulator d={S} bundle={bundle} /> : null}
               {screen === 'sandbox' ? <Sandbox d={S} /> : null}
               {screen === 'method' ? <Method d={S} bundle={bundle} /> : null}

@@ -6,8 +6,10 @@ import {
   Num,
   Panel,
   PanelHead,
+  Primer,
   Quote,
   StatusBadge,
+  StatusLegend,
   TierBadge,
 } from '../ui'
 import type { Cited } from '../types'
@@ -183,20 +185,33 @@ function KXCard({ k }: { k: any }) {
   )
 }
 
-export default function RoundHistory({ d }: { d: any }) {
+export default function RoundHistory({ d, bundle }: { d: any; bundle: any }) {
   const firsts = d.adjudications.filter((a: any) => a.firstPass)
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-      <p
-        style={{
-          margin: 0,
-          maxWidth: '780px',
-          font: '300 15px/1.65 ' + F.sans,
-          color: C.text3,
-        }}
-      >
-        {d.lede}
-      </p>
+      <div>
+        <Primer>
+          The plan was that no piece of this work would be allowed to stand
+          on its own word. Every result was handed to a second AI agent whose
+          only job was to find what the first one had got wrong — reading the
+          files from disk, with no access to the reasoning behind them. This
+          page is every attack that actually ran and what each one caught,
+          including in the project lead's own work. It opens with the one
+          place where nobody was ever sent to look.
+        </Primer>
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '780px',
+            font: '300 15px/1.65 ' + F.sans,
+            color: C.text3,
+          }}
+        >
+          {d.lede}
+        </p>
+        <div style={{ height: '18px' }} />
+        <StatusLegend allowed={bundle.guardRails.noPromotion.allowed} />
+      </div>
 
       <GapCard g={d.gap} />
 

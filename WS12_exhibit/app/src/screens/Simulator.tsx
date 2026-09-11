@@ -6,8 +6,11 @@ import {
   Num,
   Panel,
   PanelHead,
+  Primer,
   Quote,
   StatusBadge,
+  StatusLegend,
+  Terms,
   TierBadge,
 } from '../ui'
 import { loadScrub, loadSegment, validateLoaded } from '../trace'
@@ -712,16 +715,31 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-      <p
-        style={{
-          margin: 0,
-          maxWidth: '780px',
-          font: '300 15px/1.65 ' + F.sans,
-          color: C.text3,
-        }}
-      >
-        {d.lede}
-      </p>
+      <div>
+        <Primer>
+          Every run in this project was written to a file as it happened, and
+          this screen plays those files back. Two of the runs below carry the
+          full instrument set — engine, battery, heat and fuel — for a single
+          truck. The other four put the redesigned truck on the road beside
+          the ordinary one, but were recorded before the project agreed what
+          a run file had to contain, so they carry each truck's speed and
+          little else. The screen states what each file does and does not
+          hold rather than filling the gaps in.
+        </Primer>
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '780px',
+            font: '300 15px/1.65 ' + F.sans,
+            color: C.text3,
+          }}
+        >
+          {d.lede}
+        </p>
+        <div style={{ height: '18px' }} />
+        <Terms of={['duty', 'seed', 'BSFC', 'SOC']} />
+        <StatusLegend allowed={bundle.guardRails.noPromotion.allowed} />
+      </div>
 
       <Panel accent={C.electricalLine}>
         <PanelHead

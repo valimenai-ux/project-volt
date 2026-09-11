@@ -6,6 +6,7 @@ import {
   Num,
   Panel,
   PanelHead,
+  Primer,
   Quote,
   TierBadge,
 } from '../ui'
@@ -16,16 +17,28 @@ export default function Method({ d, bundle }: { d: any; bundle: any }) {
   const g = bundle.guardRails
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-      <p
-        style={{
-          margin: 0,
-          maxWidth: '820px',
-          font: '300 15px/1.65 ' + F.sans,
-          color: C.text3,
-        }}
-      >
-        {d.lede}
-      </p>
+      <div>
+        <p
+          style={{
+            margin: '0 0 14px',
+            maxWidth: '820px',
+            font: '300 15px/1.65 ' + F.sans,
+            color: C.text3,
+          }}
+        >
+          {d.lede}
+        </p>
+        <Primer>
+          In order below: the one thing this project's checking can catch and
+          the one thing it never can; the rule that stops a result being
+          quietly upgraded; how every figure on this site is traced back to
+          the file it came from; the eight things the project ended up
+          saying, each with the standing it had when the work stopped; what
+          it never built and never checked; every file it reads, with a
+          fingerprint for each; and the automatic checks that have to pass
+          before this page is allowed to go online.
+        </Primer>
+      </div>
 
       <Panel accent={C.heat}>
         <PanelHead

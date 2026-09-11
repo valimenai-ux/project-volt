@@ -1,6 +1,14 @@
 import { useMemo, useState } from 'react'
 import { C, F } from '../theme'
-import { Body, Label, Num, Panel, PanelHead, Quote } from '../ui'
+import {
+  Body,
+  Label,
+  Num,
+  Panel,
+  PanelHead,
+  Primer,
+  Quote,
+} from '../ui'
 import {
   crossingMass,
   ratioCeiling,
@@ -13,6 +21,7 @@ import type { Cited } from '../types'
 function Slider({
   k,
   v,
+  n,
   min,
   max,
   step,
@@ -20,6 +29,10 @@ function Slider({
 }: {
   k: string
   v: string
+  /** The live value. The track is CONTROLLED: an uncontrolled track parks
+   *  its thumb at `min` while the readout beside it shows the real state,
+   *  so the screen contradicts itself until the visitor drags something. */
+  n: number
   min: number
   max: number
   step: number
@@ -45,7 +58,7 @@ function Slider({
         max={max}
         step={step}
         onChange={(e) => on(Number(e.target.value))}
-        defaultValue={min}
+        value={n}
         style={{ width: '100%' }}
       />
     </div>
@@ -120,16 +133,30 @@ export default function Sandbox({ d }: { d: any }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-      <p
-        style={{
-          margin: 0,
-          maxWidth: '780px',
-          font: '300 15px/1.65 ' + F.sans,
-          color: C.text3,
-        }}
-      >
-        {d.lede}
-      </p>
+      <div>
+        <Primer>
+          With no gearbox a truck gets one gear, and it has to do every job.
+          Drag the weight slider from the small delivery truck at one end to
+          the heavy semi at the other, and watch the box on the right. Below
+          a certain weight there is a band of gears that can both drag the
+          load up a hill and let the truck cruise; above it the band closes,
+          and no single gear can do both. That is one of the two reasons the
+          semi failed. The other — that the weight of the extra equipment
+          comes out of the freight — is on the verdict wall. Nothing here is
+          a result: it is the project's own simplified arithmetic, running in
+          your browser.
+        </Primer>
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '780px',
+            font: '300 15px/1.65 ' + F.sans,
+            color: C.text3,
+          }}
+        >
+          {d.lede}
+        </p>
+      </div>
 
       <div
         style={{
@@ -277,6 +304,7 @@ export default function Sandbox({ d }: { d: any }) {
             <Slider
               k="VEHICLE MASS"
               v={(mass / 1000).toFixed(1) + ' t'}
+              n={mass}
               min={lo.m_kg}
               max={hi.m_kg}
               step={100}
@@ -285,6 +313,7 @@ export default function Sandbox({ d }: { d: any }) {
             <Slider
               k="GRADE"
               v={grade.toFixed(1) + ' %'}
+              n={grade}
               min={0}
               max={8}
               step={0.1}
@@ -293,6 +322,7 @@ export default function Sandbox({ d }: { d: any }) {
             <Slider
               k="FIXED GEAR RATIO"
               v={ratio.toFixed(2) + ' : 1'}
+              n={ratio}
               min={1}
               max={8}
               step={0.02}
@@ -315,7 +345,7 @@ export default function Sandbox({ d }: { d: any }) {
                 min={rhoHot}
                 max={rhoCold}
                 step={0.001}
-                defaultValue={rhoNom}
+                value={rho}
                 onChange={(e) => setRho(Number(e.target.value))}
                 style={{ width: '100%' }}
               />

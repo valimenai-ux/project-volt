@@ -1,6 +1,7 @@
 import { C, F } from '../theme'
 import {
   Body,
+  Gloss,
   Kicker,
   Label,
   Num,
@@ -12,6 +13,15 @@ import {
 } from '../ui'
 import { TIER_STYLE } from '../theme'
 import type { Cited } from '../types'
+
+/** The workstream folder a cited file lives in — the leading `WSn_` of the
+ *  path the record supplies — or null for a file at the repository root.
+ *  Read from the path, never typed; it only decides which plain name to
+ *  set beside the group. */
+function wsOf(file: string | undefined): string | null {
+  const m = /^(WS\d+)_/.exec(file ?? '')
+  return m ? m[1] : null
+}
 
 export default function Method({ d, bundle }: { d: any; bundle: any }) {
   const g = bundle.guardRails
@@ -241,33 +251,46 @@ export default function Method({ d, bundle }: { d: any; bundle: any }) {
               </span>
             </div>
           </div>
-          {d.sources.map((s: Cited) => (
-            <div
-              key={s.file}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'minmax(240px,1.6fr) 110px 1fr',
-                gap: '12px',
-                padding: '8px 0',
-                borderBottom: '1px solid ' + C.lineSoft,
-                alignItems: 'center',
-              }}
-            >
-              <span
-                style={{
-                  font: '400 11px/1.4 ' + F.mono,
-                  color: C.text3,
-                  wordBreak: 'break-all',
-                }}
-              >
-                {s.file}
-              </span>
-              <span style={{ font: '400 11px/1.4 ' + F.mono, color: C.faint }}>
-                {((s.bytes ?? 0) / 1024).toFixed(0) + ' KiB'}
-              </span>
-              <Num c={s} size={10} />
-            </div>
-          ))}
+          {d.sources.map((s: Cited, i: number) => {
+            // The list arrives sorted by path, so files sharing a
+            // workstream folder sit together. A plain name for the folder
+            // goes above each run; the paths and digests are untouched.
+            const ws = wsOf(s.file)
+            const newGroup = i === 0 || ws !== wsOf(d.sources[i - 1].file)
+            return (
+              <div key={s.file}>
+                {newGroup ? (
+                  <div style={{ padding: '14px 0 6px' }}>
+                    {ws ? <Gloss code={ws} /> : <Label>AT THE REPOSITORY ROOT</Label>}
+                  </div>
+                ) : null}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(240px,1.6fr) 110px 1fr',
+                    gap: '12px',
+                    padding: '8px 0',
+                    borderBottom: '1px solid ' + C.lineSoft,
+                    alignItems: 'center',
+                  }}
+                >
+                  <span
+                    style={{
+                      font: '400 11px/1.4 ' + F.mono,
+                      color: C.text3,
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {s.file}
+                  </span>
+                  <span style={{ font: '400 11px/1.4 ' + F.mono, color: C.faint }}>
+                    {((s.bytes ?? 0) / 1024).toFixed(0) + ' KiB'}
+                  </span>
+                  <Num c={s} size={10} />
+                </div>
+              </div>
+            )
+          })}
         </div>
       </Panel>
 

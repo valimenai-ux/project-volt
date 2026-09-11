@@ -1,6 +1,7 @@
 import { C, F } from '../theme'
 import {
   Body,
+  Gloss,
   Kicker,
   Label,
   Num,
@@ -115,6 +116,17 @@ function KXCard({ k }: { k: any }) {
         title={k.title}
         right={<StatusBadge s={k.statusBadge} />}
       />
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid ' + C.line }}>
+        <Body>
+          The engine, generator and radiator had to be sized together; that
+          sizing went through three rounds of review and rework, none of the
+          three came back clean, and the work was stopped there with no fourth
+          round run. The radiator figure the last round turned on is one this
+          exhibit can cite to no file and key path — only work out from the
+          two record figures shown with it — which is why it is marked as
+          derived rather than cited.
+        </Body>
+      </div>
       <div
         style={{
           display: 'grid',
@@ -224,7 +236,7 @@ export default function RoundHistory({ d, bundle }: { d: any; bundle: any }) {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '70px 70px minmax(220px,1fr) 230px 110px',
+              gridTemplateColumns: '150px 70px minmax(220px,1fr) 230px 110px',
               gap: '12px',
               padding: '10px 20px',
               background: C.panelAlt,
@@ -242,7 +254,7 @@ export default function RoundHistory({ d, bundle }: { d: any; bundle: any }) {
               key={a.ws + a.round}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '70px 70px minmax(220px,1fr) 230px 110px',
+                gridTemplateColumns: '150px 70px minmax(220px,1fr) 230px 110px',
                 gap: '12px',
                 padding: '13px 20px',
                 borderBottom: '1px solid ' + C.lineSoft,
@@ -250,9 +262,7 @@ export default function RoundHistory({ d, bundle }: { d: any; bundle: any }) {
                 background: a.firstPass ? '#12181d' : 'transparent',
               }}
             >
-              <span style={{ font: '500 12px/1 ' + F.mono, color: C.text }}>
-                {a.ws}
-              </span>
+              <Gloss code={a.ws} size={12} />
               <span style={{ font: '400 12px/1 ' + F.mono, color: C.text3 }}>
                 {a.round}
               </span>
@@ -309,7 +319,10 @@ export default function RoundHistory({ d, bundle }: { d: any; bundle: any }) {
                     color: C.text3,
                   }}
                 >
-                  <span style={{ minWidth: '84px' }}>{a.ws + ' ' + a.round}</span>
+                  <span style={{ width: '150px', flexShrink: 0 }}>
+                    <Gloss code={a.ws} size={11} />
+                  </span>
+                  <span style={{ minWidth: '44px' }}>{a.round}</span>
                   <Num c={a.blocking} size={11} />
                   <Num c={a.material} size={11} />
                   <Num c={a.minor} size={11} />
@@ -433,14 +446,12 @@ export default function RoundHistory({ d, bundle }: { d: any; bundle: any }) {
               key={r.ws + r.round}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '90px 200px 1fr',
+                gridTemplateColumns: '150px 200px 1fr',
                 gap: '14px',
                 alignItems: 'start',
               }}
             >
-              <span style={{ font: '500 12px/1.5 ' + F.mono, color: C.text }}>
-                {r.ws}
-              </span>
+              <Gloss code={r.ws} size={12} />
               <span style={{ font: '400 12px/1.5 ' + F.mono, color: C.text3 }}>
                 {r.round}
               </span>

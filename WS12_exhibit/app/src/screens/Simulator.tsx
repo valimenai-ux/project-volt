@@ -2,8 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { C, F } from '../theme'
 import {
   Body,
+  Fold,
+  Gloss,
   Label,
   Num,
+  PLAIN,
   Panel,
   PanelHead,
   Primer,
@@ -18,6 +21,50 @@ import type { Loaded, RunCheck } from '../trace'
 import type { Cited, RegistryRow, TraceEntry } from '../types'
 import Lanes, { laneDistance } from './Lanes'
 import type { LaneRun } from './Lanes'
+
+// ---------------------------------------------------------- plain names
+
+/**
+ * What the instrument readouts' column names mean. Only the labels this
+ * component itself types as column names are mapped; a label the data
+ * supplies is left as the data wrote it, and a label that is already
+ * plain has no entry. None of these is a value, a unit or a verdict.
+ */
+const PLAIN_COL: Record<string, string> = {
+  P_shaft_eng_kW: 'engine shaft power',
+  P_gen_bus_kW: 'generator power',
+  P_motor_bus_kW: 'motor power, electrical side',
+  P_motor_mech_kW: 'motor power, at the shaft',
+  P_batt_bus_kW: 'battery power',
+  P_bus_load_kW: 'load on the electrical bus',
+  P_regen_pack_kW: 'braking power recovered into the battery',
+  P_heater_kW: 'power to the heater',
+  P_resistor_kW: 'power burned off in the brake resistor',
+  P_friction_brake_kW: 'power lost to the friction brakes',
+  P_wheel_kW: 'power at the wheels',
+  'HEADER payload_kg': "payload, as the file's own header states it",
+}
+
+/** The plain name set beneath a readout's column-name label, or nothing
+ *  when the label is not one this component types as a column name. */
+function PlainCol({ k }: { k: string }) {
+  const p = PLAIN_COL[k]
+  if (!p) return null
+  return (
+    <span style={{ font: '300 10px/1.3 ' + F.sans, color: C.faint }}>{p}</span>
+  )
+}
+
+/** The plain names behind a selector's coded label, in the same order and
+ *  joined the same way, so the two lines read against each other token by
+ *  token. A token PLAIN does not name is left out rather than echoed. */
+function plainOfLabel(label: string): string {
+  return label
+    .split(' · ')
+    .map((tok) => PLAIN[tok.trim()])
+    .filter((p): p is string => Boolean(p))
+    .join(' · ')
+}
 
 // ------------------------------------------------------------ BSFC map
 
@@ -383,7 +430,7 @@ function Registry({ rows, note }: { rows: RegistryRow[]; note: string }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '60px minmax(240px,2fr) 70px 70px 110px 90px',
+            gridTemplateColumns: '130px minmax(240px,2fr) 70px 70px 110px 90px',
             gap: '10px',
             padding: '9px 0',
             borderBottom: '1px solid ' + C.line,
@@ -402,16 +449,14 @@ function Registry({ rows, note }: { rows: RegistryRow[]; note: string }) {
               style={{
                 display: 'grid',
                 gridTemplateColumns:
-                  '60px minmax(240px,2fr) 70px 70px 110px 90px',
+                  '130px minmax(240px,2fr) 70px 70px 110px 90px',
                 gap: '10px',
                 padding: '9px 0',
                 borderBottom: '1px solid ' + C.lineSoft,
                 alignItems: 'center',
               }}
             >
-              <span style={{ font: '400 11px/1 ' + F.mono, color: C.text3 }}>
-                {r.ws}
-              </span>
+              <Gloss code={r.ws} />
               <span
                 style={{
                   font: '400 10.5px/1.4 ' + F.mono,
@@ -453,7 +498,7 @@ function Registry({ rows, note }: { rows: RegistryRow[]; note: string }) {
             {open ? (
               <div
                 style={{
-                  padding: '6px 0 12px 60px',
+                  padding: '6px 0 12px 130px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '5px',
@@ -467,21 +512,30 @@ function Registry({ rows, note }: { rows: RegistryRow[]; note: string }) {
                     {'— ' + why}
                   </span>
                 ))}
-                {r.validation.missingCoreColumns.length ? (
-                  <span
-                    style={{ font: '400 10px/1.5 ' + F.mono, color: C.faint }}
-                  >
-                    {'core columns absent: ' +
-                      r.validation.missingCoreColumns.join(', ')}
-                  </span>
-                ) : null}
-                {r.validation.declaredAbsentByDesign.length ? (
-                  <span
-                    style={{ font: '400 10px/1.5 ' + F.mono, color: C.faint }}
-                  >
-                    {'declared absent by design: ' +
-                      r.validation.declaredAbsentByDesign.join(', ')}
-                  </span>
+                {r.validation.missingCoreColumns.length ||
+                r.validation.declaredAbsentByDesign.length ? (
+                  <Fold label="WHICH COLUMNS ARE ABSENT, BY NAME">
+                    <div
+                      style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}
+                    >
+                      {r.validation.missingCoreColumns.length ? (
+                        <span
+                          style={{ font: '400 10px/1.5 ' + F.mono, color: C.faint }}
+                        >
+                          {'core columns absent: ' +
+                            r.validation.missingCoreColumns.join(', ')}
+                        </span>
+                      ) : null}
+                      {r.validation.declaredAbsentByDesign.length ? (
+                        <span
+                          style={{ font: '400 10px/1.5 ' + F.mono, color: C.faint }}
+                        >
+                          {'declared absent by design: ' +
+                            r.validation.declaredAbsentByDesign.join(', ')}
+                        </span>
+                      ) : null}
+                    </div>
+                  </Fold>
                 ) : null}
                 {r.validation.blendOrder.checked ? (
                   <span
@@ -777,6 +831,7 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
         >
           {d.datasets.map((x2: any) => {
             const on = x2.id === sel
+            const plain = plainOfLabel(x2.shortLabel)
             return (
               <button
                 key={x2.id}
@@ -790,20 +845,28 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
                   font: '400 10.5px/1.3 ' + F.mono,
                   color: on ? C.electricalLo : C.muted,
                   display: 'flex',
-                  gap: '8px',
-                  alignItems: 'center',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  alignItems: 'flex-start',
                 }}
               >
-                <span>{x2.shortLabel}</span>
-                <span
-                  style={{
-                    font: '400 8px/1 ' + F.mono,
-                    letterSpacing: '.1em',
-                    color: on ? C.electricalLo : C.ghost,
-                  }}
-                >
-                  {x2.kind === 'paired' ? 'TWO LANES' : 'ONE LANE'}
+                <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <span>{x2.shortLabel}</span>
+                  <span
+                    style={{
+                      font: '400 8px/1 ' + F.mono,
+                      letterSpacing: '.1em',
+                      color: on ? C.electricalLo : C.ghost,
+                    }}
+                  >
+                    {x2.kind === 'paired' ? 'TWO LANES' : 'ONE LANE'}
+                  </span>
                 </span>
+                {plain ? (
+                  <span style={{ font: '300 10.5px/1.35 ' + F.sans, color: C.faint }}>
+                    {plain}
+                  </span>
+                ) : null}
               </button>
             )
           })}
@@ -917,15 +980,19 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
             >
               <Label>WHAT THIS FILE DOES NOT CARRY</Label>
               <Body style={{ fontSize: '12px' }}>{ds.preR34Note}</Body>
-              <span
-                style={{
-                  font: '400 10px/1.7 ' + F.mono,
-                  color: C.faint,
-                  wordBreak: 'break-word',
-                }}
-              >
-                {ds.missingSchemaElements.join(' · ')}
-              </span>
+              {ds.missingSchemaElements.length ? (
+                <Fold label="COLUMNS THIS FILE DOES NOT CARRY">
+                  <span
+                    style={{
+                      font: '400 10px/1.7 ' + F.mono,
+                      color: C.faint,
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    {ds.missingSchemaElements.join(' · ')}
+                  </span>
+                </Fold>
+              ) : null}
               <Body style={{ fontSize: '12px', color: C.faint }}>
                 {'Every panel that needs one of those columns is absent ' +
                   'below rather than drawn from a substitute. The elevation ' +
@@ -1004,6 +1071,7 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
                     >
                       {k as string}
                     </span>
+                    <PlainCol k={k as string} />
                     <span
                       style={{
                         font: '400 12px/1 ' + F.mono,
@@ -1102,6 +1170,7 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
                     >
                       {k}
                     </span>
+                    <PlainCol k={k} />
                     <span style={{ font: '400 12px/1 ' + F.mono, color: C.text3 }}>
                       {v}
                     </span>
@@ -1184,17 +1253,16 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
           </div>
           ) : null}
 
-          {/* trace header, from the file itself */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-            <Label>
-              {ds.kind === 'paired'
+          {/* trace header, from the file itself — machine text, behind a click */}
+          <Fold
+            label={
+              ds.kind === 'paired'
                 ? "BOTH FILES' OWN HEADERS, VERBATIM"
-                : "THIS FILE'S OWN HEADER, VERBATIM"}
-            </Label>
+                : "THIS FILE'S OWN HEADER, VERBATIM"
+            }
+          >
             <div
               style={{
-                border: '1px solid ' + C.lineSoft,
-                padding: '11px 13px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '3px',
@@ -1230,7 +1298,7 @@ export default function Simulator({ d, bundle }: { d: any; bundle: any }) {
                 </span>
               ))}
             </div>
-          </div>
+          </Fold>
         </div>
       </Panel>
 

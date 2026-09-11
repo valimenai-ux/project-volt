@@ -5,6 +5,7 @@ import {
   Label,
   MarginBar,
   Num,
+  PLAIN,
   Panel,
   PanelHead,
   Primer,
@@ -14,6 +15,70 @@ import {
   Terms,
 } from '../ui'
 import type { Cited } from '../types'
+
+// ------------------------------------------------------------ plain lines
+
+/** A plain-English line set beneath a coded label or a value of record —
+ *  the guide's voice, in the size the row sub-text already uses. It only
+ *  ever sits beside the record's own string; it never replaces one. */
+function PlainLine({ children }: { children: string }) {
+  return (
+    <span
+      style={{
+        font: '300 10.5px/1.5 ' + F.sans,
+        color: C.faint,
+        textWrap: 'pretty',
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+/** Which truck a card is about, set directly beneath its head. The
+ *  program's own kickers number the vehicles, and the numbers invert a
+ *  reader's guess: VEHICLE ONE is the heavy semi, while the V1 and V2 of
+ *  the small-truck cards are the two variants of VEHICLE ZERO. */
+function WhichTruck({ children }: { children: string }) {
+  return (
+    <div
+      style={{
+        padding: '10px 20px',
+        borderBottom: '1px solid ' + C.lineSoft,
+        font: '300 11.5px/1.5 ' + F.sans,
+        color: C.faint,
+        textWrap: 'pretty',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+/** The small truck's two variants, named without the duty baked in.
+ *  PLAIN's own entries for these codes carry the design duty, which would
+ *  read as a contradiction on the row that runs a variant on the OTHER
+ *  duty; these names hold on every row. */
+const VARIANT: Record<string, string> = {
+  'V1 Postal': "the small truck's delivery variant",
+  'V2 Trucker': "the small truck's regional variant",
+}
+
+/** The plain name of the corner a governing-case string of record leads
+ *  with; nothing if the code is not one PLAIN knows. The string itself is
+ *  never touched. */
+function cornerNamed(s: string): string | undefined {
+  return PLAIN[s.split(' ')[0]]
+}
+
+/** "V1 Postal vs stock NPR-HD" in plain words, both sides looked up;
+ *  nothing if either side is a code this file cannot name. */
+function pairNamed(title: string): string | undefined {
+  const [lhs, rhs] = title.split(' vs ')
+  const a = VARIANT[lhs]
+  const b = PLAIN[rhs]
+  return a && b ? a + ' against ' + b : undefined
+}
 
 function Lede({ children }: { children: string }) {
   return (
@@ -31,12 +96,21 @@ function Lede({ children }: { children: string }) {
   )
 }
 
-function Field({ k, v }: { k: string; v: Cited | undefined }) {
+function Field({
+  k,
+  v,
+  plain,
+}: {
+  k: string
+  v: Cited | undefined
+  plain?: string
+}) {
   if (!v) return null
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
       <Label>{k}</Label>
       <Num c={v} size={13} />
+      {plain ? <PlainLine>{plain}</PlainLine> : null}
     </div>
   )
 }
@@ -157,6 +231,11 @@ function CardG1({ c }: { c: any }) {
         title={c.title}
         right={<StatusBadge s={c.statusBadge} />}
       />
+      <WhichTruck>
+        One part of the small truck's own design — the clutch. The small
+        truck is the vehicle the program calls Vehicle Zero; the heavy semi,
+        Vehicle One, is the next card.
+      </WhichTruck>
       <div
         style={{
           display: 'grid',
@@ -166,6 +245,12 @@ function CardG1({ c }: { c: any }) {
       >
         <div style={{ padding: '18px 20px', borderRight: '1px solid ' + C.line }}>
           <Waterfall steps={c.waterfall} />
+          <div style={{ marginTop: '8px' }}>
+            <PlainLine>
+              Left to right: the first answer, the corrections that moved it,
+              and the answer of record. The bright line is the pass mark.
+            </PlainLine>
+          </div>
           <div
             style={{
               marginTop: '10px',
@@ -218,14 +303,34 @@ function CardG1({ c }: { c: any }) {
               borderTop: '1px solid ' + C.lineSoft,
             }}
           >
-            <Field k="KILL CRITERION" v={c.criterion} />
-            <Field k="MISSED BY" v={c.missedBy} />
-            <Field k="SEEDS ABOVE ZERO" v={c.seedsPositive} />
-            <Field k="SEEDS IN ENSEMBLE" v={c.seedsTotal} />
+            <Field
+              k="KILL CRITERION"
+              v={c.criterion}
+              plain="the lead the clutch mode had to show over pure series, fixed before the run"
+            />
+            <Field
+              k="MISSED BY"
+              v={c.missedBy}
+              plain="how far short of that mark the answer of record came"
+            />
+            <Field
+              k="SEEDS ABOVE ZERO"
+              v={c.seedsPositive}
+              plain="runs in which the clutch mode came out ahead at all"
+            />
+            <Field
+              k="SEEDS IN ENSEMBLE"
+              v={c.seedsTotal}
+              plain="runs made in total"
+            />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
             <Label>GATE STATUS, AS THE RESULTS FILE RECORDS IT</Label>
             <Num c={c.gateStatus} size={12} />
+            <PlainLine>
+              Executed means the kill was carried out — the clutch was deleted
+              from the design — on the date the string ends with.
+            </PlainLine>
           </div>
           <Quote c={c.statusQuote} />
         </div>
@@ -250,6 +355,11 @@ function CardWS8({ c }: { c: any }) {
           </>
         }
       />
+      <WhichTruck>
+        The heavy semi — four designs, each measured against the ordinary
+        diesel semi. The program calls this truck Vehicle One; the V1 in the
+        two cards below is a different, smaller vehicle.
+      </WhichTruck>
       <div style={{ padding: '18px 20px' }}>
         <Body style={{ maxWidth: '740px', marginBottom: '18px' }}>{c.body}</Body>
         <div
@@ -299,6 +409,9 @@ function CardWS8({ c }: { c: any }) {
                   {'worst corner '}
                   <Num c={r.worstCornerMin} size={10} />
                   {' at ' + r.worstCorner.s}
+                  {PLAIN[r.worstCorner.s]
+                    ? ' — ' + PLAIN[r.worstCorner.s]
+                    : ''}
                 </span>
               </span>
               <Num c={r.perKmMin} size={13} />
@@ -316,6 +429,59 @@ function CardWS8({ c }: { c: any }) {
         </div>
         <div
           style={{
+            marginTop: '12px',
+            display: 'flex',
+            gap: '18px',
+            flexWrap: 'wrap',
+            alignItems: 'flex-start',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <Label>PER KM</Label>
+            <span
+              style={{ width: '28px', height: '4px', background: C.electrical }}
+            />
+            <PlainLine>
+              fuel per kilometre driven; plus means less than the ordinary
+              semi
+            </PlainLine>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <Label>PER PAYLOAD t-KM</Label>
+            <span style={{ width: '28px', height: '4px', background: C.text2 }} />
+            <PlainLine>
+              fuel per tonne of goods carried one kilometre; the criterion is
+              read on this one
+            </PlainLine>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'flex-start',
+              maxWidth: '460px',
+            }}
+          >
+            <span
+              style={{
+                flex: 'none',
+                width: '1px',
+                height: '14px',
+                marginTop: '3px',
+                background: C.electrical,
+              }}
+            />
+            <PlainLine>
+              On the right-hand bar the thin bright upright mark is the pass
+              mark for the standard trip; a design's bar had to reach it. The
+              dashed line is zero — level with the ordinary diesel semi — and
+              a bar running left from it did worse than the semi on that
+              measure.
+            </PlainLine>
+          </div>
+        </div>
+        <div
+          style={{
             marginTop: '16px',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))',
@@ -324,17 +490,43 @@ function CardWS8({ c }: { c: any }) {
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <Label>THE CRITERION, PRE-COMMITTED</Label>
-            <div style={{ display: 'flex', gap: '18px' }}>
-              <Field k="NOMINAL" v={c.criterionNominal} />
-              <Field k="EVERY CORNER" v={c.criterionCorner} />
-              <Field k="NUMBERS VERSION" v={c.numbersVersion} />
+            <PlainLine>
+              The pass marks, written down before the numbers existed.
+            </PlainLine>
+            <div style={{ display: 'flex', gap: '18px', flexWrap: 'wrap' }}>
+              <Field
+                k="NOMINAL"
+                v={c.criterionNominal}
+                plain="on the standard trip a design had to beat the ordinary semi by at least this much, per tonne-km"
+              />
+              <Field
+                k="EVERY CORNER"
+                v={c.criterionCorner}
+                plain="and on each harsher trip it could not fall below this"
+              />
+              <Field
+                k="NUMBERS VERSION"
+                v={c.numbersVersion}
+                plain="which round of the calculation these numbers come from"
+              />
             </div>
             <Quote c={c.statusQuote} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <Label>THE ROUND THAT PRODUCED THESE NUMBERS</Label>
+            <PlainLine>
+              The review of that round was not clean; a further round was
+              ordered and never run.
+            </PlainLine>
             <Quote c={c.adjudicationQuote} />
             <Label>WASTE-HEAT RECOVERY GATE</Label>
+            <PlainLine>
+              An add-on that turns exhaust heat back into power. It had to
+              earn at least the threshold on its own, after the payload its
+              weight displaces; the best it managed for each design is shown
+              beside the threshold, and it was dropped for every design it
+              was tried on.
+            </PlainLine>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
               <Field k="THRESHOLD" v={c.whr.threshold} />
               {c.whr.rows.map((w: any) => (
@@ -355,6 +547,10 @@ function CardDuty({ c }: { c: any }) {
   return (
     <Panel>
       <PanelHead kicker={c.kicker} title={c.title} />
+      <WhichTruck>
+        The small truck, on two kinds of route. V1 and V2 are its two
+        variants — both are Vehicle Zero, not Vehicle One.
+      </WhichTruck>
       <div style={{ padding: '18px 20px' }}>
         <Body style={{ maxWidth: '740px', marginBottom: '16px' }}>{c.body}</Body>
         <div style={{ border: '1px solid ' + C.lineSoft }}>
@@ -379,6 +575,9 @@ function CardDuty({ c }: { c: any }) {
                 <span style={{ font: '300 10px/1.4 ' + F.sans, color: C.faint }}>
                   {r.dutyName}
                 </span>
+                {VARIANT[r.vehicle] ? (
+                  <PlainLine>{VARIANT[r.vehicle]}</PlainLine>
+                ) : null}
               </span>
               <Num c={r.perKm} size={13} />
               <MarginBar value={r.perKm.v} scale={scale} color={C.electrical} />
@@ -412,7 +611,15 @@ function CardDuty({ c }: { c: any }) {
             </div>
           ))}
         </div>
-        <div style={{ marginTop: '14px', display: 'flex', gap: '18px' }}>
+        <div
+          style={{
+            marginTop: '14px',
+            display: 'flex',
+            gap: '18px',
+            flexWrap: 'wrap',
+            alignItems: 'flex-start',
+          }}
+        >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <Label>PER KM</Label>
             <span
@@ -422,10 +629,18 @@ function CardDuty({ c }: { c: any }) {
                 background: C.electrical,
               }}
             />
+            <PlainLine>
+              fuel per kilometre driven; plus means less than the ordinary
+              diesel truck
+            </PlainLine>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <Label>PER PAYLOAD TONNE-KM — THE METRIC OF RECORD</Label>
             <span style={{ width: '28px', height: '4px', background: C.text2 }} />
+            <PlainLine>
+              fuel per tonne of goods carried one kilometre; the verdict is
+              read on this one
+            </PlainLine>
           </div>
         </div>
         <div style={{ marginTop: '16px' }}>
@@ -442,59 +657,95 @@ function CardWS11({ c }: { c: any }) {
   return (
     <Panel>
       <PanelHead kicker={c.kicker} title={c.title} />
+      <WhichTruck>
+        The small truck, against the ordinary diesel truck it would replace.
+        V1 is its delivery variant and V2 its regional variant; both are
+        Vehicle Zero.
+      </WhichTruck>
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))',
         }}
       >
-        {c.rows.map((r: any) => (
-          <div
-            key={r.id}
-            style={{
-              padding: '18px 20px',
-              borderRight: '1px solid ' + C.line,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '14px',
-            }}
-          >
+        {c.rows.map((r: any) => {
+          const pair = pairNamed(r.title)
+          const duty = PLAIN[r.duty]
+          const corner = cornerNamed(r.worstCornerGoverning.s)
+          return (
             <div
+              key={r.id}
               style={{
+                padding: '18px 20px',
+                borderRight: '1px solid ' + C.line,
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                gap: '12px',
-              }}
-            >
-              <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ font: '500 14px/1.3 ' + F.sans, color: C.text }}>
-                  {r.title}
-                </span>
-                <Kicker>{r.duty}</Kicker>
-              </span>
-              <StatusBadge s={r.statusBadge} small />
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))',
+                flexDirection: 'column',
                 gap: '14px',
               }}
             >
-              <Field k="NOMINAL, ENSEMBLE-MIN" v={r.nominalMin} />
-              <Field k="WORST CORNER" v={r.worstCorner} />
-              <Field k="RULER AT ITS PESSIMISTIC END" v={r.pessimistic} />
-              <Field k="RULER FUEL ERROR TO DRAW" v={r.flipPoint} />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                }}
+              >
+                <span
+                  style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+                >
+                  <span style={{ font: '500 14px/1.3 ' + F.sans, color: C.text }}>
+                    {r.title}
+                  </span>
+                  {pair ? <PlainLine>{pair}</PlainLine> : null}
+                  <Kicker>{r.duty}</Kicker>
+                  {duty ? <PlainLine>{duty}</PlainLine> : null}
+                </span>
+                <StatusBadge s={r.statusBadge} small />
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))',
+                  gap: '14px',
+                }}
+              >
+                <Field
+                  k="NOMINAL, ENSEMBLE-MIN"
+                  v={r.nominalMin}
+                  plain="the margin over the ordinary truck on the standard trip, in the worst of the runs; plus means less fuel per tonne-km"
+                />
+                <Field
+                  k="WORST CORNER"
+                  v={r.worstCorner}
+                  plain="the lowest margin on any of the harsher trips"
+                />
+                <Field
+                  k="RULER AT ITS PESSIMISTIC END"
+                  v={r.pessimistic}
+                  plain="the standard-trip margin again, with every modelling choice about the ordinary truck pushed to the end that makes it thirstiest"
+                />
+                <Field
+                  k="RULER FUEL ERROR TO DRAW"
+                  v={r.flipPoint}
+                  plain="how far wrong the ordinary truck's fuel figure would have to be to make this a draw; minus means it would have to be leaner than modelled, plus thirstier"
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <Label>GOVERNING CASE</Label>
+                <span style={{ font: '300 10.5px/1.5 ' + F.sans, color: C.faint }}>
+                  {r.worstCornerGoverning.s}
+                </span>
+                {corner ? (
+                  <PlainLine>
+                    {'which harsher trip, and which run, set the worst-corner figure above — the corner named here is ' +
+                      corner}
+                  </PlainLine>
+                ) : null}
+              </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <Label>GOVERNING CASE</Label>
-              <span style={{ font: '300 10.5px/1.5 ' + F.sans, color: C.faint }}>
-                {r.worstCornerGoverning.s}
-              </span>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
       <div
         style={{
@@ -538,18 +789,31 @@ function CardWS11({ c }: { c: any }) {
             <Field
               k="V1 GOVERNING CORNER, ORDERED GATE"
               v={c.conditionality.orderedGateValue}
+              plain="the delivery variant's worst-corner margin as the gate was ordered, before the conditions later attached to it"
             />
             <Field
               k="WITH CAB HEAT AND CdA 5.4 TOGETHER"
               v={c.conditionality.bothPendingItems}
+              plain="the same margin with two of those conditions priced in together: cab heating, and the larger of the two drag figures in question"
             />
           </div>
           <span style={{ font: '300 10.5px/1.5 ' + F.sans, color: C.faint }}>
             {c.conditionality.conditionedOn.s}
           </span>
+          <PlainLine>
+            ESC-2 was a question put to the project lead — whether cab heating
+            had to be charged to the small truck. Pending is the results
+            file's own word, written before the lead answered; the answer
+            became the cab-heat condition listed above, ordered and not run.
+          </PlainLine>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <Label>ESC-1 — THE RULER WAS NEVER CALIBRATED</Label>
+          <PlainLine>
+            The ordinary truck's fuel use was modelled and never adjusted to
+            match real-world logs; the order to calibrate it is recorded as
+            not satisfied.
+          </PlainLine>
           <div
             style={{
               display: 'grid',
@@ -557,10 +821,26 @@ function CardWS11({ c }: { c: any }) {
               gap: '12px',
             }}
           >
-            <Field k="MODEL, VOLT-SUB" v={c.esc1.modelLper100} />
-            <Field k="PUBLIC ANCHOR, ERA SUBSET" v={c.esc1.anchorLper100} />
-            <Field k="WORST RESIDUAL" v={c.esc1.worstResidual} />
-            <Field k="CALIBRATION PERFORMED" v={c.esc1.calibrateOrderSatisfied} />
+            <Field
+              k="MODEL, VOLT-SUB"
+              v={c.esc1.modelLper100}
+              plain="what the model says the ordinary truck burns on stop-go town deliveries"
+            />
+            <Field
+              k="PUBLIC ANCHOR, ERA SUBSET"
+              v={c.esc1.anchorLper100}
+              plain="what owners' public fuel logs report for trucks with the ruler's own engine"
+            />
+            <Field
+              k="WORST RESIDUAL"
+              v={c.esc1.worstResidual}
+              plain="the model's gap below the logs, as a share of the logs' figure; the worse of the two log subsets"
+            />
+            <Field
+              k="CALIBRATION PERFORMED"
+              v={c.esc1.calibrateOrderSatisfied}
+              plain="whether the model was ever adjusted to match the logs"
+            />
           </div>
           <span style={{ font: '300 11px/1.6 ' + F.sans, color: C.faint }}>
             {c.esc1.anchorName.s}

@@ -652,3 +652,156 @@ export function Terms({ of }: { of: string[] }) {
     </div>
   )
 }
+
+// ------------------------------------------------------------ plain names
+
+/**
+ * What the program's identifiers mean, for a reader who was not in it.
+ *
+ * Every entry is a name for something that already has a coded label on
+ * screen; none is a value, a status or a verdict, and none carries a
+ * numeral. Where the record itself names the thing (a duty's `dutyName`,
+ * a candidate's `title`), the screen should prefer the record's string
+ * and use this only for the codes the record leaves bare.
+ */
+export const PLAIN: Record<string, string> = {
+  // duties
+  'VOLT-SUB': 'stop-go town deliveries',
+  'VOLT-REG': 'longer regional runs',
+  'GH-REG-165': 'a hilly regional route',
+  'LH-520': 'a long-haul motorway route',
+  // cases and corners
+  nominal: 'the standard trip',
+  'cold_-10C': 'a cold start',
+  cold_minus10C: 'a cold start',
+  climb_10km_6pct: 'a long steady climb',
+  alt2000m_45C: 'high altitude in hot weather',
+  payload_m20: 'a lighter load',
+  payload_p20: 'a heavier load',
+  // the trucks
+  'NPR-HD': 'the ordinary diesel delivery truck',
+  'stock NPR-HD': 'the ordinary diesel delivery truck',
+  'STOCK NPR-HD': 'the ordinary diesel delivery truck',
+  // V1 and V2 are VARIANTS of the small truck, each with a design duty;
+  // the duty card runs one on the other's route, so the name must not
+  // bake the duty in.
+  'V1 Postal': "the small truck's delivery variant",
+  'V2 Trucker': "the small truck's regional variant",
+  V1: "the small truck's delivery variant",
+  V2: "the small truck's regional variant",
+  S0: 'the ordinary diesel semi',
+  S0R: 'the ordinary diesel semi',
+  // workstreams
+  WS1: 'loads and duty cycles',
+  WS2: 'the traction motor',
+  WS3: 'the battery',
+  WS4: 'the engine and generator',
+  WS5: 'the controls',
+  WS6: 'packaging',
+  WS7: 'the prototype and test plan',
+  WS8: 'the semi, first wave',
+  WS9: 'the semi, second wave',
+  WS10: 'the combination trial',
+  WS11: 'the small truck against the ordinary one',
+  WS12: 'this exhibit',
+  WS13: 'the publication',
+  KX: 'sizing the engine, generator and radiator together',
+  // sandbox endpoint variables
+  CdA_m2: 'frontal area times drag',
+  Crr: 'rolling resistance',
+  T_peak_Nm: 'peak engine torque',
+  eta_driveline: 'driveline efficiency',
+  m_kg: 'vehicle mass',
+  r_dyn_m: 'tyre rolling radius',
+  rho_air: 'air density',
+  rpm_ceiling: 'engine speed ceiling',
+  v_climb_kmh: 'speed to hold on the grade',
+  v_cruise_kmh: 'cruise speed',
+}
+
+/** The coded label, with its plain name set directly beneath it — the
+ *  pattern card three of the verdict wall already uses. The code is
+ *  never replaced: it is what the record calls the thing. */
+export function Gloss({
+  code,
+  plain,
+  size,
+}: {
+  code: string
+  plain?: string
+  size?: number
+}) {
+  const p = plain ?? PLAIN[code]
+  return (
+    <span style={{ display: 'inline-flex', flexDirection: 'column', gap: '3px' }}>
+      <span
+        style={{
+          font: '400 ' + (size ?? 11) + 'px/1.3 ' + F.mono,
+          color: C.text3,
+        }}
+      >
+        {code}
+      </span>
+      {p ? (
+        <span
+          style={{
+            font: '300 ' + ((size ?? 11) - 0.5) + 'px/1.35 ' + F.sans,
+            color: C.faint,
+          }}
+        >
+          {p}
+        </span>
+      ) : null}
+    </span>
+  )
+}
+
+/**
+ * Machine text, behind a click.
+ *
+ * Header lines, column lists, digests and rule codes are part of the
+ * record and stay on the page — but they are for the reader who wants
+ * to check, not the one who wants to understand. Closed by default;
+ * the label says what is inside. Never used for a value of record: those
+ * stay in view, because resolving on screen is the exhibit's contract.
+ */
+export function Fold({
+  label,
+  children,
+  open,
+}: {
+  label: string
+  children: ReactNode
+  open?: boolean
+}) {
+  const [on, setOn] = useState(open ?? false)
+  return (
+    <div style={{ border: '1px solid ' + C.lineSoft }}>
+      <button
+        onClick={() => setOn(!on)}
+        style={{
+          all: 'unset',
+          cursor: 'pointer',
+          display: 'flex',
+          width: '100%',
+          boxSizing: 'border-box',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 12px',
+          font: '400 9.5px/1.4 ' + F.mono,
+          letterSpacing: '.18em',
+          color: C.fainter,
+          background: on ? C.panelAlt : 'transparent',
+        }}
+      >
+        <span>{label}</span>
+        <span style={{ color: C.ghost }}>{on ? 'HIDE' : 'SHOW'}</span>
+      </button>
+      {on ? (
+        <div style={{ padding: '10px 12px', borderTop: '1px solid ' + C.lineSoft }}>
+          {children}
+        </div>
+      ) : null}
+    </div>
+  )
+}

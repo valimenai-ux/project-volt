@@ -6,6 +6,7 @@ import {
   Label,
   MarginBar,
   Num,
+  PLAIN,
   Panel,
   PanelHead,
   Primer,
@@ -18,6 +19,29 @@ import {
 import { loadScrub } from '../trace'
 import type { Loaded } from '../trace'
 import type { Cited, TraceEntry } from '../types'
+
+/** The plain names for a run of coded ids, set beneath the coded line the
+ *  way `Gloss` sets one — the code stays where the record put it; this is
+ *  the sans line under it. Codes PLAIN does not know are skipped, never
+ *  echoed, so the line can only ever add a name. Renders nothing when
+ *  there is nothing to add. */
+function PlainLine({ of, size }: { of: string[]; size?: number }) {
+  const s = of
+    .map((c) => PLAIN[c])
+    .filter((p): p is string => Boolean(p))
+    .join(' · ')
+  if (!s) return null
+  return (
+    <span
+      style={{
+        font: '300 ' + (size ?? 10) + 'px/1.35 ' + F.sans,
+        color: C.faint,
+      }}
+    >
+      {s}
+    </span>
+  )
+}
 
 // The lower heating value is not a literal here: it arrives in the data
 // bundle as a source-line citation (WS4_genset/ws4_models.py:26) that the
@@ -60,12 +84,14 @@ function fmt(x: number, dp: number) {
 
 function Counter({
   title,
+  plain,
   value,
   unit,
   sub,
   color,
 }: {
   title: string
+  plain?: string[]
   value: string
   unit: string
   sub?: string
@@ -74,6 +100,7 @@ function Counter({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
       <Label>{title}</Label>
+      {plain ? <PlainLine of={plain} size={9.5} /> : null}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
         <span
           style={{
@@ -399,11 +426,13 @@ function Pair({ p, traces, badge }: { p: any; traces: any; badge: string }) {
           <div style={{ display: 'flex', gap: '26px', flexWrap: 'wrap' }}>
             <Counter
               title="STOCK NPR-HD"
+              plain={['STOCK NPR-HD']}
               value={started ? fmt(rkm, 4) : '—'}
               unit="kWh/km"
             />
             <Counter
               title={p.vehicle}
+              plain={[p.vehicle]}
               value={started ? fmt(ckm, 4) : '—'}
               unit="kWh/km"
               color={C.electrical}
@@ -440,12 +469,14 @@ function Pair({ p, traces, badge }: { p: any; traces: any; badge: string }) {
           <div style={{ display: 'flex', gap: '26px', flexWrap: 'wrap' }}>
             <Counter
               title="STOCK NPR-HD"
+              plain={['STOCK NPR-HD']}
               value={started ? fmt(rpt, 4) : '—'}
               unit="kWh/t-km"
               sub={'payload ' + p.payloadRuler.s}
             />
             <Counter
               title={p.vehicle}
+              plain={[p.vehicle]}
               value={started ? fmt(cpt, 4) : '—'}
               unit="kWh/t-km"
               color={mPt >= 0 ? C.text : C.heat}
@@ -627,6 +658,18 @@ function SemiPanel({ s }: { s: any }) {
         right={<StatusBadge s={s.statusBadge} />}
       />
       <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Body>
+          These rows are the semi designs, each measured in the model against
+          a pass mark written down before its answer was known. All but the
+          design marked as killed cleared that mark on the hilly design route;
+          the review that would have confirmed them was then cancelled, so
+          they were frozen exactly as they stood, unconfirmed — that is what
+          the label beside each one means. The design marked as killed failed
+          its mark. The bars read the design route alone; the long-haul
+          control route is reported beside it and never decides the verdict.
+          The record lists open findings against the designs that were frozen
+          unconfirmed.
+        </Body>
         <div
           style={{
             border: '1px solid ' + C.mechanicalLine,
@@ -723,8 +766,14 @@ function SemiPanel({ s }: { s: any }) {
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
               <Num c={s.criterionNominal} size={13} />
               <Num c={s.criterionCorner} size={13} />
-              <Num c={s.designDuty} size={13} />
-              <Num c={s.controlDuty} size={13} />
+              <span style={{ display: 'inline-flex', flexDirection: 'column', gap: '3px' }}>
+                <Num c={s.designDuty} size={13} />
+                <PlainLine of={[s.designDuty.s]} size={11} />
+              </span>
+              <span style={{ display: 'inline-flex', flexDirection: 'column', gap: '3px' }}>
+                <Num c={s.controlDuty} size={13} />
+                <PlainLine of={[s.controlDuty.s]} size={11} />
+              </span>
             </div>
             <span style={{ font: '300 11px/1.55 ' + F.sans, color: C.faint }}>
               {s.gatingRule.s}
@@ -858,6 +907,10 @@ export default function RaceMode({ d, bundle }: { d: any; bundle: any }) {
                 style={{
                   all: 'unset',
                   cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  gap: '3px',
                   padding: '6px 12px',
                   border: '1px solid ' + (on ? C.electricalLine : C.lineHard),
                   background: on ? C.electricalBg : 'transparent',
@@ -865,7 +918,8 @@ export default function RaceMode({ d, bundle }: { d: any; bundle: any }) {
                   color: on ? C.electricalLo : C.muted,
                 }}
               >
-                {p.vehicle + ' · ' + p.duty + ' · ' + p.case}
+                <span>{p.vehicle + ' · ' + p.duty + ' · ' + p.case}</span>
+                <PlainLine of={[p.vehicle, p.duty, p.case]} size={10} />
               </button>
             )
           })}

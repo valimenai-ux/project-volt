@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
 import { C, F } from '../theme'
 import {
   Body,
+  Gloss,
   Label,
   Num,
   Panel,
@@ -17,6 +19,48 @@ import {
 } from '../sandboxModel'
 import type { Endpoint } from '../sandboxModel'
 import type { Cited } from '../types'
+
+/** One line of the chart key: a swatch in the curve's own colour, the
+ *  name the readouts beneath already use for it, and what it means in
+ *  plain words. The curves themselves are unchanged. */
+function CurveKey({
+  color,
+  name,
+  children,
+}: {
+  color: string
+  name: string
+  children: ReactNode
+}) {
+  return (
+    <span
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '9px',
+        font: '300 11.5px/1.5 ' + F.sans,
+        color: C.faint,
+        maxWidth: '520px',
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          flex: 'none',
+          width: '18px',
+          height: '2px',
+          marginTop: '8px',
+          background: color,
+        }}
+      />
+      <span>
+        <span style={{ fontFamily: F.mono, color: C.text3 }}>{name}</span>
+        {' — '}
+        {children}
+      </span>
+    </span>
+  )
+}
 
 function Slider({
   k,
@@ -248,7 +292,34 @@ export default function Sandbox({ d }: { d: any }) {
             </svg>
             <div
               style={{
-                marginTop: '10px',
+                marginTop: '12px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
+              <CurveKey color={C.electrical} name="ceiling">
+                the highest ratio at which the engine stays under its speed
+                ceiling at cruise speed
+              </CurveKey>
+              <CurveKey color={C.heat} name="floor">
+                the lowest ratio at which the engine's peak torque, through the
+                driveline, still pulls the load up the grade at the climb speed
+              </CurveKey>
+              <span
+                style={{
+                  font: '300 11.5px/1.5 ' + F.sans,
+                  color: C.faint,
+                  maxWidth: '520px',
+                }}
+              >
+                A single gear exists wherever the ceiling line is at or above
+                the floor line; where they cross, the band closes.
+              </span>
+            </div>
+            <div
+              style={{
+                marginTop: '14px',
                 display: 'flex',
                 gap: '18px',
                 flexWrap: 'wrap',
@@ -561,7 +632,12 @@ export default function Sandbox({ d }: { d: any }) {
                         key={k}
                         style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
                       >
-                        <Label>{k}</Label>
+                        <Gloss
+                          code={k}
+                          plain={
+                            k === 'T_peak_Nm' ? 'peak engine torque' : undefined
+                          }
+                        />
                         <Num c={e.citations[k]} size={12} />
                         {flag ? (
                           <span
